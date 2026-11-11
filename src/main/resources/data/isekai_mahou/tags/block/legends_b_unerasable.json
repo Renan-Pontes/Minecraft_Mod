@@ -1,0 +1,33 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:wither_immune",
+    "#minecraft:dragon_immune",
+    "minecraft:obsidian",
+    "minecraft:crying_obsidian",
+    "minecraft:respawn_anchor",
+    "minecraft:reinforced_deepslate",
+    { "id": "isekai_mahou:trial_altar", "required": false },
+    { "id": "isekai_mahou:trial_exit", "required": false },
+    { "id": "isekai_mahou:trial_barrier", "required": false },
+    { "id": "isekai_mahou:domain_barrier", "required": false },
+    { "id": "isekai_mahou:spell_barrier", "required": false },
+    { "id": "isekai_mahou:shrine_altar", "required": false },
+    { "id": "isekai_mahou:elemental_portal", "required": false },
+    { "id": "isekai_mahou:elemental_portal_frame", "required": false },
+    { "id": "isekai_mahou:abyss_portal", "required": false },
+    { "id": "isekai_mahou:abyss_portal_frame", "required": false },
+    { "id": "isekai_mahou:celestial_portal", "required": false },
+    { "id": "isekai_mahou:celestial_beacon", "required": false },
+    { "id": "isekai_mahou:twilight_rift", "required": false },
+    { "id": "isekai_mahou:convergence_altar", "required": false },
+    { "id": "isekai_mahou:ascension_core", "required": false },
+    { "id": "isekai_mahou:ascension_pedestal", "required": false },
+    { "id": "isekai_mahou:runic_pedestal", "required": false },
+    { "id": "isekai_mahou:mana_battery", "required": false },
+    { "id": "isekai_mahou:mana_condenser", "required": false },
+    { "id": "isekai_mahou:arcane_collector", "required": false },
+    { "id": "isekai_mahou:quest_board", "required": false },
+    { "id": "isekai_mahou:guild_counter", "required": false }
+  ]
+}

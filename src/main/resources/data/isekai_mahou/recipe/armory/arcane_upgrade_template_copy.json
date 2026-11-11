@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou_armory",
+  "pattern": [
+    " A ",
+    "ATA",
+    " C "
+  ],
+  "key": {
+    "A": {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    "T": {
+      "item": "isekai_mahou:arcane_upgrade_template"
+    },
+    "C": {
+      "item": "isekai_mahou:mana_crystal"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:arcane_upgrade_template",
+    "count": 2
+  }
+}

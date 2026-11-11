@@ -1,0 +1,21 @@
+{
+  "category": "boss",
+  "elements": [
+    "void",
+    "shadow"
+  ],
+  "rarity": "legendary",
+  "icon": [
+    "minecraft:dragon_head"
+  ],
+  "order": 87,
+  "entities": [
+    "minecraft:ender_dragon"
+  ],
+  "memory": [
+    "boss.minecraft.ender_dragon",
+    "boss.ender_dragon",
+    "kill.minecraft.ender_dragon"
+  ],
+  "repeatable": false
+}

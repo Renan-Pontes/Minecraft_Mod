@@ -1,0 +1,16 @@
+{
+  "command.isekai_mahou.boss_kit.demo": "Telegraph demo: %s",
+  "command.isekai_mahou.boss_kit.unknown": "Unknown shape: %s. Use one of: %s",
+  "command.isekai_mahou.boss_kit.hit": "%s: %s target(s) inside the area (demo, no damage)",
+  "command.isekai_mahou.boss_kit.shake": "Camera shake (intensity %s)",
+  "command.isekai_mahou.boss_kit.shape.all": "all shapes",
+  "command.isekai_mahou.boss_kit.shape.circle": "Circle",
+  "command.isekai_mahou.boss_kit.shape.ring": "Ring",
+  "command.isekai_mahou.boss_kit.shape.line": "Line",
+  "command.isekai_mahou.boss_kit.shape.cone": "Cone",
+  "command.isekai_mahou.boss_kit.shape.follow": "Pursuit",
+  "command.isekai_mahou.boss_kit.shape.safe": "Safe zone",
+  "command.isekai_mahou.boss_kit.shape.blast": "Delayed blast",
+  "command.isekai_mahou.boss_kit.shape.line_blast": "Line burst",
+  "message.isekai_mahou.boss_kit.reward": "%s defeated! +%s magic XP"
+}

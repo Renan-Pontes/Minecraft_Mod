@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:item_exists",
+        "item": "isekai_mahou:arcane_upgrade_template"
+      }
+    }
+  ],
+  "template": {
+    "item": "isekai_mahou:essence_arcane"
+  },
+  "type": "minecraft:smithing_transform",
+  "base": {
+    "item": "isekai_mahou:necromancer_adept_chestplate"
+  },
+  "addition": {
+    "tag": "isekai_mahou:outfits/upgrade/master"
+  },
+  "result": {
+    "id": "isekai_mahou:necromancer_master_chestplate",
+    "count": 1
+  }
+}

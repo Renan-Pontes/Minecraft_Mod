@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "CGC",
+    "L L"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:cyan_wool"
+    },
+    "G": {
+      "item": "minecraft:gold_nugget"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:enchanter_novice_helmet",
+    "count": 1
+  }
+}

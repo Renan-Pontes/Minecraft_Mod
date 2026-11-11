@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_chestplate",
+  "pattern": [
+    "G G",
+    "LAL",
+    "GLG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:green_wool"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "A": {
+      "item": "minecraft:arrow"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:ranger_chestplate",
+    "count": 1
+  }
+}

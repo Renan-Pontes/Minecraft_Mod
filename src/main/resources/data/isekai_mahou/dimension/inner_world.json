@@ -1,0 +1,18 @@
+{
+  "type": "isekai_mahou:inner_world",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "isekai_mahou:inner_world",
+      "layers": [
+        {
+          "block": "minecraft:air",
+          "height": 1
+        }
+      ],
+      "lakes": false,
+      "features": false,
+      "structure_overrides": []
+    }
+  }
+}

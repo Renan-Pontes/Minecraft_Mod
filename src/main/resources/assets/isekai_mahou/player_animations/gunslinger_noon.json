@@ -1,0 +1,132 @@
+{
+  "version": 3,
+  "name": "gunslinger_noon",
+  "author": "Isekai Mahou",
+  "description": "Doze Badaladas: a mao pairando sobre o coldre ate o saque",
+  "emote": {
+    "beginTick": 0,
+    "endTick": 40,
+    "stopTick": 46,
+    "degrees": true,
+    "nsfw": false,
+    "easeBeforeKeyframe": true,
+    "moves": [
+      {
+        "tick": 0,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": 8,
+          "yaw": 0,
+          "roll": 14
+        },
+        "leftArm": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": -12
+        },
+        "head": {
+          "pitch": -4,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 10,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": 10,
+          "yaw": 0,
+          "roll": 16
+        },
+        "leftArm": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": -12
+        },
+        "head": {
+          "pitch": -4,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 20,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": 8,
+          "yaw": 0,
+          "roll": 13
+        },
+        "leftArm": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": -12
+        },
+        "head": {
+          "pitch": -4,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 29,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": 10,
+          "yaw": 0,
+          "roll": 16
+        },
+        "leftArm": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": -12
+        },
+        "head": {
+          "pitch": -4,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 31,
+        "easing": "EASEOUTBACK",
+        "rightArm": {
+          "pitch": -96,
+          "yaw": -4,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -74,
+          "yaw": 40,
+          "roll": 0
+        },
+        "head": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 40,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -90,
+          "yaw": -4,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -60,
+          "yaw": 30,
+          "roll": 0
+        },
+        "head": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      }
+    ],
+    "isLoop": false,
+    "returnTick": 0
+  }
+}

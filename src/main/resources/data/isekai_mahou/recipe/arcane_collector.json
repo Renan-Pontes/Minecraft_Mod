@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WPW",
+    "HMH",
+    "III"
+  ],
+  "key": {
+    "W": {
+      "item": "isekai_mahou:essence_wind"
+    },
+    "P": {
+      "item": "minecraft:ender_pearl"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:arcane_collector",
+    "count": 1
+  }
+}

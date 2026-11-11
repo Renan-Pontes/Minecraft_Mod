@@ -1,0 +1,14 @@
+{
+  "category": "creature",
+  "elements": [
+    "astral"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:allay_spawn_egg"
+  ],
+  "order": 31,
+  "entities": [
+    "minecraft:allay"
+  ]
+}

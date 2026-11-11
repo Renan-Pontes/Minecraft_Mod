@@ -1,0 +1,74 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.7,
+  "downfall": 0.0,
+  "effects": {
+    "sky_color": 2363962,
+    "fog_color": 5913210,
+    "water_color": 8050943,
+    "water_fog_color": 2759242,
+    "grass_color": 8312458,
+    "foliage_color": 15239888,
+    "particle": {
+      "options": {
+        "type": "minecraft:spore_blossom_air"
+      },
+      "probability": 0.006
+    },
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "music": {
+      "sound": "minecraft:music.overworld.cherry_grove",
+      "min_delay": 12000,
+      "max_delay": 24000,
+      "replace_current_music": false
+    }
+  },
+  "spawners": {
+    "monster": [
+      {
+        "type": "isekai_mahou:fey_pixie",
+        "weight": 30,
+        "minCount": 2,
+        "maxCount": 4
+      },
+      {
+        "type": "isekai_mahou:bramble_hound",
+        "weight": 35,
+        "minCount": 1,
+        "maxCount": 3
+      }
+    ],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "isekai_mahou:hm_fey_mushrooms_dense",
+      "isekai_mahou:hm_moonpetals",
+      "minecraft:patch_grass_forest",
+      "minecraft:brown_mushroom_normal"
+    ],
+    []
+  ]
+}

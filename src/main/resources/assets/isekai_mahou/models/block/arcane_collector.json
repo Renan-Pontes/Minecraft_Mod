@@ -1,0 +1,209 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "isekai_mahou:block/arcane_collector_base",
+    "base": "isekai_mahou:block/arcane_collector_base",
+    "body": "isekai_mahou:block/arcane_collector_body",
+    "top": "isekai_mahou:block/arcane_collector_top",
+    "bottom": "isekai_mahou:block/arcane_collector_bottom"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        4,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#base",
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ],
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#base",
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ],
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#base",
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ],
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#base",
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ],
+          "cullface": "west"
+        },
+        "up": {
+          "texture": "#bottom",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#bottom",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "cullface": "down"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        4,
+        2
+      ],
+      "to": [
+        14,
+        12,
+        14
+      ],
+      "faces": {
+        "north": {
+          "texture": "#body",
+          "uv": [
+            2,
+            4,
+            14,
+            12
+          ]
+        },
+        "south": {
+          "texture": "#body",
+          "uv": [
+            2,
+            4,
+            14,
+            12
+          ]
+        },
+        "east": {
+          "texture": "#body",
+          "uv": [
+            2,
+            4,
+            14,
+            12
+          ]
+        },
+        "west": {
+          "texture": "#body",
+          "uv": [
+            2,
+            4,
+            14,
+            12
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        12,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#base",
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ],
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#base",
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ],
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#base",
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ],
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#base",
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ],
+          "cullface": "west"
+        },
+        "up": {
+          "texture": "#top",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "cullface": "up"
+        },
+        "down": {
+          "texture": "#bottom",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    }
+  ]
+}

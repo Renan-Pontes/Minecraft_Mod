@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:item_exists",
+        "item": "isekai_mahou:mana_crystal_block"
+      }
+    }
+  ],
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "isekai_mahou:arcane_upgrade_template"
+  },
+  "base": {
+    "item": "isekai_mahou:holy_mace_t1"
+  },
+  "addition": {
+    "item": "minecraft:amethyst_block"
+  },
+  "result": {
+    "id": "isekai_mahou:holy_mace_t2",
+    "count": 1
+  }
+}

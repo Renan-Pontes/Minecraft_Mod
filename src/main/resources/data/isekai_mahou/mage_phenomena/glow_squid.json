@@ -1,0 +1,15 @@
+{
+  "category": "creature",
+  "elements": [
+    "water",
+    "light"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:glow_ink_sac"
+  ],
+  "order": 37,
+  "entities": [
+    "minecraft:glow_squid"
+  ]
+}

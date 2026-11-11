@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "isekai_mahou:crystal_city",
+      "required": false
+    }
+  ]
+}

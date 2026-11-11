@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "LKL",
+    "I I"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "K": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:enchanter_gauntlets",
+    "count": 1
+  }
+}

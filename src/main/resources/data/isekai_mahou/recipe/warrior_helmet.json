@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_helmet",
+  "pattern": [
+    "ICI",
+    "C C"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:chain"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:warrior_helmet",
+    "count": 1
+  }
+}

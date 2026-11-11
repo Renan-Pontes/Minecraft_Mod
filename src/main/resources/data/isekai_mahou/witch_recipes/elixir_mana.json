@@ -1,0 +1,23 @@
+{
+  "ingredients": [
+    "isekai_mahou:witch_moonpetal",
+    "minecraft:glow_berries",
+    "minecraft:lapis_lazuli",
+    "isekai_mahou:witch_mandrake_root"
+  ],
+  "stirs": 3,
+  "heat": "medium",
+  "moon_phases": [
+    0,
+    1,
+    6,
+    7
+  ],
+  "result": {
+    "id": "isekai_mahou:witch_elixir_mana",
+    "count": 3
+  },
+  "xp": 14,
+  "color": "#5A7BFF",
+  "element": "water"
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "isekai_mahou:blocks/magic_fish_pond",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:magic_fish_pond"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

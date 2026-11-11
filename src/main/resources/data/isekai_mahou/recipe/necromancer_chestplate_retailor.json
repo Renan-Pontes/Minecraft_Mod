@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_chestplate",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/chestplate"
+    },
+    {
+      "item": "minecraft:gray_wool"
+    },
+    {
+      "item": "minecraft:bone_meal"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:necromancer_chestplate",
+    "count": 1
+  }
+}

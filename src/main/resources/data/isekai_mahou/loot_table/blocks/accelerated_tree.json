@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "isekai_mahou:blocks/accelerated_tree",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:accelerated_tree"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

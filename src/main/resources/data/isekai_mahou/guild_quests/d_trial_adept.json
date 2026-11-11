@@ -1,0 +1,17 @@
+{
+  "rank": "D",
+  "category": "chamber",
+  "objectives": [
+    {
+      "type": "trial_clear",
+      "count": 1,
+      "rank": 2
+    }
+  ],
+  "rewards": {
+    "coins": 12,
+    "xp": 130,
+    "points": 22,
+    "glyph": "random"
+  }
+}

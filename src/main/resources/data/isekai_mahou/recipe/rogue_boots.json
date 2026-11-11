@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_boots",
+  "pattern": [
+    "K K",
+    "L L"
+  ],
+  "key": {
+    "K": {
+      "item": "minecraft:black_wool"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:rogue_boots",
+    "count": 1
+  }
+}

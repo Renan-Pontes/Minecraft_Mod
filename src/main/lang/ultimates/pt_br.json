@@ -1,0 +1,26 @@
+{
+  "glyph.isekai_mahou.meteor": "Meteoro",
+  "glyph.isekai_mahou.meteor.desc": "Uma fenda se abre no céu e uma rocha em brasa despenca no ponto mirado: efeitos em área, onda de choque e cratera. Amplificar = rocha maior; Dividir = mais rochas.",
+  "glyph.isekai_mahou.meteor_shower": "Chuva de Meteoros",
+  "glyph.isekai_mahou.meteor_shower.desc": "Ultimate: o céu escurece e sangra; por 15 s, 10 + 4×Círculo meteoros caem na área mirada, cada um com os efeitos e a sua cratera. Pode ser contrariada enquanto dura.",
+  "glyph.isekai_mahou.transcend": "Transcendência",
+  "glyph.isekai_mahou.transcend.desc": "Ultimate: desperta por 30 s com auréola e asas de luz: voo, +50% de poder, regeneração de mana ×3, recargas pela metade e os efeitos pulsando nos inimigos a até 6 blocos. Depois, Exaustão Mágica.",
+  "glyph.isekai_mahou.colossus": "Colosso",
+  "glyph.isekai_mahou.colossus.desc": "Ultimate: invoca um gigante espectral de 12 blocos na cor do elemento por 30 s. Ele te segue, corta em arcos largos, pisa o chão aplicando os efeitos e bloqueia projéteis que vêm de frente.",
+
+  "legend.isekai_mahou.meteor": "Meteoro",
+  "legend.isekai_mahou.meteor_swarm": "Chuva de Meteoros",
+  "legend.isekai_mahou.awakening": "Despertar",
+  "legend.isekai_mahou.spectral_colossus": "Colosso Espectral",
+
+  "entity.isekai_mahou.meteor": "Meteoro",
+  "entity.isekai_mahou.spectral_colossus": "Colosso Espectral",
+
+  "effect.isekai_mahou.transcendence": "Transcendência",
+  "effect.isekai_mahou.transcendence.description": "Voo, poder mágico +50%, mana ×3 e recargas pela metade. Ao acabar, Exaustão Mágica.",
+
+  "message.isekai_mahou.ultimates.transcend_start": "✦ TRANSCENDÊNCIA ✦  %s s",
+  "message.isekai_mahou.ultimates.transcend_fading": "A Transcendência está se esvaindo...",
+  "message.isekai_mahou.ultimates.transcend_end": "O poder se esvai... Exaustão Mágica.",
+  "message.isekai_mahou.ultimates.colossus_summon": "O Colosso Espectral desperta! (%s s)"
+}

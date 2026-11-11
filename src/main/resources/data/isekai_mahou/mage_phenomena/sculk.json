@@ -1,0 +1,19 @@
+{
+  "category": "block",
+  "elements": [
+    "shadow"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:sculk"
+  ],
+  "order": 7,
+  "blocks": [
+    "minecraft:sculk",
+    "minecraft:sculk_vein",
+    "minecraft:sculk_catalyst",
+    "minecraft:sculk_sensor",
+    "minecraft:calibrated_sculk_sensor",
+    "minecraft:sculk_shrieker"
+  ]
+}

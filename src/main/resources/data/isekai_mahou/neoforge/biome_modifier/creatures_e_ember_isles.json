@@ -1,0 +1,18 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#isekai_mahou:creatures_e/ember_isles",
+  "spawners": [
+    {
+      "type": "isekai_mahou:greater_fire_elemental",
+      "weight": 30,
+      "minCount": 1,
+      "maxCount": 2
+    },
+    {
+      "type": "isekai_mahou:lesser_phoenix",
+      "weight": 10,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

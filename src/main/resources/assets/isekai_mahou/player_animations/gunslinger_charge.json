@@ -1,0 +1,94 @@
+{
+  "version": 3,
+  "name": "gunslinger_charge",
+  "author": "Isekai Mahou",
+  "description": "Tiro carregado: mira com as duas maos e coice forte",
+  "emote": {
+    "beginTick": 0,
+    "endTick": 20,
+    "stopTick": 24,
+    "degrees": true,
+    "nsfw": false,
+    "easeBeforeKeyframe": true,
+    "moves": [
+      {
+        "tick": 0,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -90,
+          "yaw": -6,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -86,
+          "yaw": 34,
+          "roll": 0
+        },
+        "torso": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 3,
+        "easing": "EASEOUTQUAD",
+        "rightArm": {
+          "pitch": -120,
+          "yaw": -6,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -114,
+          "yaw": 34,
+          "roll": 0
+        },
+        "torso": {
+          "pitch": -6,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 12,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -90,
+          "yaw": -6,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -86,
+          "yaw": 34,
+          "roll": 0
+        },
+        "torso": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 20,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -90,
+          "yaw": -6,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -50,
+          "yaw": 20,
+          "roll": 0
+        },
+        "torso": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      }
+    ],
+    "isLoop": false,
+    "returnTick": 0
+  }
+}

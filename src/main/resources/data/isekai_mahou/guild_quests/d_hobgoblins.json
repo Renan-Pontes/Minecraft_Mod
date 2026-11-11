@@ -1,0 +1,15 @@
+{
+  "rank": "D",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:hobgoblin",
+      "count": 3
+    }
+  ],
+  "rewards": {
+    "coins": 10,
+    "xp": 90,
+    "points": 18
+  }
+}

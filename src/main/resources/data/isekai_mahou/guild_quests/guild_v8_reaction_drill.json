@@ -1,0 +1,21 @@
+{
+  "rank": "D",
+  "category": "task",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "reaction.any",
+      "count": 15,
+      "label": "guild.isekai_mahou.target.v08.reactions",
+      "icon": "minecraft:blaze_powder"
+    }
+  ],
+  "rewards": {
+    "coins": 10,
+    "xp": 120,
+    "points": 16,
+    "reputation": {
+      "academy": 8
+    }
+  }
+}

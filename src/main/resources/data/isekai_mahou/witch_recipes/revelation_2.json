@@ -1,0 +1,22 @@
+{
+  "ingredients": [
+    "isekai_mahou:witch_toad_eye",
+    "isekai_mahou:witch_moonpetal",
+    "isekai_mahou:essence_water",
+    "minecraft:ender_pearl"
+  ],
+  "stirs": 4,
+  "heat": "medium",
+  "moon_phases": [
+    0,
+    1,
+    7
+  ],
+  "night": true,
+  "result": {
+    "id": "isekai_mahou:revelation_potion_2",
+    "count": 1
+  },
+  "xp": 30,
+  "color": "#4F7BFF"
+}

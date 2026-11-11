@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "isekai_mahou:block/celestial_beacon"
+    },
+    "active=true": {
+      "model": "isekai_mahou:block/celestial_beacon_active"
+    }
+  }
+}

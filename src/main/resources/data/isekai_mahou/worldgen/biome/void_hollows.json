@@ -1,0 +1,70 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.4,
+  "downfall": 0.0,
+  "effects": {
+    "sky_color": 0,
+    "fog_color": 1969200,
+    "water_color": 3807850,
+    "water_fog_color": 656664,
+    "mood_sound": {
+      "sound": "minecraft:ambient.warped_forest.mood",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "music": {
+      "sound": "minecraft:music.nether.warped_forest",
+      "min_delay": 12000,
+      "max_delay": 24000,
+      "replace_current_music": false
+    },
+    "particle": {
+      "options": {
+        "type": "minecraft:reverse_portal"
+      },
+      "probability": 0.008
+    },
+    "ambient_sound": "minecraft:ambient.warped_forest.loop"
+  },
+  "spawners": {
+    "monster": [
+      {
+        "type": "minecraft:enderman",
+        "weight": 20,
+        "minCount": 2,
+        "maxCount": 4
+      }
+    ],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "isekai_mahou:ab_ore_void_crystal",
+      "isekai_mahou:ab_ore_gold",
+      "isekai_mahou:ab_ore_diamond"
+    ],
+    [
+      "isekai_mahou:ab_void_crystal_hanging",
+      "isekai_mahou:ab_void_crystal_spikes",
+      "isekai_mahou:ab_floating_crystals"
+    ],
+    [],
+    [],
+    []
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "category": "block",
+  "elements": [
+    "nature"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:moss_block"
+  ],
+  "order": 10,
+  "blocks": [
+    "minecraft:moss_block",
+    "minecraft:moss_carpet",
+    "minecraft:azalea",
+    "minecraft:flowering_azalea"
+  ]
+}

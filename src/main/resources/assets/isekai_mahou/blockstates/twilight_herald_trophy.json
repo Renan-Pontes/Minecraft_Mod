@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "isekai_mahou:block/twilight_herald_trophy"
+    },
+    "facing=east": {
+      "model": "isekai_mahou:block/twilight_herald_trophy",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "isekai_mahou:block/twilight_herald_trophy",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "isekai_mahou:block/twilight_herald_trophy",
+      "y": 270
+    }
+  }
+}

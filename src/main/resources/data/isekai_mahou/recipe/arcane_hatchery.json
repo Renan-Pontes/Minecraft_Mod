@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "FMF",
+    "FHF",
+    "PPP"
+  ],
+  "key": {
+    "F": {
+      "tag": "minecraft:wooden_fences"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "H": {
+      "item": "minecraft:hay_block"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:arcane_hatchery",
+    "count": 1
+  }
+}

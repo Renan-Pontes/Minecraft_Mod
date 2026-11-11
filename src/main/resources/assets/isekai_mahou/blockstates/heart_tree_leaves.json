@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "golden=false": {
+      "model": "isekai_mahou:block/heart_tree_leaves"
+    },
+    "golden=true": {
+      "model": "isekai_mahou:block/heart_tree_leaves_golden"
+    }
+  }
+}

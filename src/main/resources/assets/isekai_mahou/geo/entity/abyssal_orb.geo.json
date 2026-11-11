@@ -1,0 +1,131 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.abyssal_orb",
+        "texture_width": 64,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 2,
+        "visible_bounds_offset": [
+          0,
+          0.3,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "core",
+          "pivot": [
+            0.0,
+            5.5,
+            0.0
+          ],
+          "parent": "root",
+          "cubes": [
+            {
+              "origin": [
+                -2.0,
+                3.5,
+                -2.0
+              ],
+              "size": [
+                4,
+                4,
+                4
+              ],
+              "uv": [
+                48,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "shell",
+          "pivot": [
+            0.0,
+            5.5,
+            0.0
+          ],
+          "parent": "root",
+          "cubes": [
+            {
+              "origin": [
+                -3.0,
+                2.5,
+                -3.0
+              ],
+              "size": [
+                6,
+                6,
+                6
+              ],
+              "uv": [
+                0,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -4.5,
+                5.0,
+                -0.5
+              ],
+              "size": [
+                9,
+                1,
+                1
+              ],
+              "uv": [
+                0,
+                12
+              ]
+            },
+            {
+              "origin": [
+                -0.5,
+                1.0,
+                -0.5
+              ],
+              "size": [
+                1,
+                9,
+                1
+              ],
+              "uv": [
+                44,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -0.5,
+                5.0,
+                -4.5
+              ],
+              "size": [
+                1,
+                1,
+                9
+              ],
+              "uv": [
+                24,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "rank": "E",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "isekai_mahou:essence_arcane",
+      "count": 2
+    }
+  ],
+  "rewards": {
+    "coins": 7,
+    "xp": 50,
+    "points": 12
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "category": "structure",
+  "elements": [
+    "arcane",
+    "void"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:mossy_stone_bricks"
+  ],
+  "order": 81,
+  "structures": [
+    "minecraft:stronghold"
+  ]
+}

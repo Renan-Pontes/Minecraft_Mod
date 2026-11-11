@@ -1,0 +1,15 @@
+{
+  "category": "structure",
+  "elements": [
+    "wind",
+    "arcane"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:trial_key"
+  ],
+  "order": 85,
+  "structures": [
+    "minecraft:trial_chambers"
+  ]
+}

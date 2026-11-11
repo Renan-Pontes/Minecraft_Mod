@@ -1,0 +1,22 @@
+{
+  "rank": "S",
+  "category": "chamber",
+  "objectives": [
+    {
+      "type": "trial_clear",
+      "count": 4,
+      "rank": 5,
+      "distinct": true,
+      "absolute": true
+    }
+  ],
+  "rewards": {
+    "coins": 120,
+    "xp": 1600,
+    "points": 150,
+    "glyph": "random",
+    "glyph_count": 2
+  },
+  "weight": 6,
+  "repeatable": false
+}

@@ -1,0 +1,38 @@
+{
+  "color": "#4FBF4A",
+  "icon": "isekai_mahou:fairy_dust",
+  "order": 50,
+  "rivals": {"horde": 0.5},
+  "allies": {},
+  "kill_penalty": -4,
+  "kill_penalties": {
+    "isekai_mahou:fairy": -30
+  },
+  "neutral_when_friendly": true,
+  "rewards": {
+    "friendly": {
+      "xp": 100,
+      "items": [{"id": "isekai_mahou:fairy_dust", "count": 4}, {"id": "minecraft:bone_meal", "count": 16}],
+      "title": "reputation.isekai_mahou.title.wildfolk.friendly"
+    },
+    "honored": {
+      "xp": 250,
+      "items": [{"id": "isekai_mahou:essence_earth", "count": 3}, {"id": "isekai_mahou:essence_wind", "count": 3}],
+      "glyph_scrolls": 1,
+      "glyph_tier": 2,
+      "title": "reputation.isekai_mahou.title.wildfolk.honored"
+    },
+    "revered": {
+      "xp": 500,
+      "items": [{"id": "isekai_mahou:ancestral_sapling", "count": 1}],
+      "glyph_scrolls": 1,
+      "glyph_tier": 3,
+      "title": "reputation.isekai_mahou.title.wildfolk.revered"
+    },
+    "exalted": {
+      "xp": 1000,
+      "legend": "random",
+      "title": "reputation.isekai_mahou.title.wildfolk.exalted"
+    }
+  }
+}

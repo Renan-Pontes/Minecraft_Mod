@@ -1,0 +1,20 @@
+{
+  "rank": "C",
+  "category": "trial",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "minecraft:pillager_outpost"
+    },
+    {
+      "type": "kill",
+      "entity": "minecraft:pillager",
+      "count": 12
+    }
+  ],
+  "rewards": {
+    "coins": 25,
+    "xp": 300
+  },
+  "trial": true
+}

@@ -1,0 +1,29 @@
+{
+  "parent": "isekai_mahou:block/faction_board_guild",
+  "overrides": [
+    {
+      "predicate": {
+        "isekai_mahou:faction": 0.05
+      },
+      "model": "isekai_mahou:item/faction_board_kingdom"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:faction": 0.15
+      },
+      "model": "isekai_mahou:item/faction_board_academy"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:faction": 0.25
+      },
+      "model": "isekai_mahou:item/faction_board_church"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:faction": 0.35
+      },
+      "model": "isekai_mahou:item/faction_board_underworld"
+    }
+  ]
+}

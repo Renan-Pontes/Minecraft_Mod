@@ -1,0 +1,15 @@
+{
+  "category": "structure",
+  "elements": [
+    "arcane",
+    "light"
+  ],
+  "rarity": "epic",
+  "icon": [
+    "minecraft:bookshelf"
+  ],
+  "order": 300,
+  "structures": [
+    "isekai_mahou:mage_tower"
+  ]
+}

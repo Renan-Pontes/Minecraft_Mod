@@ -1,0 +1,14 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:renegade_tower/tower",
+        "processors": "isekai_mahou:renegade_tower_decay",
+        "projection": "rigid"
+      }
+    }
+  ]
+}

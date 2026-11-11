@@ -1,0 +1,24 @@
+{
+  "rank": "E",
+  "category": "defense",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "guild.kill_city",
+      "count": 15,
+      "label": "guild.isekai_mahou.target.v08.city_monsters",
+      "icon": "minecraft:shield"
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 70,
+    "reputation": {
+      "kingdom": 18
+    }
+  },
+  "requires": [
+    "isekai_mahou:city_heart"
+  ],
+  "faction": "kingdom"
+}

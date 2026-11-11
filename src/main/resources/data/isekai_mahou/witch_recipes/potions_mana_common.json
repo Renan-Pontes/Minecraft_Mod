@@ -1,0 +1,16 @@
+{
+  "ingredients": [
+    "minecraft:lapis_lazuli",
+    "minecraft:sugar",
+    "minecraft:amethyst_shard"
+  ],
+  "stirs": 2,
+  "heat": "low",
+  "result": {
+    "id": "isekai_mahou:mana_potion_common",
+    "count": 3
+  },
+  "xp": 6,
+  "color": "#4A8CFF",
+  "element": "water"
+}

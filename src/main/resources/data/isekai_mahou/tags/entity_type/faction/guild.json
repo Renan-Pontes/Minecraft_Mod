@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    {"id": "isekai_mahou:guild_receptionist", "required": false},
+    {"id": "isekai_mahou:guild_master", "required": false},
+    {"id": "isekai_mahou:adventurer", "required": false}
+  ]
+}

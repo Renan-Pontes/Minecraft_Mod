@@ -1,0 +1,14 @@
+{
+  "category": "block",
+  "elements": [
+    "magma"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:magma_block"
+  ],
+  "order": 1,
+  "blocks": [
+    "minecraft:magma_block"
+  ]
+}

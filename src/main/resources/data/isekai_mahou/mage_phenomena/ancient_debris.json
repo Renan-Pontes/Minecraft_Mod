@@ -1,0 +1,15 @@
+{
+  "category": "block",
+  "elements": [
+    "fire",
+    "earth"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:ancient_debris"
+  ],
+  "order": 8,
+  "blocks": [
+    "minecraft:ancient_debris"
+  ]
+}

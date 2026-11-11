@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_leggings",
+  "pattern": [
+    "LGL",
+    "L L",
+    "L L"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "G": {
+      "item": "minecraft:green_wool"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:ranger_leggings",
+    "count": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:iron_nugget"
+    },
+    {
+      "item": "minecraft:stick"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:rogue_throwing_knife",
+    "count": 4
+  }
+}

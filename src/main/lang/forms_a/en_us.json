@@ -1,0 +1,22 @@
+{
+  "glyph.isekai_mahou.beam": "Beam",
+  "glyph.isekai_mahou.beam.desc": "Fires an instant ray of light up to 24 blocks long. Pierce passes through targets, Split fans out several beams and Ricochet bounces off walls. In a program, it starts from the point that was hit; On End fires at the tip of the ray if it hits nothing.",
+  "glyph.isekai_mahou.cone": "Cone",
+  "glyph.isekai_mahou.cone.desc": "Releases a 60° fan in front of you that hits everything inside it (6 blocks; Expand reaches farther and wider). In a program, it opens from the point that was hit; with Leap, it rushes to the next enemy.",
+  "glyph.isekai_mahou.slash": "Slash",
+  "glyph.isekai_mahou.slash.desc": "A 120° blade arc 3.5 blocks long that hits everyone in the arc. Split chains extra X-shaped strikes. In a program, the blade appears at the point that was hit; with Leap, it flies to the next enemy.",
+  "glyph.isekai_mahou.nova": "Nova",
+  "glyph.isekai_mahou.nova.desc": "Explodes around you, hitting everything within 4 blocks with a shockwave. In a program (after On Hit, On End...), it explodes at the point that was hit; with Leap, it lands on the next enemy.",
+  "glyph.isekai_mahou.wave": "Wave",
+  "glyph.isekai_mahou.wave.desc": "A wave that rushes along the ground where you look, climbs steps and hits each creature in its path once. Expand makes it wider. In a program, it starts at the point that was hit and keeps the same direction.",
+  "glyph.isekai_mahou.fall": "Fall",
+  "glyph.isekai_mahou.fall.desc": "Makes the spell fall from the sky like a meteor where you aim (up to 48 blocks), exploding in a 3-block area. In a program, it falls on the point that was hit; On End fires when the meteor hits the ground.",
+  "glyph.isekai_mahou.rain": "Rain",
+  "glyph.isekai_mahou.rain.desc": "Forms a magic cloud over the aimed spot: for 3 seconds, many small impacts fall at random within 5 blocks. In a program, the cloud forms over the point that was hit; On Hit fires when a drop strikes a creature.",
+  "glyph.isekai_mahou.mark": "Mark",
+  "glyph.isekai_mahou.mark.desc": "Marks the creature in your sights (up to 32 blocks), making it glow; 2 seconds later the spell falls on it, wherever it is. In a program, it marks the creature at the point that was hit (or the next one in the same direction); with Leap, the mark jumps from enemy to enemy.",
+  "entity.isekai_mahou.spell_wave": "Magic Wave",
+  "entity.isekai_mahou.spell_falling": "Magic Meteor",
+  "entity.isekai_mahou.spell_beam": "Magic Beam",
+  "message.isekai_mahou.forms_a.mark_no_target": "Nothing in your sights to mark."
+}

@@ -1,0 +1,18 @@
+{
+  "category": "block",
+  "elements": [
+    "water",
+    "light"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:prismarine_shard"
+  ],
+  "order": 9,
+  "blocks": [
+    "minecraft:prismarine",
+    "minecraft:prismarine_bricks",
+    "minecraft:dark_prismarine",
+    "minecraft:sea_lantern"
+  ]
+}

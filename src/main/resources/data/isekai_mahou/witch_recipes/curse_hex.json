@@ -1,0 +1,23 @@
+{
+  "ingredients": [
+    "isekai_mahou:witch_grave_dust",
+    "isekai_mahou:witch_toad_eye",
+    "minecraft:spider_eye",
+    "minecraft:fermented_spider_eye"
+  ],
+  "stirs": 3,
+  "heat": "medium",
+  "moon_phases": [
+    3,
+    4,
+    5
+  ],
+  "night": true,
+  "result": {
+    "id": "isekai_mahou:bottled_curse_hex",
+    "count": 3
+  },
+  "xp": 14,
+  "color": "#6A1F8A",
+  "element": "shadow"
+}

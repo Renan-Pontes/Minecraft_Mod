@@ -1,0 +1,14 @@
+{
+  "category": "block",
+  "elements": [
+    "arcane"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:enchanting_table"
+  ],
+  "order": 15,
+  "blocks": [
+    "minecraft:enchanting_table"
+  ]
+}

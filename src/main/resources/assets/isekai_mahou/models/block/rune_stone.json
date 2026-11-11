@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "isekai_mahou:block/rune_stone_top",
+    "side": "isekai_mahou:block/rune_stone_side"
+  }
+}

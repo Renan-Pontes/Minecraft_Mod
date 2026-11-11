@@ -1,0 +1,16 @@
+{
+  "category": "biome",
+  "elements": [
+    "water",
+    "earth"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:lily_pad"
+  ],
+  "order": 55,
+  "biomes": [
+    "minecraft:swamp",
+    "minecraft:mangrove_swamp"
+  ]
+}

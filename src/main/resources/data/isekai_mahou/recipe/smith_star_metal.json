@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SAS",
+    "ANA",
+    "SAS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:netherite_scrap"
+    },
+    "A": {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:smith_star_metal",
+    "count": 2
+  }
+}

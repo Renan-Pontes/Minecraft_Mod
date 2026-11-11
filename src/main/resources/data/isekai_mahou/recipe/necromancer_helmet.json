@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_helmet",
+  "pattern": [
+    "BWB",
+    "W W"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:gray_wool"
+    },
+    "B": {
+      "item": "minecraft:bone"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:necromancer_helmet",
+    "count": 1
+  }
+}

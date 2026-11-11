@@ -1,0 +1,21 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "#minecraft:is_mountain",
+      "#c:is_windswept",
+      "#minecraft:is_hill",
+      "minecraft:meadow",
+      "minecraft:cherry_grove"
+    ]
+  },
+  "spawners": [
+    {
+      "type": "isekai_mahou:wind_slime",
+      "weight": 20,
+      "minCount": 1,
+      "maxCount": 3
+    }
+  ]
+}

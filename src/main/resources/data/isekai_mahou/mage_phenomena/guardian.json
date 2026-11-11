@@ -1,0 +1,14 @@
+{
+  "category": "creature",
+  "elements": [
+    "water"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:prismarine_crystals"
+  ],
+  "order": 35,
+  "entities": [
+    "minecraft:guardian"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "circle": 10,
+  "tribute": [
+    {
+      "type": "any_guardian_core",
+      "count": 4
+    },
+    {
+      "type": "item",
+      "item": "isekai_mahou:essence_arcane",
+      "count": 7
+    },
+    {
+      "type": "boss_trophy",
+      "count": 1,
+      "items": [
+        "isekai_mahou:twilight_herald_trophy",
+        "isekai_mahou:twilight_heart",
+        "isekai_mahou:primordial_dragon_heart"
+      ],
+      "bosses": [
+        "primordial_dragon"
+      ],
+      "fallback": [
+        {
+          "type": "any_guardian_core",
+          "count": 2
+        }
+      ]
+    }
+  ]
+}

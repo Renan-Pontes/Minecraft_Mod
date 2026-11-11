@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_master_helmet",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/master/helmet"
+    },
+    {
+      "item": "minecraft:red_wool"
+    },
+    {
+      "item": "minecraft:chain"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:warrior_master_helmet",
+    "count": 1
+  }
+}

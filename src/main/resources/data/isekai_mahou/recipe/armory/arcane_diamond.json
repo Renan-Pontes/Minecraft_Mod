@@ -1,0 +1,42 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou_armory",
+  "pattern": [
+    " E ",
+    "EDE",
+    " E "
+  ],
+  "key": {
+    "E": [
+      {
+        "item": "isekai_mahou:essence_arcane"
+      },
+      {
+        "item": "isekai_mahou:essence_fire"
+      },
+      {
+        "item": "isekai_mahou:essence_water"
+      },
+      {
+        "item": "isekai_mahou:essence_earth"
+      },
+      {
+        "item": "isekai_mahou:essence_wind"
+      },
+      {
+        "item": "isekai_mahou:essence_light"
+      },
+      {
+        "item": "isekai_mahou:essence_shadow"
+      }
+    ],
+    "D": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:arcane_diamond",
+    "count": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "isekai_mahou:hollow_sandstone"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:hollow_sandstone_bricks",
+    "count": 4
+  }
+}

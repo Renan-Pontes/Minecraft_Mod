@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_leggings",
+  "pattern": [
+    "PYP",
+    "P P",
+    "Y Y"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:pink_wool"
+    },
+    "Y": {
+      "item": "minecraft:yellow_wool"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:bard_leggings",
+    "count": 1
+  }
+}

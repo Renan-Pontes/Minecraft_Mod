@@ -1,0 +1,19 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "#c:is_plains",
+      "#minecraft:is_taiga",
+      "#minecraft:is_savanna"
+    ]
+  },
+  "spawners": [
+    {
+      "type": "isekai_mahou:goblin_wolf_rider",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 2
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "category": "block",
+  "elements": [
+    "light"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:beacon"
+  ],
+  "order": 16,
+  "blocks": [
+    "minecraft:beacon"
+  ]
+}

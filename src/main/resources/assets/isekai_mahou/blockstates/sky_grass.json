@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "isekai_mahou:block/sky_grass"
+      },
+      {
+        "model": "isekai_mahou:block/sky_grass",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/sky_grass",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/sky_grass",
+        "y": 270
+      }
+    ]
+  }
+}

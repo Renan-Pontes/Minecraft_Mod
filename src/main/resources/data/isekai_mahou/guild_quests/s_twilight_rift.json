@@ -1,0 +1,14 @@
+{
+  "rank": "S",
+  "objectives": [
+    {
+      "type": "explore",
+      "dimension": "isekai_mahou:twilight_rift"
+    }
+  ],
+  "rewards": {
+    "coins": 75,
+    "xp": 950,
+    "points": 105
+  }
+}

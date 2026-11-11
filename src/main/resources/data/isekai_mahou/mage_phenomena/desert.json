@@ -1,0 +1,15 @@
+{
+  "category": "biome",
+  "elements": [
+    "sand"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:dead_bush"
+  ],
+  "order": 49,
+  "biomes": [
+    "minecraft:desert",
+    "#minecraft:is_badlands"
+  ]
+}

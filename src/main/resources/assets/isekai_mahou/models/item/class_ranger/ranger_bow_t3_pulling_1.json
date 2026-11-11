@@ -1,0 +1,24 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "textures": {
+    "particle": "isekai_mahou:item/ranger_bow_t3"
+  },
+  "base": {
+    "parent": "isekai_mahou:item/class_ranger/ranger_bow_t3_pulling_1_held"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": "isekai_mahou:item/ranger_bow_t3"
+      }
+    },
+    "fixed": {
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": "isekai_mahou:item/ranger_bow_t3"
+      }
+    }
+  }
+}

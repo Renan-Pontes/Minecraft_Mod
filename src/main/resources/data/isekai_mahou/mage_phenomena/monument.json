@@ -1,0 +1,15 @@
+{
+  "category": "structure",
+  "elements": [
+    "water",
+    "abyss"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:sponge"
+  ],
+  "order": 82,
+  "structures": [
+    "minecraft:monument"
+  ]
+}

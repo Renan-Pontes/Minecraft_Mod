@@ -1,0 +1,15 @@
+{
+  "rank": "B",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "minecraft:wither_skeleton",
+      "count": 10
+    }
+  ],
+  "rewards": {
+    "coins": 22,
+    "xp": 280,
+    "points": 40
+  }
+}

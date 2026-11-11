@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "KKK",
+    "GGG"
+  ],
+  "key": {
+    "K": {
+      "item": "minecraft:black_wool"
+    },
+    "G": {
+      "item": "minecraft:green_stained_glass_pane"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:gambler_helmet",
+    "count": 1
+  }
+}

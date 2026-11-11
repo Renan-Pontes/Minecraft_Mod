@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " M ",
+    "MCM",
+    " M "
+  ],
+  "key": {
+    "M": {
+      "item": "isekai_mahou:hollow_mask_fragment"
+    },
+    "C": [
+      {
+        "item": "isekai_mahou:menos_core"
+      },
+      {
+        "item": "isekai_mahou:arrancar_soul_shard"
+      }
+    ]
+  },
+  "result": {
+    "id": "isekai_mahou:garganta_key",
+    "count": 2
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "rank": "E",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "minecraft:mineshaft"
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 50,
+    "points": 12,
+    "glyph": "random"
+  }
+}

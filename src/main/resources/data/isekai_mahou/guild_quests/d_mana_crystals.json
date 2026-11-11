@@ -1,0 +1,15 @@
+{
+  "rank": "D",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "isekai_mahou:mana_crystal",
+      "count": 3
+    }
+  ],
+  "rewards": {
+    "coins": 11,
+    "xp": 80,
+    "points": 17
+  }
+}

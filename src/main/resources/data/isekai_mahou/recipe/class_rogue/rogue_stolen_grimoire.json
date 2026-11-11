@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "item": "minecraft:black_dye"
+    },
+    {
+      "item": "isekai_mahou:essence_shadow"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:rogue_stolen_grimoire",
+    "count": 1
+  }
+}

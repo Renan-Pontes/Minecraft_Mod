@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou_armory",
+  "pattern": [
+    "  A",
+    " E ",
+    "S  "
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_water"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:witch_wand_t1",
+    "count": 1
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:mana_crystal_block"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:mana_crystal",
+    "count": 9
+  }
+}

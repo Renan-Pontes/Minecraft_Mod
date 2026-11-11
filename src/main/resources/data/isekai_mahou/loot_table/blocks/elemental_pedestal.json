@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "isekai_mahou:blocks/elemental_pedestal",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:elemental_pedestal",
+          "functions": [
+            {
+              "function": "minecraft:copy_state",
+              "block": "isekai_mahou:elemental_pedestal",
+              "properties": [
+                "element"
+              ]
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

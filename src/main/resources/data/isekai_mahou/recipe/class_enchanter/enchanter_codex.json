@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "item": "minecraft:lapis_lazuli"
+    },
+    {
+      "item": "minecraft:lapis_lazuli"
+    },
+    {
+      "item": "isekai_mahou:essence_arcane"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:enchanter_codex",
+    "count": 1
+  }
+}

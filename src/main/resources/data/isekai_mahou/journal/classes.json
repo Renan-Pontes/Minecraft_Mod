@@ -1,0 +1,3768 @@
+{
+  "chapters": [
+    {
+      "id": "class_mage",
+      "path": "mage",
+      "order": 1,
+      "color": "#7C86FF",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:research_table",
+        "isekai_mahou:mage_staff_t1",
+        "isekai_mahou:arcane_lens"
+      ],
+      "steps": [
+        {
+          "id": "kit",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "placed",
+                "block": "research_table"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 30,
+          "icon": "isekai_mahou:research_table",
+          "requires": [
+            "isekai_mahou:research_table"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 1
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:research_table",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:research_table"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 2
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:research_table",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:research_table"
+          ]
+        },
+        {
+          "id": "glyphs",
+          "condition": {
+            "type": "glyphs",
+            "min": 25
+          },
+          "xp": 100,
+          "icon": "isekai_mahou:glyph_scroll",
+          "requires": [
+            "isekai_mahou:research_table"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 3
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:research_table",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:research_table"
+          ]
+        },
+        {
+          "id": "master",
+          "condition": {
+            "type": "node",
+            "node": "master",
+            "min": 1
+          },
+          "xp": 200,
+          "icon": "minecraft:enchanted_book",
+          "requires": [
+            "isekai_mahou:research_table"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 4
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:research_table",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:research_table"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 5
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:research_table",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:research_table"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_witch",
+      "path": "witch",
+      "order": 2,
+      "color": "#F070F0",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:witch_cauldron",
+        "isekai_mahou:witch_wand_t1",
+        "isekai_mahou:witch_recipe_page"
+      ],
+      "steps": [
+        {
+          "id": "kit",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "placed",
+                "block": "witch_cauldron"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 30,
+          "icon": "isekai_mahou:witch_cauldron",
+          "requires": [
+            "isekai_mahou:witch_cauldron"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 1
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:witch_cauldron",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:witch_cauldron"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 2
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:witch_cauldron",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:witch_cauldron"
+          ]
+        },
+        {
+          "id": "water_shadow",
+          "condition": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "element",
+                "element": "water"
+              },
+              {
+                "type": "element",
+                "element": "shadow"
+              }
+            ]
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:essence_shadow",
+          "requires": [
+            "isekai_mahou:witch_cauldron"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 3
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:witch_cauldron",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:witch_cauldron"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 4
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:witch_cauldron",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:witch_cauldron"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 5
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:witch_cauldron",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:witch_cauldron"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_warlock",
+      "path": "warlock",
+      "order": 3,
+      "color": "#D04545",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:offering_altar",
+        "isekai_mahou:pact_blade_t1",
+        "isekai_mahou:ritual_chalk_item"
+      ],
+      "steps": [
+        {
+          "id": "kit",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "placed",
+                "block": "offering_altar"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 30,
+          "icon": "isekai_mahou:offering_altar",
+          "requires": [
+            "isekai_mahou:offering_altar"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 1
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:offering_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:offering_altar"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 2
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:offering_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:offering_altar"
+          ]
+        },
+        {
+          "id": "pacts",
+          "condition": {
+            "type": "counter",
+            "key": "warlock.pacts",
+            "min": 2
+          },
+          "xp": 150,
+          "icon": "isekai_mahou:ritual_chalk_item",
+          "requires": [
+            "isekai_mahou:offering_altar"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 3
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:offering_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:offering_altar"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 4
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:offering_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:offering_altar"
+          ]
+        },
+        {
+          "id": "patron_boss",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "imprisoned_patron"
+            ]
+          },
+          "optional": true,
+          "xp": 300,
+          "icon": "isekai_mahou:ritual_chalk_item",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:profane_altar",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "imprisoned_patron"
+                  ]
+                }
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:offering_altar"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 5
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:offering_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:offering_altar"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_druid",
+      "path": "druid",
+      "order": 4,
+      "color": "#3FBF5A",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:ancestral_sapling",
+        "isekai_mahou:druid_staff_t1"
+      ],
+      "steps": [
+        {
+          "id": "kit",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "placed",
+                "block": "ancestral_sapling"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 30,
+          "icon": "isekai_mahou:ancestral_sapling",
+          "requires": [
+            "isekai_mahou:ancestral_sapling"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 1
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:ancestral_sapling",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ancestral_sapling"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 2
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:ancestral_sapling",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ancestral_sapling"
+          ]
+        },
+        {
+          "id": "trees",
+          "condition": {
+            "type": "counter",
+            "key": "feat.trees_planted",
+            "min": 10
+          },
+          "xp": 100,
+          "icon": "minecraft:oak_sapling",
+          "requires": [
+            "isekai_mahou:ancestral_sapling"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 3
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:ancestral_sapling",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ancestral_sapling"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 4
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:ancestral_sapling",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ancestral_sapling"
+          ]
+        },
+        {
+          "id": "ent",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "corrupted_ent"
+            ]
+          },
+          "optional": true,
+          "xp": 300,
+          "icon": "isekai_mahou:ancestral_sapling",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:druid_circle",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "corrupted_ent"
+                  ]
+                }
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ancestral_sapling"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 5
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:ancestral_sapling",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ancestral_sapling"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_necromancer",
+      "path": "necromancer",
+      "order": 5,
+      "color": "#2EC4C4",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:ossuary_altar",
+        "isekai_mahou:reaper_scythe_t1",
+        "isekai_mahou:phylactery"
+      ],
+      "steps": [
+        {
+          "id": "kit",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "placed",
+                "block": "ossuary_altar"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 30,
+          "icon": "isekai_mahou:ossuary_altar",
+          "requires": [
+            "isekai_mahou:ossuary_altar"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 1
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:ossuary_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ossuary_altar"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 2
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:ossuary_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ossuary_altar"
+          ]
+        },
+        {
+          "id": "souls",
+          "condition": {
+            "type": "counter",
+            "key": "necro.souls",
+            "min": 50
+          },
+          "xp": 120,
+          "icon": "minecraft:soul_lantern",
+          "requires": [
+            "isekai_mahou:ossuary_altar"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 3
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:ossuary_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ossuary_altar"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 4
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:ossuary_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ossuary_altar"
+          ]
+        },
+        {
+          "id": "lich",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "lich"
+            ]
+          },
+          "optional": true,
+          "xp": 300,
+          "icon": "isekai_mahou:phylactery",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:forgotten_crypt",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "lich"
+                  ]
+                }
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ossuary_altar"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 5
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:ossuary_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ossuary_altar"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_smith",
+      "path": "smith",
+      "order": 6,
+      "color": "#E8742C",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:smith_hammer",
+        "isekai_mahou:smith_arcane_anvil",
+        "isekai_mahou:smith_star_metal"
+      ],
+      "steps": [
+        {
+          "id": "anvil",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "placed",
+                "block": "smith_arcane_anvil"
+              },
+              {
+                "type": "counter",
+                "key": "smith.forged",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 30,
+          "icon": "isekai_mahou:smith_arcane_anvil",
+          "requires": [
+            "isekai_mahou:smith_hammer"
+          ]
+        },
+        {
+          "id": "forge",
+          "condition": {
+            "type": "counter",
+            "key": "smith.forged",
+            "min": 1
+          },
+          "xp": 40,
+          "icon": "isekai_mahou:smith_forged_blade",
+          "requires": [
+            "isekai_mahou:smith_hammer"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "smith.rank",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:smith_hammer",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:smith_hammer"
+          ]
+        },
+        {
+          "id": "rune",
+          "condition": {
+            "type": "counter",
+            "key": "smith.runes",
+            "min": 1
+          },
+          "xp": 60,
+          "icon": "minecraft:lapis_lazuli",
+          "requires": [
+            "isekai_mahou:smith_hammer"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "smith.rank",
+                "min": 2
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 2
+              }
+            ]
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:smith_hammer",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:smith_hammer"
+          ]
+        },
+        {
+          "id": "families",
+          "condition": {
+            "type": "flag_prefix",
+            "prefix": "smith.family.",
+            "min": 3
+          },
+          "xp": 80,
+          "icon": "minecraft:iron_axe",
+          "requires": [
+            "isekai_mahou:smith_hammer"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "smith.rank",
+                "min": 3
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 3
+              }
+            ]
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:smith_hammer",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:smith_hammer"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "smith.rank",
+                "min": 4
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 4
+              }
+            ]
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:smith_hammer",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:smith_hammer"
+          ]
+        },
+        {
+          "id": "masterwork",
+          "condition": {
+            "type": "flag",
+            "flag": "smith.masterwork"
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:smith_star_metal",
+          "requires": [
+            "isekai_mahou:smith_hammer"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "smith.rank",
+                "min": 5
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 5
+              }
+            ]
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:smith_hammer",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:smith_hammer"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_rogue",
+      "path": "rogue",
+      "order": 7,
+      "color": "#8E5BD6",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:rogue_dagger",
+        "isekai_mahou:rogue_ledger",
+        "isekai_mahou:rogue_stolen_grimoire"
+      ],
+      "steps": [
+        {
+          "id": "pickpocket",
+          "condition": {
+            "type": "counter",
+            "key": "rogue.steal",
+            "min": 1
+          },
+          "xp": 40,
+          "icon": "minecraft:emerald",
+          "requires": [
+            "isekai_mahou:rogue_dagger"
+          ]
+        },
+        {
+          "id": "backstab",
+          "condition": {
+            "type": "counter",
+            "key": "rogue.backstab",
+            "min": 20
+          },
+          "xp": 40,
+          "icon": "isekai_mahou:rogue_dagger",
+          "requires": [
+            "isekai_mahou:rogue_dagger"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.rogue",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:rogue_ledger",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:rogue_dagger"
+          ]
+        },
+        {
+          "id": "city",
+          "condition": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "any",
+                "conditions": [
+                  {
+                    "type": "counter",
+                    "key": "visit.city",
+                    "min": 1
+                  },
+                  {
+                    "type": "counter",
+                    "key": "visit.capital",
+                    "min": 1
+                  }
+                ]
+              },
+              {
+                "type": "counter",
+                "key": "rogue.steal",
+                "min": 40
+              }
+            ]
+          },
+          "xp": 80,
+          "icon": "minecraft:bell",
+          "requires": [
+            "isekai_mahou:rogue_dagger"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.rogue",
+                "min": 2
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 2
+              }
+            ]
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:rogue_ledger",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:rogue_dagger"
+          ]
+        },
+        {
+          "id": "spells",
+          "condition": {
+            "type": "counter",
+            "key": "rogue.spell_stolen",
+            "min": 8
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:rogue_stolen_grimoire",
+          "requires": [
+            "isekai_mahou:rogue_dagger"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.rogue",
+                "min": 3
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 3
+              }
+            ]
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:rogue_ledger",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:rogue_dagger"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.rogue",
+                "min": 4
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 4
+              }
+            ]
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:rogue_ledger",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:rogue_dagger"
+          ]
+        },
+        {
+          "id": "heist",
+          "condition": {
+            "type": "counter",
+            "key": "rogue.heist",
+            "min": 10
+          },
+          "xp": 250,
+          "icon": "isekai_mahou:rogue_dagger",
+          "requires": [
+            "isekai_mahou:rogue_dagger"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.rogue",
+                "min": 5
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 5
+              }
+            ]
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:rogue_ledger",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:rogue_dagger"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_knight",
+      "path": "knight",
+      "order": 8,
+      "color": "#7FA8FF",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:runic_blade",
+        "isekai_mahou:knight_oath_altar"
+      ],
+      "steps": [
+        {
+          "id": "altar",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "placed",
+                "block": "knight_oath_altar"
+              },
+              {
+                "type": "counter",
+                "key": "knight.oath",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 30,
+          "icon": "isekai_mahou:knight_oath_altar",
+          "requires": [
+            "isekai_mahou:knight_oath_altar"
+          ]
+        },
+        {
+          "id": "engrave",
+          "condition": {
+            "type": "counter",
+            "key": "knight.rune_proc",
+            "min": 25
+          },
+          "xp": 40,
+          "icon": "isekai_mahou:runic_blade",
+          "requires": [
+            "isekai_mahou:knight_oath_altar"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "knight.oath",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:knight_oath_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:knight_oath_altar"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "knight.oath",
+                "min": 2
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 2
+              }
+            ]
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:knight_oath_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:knight_oath_altar"
+          ]
+        },
+        {
+          "id": "caliburn",
+          "condition": {
+            "type": "flag",
+            "flag": "knight.sword.knight_caliburn"
+          },
+          "xp": 300,
+          "icon": "minecraft:golden_sword",
+          "requires": [
+            "isekai_mahou:knight_oath_altar"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "knight.oath",
+                "min": 3
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 3
+              }
+            ]
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:knight_oath_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:knight_oath_altar"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "knight.oath",
+                "min": 4
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 4
+              }
+            ]
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:knight_oath_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:knight_oath_altar"
+          ]
+        },
+        {
+          "id": "four_swords",
+          "condition": {
+            "type": "counter",
+            "key": "knight.legend_swords",
+            "min": 3
+          },
+          "xp": 500,
+          "icon": "isekai_mahou:guardian_core_fire",
+          "requires": [
+            "isekai_mahou:knight_oath_altar"
+          ]
+        },
+        {
+          "id": "lake",
+          "condition": {
+            "type": "flag",
+            "flag": "knight.sword.knight_lake_sword"
+          },
+          "optional": true,
+          "xp": 600,
+          "icon": "minecraft:trident",
+          "requires": [
+            "isekai_mahou:knight_oath_altar"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "knight.oath",
+                "min": 5
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 5
+              }
+            ]
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:knight_oath_altar",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:knight_oath_altar"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_enchanter",
+      "path": "enchanter",
+      "order": 9,
+      "color": "#5FE3C0",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:enchanter_gauntlets",
+        "isekai_mahou:enchanter_codex",
+        "minecraft:enchanting_table"
+      ],
+      "steps": [
+        {
+          "id": "apply",
+          "condition": {
+            "type": "counter",
+            "key": "enchanter.applied",
+            "min": 25
+          },
+          "xp": 40,
+          "icon": "isekai_mahou:enchanter_gauntlets",
+          "requires": [
+            "isekai_mahou:enchanter_codex"
+          ]
+        },
+        {
+          "id": "anti_magic",
+          "condition": {
+            "type": "counter",
+            "key": "enchanter.nullified",
+            "min": 60
+          },
+          "xp": 60,
+          "icon": "minecraft:shield",
+          "requires": [
+            "isekai_mahou:enchanter_codex"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.enchanter",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:enchanter_codex",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:enchanter_codex"
+          ]
+        },
+        {
+          "id": "ally",
+          "condition": {
+            "type": "counter",
+            "key": "enchanter.ally_applied",
+            "min": 8
+          },
+          "xp": 80,
+          "icon": "minecraft:golden_apple",
+          "requires": [
+            "isekai_mahou:enchanter_codex"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.enchanter",
+                "min": 2
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 2
+              }
+            ]
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:enchanter_codex",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:enchanter_codex"
+          ]
+        },
+        {
+          "id": "overdrive",
+          "condition": {
+            "type": "counter",
+            "key": "enchanter.overdrive",
+            "min": 5
+          },
+          "xp": 100,
+          "icon": "minecraft:blaze_powder",
+          "requires": [
+            "isekai_mahou:enchanter_codex"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.enchanter",
+                "min": 3
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 3
+              }
+            ]
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:enchanter_codex",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:enchanter_codex"
+          ]
+        },
+        {
+          "id": "heavenly",
+          "condition": {
+            "type": "counter",
+            "key": "enchanter.restricted_kills",
+            "min": 30
+          },
+          "xp": 200,
+          "icon": "minecraft:netherite_chestplate",
+          "requires": [
+            "isekai_mahou:enchanter_codex"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.enchanter",
+                "min": 4
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 4
+              }
+            ]
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:enchanter_codex",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:enchanter_codex"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.enchanter",
+                "min": 5
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 5
+              }
+            ]
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:enchanter_codex",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:enchanter_codex"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_shinigami",
+      "path": "shinigami",
+      "order": 10,
+      "color": "#D9483B",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:zanpakuto",
+        "minecraft:netherite_sword"
+      ],
+      "steps": [
+        {
+          "id": "meditate",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "shinigami.meditations",
+                "min": 1
+              },
+              {
+                "type": "visit",
+                "dimension": "isekai_mahou:inner_world"
+              }
+            ]
+          },
+          "xp": 40,
+          "icon": "isekai_mahou:zanpakuto",
+          "requires": [
+            "isekai_mahou:zanpakuto"
+          ]
+        },
+        {
+          "id": "kido",
+          "condition": {
+            "type": "counter",
+            "key": "shinigami.kido",
+            "min": 10
+          },
+          "xp": 60,
+          "icon": "minecraft:blaze_rod",
+          "requires": [
+            "isekai_mahou:zanpakuto"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.shinigami",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:zanpakuto",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:zanpakuto"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.shinigami",
+                "min": 2
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 2
+              }
+            ]
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:zanpakuto",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:zanpakuto"
+          ]
+        },
+        {
+          "id": "name",
+          "condition": {
+            "type": "counter",
+            "key": "shinigami.archetype",
+            "min": 1
+          },
+          "xp": 150,
+          "icon": "minecraft:ender_eye",
+          "requires": [
+            "isekai_mahou:zanpakuto"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.shinigami",
+                "min": 3
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 3
+              }
+            ]
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:zanpakuto",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:zanpakuto"
+          ]
+        },
+        {
+          "id": "release",
+          "condition": {
+            "type": "counter",
+            "key": "shinigami.releases",
+            "min": 1
+          },
+          "xp": 200,
+          "icon": "isekai_mahou:zanpakuto",
+          "requires": [
+            "isekai_mahou:zanpakuto"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.shinigami",
+                "min": 4
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 4
+              }
+            ]
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:zanpakuto",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:zanpakuto"
+          ]
+        },
+        {
+          "id": "hollow",
+          "condition": {
+            "type": "visit",
+            "dimension": "isekai_mahou:hollow_world"
+          },
+          "optional": true,
+          "xp": 300,
+          "icon": "isekai_mahou:hollow_mask_fragment",
+          "requires": [
+            "isekai_mahou:zanpakuto"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.shinigami",
+                "min": 5
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 5
+              }
+            ]
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:zanpakuto",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:zanpakuto"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_quincy",
+      "path": "quincy",
+      "order": 11,
+      "color": "#A8DFFF",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:quincy_cross",
+        "isekai_mahou:quincy_seele_schneider",
+        "isekai_mahou:quincy_silver_tube"
+      ],
+      "steps": [
+        {
+          "id": "absorb",
+          "condition": {
+            "type": "counter",
+            "key": "quincy.absorbed",
+            "min": 15
+          },
+          "xp": 40,
+          "icon": "minecraft:spectral_arrow",
+          "requires": [
+            "isekai_mahou:quincy_cross"
+          ]
+        },
+        {
+          "id": "bow",
+          "condition": {
+            "type": "counter",
+            "key": "quincy.kills",
+            "min": 20
+          },
+          "xp": 40,
+          "icon": "isekai_mahou:quincy_cross",
+          "requires": [
+            "isekai_mahou:quincy_cross"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.quincy",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:quincy_cross",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:quincy_cross"
+          ]
+        },
+        {
+          "id": "camp",
+          "condition": {
+            "type": "counter",
+            "key": "quincy.auswahlen",
+            "min": 1
+          },
+          "xp": 150,
+          "icon": "minecraft:white_banner",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:quincy_camp"
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:quincy_cross"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.quincy",
+                "min": 2
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 2
+              }
+            ]
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:quincy_cross",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:quincy_cross"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.quincy",
+                "min": 3
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 3
+              }
+            ]
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:quincy_cross",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:quincy_cross"
+          ]
+        },
+        {
+          "id": "letter",
+          "condition": {
+            "type": "counter",
+            "key": "quincy.letter",
+            "min": 1
+          },
+          "xp": 150,
+          "icon": "minecraft:writable_book",
+          "requires": [
+            "isekai_mahou:quincy_cross"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.quincy",
+                "min": 4
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 4
+              }
+            ]
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:quincy_cross",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:quincy_cross"
+          ]
+        },
+        {
+          "id": "reishi",
+          "condition": {
+            "type": "visit",
+            "dimension": "isekai_mahou:hollow_world"
+          },
+          "optional": true,
+          "xp": 300,
+          "icon": "isekai_mahou:reishi_crystal",
+          "requires": [
+            "isekai_mahou:quincy_cross"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.quincy",
+                "min": 5
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 5
+              }
+            ]
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:quincy_cross",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:quincy_cross"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_gunslinger",
+      "path": "gunslinger",
+      "order": 12,
+      "color": "#D9A441",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:mana_revolver",
+        "minecraft:fire_charge"
+      ],
+      "steps": [
+        {
+          "id": "hits",
+          "condition": {
+            "type": "counter",
+            "key": "gunslinger.hits",
+            "min": 60
+          },
+          "xp": 40,
+          "icon": "isekai_mahou:mana_bullet",
+          "requires": [
+            "isekai_mahou:mana_revolver"
+          ]
+        },
+        {
+          "id": "reload",
+          "condition": {
+            "type": "counter",
+            "key": "gunslinger.reloads",
+            "min": 15
+          },
+          "xp": 40,
+          "icon": "minecraft:gunpowder",
+          "requires": [
+            "isekai_mahou:mana_revolver"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "flag",
+                "flag": "gunslinger.rank.1"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank.gunslinger",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:mana_revolver",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:mana_revolver"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "flag",
+                "flag": "gunslinger.rank.2"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank.gunslinger",
+                "min": 2
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 2
+              }
+            ]
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:mana_revolver",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:mana_revolver"
+          ]
+        },
+        {
+          "id": "duel",
+          "condition": {
+            "type": "counter",
+            "key": "gunslinger.duel",
+            "min": 1
+          },
+          "xp": 250,
+          "icon": "minecraft:clock",
+          "requires": [
+            "isekai_mahou:mana_revolver"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "flag",
+                "flag": "gunslinger.rank.3"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank.gunslinger",
+                "min": 3
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 3
+              }
+            ]
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:mana_revolver",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:mana_revolver"
+          ]
+        },
+        {
+          "id": "longshots",
+          "condition": {
+            "type": "counter",
+            "key": "gunslinger.longshots",
+            "min": 40
+          },
+          "xp": 200,
+          "icon": "minecraft:spyglass",
+          "requires": [
+            "isekai_mahou:mana_revolver"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "flag",
+                "flag": "gunslinger.rank.4"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank.gunslinger",
+                "min": 4
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 4
+              }
+            ]
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:mana_revolver",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:mana_revolver"
+          ]
+        },
+        {
+          "id": "duel2",
+          "condition": {
+            "type": "counter",
+            "key": "gunslinger.duel2",
+            "min": 1
+          },
+          "xp": 400,
+          "icon": "minecraft:wither_skeleton_skull",
+          "requires": [
+            "isekai_mahou:mana_revolver"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "flag",
+                "flag": "gunslinger.rank.5"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank.gunslinger",
+                "min": 5
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 5
+              }
+            ]
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:mana_revolver",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:mana_revolver"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_ranger",
+      "path": "ranger",
+      "order": 13,
+      "color": "#6BCB5A",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:ranger_bow",
+        "minecraft:arrow",
+        "minecraft:bone"
+      ],
+      "steps": [
+        {
+          "id": "pack",
+          "condition": {
+            "type": "counter",
+            "key": "ranger.companion_kill",
+            "min": 10
+          },
+          "xp": 40,
+          "icon": "minecraft:bone",
+          "requires": [
+            "isekai_mahou:ranger_bow"
+          ]
+        },
+        {
+          "id": "arrows",
+          "condition": {
+            "type": "counter",
+            "key": "ranger.arrow_kill",
+            "min": 25
+          },
+          "xp": 40,
+          "icon": "minecraft:arrow",
+          "requires": [
+            "isekai_mahou:ranger_bow"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "flag",
+                "flag": "ranger.rank.1"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank.ranger",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:ranger_bow",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ranger_bow"
+          ]
+        },
+        {
+          "id": "mark",
+          "condition": {
+            "type": "counter",
+            "key": "ranger.mark_kill",
+            "min": 20
+          },
+          "xp": 80,
+          "icon": "minecraft:target",
+          "requires": [
+            "isekai_mahou:ranger_bow"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "flag",
+                "flag": "ranger.rank.2"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank.ranger",
+                "min": 2
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 2
+              }
+            ]
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:ranger_bow",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ranger_bow"
+          ]
+        },
+        {
+          "id": "ride",
+          "condition": {
+            "type": "counter",
+            "key": "ranger.ride_dist",
+            "min": 1500
+          },
+          "xp": 100,
+          "icon": "minecraft:saddle",
+          "requires": [
+            "isekai_mahou:ranger_bow"
+          ]
+        },
+        {
+          "id": "prey",
+          "condition": {
+            "type": "counter",
+            "key": "ranger.great_prey",
+            "min": 3
+          },
+          "xp": 150,
+          "icon": "minecraft:dragon_head",
+          "requires": [
+            "isekai_mahou:ranger_bow"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "flag",
+                "flag": "ranger.rank.3"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank.ranger",
+                "min": 3
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 3
+              }
+            ]
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:ranger_bow",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ranger_bow"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "flag",
+                "flag": "ranger.rank.4"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank.ranger",
+                "min": 4
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 4
+              }
+            ]
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:ranger_bow",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ranger_bow"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "flag",
+                "flag": "ranger.rank.5"
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank.ranger",
+                "min": 5
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 5
+              }
+            ]
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:ranger_bow",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ranger_bow"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_gambler",
+      "path": "gambler",
+      "order": 14,
+      "color": "#E04A8C",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:gambler_deck",
+        "isekai_mahou:casino_chip",
+        "isekai_mahou:gambler_card"
+      ],
+      "steps": [
+        {
+          "id": "rolls",
+          "condition": {
+            "type": "counter",
+            "key": "gambler.rolls",
+            "min": 40
+          },
+          "xp": 40,
+          "icon": "isekai_mahou:gambler_deck",
+          "requires": [
+            "isekai_mahou:gambler_deck"
+          ]
+        },
+        {
+          "id": "cards",
+          "condition": {
+            "type": "counter",
+            "key": "gambler.card_hit",
+            "min": 25
+          },
+          "xp": 40,
+          "icon": "isekai_mahou:gambler_card",
+          "requires": [
+            "isekai_mahou:gambler_deck"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "gambler.rank",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:casino_chip",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:gambler_deck"
+          ]
+        },
+        {
+          "id": "jackpot",
+          "condition": {
+            "type": "counter",
+            "key": "gambler.jackpot",
+            "min": 2
+          },
+          "xp": 150,
+          "icon": "minecraft:gold_block",
+          "requires": [
+            "isekai_mahou:gambler_deck"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "gambler.rank",
+                "min": 2
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 2
+              }
+            ]
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:casino_chip",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:gambler_deck"
+          ]
+        },
+        {
+          "id": "lucky",
+          "condition": {
+            "type": "counter",
+            "key": "gambler.lucky_kill",
+            "min": 40
+          },
+          "xp": 150,
+          "icon": "minecraft:rabbit_foot",
+          "requires": [
+            "isekai_mahou:gambler_deck"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "gambler.rank",
+                "min": 3
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 3
+              }
+            ]
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:casino_chip",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:gambler_deck"
+          ]
+        },
+        {
+          "id": "casino",
+          "condition": {
+            "type": "counter",
+            "key": "gambler.casino",
+            "min": 3
+          },
+          "xp": 250,
+          "icon": "minecraft:emerald_block",
+          "requires": [
+            "isekai_mahou:gambler_deck"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "gambler.rank",
+                "min": 4
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 4
+              }
+            ]
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:casino_chip",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:gambler_deck"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "gambler.rank",
+                "min": 5
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 5
+              }
+            ]
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:casino_chip",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:gambler_deck"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "class_steelball",
+      "path": "steelball",
+      "order": 15,
+      "color": "#B4C0CC",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:steel_ball",
+        "isekai_mahou:steelball_saint_compass",
+        "isekai_mahou:steelball_mentor_letter"
+      ],
+      "steps": [
+        {
+          "id": "mentor",
+          "condition": {
+            "type": "flag",
+            "flag": "steelball.mentor_met"
+          },
+          "xp": 30,
+          "icon": "isekai_mahou:steelball_mentor_letter",
+          "requires": [
+            "isekai_mahou:steel_ball"
+          ]
+        },
+        {
+          "id": "rank_1",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.steelball",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:steel_ball",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:steel_ball"
+          ]
+        },
+        {
+          "id": "parts2",
+          "condition": {
+            "type": "counter",
+            "key": "steelball.parts",
+            "min": 2
+          },
+          "xp": 150,
+          "icon": "isekai_mahou:steelball_saint_compass",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:steelball_saint_tomb",
+                "unless": {
+                  "type": "counter",
+                  "key": "steelball.parts",
+                  "min": 9
+                }
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:steel_ball"
+          ]
+        },
+        {
+          "id": "rank_2",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.steelball",
+                "min": 2
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 2
+              }
+            ]
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:steel_ball",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:steel_ball"
+          ]
+        },
+        {
+          "id": "parts4",
+          "condition": {
+            "type": "counter",
+            "key": "steelball.parts",
+            "min": 3
+          },
+          "xp": 200,
+          "icon": "isekai_mahou:steelball_saint_compass",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:steelball_saint_tomb",
+                "unless": {
+                  "type": "counter",
+                  "key": "steelball.parts",
+                  "min": 9
+                }
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:steel_ball"
+          ]
+        },
+        {
+          "id": "rank_3",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.steelball",
+                "min": 3
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 3
+              }
+            ]
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:steel_ball",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 8
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:steel_ball"
+          ]
+        },
+        {
+          "id": "duel",
+          "condition": {
+            "type": "counter",
+            "key": "steelball.mentor_duel",
+            "min": 1
+          },
+          "xp": 400,
+          "icon": "isekai_mahou:steel_ball",
+          "requires": [
+            "isekai_mahou:steel_ball"
+          ]
+        },
+        {
+          "id": "rank_4",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.steelball",
+                "min": 4
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 4
+              }
+            ]
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:steel_ball",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 10
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:steel_ball"
+          ]
+        },
+        {
+          "id": "parts8",
+          "condition": {
+            "type": "counter",
+            "key": "steelball.parts",
+            "min": 6
+          },
+          "xp": 400,
+          "icon": "isekai_mahou:steelball_saint_compass",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:steelball_saint_tomb",
+                "unless": {
+                  "type": "counter",
+                  "key": "steelball.parts",
+                  "min": 9
+                }
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:steel_ball"
+          ]
+        },
+        {
+          "id": "rank_5",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "ritual_rank.steelball",
+                "min": 5
+              },
+              {
+                "type": "counter",
+                "key": "ritual_rank",
+                "min": 5
+              }
+            ]
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:steel_ball",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 12
+              },
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:steel_ball"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    }
+  ]
+}

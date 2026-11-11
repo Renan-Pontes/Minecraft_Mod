@@ -1,0 +1,22 @@
+{
+  "glyph.isekai_mahou.beam": "Feixe",
+  "glyph.isekai_mahou.beam.desc": "Dispara um raio de luz instantâneo de até 24 blocos. Perfurar atravessa alvos, Dividir abre feixes em leque e Ricochete reflete nas paredes. Num programa, sai do ponto atingido; Ao Terminar nasce no fim do raio se ele não acertar nada.",
+  "glyph.isekai_mahou.cone": "Cone",
+  "glyph.isekai_mahou.cone.desc": "Solta um leque de 60° à sua frente que atinge tudo o que estiver nele (6 blocos; Expandir alcança mais longe e mais aberto). Num programa, abre a partir do ponto atingido; com Saltar, avança até o próximo inimigo.",
+  "glyph.isekai_mahou.slash": "Corte",
+  "glyph.isekai_mahou.slash.desc": "Um arco de lâmina de 120° a 3,5 blocos que acerta todos no arco. Dividir encadeia golpes extras em X. Num programa, a lâmina surge no ponto atingido; com Saltar, voa até o próximo inimigo.",
+  "glyph.isekai_mahou.nova": "Nova",
+  "glyph.isekai_mahou.nova.desc": "Explode em volta de você, atingindo tudo num raio de 4 blocos com uma onda de choque. Num programa (depois de Ao Acertar, Ao Terminar...), explode no ponto atingido; com Saltar, cai no próximo inimigo.",
+  "glyph.isekai_mahou.wave": "Onda",
+  "glyph.isekai_mahou.wave.desc": "Uma onda que corre pelo chão na direção do olhar, sobe degraus e atinge uma vez cada criatura no caminho. Expandir a deixa mais larga. Num programa, nasce no ponto atingido e segue na mesma direção.",
+  "glyph.isekai_mahou.fall": "Queda",
+  "glyph.isekai_mahou.fall.desc": "Faz a magia cair do céu como um meteoro onde você mira (até 48 blocos), explodindo numa área de 3 blocos. Num programa, cai sobre o ponto atingido; Ao Terminar dispara quando o meteoro bate no chão.",
+  "glyph.isekai_mahou.rain": "Chuva",
+  "glyph.isekai_mahou.rain.desc": "Forma uma nuvem mágica sobre o ponto mirado: por 3 segundos, vários impactos pequenos caem ao acaso num raio de 5 blocos. Num programa, a nuvem se forma sobre o ponto atingido; Ao Acertar dispara quando uma gota atinge uma criatura.",
+  "glyph.isekai_mahou.mark": "Mira",
+  "glyph.isekai_mahou.mark.desc": "Marca a criatura na mira (até 32 blocos), que passa a brilhar; 2 segundos depois a magia cai sobre ela, onde quer que esteja. Num programa, marca a criatura no ponto atingido (ou a próxima na mesma direção); com Saltar, a marca pula de inimigo em inimigo.",
+  "entity.isekai_mahou.spell_wave": "Onda Mágica",
+  "entity.isekai_mahou.spell_falling": "Meteoro Mágico",
+  "entity.isekai_mahou.spell_beam": "Feixe Mágico",
+  "message.isekai_mahou.forms_a.mark_no_target": "Nada na mira para marcar."
+}

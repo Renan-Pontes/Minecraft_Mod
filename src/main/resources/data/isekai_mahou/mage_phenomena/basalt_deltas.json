@@ -1,0 +1,14 @@
+{
+  "category": "biome",
+  "elements": [
+    "magma"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:basalt"
+  ],
+  "order": 59,
+  "biomes": [
+    "minecraft:basalt_deltas"
+  ]
+}

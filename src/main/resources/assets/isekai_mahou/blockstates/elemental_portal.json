@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "isekai_mahou:block/elemental_portal_ns"
+    },
+    "axis=z": {
+      "model": "isekai_mahou:block/elemental_portal_ew"
+    }
+  }
+}

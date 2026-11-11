@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "CKC",
+    "L L",
+    "C C"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:cyan_wool"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "K": {
+      "item": "minecraft:lapis_lazuli"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:enchanter_novice_leggings",
+    "count": 1
+  }
+}

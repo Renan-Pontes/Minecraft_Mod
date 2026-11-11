@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:bone_meal"
+    },
+    {
+      "item": "minecraft:rotten_flesh"
+    },
+    {
+      "item": "minecraft:gravel"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:witch_grave_dust",
+    "count": 2
+  }
+}

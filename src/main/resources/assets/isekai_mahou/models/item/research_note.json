@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "isekai_mahou:item/research_note",
+    "layer1": "isekai_mahou:item/research_note_rune"
+  }
+}

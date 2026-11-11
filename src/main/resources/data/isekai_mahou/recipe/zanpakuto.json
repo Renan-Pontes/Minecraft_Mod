@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "  I",
+    " I ",
+    "SE "
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_shadow"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:zanpakuto",
+    "count": 1
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_archmage_leggings",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/archmage/leggings"
+    },
+    {
+      "item": "minecraft:blue_wool"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:knight_archmage_leggings",
+    "count": 1
+  }
+}

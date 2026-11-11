@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "isekai_mahou:guardian_core_light"
+  },
+  "base": [
+    {
+      "item": "isekai_mahou:runic_blade_t3"
+    }
+  ],
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "result": {
+    "id": "isekai_mahou:runic_blade_t4",
+    "count": 1
+  }
+}

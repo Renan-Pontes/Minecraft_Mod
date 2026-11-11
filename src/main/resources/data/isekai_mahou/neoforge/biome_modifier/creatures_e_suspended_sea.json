@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#isekai_mahou:creatures_e/suspended_sea",
+  "spawners": [
+    {
+      "type": "isekai_mahou:greater_water_elemental",
+      "weight": 30,
+      "minCount": 1,
+      "maxCount": 2
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "values": [
+    "isekai_mahou:angel_sentinel",
+    "isekai_mahou:cherub",
+    "isekai_mahou:crystal_golem",
+    {
+      "id": "isekai_mahou:seraph",
+      "required": false
+    }
+  ]
+}

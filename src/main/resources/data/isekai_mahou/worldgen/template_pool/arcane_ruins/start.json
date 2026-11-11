@@ -1,0 +1,32 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 3,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:arcane_ruins/circle",
+        "processors": "isekai_mahou:arcane_ruins_decay",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:arcane_ruins/arch",
+        "processors": "isekai_mahou:arcane_ruins_decay",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:arcane_ruins/study",
+        "processors": "isekai_mahou:arcane_ruins_decay",
+        "projection": "rigid"
+      }
+    }
+  ]
+}

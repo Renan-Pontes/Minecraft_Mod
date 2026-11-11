@@ -1,0 +1,25 @@
+{
+  "rank": "D",
+  "category": "hunt",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "minecraft:witch",
+        "isekai_mahou:cultist"
+      ],
+      "count": 6,
+      "label": "guild.isekai_mahou.target.v08.witches"
+    }
+  ],
+  "rewards": {
+    "coins": 10,
+    "xp": 120,
+    "glyph": "random",
+    "reputation": {
+      "church": 25
+    }
+  },
+  "faction": "church",
+  "standing": "friendly"
+}

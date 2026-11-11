@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou_armory",
+  "pattern": [
+    " GC",
+    " SG",
+    "S  "
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "C": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:mage_staff_t1",
+    "count": 1
+  }
+}

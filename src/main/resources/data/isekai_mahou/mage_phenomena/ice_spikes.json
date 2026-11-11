@@ -1,0 +1,14 @@
+{
+  "category": "biome",
+  "elements": [
+    "ice"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:packed_ice"
+  ],
+  "order": 57,
+  "biomes": [
+    "minecraft:ice_spikes"
+  ]
+}

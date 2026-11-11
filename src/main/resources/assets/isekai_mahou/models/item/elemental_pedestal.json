@@ -1,0 +1,35 @@
+{
+  "parent": "isekai_mahou:block/elemental_pedestal_fire",
+  "overrides": [
+    {
+      "predicate": {
+        "isekai_mahou:element": 0.099
+      },
+      "model": "isekai_mahou:block/elemental_pedestal_water"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:element": 0.199
+      },
+      "model": "isekai_mahou:block/elemental_pedestal_earth"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:element": 0.299
+      },
+      "model": "isekai_mahou:block/elemental_pedestal_wind"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:element": 0.399
+      },
+      "model": "isekai_mahou:block/elemental_pedestal_light"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:element": 0.499
+      },
+      "model": "isekai_mahou:block/elemental_pedestal_shadow"
+    }
+  ]
+}

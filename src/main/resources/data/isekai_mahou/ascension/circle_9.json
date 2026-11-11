@@ -1,0 +1,32 @@
+{
+  "circle": 9,
+  "tribute": [
+    {
+      "type": "any_guardian_core",
+      "count": 2
+    },
+    {
+      "type": "item",
+      "item": "isekai_mahou:essence_arcane",
+      "count": 6
+    },
+    {
+      "type": "boss_trophy",
+      "count": 2,
+      "items": [
+        "isekai_mahou:swamp_hydra_heart",
+        "isekai_mahou:wyvern_king_horn",
+        "isekai_mahou:desert_basilisk_eye",
+        "isekai_mahou:ruin_colossus_core",
+        "isekai_mahou:false_hydra_heart"
+      ],
+      "bosses": [],
+      "fallback": [
+        {
+          "type": "any_guardian_core",
+          "count": 2
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "category": "creature",
+  "elements": [
+    "wind"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "isekai_mahou:sylph_spawn_egg",
+    "minecraft:feather"
+  ],
+  "order": 45,
+  "entities": [
+    "isekai_mahou:sylph"
+  ]
+}

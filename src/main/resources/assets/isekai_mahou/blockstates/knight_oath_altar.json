@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "isekai_mahou:block/knight_oath_altar"
+    },
+    "facing=east": {
+      "model": "isekai_mahou:block/knight_oath_altar",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "isekai_mahou:block/knight_oath_altar",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "isekai_mahou:block/knight_oath_altar",
+      "y": 270
+    }
+  }
+}

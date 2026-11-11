@@ -1,0 +1,7 @@
+{
+  "parent": "isekai_mahou:block/runic_pedestal",
+  "textures": {
+    "column": "isekai_mahou:block/runic_pedestal_column_active",
+    "top": "isekai_mahou:block/runic_pedestal_top_active"
+  }
+}

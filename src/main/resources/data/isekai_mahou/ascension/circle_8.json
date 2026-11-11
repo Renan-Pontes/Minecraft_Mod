@@ -1,0 +1,19 @@
+{
+  "circle": 8,
+  "tribute": [
+    {
+      "type": "any_guardian_core",
+      "count": 2
+    },
+    {
+      "type": "item",
+      "item": "isekai_mahou:essence_arcane",
+      "count": 6
+    },
+    {
+      "type": "item",
+      "item": "isekai_mahou:mana_crystal",
+      "count": 16
+    }
+  ]
+}

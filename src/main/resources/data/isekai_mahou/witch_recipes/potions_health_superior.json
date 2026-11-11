@@ -1,0 +1,22 @@
+{
+  "ingredients": [
+    "isekai_mahou:essence_light",
+    "minecraft:golden_apple",
+    "minecraft:ghast_tear",
+    "isekai_mahou:essence_light"
+  ],
+  "stirs": 4,
+  "heat": "high",
+  "moon_phases": [
+    0,
+    1,
+    7
+  ],
+  "result": {
+    "id": "isekai_mahou:health_potion_superior",
+    "count": 2
+  },
+  "xp": 16,
+  "color": "#B5122F",
+  "element": "light"
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CMC",
+    "LPW",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "L": {
+      "item": "minecraft:lava_bucket"
+    },
+    "W": {
+      "item": "minecraft:water_bucket"
+    },
+    "P": {
+      "item": "minecraft:iron_pickaxe"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:arcane_stone_generator",
+    "count": 1
+  }
+}

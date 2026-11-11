@@ -1,0 +1,45 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou_armory",
+  "pattern": [
+    "S S",
+    "GDG",
+    " C "
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:string"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "D": {
+      "item": "isekai_mahou:arcane_diamond"
+    },
+    "C": [
+      {
+        "item": "isekai_mahou:guardian_core_fire"
+      },
+      {
+        "item": "isekai_mahou:guardian_core_water"
+      },
+      {
+        "item": "isekai_mahou:guardian_core_earth"
+      },
+      {
+        "item": "isekai_mahou:guardian_core_wind"
+      },
+      {
+        "item": "isekai_mahou:guardian_core_light"
+      },
+      {
+        "item": "isekai_mahou:guardian_core_shadow"
+      }
+    ]
+  },
+  "result": {
+    "id": "isekai_mahou:archmage_sigil",
+    "count": 1
+  }
+}

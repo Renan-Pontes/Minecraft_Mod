@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BMB",
+    "BWB",
+    "BRB"
+  ],
+  "key": {
+    "B": {
+      "tag": "minecraft:stone_bricks"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "W": {
+      "item": "minecraft:water_bucket"
+    },
+    "R": {
+      "item": "minecraft:fishing_rod"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:magic_fish_pond",
+    "count": 1
+  }
+}

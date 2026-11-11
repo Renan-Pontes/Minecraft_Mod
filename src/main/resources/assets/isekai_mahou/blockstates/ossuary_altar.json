@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "isekai_mahou:block/ossuary_altar"
+    },
+    "lit=true": {
+      "model": "isekai_mahou:block/ossuary_altar_lit"
+    }
+  }
+}

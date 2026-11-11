@@ -1,0 +1,14 @@
+{
+  "category": "structure",
+  "elements": [
+    "shadow"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:dark_oak_log"
+  ],
+  "order": 84,
+  "structures": [
+    "minecraft:mansion"
+  ]
+}

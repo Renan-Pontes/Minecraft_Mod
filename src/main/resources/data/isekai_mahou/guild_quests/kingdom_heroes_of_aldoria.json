@@ -1,0 +1,41 @@
+{
+  "rank": "A",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "guild.kill_horde_city",
+      "count": 40,
+      "label": "guild.isekai_mahou.target.v08.horde_city",
+      "icon": "isekai_mahou:goblin_ear"
+    },
+    {
+      "type": "kill",
+      "entity": [
+        "isekai_mahou:goblin_king",
+        "isekai_mahou:orc_lord"
+      ],
+      "count": 1,
+      "label": "guild.isekai_mahou.target.v08.horde_lords"
+    }
+  ],
+  "rewards": {
+    "coins": 40,
+    "xp": 500,
+    "glyph": "random",
+    "items": [
+      {
+        "id": "minecraft:enchanted_golden_apple",
+        "count": 1
+      }
+    ],
+    "reputation": {
+      "kingdom": 100
+    }
+  },
+  "requires": [
+    "isekai_mahou:city_heart"
+  ],
+  "faction": "kingdom",
+  "standing": "exalted"
+}

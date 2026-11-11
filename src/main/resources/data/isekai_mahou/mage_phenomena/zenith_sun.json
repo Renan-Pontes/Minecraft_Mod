@@ -1,0 +1,17 @@
+{
+  "category": "sky",
+  "elements": [
+    "sun"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:sunflower"
+  ],
+  "order": 69,
+  "time": [
+    5000,
+    7000
+  ],
+  "sky": true,
+  "clear": true
+}

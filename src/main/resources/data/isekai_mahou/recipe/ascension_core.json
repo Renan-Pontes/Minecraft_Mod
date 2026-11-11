@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " E ",
+    "MAM",
+    "SSS"
+  ],
+  "key": {
+    "E": {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "S": {
+      "item": "minecraft:stone_bricks"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:ascension_core",
+    "count": 1
+  }
+}

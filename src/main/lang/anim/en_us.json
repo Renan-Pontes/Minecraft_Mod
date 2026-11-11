@@ -1,0 +1,13 @@
+{
+  "key.isekai_mahou.dodge": "Dodge (roll)",
+  "message.isekai_mahou.anim.dodge_hungry": "Too hungry to dodge!",
+  "isekai_mahou.configuration.dodgeEnabled": "Dodge enabled",
+  "isekai_mahou.configuration.dodgeCooldownTicks": "Dodge cooldown (ticks)",
+  "isekai_mahou.configuration.dodgeInvulnerableTicks": "Dodge invulnerability (ticks)",
+  "isekai_mahou.configuration.dodgeExhaustion": "Exhaustion per dodge",
+  "isekai_mahou.configuration.combatAnimations": "Combat animations (combos, dodge, guard)",
+  "isekai_mahou.configuration.spellGestures": "Spell casting gestures",
+  "isekai_mahou.configuration.firstPersonArms": "Animated arms in first person",
+  "isekai_mahou.configuration.doubleTapDodge": "Double-tap dodge (Back/Left/Right)",
+  "isekai_mahou.configuration.doubleTapWindowTicks": "Double-tap window (ticks)"
+}

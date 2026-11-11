@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#c:is_overworld",
+  "spawners": [
+    {
+      "type": "isekai_mahou:arcane_golem",
+      "weight": 2,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

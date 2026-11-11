@@ -1,0 +1,21 @@
+{
+  "rank": "F",
+  "category": "study",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "cast.water",
+      "count": 20,
+      "label": "guild.isekai_mahou.target.v08.cast_water",
+      "icon": "isekai_mahou:essence_water"
+    }
+  ],
+  "rewards": {
+    "coins": 4,
+    "xp": 40,
+    "reputation": {
+      "academy": 10
+    }
+  },
+  "faction": "academy"
+}

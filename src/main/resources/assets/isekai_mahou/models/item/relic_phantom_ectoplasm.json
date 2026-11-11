@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "isekai_mahou:item/relic_phantom_ectoplasm"
+  }
+}

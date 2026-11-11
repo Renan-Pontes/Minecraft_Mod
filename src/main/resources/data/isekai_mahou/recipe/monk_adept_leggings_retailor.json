@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_adept_leggings",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/adept/leggings"
+    },
+    {
+      "item": "minecraft:orange_wool"
+    },
+    {
+      "item": "minecraft:bamboo"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:monk_adept_leggings",
+    "count": 1
+  }
+}

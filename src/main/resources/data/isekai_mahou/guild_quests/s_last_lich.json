@@ -1,0 +1,16 @@
+{
+  "rank": "S",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:lich",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 70,
+    "xp": 900,
+    "points": 100
+  }
+}

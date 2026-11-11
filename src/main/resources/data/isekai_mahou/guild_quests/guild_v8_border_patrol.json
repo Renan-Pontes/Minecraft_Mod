@@ -1,0 +1,24 @@
+{
+  "rank": "C",
+  "category": "kill",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "guild.kill_horde_city",
+      "count": 15,
+      "label": "guild.isekai_mahou.target.v08.horde_city",
+      "icon": "isekai_mahou:goblin_ear"
+    }
+  ],
+  "rewards": {
+    "coins": 16,
+    "xp": 200,
+    "points": 24,
+    "reputation": {
+      "kingdom": 15
+    }
+  },
+  "requires": [
+    "isekai_mahou:city_heart"
+  ]
+}

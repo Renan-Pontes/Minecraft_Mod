@@ -1,0 +1,18 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "#c:is_desert",
+      "#minecraft:is_badlands"
+    ]
+  },
+  "spawners": [
+    {
+      "type": "isekai_mahou:basilisk",
+      "weight": 10,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

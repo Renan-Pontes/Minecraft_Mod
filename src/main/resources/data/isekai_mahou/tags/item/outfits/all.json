@@ -1,0 +1,20 @@
+{
+  "values": [
+    "#isekai_mahou:outfits/helmet",
+    "#isekai_mahou:outfits/chestplate",
+    "#isekai_mahou:outfits/leggings",
+    "#isekai_mahou:outfits/boots",
+    "#isekai_mahou:outfits/adept/helmet",
+    "#isekai_mahou:outfits/adept/chestplate",
+    "#isekai_mahou:outfits/adept/leggings",
+    "#isekai_mahou:outfits/adept/boots",
+    "#isekai_mahou:outfits/master/helmet",
+    "#isekai_mahou:outfits/master/chestplate",
+    "#isekai_mahou:outfits/master/leggings",
+    "#isekai_mahou:outfits/master/boots",
+    "#isekai_mahou:outfits/archmage/helmet",
+    "#isekai_mahou:outfits/archmage/chestplate",
+    "#isekai_mahou:outfits/archmage/leggings",
+    "#isekai_mahou:outfits/archmage/boots"
+  ]
+}

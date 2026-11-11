@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PEP",
+    "GBG",
+    "PEP"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "E": {
+      "item": "minecraft:emerald_block"
+    },
+    "G": {
+      "item": "minecraft:gold_block"
+    },
+    "B": {
+      "item": "minecraft:writable_book"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:founding_charter",
+    "count": 1
+  }
+}

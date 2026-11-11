@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_chestplate",
+  "pattern": [
+    "O O",
+    "OBO",
+    "OOO"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:orange_wool"
+    },
+    "B": {
+      "item": "minecraft:brown_wool"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:monk_chestplate",
+    "count": 1
+  }
+}

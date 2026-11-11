@@ -1,0 +1,15 @@
+{
+  "category": "creature",
+  "elements": [
+    "water"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "isekai_mahou:undine_spawn_egg",
+    "minecraft:heart_of_the_sea"
+  ],
+  "order": 44,
+  "entities": [
+    "isekai_mahou:undine"
+  ]
+}

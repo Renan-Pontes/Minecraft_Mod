@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:blue_dye"
+    },
+    {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    {
+      "item": "minecraft:wheat_seeds"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:blueprint_farm_plot",
+    "count": 1
+  }
+}

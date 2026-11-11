@@ -1,0 +1,20 @@
+{
+  "rank": "S",
+  "category": "trial",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "minecraft:ender_dragon",
+        "minecraft:warden"
+      ],
+      "count": 1,
+      "label": "guild.isekai_mahou.target.legends"
+    }
+  ],
+  "rewards": {
+    "coins": 100,
+    "xp": 1200
+  },
+  "trial": true
+}

@@ -1,0 +1,21 @@
+{
+  "glyph.isekai_mahou.link_hit": "On Hit",
+  "glyph.isekai_mahou.link_hit.desc": "Links two stages: the next form starts where the previous one hit, in the same direction.",
+  "glyph.isekai_mahou.link_end": "On End",
+  "glyph.isekai_mahou.link_end.desc": "Links two stages: the next form starts where the previous one ended (projectile faded, zone expired, beam reached its end).",
+  "glyph.isekai_mahou.link_kill": "On Kill",
+  "glyph.isekai_mahou.link_kill.desc": "Links two stages: the next form starts where an enemy died to the previous one's damage.",
+  "glyph.isekai_mahou.link_leap": "Leap",
+  "glyph.isekai_mahou.link_leap.desc": "Ends the spell: on hit, it repeats from the target toward the nearest enemy not hit yet. Each leap costs 15% of the spell's mana (min. 2); up to 64 leaps.",
+  "glyph.isekai_mahou.relentless": "Relentless",
+  "glyph.isekai_mahou.relentless.desc": "Chain keeps jumping (range 8, 8% weaker per jump) while there is another enemy and you have mana to pay for the jump.",
+
+  "spell_error.isekai_mahou.link_first": "%s must come after a form.",
+  "spell_error.isekai_mahou.link_needs_form": "A form must come after %s (e.g. Projectile, Touch).",
+  "spell_error.isekai_mahou.form_needs_link": "To use the form %s, put a link before it to connect it to the previous stage (e.g. On Hit).",
+  "spell_error.isekai_mahou.stage_form_not_allowed": "The form %s can't be a stage of a programmed spell (nor use Leap).",
+  "spell_error.isekai_mahou.stage_no_effect": "Stage %s needs at least one effect.",
+  "spell_error.isekai_mahou.leap_not_last": "Leap must be the last glyph of the spell.",
+  "spell_error.isekai_mahou.too_many_elements": "Too many elements: %s (your Circle allows %s).",
+  "spell_error.isekai_mahou.too_many_glyphs": "Too many glyphs: %s (your level and Circle allow %s)."
+}

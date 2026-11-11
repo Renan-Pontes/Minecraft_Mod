@@ -1,0 +1,16 @@
+{
+  "ingredients": [
+    "minecraft:kelp",
+    "isekai_mahou:witch_toad_eye",
+    "minecraft:pufferfish"
+  ],
+  "stirs": 3,
+  "heat": "low",
+  "result": {
+    "id": "isekai_mahou:witch_elixir_tides",
+    "count": 3
+  },
+  "xp": 10,
+  "color": "#2FB8C9",
+  "element": "water"
+}

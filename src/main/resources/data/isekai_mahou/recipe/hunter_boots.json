@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_boots",
+  "pattern": [
+    "L L",
+    "H H"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "H": {
+      "item": "minecraft:rabbit_hide"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:hunter_boots",
+    "count": 1
+  }
+}

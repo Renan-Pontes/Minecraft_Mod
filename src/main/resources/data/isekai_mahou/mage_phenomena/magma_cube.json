@@ -1,0 +1,14 @@
+{
+  "category": "creature",
+  "elements": [
+    "magma"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:magma_cream"
+  ],
+  "order": 27,
+  "entities": [
+    "minecraft:magma_cube"
+  ]
+}

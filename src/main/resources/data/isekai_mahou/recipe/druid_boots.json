@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_boots",
+  "pattern": [
+    "S S",
+    "H H"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "H": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:druid_boots",
+    "count": 1
+  }
+}

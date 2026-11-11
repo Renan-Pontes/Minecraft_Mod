@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#c:is_swamp",
+  "spawners": [
+    {
+      "type": "isekai_mahou:lizardman",
+      "weight": 30,
+      "minCount": 2,
+      "maxCount": 4
+    }
+  ]
+}

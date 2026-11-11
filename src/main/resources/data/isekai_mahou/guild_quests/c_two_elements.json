@@ -1,0 +1,16 @@
+{
+  "rank": "C",
+  "category": "chamber",
+  "objectives": [
+    {
+      "type": "trial_clear",
+      "count": 2,
+      "distinct": true
+    }
+  ],
+  "rewards": {
+    "coins": 19,
+    "xp": 230,
+    "points": 34
+  }
+}

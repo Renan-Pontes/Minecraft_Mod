@@ -1,0 +1,18 @@
+{
+  "rank": "S",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:twilight_herald",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 100,
+    "xp": 1400,
+    "points": 130,
+    "glyph": "random",
+    "glyph_count": 2
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#isekai_mahou:creatures_e/abyssal_depths",
+  "spawners": [
+    {
+      "type": "isekai_mahou:void_crawler",
+      "weight": 40,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "isekai_mahou:young_kraken",
+      "weight": 15,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

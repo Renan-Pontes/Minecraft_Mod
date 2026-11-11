@@ -1,0 +1,17 @@
+{
+  "ingredients": [
+    "minecraft:slime_ball",
+    "isekai_mahou:witch_mandrake_root",
+    "minecraft:mud",
+    "isekai_mahou:witch_toad_eye"
+  ],
+  "stirs": 4,
+  "heat": "medium",
+  "result": {
+    "id": "isekai_mahou:bottled_curse_mire",
+    "count": 3
+  },
+  "xp": 12,
+  "color": "#5B4632",
+  "element": "shadow"
+}

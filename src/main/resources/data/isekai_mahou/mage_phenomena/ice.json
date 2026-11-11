@@ -1,0 +1,16 @@
+{
+  "category": "block",
+  "elements": [
+    "water",
+    "wind"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:packed_ice"
+  ],
+  "order": 4,
+  "blocks": [
+    "minecraft:ice",
+    "minecraft:packed_ice"
+  ]
+}

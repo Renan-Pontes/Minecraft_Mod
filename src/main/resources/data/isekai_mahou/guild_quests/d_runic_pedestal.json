@@ -1,0 +1,28 @@
+{
+  "rank": "D",
+  "category": "task",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "pedestal.cast",
+      "count": 30,
+      "label": "guild.isekai_mahou.target.pedestal_casts",
+      "icon": "isekai_mahou:runic_pedestal"
+    }
+  ],
+  "rewards": {
+    "coins": 14,
+    "xp": 140,
+    "points": 22,
+    "items": [
+      {
+        "id": "isekai_mahou:mana_crystal",
+        "count": 2
+      }
+    ]
+  },
+  "repeatable": false,
+  "requires": [
+    "isekai_mahou:runic_pedestal"
+  ]
+}

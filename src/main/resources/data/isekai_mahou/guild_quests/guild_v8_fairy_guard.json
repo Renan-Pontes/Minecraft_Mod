@@ -1,0 +1,22 @@
+{
+  "rank": "C",
+  "category": "nature",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "guild.kill_horde_forest",
+      "count": 25,
+      "label": "guild.isekai_mahou.target.v08.horde_forest",
+      "icon": "isekai_mahou:goblin_ear"
+    }
+  ],
+  "rewards": {
+    "coins": 16,
+    "xp": 200,
+    "points": 24,
+    "glyph": "random",
+    "reputation": {
+      "wildfolk": 35
+    }
+  }
+}

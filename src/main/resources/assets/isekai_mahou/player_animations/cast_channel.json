@@ -1,0 +1,88 @@
+{
+  "version": 3,
+  "name": "cast_channel",
+  "author": "Isekai Mahou",
+  "description": "Bracos erguidos durante a conjuracao",
+  "emote": {
+    "beginTick": 0,
+    "endTick": 40,
+    "stopTick": 44,
+    "degrees": true,
+    "nsfw": false,
+    "easeBeforeKeyframe": true,
+    "moves": [
+      {
+        "tick": 0,
+        "easing": "LINEAR",
+        "rightArm": {
+          "pitch": -60,
+          "yaw": 0,
+          "roll": 10
+        },
+        "leftArm": {
+          "pitch": -60,
+          "yaw": 0,
+          "roll": -10
+        }
+      },
+      {
+        "tick": 6,
+        "easing": "EASEOUTQUAD",
+        "rightArm": {
+          "pitch": -124,
+          "yaw": -12,
+          "roll": 18
+        },
+        "leftArm": {
+          "pitch": -124,
+          "yaw": 12,
+          "roll": -18
+        }
+      },
+      {
+        "tick": 8,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -125,
+          "yaw": -12,
+          "roll": 18
+        },
+        "leftArm": {
+          "pitch": -125,
+          "yaw": 12,
+          "roll": -18
+        }
+      },
+      {
+        "tick": 24,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -133,
+          "yaw": -8,
+          "roll": 25
+        },
+        "leftArm": {
+          "pitch": -133,
+          "yaw": 8,
+          "roll": -25
+        }
+      },
+      {
+        "tick": 40,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -125,
+          "yaw": -12,
+          "roll": 18
+        },
+        "leftArm": {
+          "pitch": -125,
+          "yaw": 12,
+          "roll": -18
+        }
+      }
+    ],
+    "isLoop": true,
+    "returnTick": 8
+  }
+}

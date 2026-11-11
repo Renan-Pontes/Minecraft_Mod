@@ -1,0 +1,32 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "textures": {
+    "particle": "isekai_mahou:item/lute_t3"
+  },
+  "base": {
+    "parent": "isekai_mahou:item/armory/lute_t3_held"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": "isekai_mahou:item/lute_t3"
+      }
+    },
+    "fixed": {
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": "isekai_mahou:item/lute_t3"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "isekai_mahou:playing": 1
+      },
+      "model": "isekai_mahou:item/armory/lute_t3_playing"
+    }
+  ]
+}

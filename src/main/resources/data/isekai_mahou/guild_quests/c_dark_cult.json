@@ -1,0 +1,16 @@
+{
+  "rank": "C",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:cultist",
+      "count": 5
+    }
+  ],
+  "rewards": {
+    "coins": 16,
+    "xp": 200,
+    "points": 30,
+    "glyph": "random"
+  }
+}

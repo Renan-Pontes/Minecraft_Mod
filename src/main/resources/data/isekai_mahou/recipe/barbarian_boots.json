@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_boots",
+  "pattern": [
+    "H H",
+    "L L"
+  ],
+  "key": {
+    "H": {
+      "item": "minecraft:rabbit_hide"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:barbarian_boots",
+    "count": 1
+  }
+}

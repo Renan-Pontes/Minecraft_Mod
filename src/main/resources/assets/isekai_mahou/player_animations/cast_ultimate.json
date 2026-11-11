@@ -1,0 +1,168 @@
+{
+  "version": 3,
+  "name": "cast_ultimate",
+  "author": "Isekai Mahou",
+  "description": "Pose dramatica de magia suprema",
+  "emote": {
+    "beginTick": 0,
+    "endTick": 36,
+    "stopTick": 40,
+    "degrees": true,
+    "nsfw": false,
+    "easeBeforeKeyframe": true,
+    "moves": [
+      {
+        "tick": 0,
+        "easing": "LINEAR",
+        "rightArm": {
+          "pitch": -30,
+          "yaw": 0,
+          "roll": 10
+        },
+        "leftArm": {
+          "pitch": -30,
+          "yaw": 0,
+          "roll": -10
+        },
+        "head": {
+          "pitch": 0
+        },
+        "rightLeg": {
+          "pitch": 0,
+          "roll": 0
+        },
+        "leftLeg": {
+          "pitch": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 8,
+        "easing": "EASEOUTQUAD",
+        "rightArm": {
+          "pitch": -165,
+          "yaw": 0,
+          "roll": 28
+        },
+        "leftArm": {
+          "pitch": -165,
+          "yaw": 0,
+          "roll": -28
+        },
+        "head": {
+          "pitch": -28
+        },
+        "rightLeg": {
+          "pitch": 0,
+          "roll": 9
+        },
+        "leftLeg": {
+          "pitch": 0,
+          "roll": -9
+        }
+      },
+      {
+        "tick": 14,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -172,
+          "yaw": 0,
+          "roll": 20
+        },
+        "leftArm": {
+          "pitch": -172,
+          "yaw": 0,
+          "roll": -20
+        },
+        "head": {
+          "pitch": -32
+        },
+        "rightLeg": {
+          "pitch": 0,
+          "roll": 10
+        },
+        "leftLeg": {
+          "pitch": 0,
+          "roll": -10
+        }
+      },
+      {
+        "tick": 18,
+        "easing": "EASEOUTEXPO",
+        "rightArm": {
+          "pitch": -96,
+          "yaw": -14,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -96,
+          "yaw": 14,
+          "roll": 0
+        },
+        "head": {
+          "pitch": 4
+        },
+        "rightLeg": {
+          "pitch": -12,
+          "roll": 8
+        },
+        "leftLeg": {
+          "pitch": 14,
+          "roll": -8
+        }
+      },
+      {
+        "tick": 28,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -90,
+          "yaw": -12,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -90,
+          "yaw": 12,
+          "roll": 0
+        },
+        "head": {
+          "pitch": 0
+        },
+        "rightLeg": {
+          "pitch": -10,
+          "roll": 7
+        },
+        "leftLeg": {
+          "pitch": 12,
+          "roll": -7
+        }
+      },
+      {
+        "tick": 36,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -14,
+          "yaw": 0,
+          "roll": 5
+        },
+        "leftArm": {
+          "pitch": -14,
+          "yaw": 0,
+          "roll": -5
+        },
+        "head": {
+          "pitch": 0
+        },
+        "rightLeg": {
+          "pitch": 0,
+          "roll": 0
+        },
+        "leftLeg": {
+          "pitch": 0,
+          "roll": 0
+        }
+      }
+    ],
+    "isLoop": false,
+    "returnTick": 0
+  }
+}

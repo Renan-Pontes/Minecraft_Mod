@@ -1,0 +1,14 @@
+{
+  "category": "biome",
+  "elements": [
+    "nature"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:cocoa_beans"
+  ],
+  "order": 54,
+  "biomes": [
+    "#minecraft:is_jungle"
+  ]
+}

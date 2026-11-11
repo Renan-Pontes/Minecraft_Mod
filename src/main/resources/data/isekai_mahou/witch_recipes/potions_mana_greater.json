@@ -1,0 +1,16 @@
+{
+  "ingredients": [
+    "isekai_mahou:essence_arcane",
+    "minecraft:lapis_lazuli",
+    "minecraft:glow_berries"
+  ],
+  "stirs": 3,
+  "heat": "medium",
+  "result": {
+    "id": "isekai_mahou:mana_potion_greater",
+    "count": 3
+  },
+  "xp": 10,
+  "color": "#3C63F0",
+  "element": "water"
+}

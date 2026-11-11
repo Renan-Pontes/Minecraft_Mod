@@ -1,0 +1,21 @@
+{
+  "category": "boss",
+  "elements": [
+    "shadow",
+    "void"
+  ],
+  "rarity": "legendary",
+  "icon": [
+    "isekai_mahou:guardian_core_shadow"
+  ],
+  "order": 95,
+  "entities": [
+    "isekai_mahou:abyss_sovereign"
+  ],
+  "memory": [
+    "boss.isekai_mahou.abyss_sovereign",
+    "boss.abyss_sovereign",
+    "kill.isekai_mahou.abyss_sovereign"
+  ],
+  "repeatable": false
+}

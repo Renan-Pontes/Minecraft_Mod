@@ -1,0 +1,32 @@
+{
+  "fallback": "isekai_mahou:forgotten_crypt/dead_ends",
+  "elements": [
+    {
+      "weight": 3,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:forgotten_crypt/sarcophagus_room",
+        "processors": "isekai_mahou:forgotten_crypt_decay",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:forgotten_crypt/ossuary_room",
+        "processors": "isekai_mahou:forgotten_crypt_decay",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:forgotten_crypt/collapsed_room",
+        "processors": "isekai_mahou:forgotten_crypt_decay",
+        "projection": "rigid"
+      }
+    }
+  ]
+}

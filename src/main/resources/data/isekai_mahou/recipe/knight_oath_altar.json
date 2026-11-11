@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " S ",
+    "BEB",
+    "CCC"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:iron_sword"
+    },
+    "B": {
+      "item": "minecraft:stone_bricks"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_light"
+    },
+    "C": {
+      "item": "minecraft:chiseled_stone_bricks"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:knight_oath_altar",
+    "count": 1
+  }
+}

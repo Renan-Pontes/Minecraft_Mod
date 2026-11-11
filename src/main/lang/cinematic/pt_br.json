@@ -1,0 +1,15 @@
+{
+  "key.isekai_mahou.skip_cutscene": "Pular cutscene",
+  "cinematic.isekai_mahou.skip_hint": "[%s] Pular",
+  "cinematic.isekai_mahou.test_title": "Cena de Teste",
+  "cinematic.isekai_mahou.kind.ultimate": "ULTIMATE",
+  "cinematic.isekai_mahou.kind.domain": "EXPANSÃO DE DOMÍNIO",
+  "cinematic.isekai_mahou.kind.boss_intro": "CHEFE",
+  "cinematic.isekai_mahou.kind.boss_phase": "NOVA FASE",
+  "cinematic.isekai_mahou.kind.patron": "PATRONO",
+  "cinematic.isekai_mahou.kind.ascension": "ASCENSÃO",
+  "cinematic.isekai_mahou.kind.portal": "PORTAL",
+  "command.isekai_mahou.cinematic.cutscene": "Cutscene \"%s\" enviada.",
+  "command.isekai_mahou.cinematic.need_entity": "Este comando precisa ser executado por uma entidade viva (use \"execute as\").",
+  "command.isekai_mahou.cinematic.bad_style": "Estilo inválido. Use um destes: %s"
+}

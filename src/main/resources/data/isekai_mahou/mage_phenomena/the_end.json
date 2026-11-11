@@ -1,0 +1,15 @@
+{
+  "category": "dimension",
+  "elements": [
+    "void",
+    "astral"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:end_stone"
+  ],
+  "order": 72,
+  "dimensions": [
+    "minecraft:the_end"
+  ]
+}

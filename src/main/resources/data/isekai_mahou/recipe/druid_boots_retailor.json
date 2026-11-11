@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_boots",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/boots"
+    },
+    {
+      "item": "minecraft:green_wool"
+    },
+    {
+      "item": "minecraft:stick"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:druid_boots",
+    "count": 1
+  }
+}

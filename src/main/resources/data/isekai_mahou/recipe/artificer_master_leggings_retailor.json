@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_master_leggings",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/master/leggings"
+    },
+    {
+      "item": "minecraft:brown_wool"
+    },
+    {
+      "item": "minecraft:copper_ingot"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:artificer_master_leggings",
+    "count": 1
+  }
+}

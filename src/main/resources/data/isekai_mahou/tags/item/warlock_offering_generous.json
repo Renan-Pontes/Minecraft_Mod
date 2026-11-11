@@ -1,0 +1,23 @@
+{
+  "values": [
+    "minecraft:heart_of_the_sea",
+    "minecraft:echo_shard",
+    "minecraft:dragon_breath",
+    "minecraft:nether_star",
+    "minecraft:wither_rose",
+    "minecraft:lava_bucket",
+    "minecraft:shulker_shell",
+    {
+      "id": "isekai_mahou:guardian_core_fire",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:guardian_core_shadow",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:guardian_core_water",
+      "required": false
+    }
+  ]
+}

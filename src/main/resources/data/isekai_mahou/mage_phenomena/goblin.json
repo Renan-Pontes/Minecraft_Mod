@@ -1,0 +1,15 @@
+{
+  "category": "creature",
+  "elements": [
+    "earth"
+  ],
+  "rarity": "common",
+  "icon": [
+    "isekai_mahou:goblin_spawn_egg",
+    "minecraft:stone_sword"
+  ],
+  "order": 42,
+  "entities": [
+    "isekai_mahou:goblin"
+  ]
+}

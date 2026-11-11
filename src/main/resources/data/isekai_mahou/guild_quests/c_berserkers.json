@@ -1,0 +1,15 @@
+{
+  "rank": "C",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:orc_berserker",
+      "count": 4
+    }
+  ],
+  "rewards": {
+    "coins": 15,
+    "xp": 170,
+    "points": 28
+  }
+}

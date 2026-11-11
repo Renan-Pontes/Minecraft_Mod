@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_archmage_helmet",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/archmage/helmet"
+    },
+    {
+      "item": "minecraft:blue_wool"
+    },
+    {
+      "item": "minecraft:lapis_lazuli"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:mage_archmage_helmet",
+    "count": 1
+  }
+}

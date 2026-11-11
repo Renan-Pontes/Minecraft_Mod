@@ -1,0 +1,21 @@
+{
+  "category": "boss",
+  "elements": [
+    "earth"
+  ],
+  "rarity": "epic",
+  "icon": [
+    "isekai_mahou:goblin_king_spawn_egg",
+    "minecraft:golden_helmet"
+  ],
+  "order": 90,
+  "entities": [
+    "isekai_mahou:goblin_king"
+  ],
+  "memory": [
+    "boss.isekai_mahou.goblin_king",
+    "boss.goblin_king",
+    "kill.isekai_mahou.goblin_king"
+  ],
+  "repeatable": false
+}

@@ -1,0 +1,82 @@
+{
+  "has_precipitation": false,
+  "temperature": 2.0,
+  "downfall": 0.0,
+  "effects": {
+    "sky_color": 16747100,
+    "fog_color": 8007198,
+    "water_color": 14711354,
+    "water_fog_color": 5906448,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "music": {
+      "sound": "minecraft:music.nether.basalt_deltas",
+      "min_delay": 12000,
+      "max_delay": 24000,
+      "replace_current_music": false
+    },
+    "grass_color": 9071163,
+    "foliage_color": 10115626,
+    "particle": {
+      "options": {
+        "type": "minecraft:ash"
+      },
+      "probability": 0.04
+    },
+    "additions_sound": {
+      "sound": "minecraft:ambient.basalt_deltas.additions",
+      "tick_chance": 0.0111
+    }
+  },
+  "spawners": {
+    "monster": [
+      {
+        "type": "minecraft:magma_cube",
+        "weight": 20,
+        "minCount": 1,
+        "maxCount": 3
+      },
+      {
+        "type": "minecraft:blaze",
+        "weight": 6,
+        "minCount": 1,
+        "maxCount": 1
+      }
+    ],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "isekai_mahou:ep_ore_magma",
+      "isekai_mahou:ep_ore_iron",
+      "isekai_mahou:ep_ore_copper",
+      "isekai_mahou:ep_ore_gold"
+    ],
+    [],
+    [
+      "isekai_mahou:ep_lava_fall"
+    ],
+    [
+      "isekai_mahou:ep_ember_spires"
+    ],
+    []
+  ]
+}

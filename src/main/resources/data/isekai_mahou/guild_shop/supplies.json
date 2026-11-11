@@ -1,0 +1,197 @@
+{
+  "offers": [
+    {
+      "rank": "F",
+      "price": 1,
+      "item": {
+        "id": "minecraft:torch",
+        "count": 16
+      }
+    },
+    {
+      "rank": "F",
+      "price": 3,
+      "item": {
+        "id": "minecraft:bread",
+        "count": 6
+      }
+    },
+    {
+      "rank": "F",
+      "price": 2,
+      "item": {
+        "id": "minecraft:arrow",
+        "count": 16
+      }
+    },
+    {
+      "rank": "F",
+      "price": 3,
+      "item": {
+        "id": "minecraft:cooked_beef",
+        "count": 4
+      }
+    },
+    {
+      "rank": "F",
+      "price": 4,
+      "item": {
+        "id": "minecraft:potion",
+        "count": 1,
+        "potion": "minecraft:healing"
+      }
+    },
+    {
+      "rank": "E",
+      "price": 5,
+      "item": {
+        "id": "minecraft:potion",
+        "count": 1,
+        "potion": "minecraft:night_vision"
+      }
+    },
+    {
+      "rank": "E",
+      "price": 6,
+      "item": {
+        "id": "minecraft:iron_ingot",
+        "count": 4
+      }
+    },
+    {
+      "rank": "E",
+      "price": 6,
+      "item": {
+        "id": "minecraft:shield",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 6,
+      "item": {
+        "id": "minecraft:splash_potion",
+        "count": 1,
+        "potion": "minecraft:healing"
+      }
+    },
+    {
+      "rank": "D",
+      "price": 6,
+      "item": {
+        "id": "minecraft:potion",
+        "count": 1,
+        "potion": "minecraft:swiftness"
+      }
+    },
+    {
+      "rank": "D",
+      "price": 8,
+      "item": {
+        "id": "minecraft:potion",
+        "count": 1,
+        "potion": "minecraft:regeneration"
+      }
+    },
+    {
+      "rank": "D",
+      "price": 8,
+      "item": {
+        "id": "minecraft:potion",
+        "count": 1,
+        "potion": "minecraft:fire_resistance"
+      }
+    },
+    {
+      "rank": "D",
+      "price": 8,
+      "item": {
+        "id": "minecraft:ender_pearl",
+        "count": 2
+      }
+    },
+    {
+      "rank": "C",
+      "price": 10,
+      "item": {
+        "id": "minecraft:potion",
+        "count": 1,
+        "potion": "minecraft:strength"
+      }
+    },
+    {
+      "rank": "C",
+      "price": 10,
+      "item": {
+        "id": "minecraft:experience_bottle",
+        "count": 8
+      }
+    },
+    {
+      "rank": "C",
+      "price": 14,
+      "item": {
+        "id": "minecraft:golden_apple",
+        "count": 1
+      }
+    },
+    {
+      "rank": "C",
+      "price": 15,
+      "item": {
+        "id": "minecraft:diamond",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 6,
+      "item": {
+        "id": "minecraft:potion",
+        "count": 1,
+        "potion": "minecraft:slow_falling"
+      }
+    },
+    {
+      "rank": "B",
+      "price": 6,
+      "item": {
+        "id": "minecraft:potion",
+        "count": 1,
+        "potion": "minecraft:water_breathing"
+      }
+    },
+    {
+      "rank": "B",
+      "price": 60,
+      "item": {
+        "id": "minecraft:totem_of_undying",
+        "count": 1
+      }
+    },
+    {
+      "rank": "A",
+      "price": 50,
+      "item": {
+        "id": "minecraft:netherite_scrap",
+        "count": 1
+      }
+    },
+    {
+      "rank": "A",
+      "price": 90,
+      "item": {
+        "id": "minecraft:enchanted_golden_apple",
+        "count": 1
+      }
+    },
+    {
+      "rank": "S",
+      "price": 150,
+      "item": {
+        "id": "minecraft:netherite_ingot",
+        "count": 1
+      }
+    }
+  ]
+}

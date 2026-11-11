@@ -1,0 +1,19 @@
+{
+  "rank": "F",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "minecraft:skeleton",
+        "minecraft:stray"
+      ],
+      "count": 6,
+      "label": "guild.isekai_mahou.target.skeletons"
+    }
+  ],
+  "rewards": {
+    "coins": 3,
+    "xp": 25,
+    "points": 6
+  }
+}

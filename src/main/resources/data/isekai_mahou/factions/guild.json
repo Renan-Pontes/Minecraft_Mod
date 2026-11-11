@@ -1,0 +1,40 @@
+{
+  "color": "#E8B84A",
+  "icon": "isekai_mahou:guild_coin",
+  "order": 0,
+  "rivals": {},
+  "allies": {},
+  "kill_penalty": -30,
+  "kill_penalties": {
+    "isekai_mahou:guild_receptionist": -80,
+    "isekai_mahou:guild_master": -150,
+    "isekai_mahou:adventurer": -30
+  },
+  "rewards": {
+    "friendly": {
+      "xp": 120,
+      "items": [{"id": "isekai_mahou:guild_coin", "count": 15}],
+      "title": "reputation.isekai_mahou.title.guild.friendly"
+    },
+    "honored": {
+      "xp": 300,
+      "items": [{"id": "isekai_mahou:guild_coin", "count": 30}, {"id": "isekai_mahou:mana_crystal", "count": 4}],
+      "glyph_scrolls": 1,
+      "glyph_tier": 2,
+      "title": "reputation.isekai_mahou.title.guild.honored"
+    },
+    "revered": {
+      "xp": 600,
+      "items": [{"id": "isekai_mahou:guild_coin", "count": 60}, {"id": "isekai_mahou:vitality_charm", "count": 1}],
+      "glyph_scrolls": 1,
+      "glyph_tier": 3,
+      "title": "reputation.isekai_mahou.title.guild.revered"
+    },
+    "exalted": {
+      "xp": 1200,
+      "items": [{"id": "isekai_mahou:guild_coin", "count": 120}],
+      "legend": "random",
+      "title": "reputation.isekai_mahou.title.guild.exalted"
+    }
+  }
+}

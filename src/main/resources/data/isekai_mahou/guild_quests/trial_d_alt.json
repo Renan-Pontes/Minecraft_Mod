@@ -1,0 +1,25 @@
+{
+  "rank": "D",
+  "category": "trial",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "minecraft:skeleton",
+        "minecraft:stray"
+      ],
+      "count": 12,
+      "label": "guild.isekai_mahou.target.skeletons"
+    },
+    {
+      "type": "kill",
+      "entity": "minecraft:creeper",
+      "count": 6
+    }
+  ],
+  "rewards": {
+    "coins": 15,
+    "xp": 150
+  },
+  "trial": true
+}

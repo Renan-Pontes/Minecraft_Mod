@@ -1,0 +1,21 @@
+{
+  "rank": "B",
+  "category": "contract",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "minecraft:evoker",
+      "count": 2
+    }
+  ],
+  "rewards": {
+    "coins": 25,
+    "xp": 320,
+    "glyph": "random",
+    "reputation": {
+      "underworld": 40
+    }
+  },
+  "faction": "underworld",
+  "standing": "honored"
+}

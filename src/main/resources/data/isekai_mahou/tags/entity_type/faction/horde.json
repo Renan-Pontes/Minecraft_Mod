@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    {"id": "isekai_mahou:goblin", "required": false},
+    {"id": "isekai_mahou:goblin_archer", "required": false},
+    {"id": "isekai_mahou:goblin_shaman", "required": false},
+    {"id": "isekai_mahou:goblin_wolf_rider", "required": false},
+    {"id": "isekai_mahou:hobgoblin", "required": false},
+    {"id": "isekai_mahou:goblin_king", "required": false},
+    {"id": "isekai_mahou:orc", "required": false},
+    {"id": "isekai_mahou:orc_berserker", "required": false},
+    {"id": "isekai_mahou:orc_lord", "required": false},
+    {"id": "isekai_mahou:kobold", "required": false}
+  ]
+}

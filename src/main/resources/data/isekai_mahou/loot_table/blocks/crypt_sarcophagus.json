@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "isekai_mahou:blocks/crypt_sarcophagus",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        },
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "isekai_mahou:crypt_sarcophagus",
+          "properties": {
+            "part": "head"
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:crypt_sarcophagus"
+        }
+      ]
+    }
+  ]
+}

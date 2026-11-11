@@ -1,0 +1,15 @@
+{
+  "rank": "D",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:orc",
+      "count": 5
+    }
+  ],
+  "rewards": {
+    "coins": 11,
+    "xp": 100,
+    "points": 19
+  }
+}

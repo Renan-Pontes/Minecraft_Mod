@@ -1,0 +1,15 @@
+{
+  "category": "creature",
+  "elements": [
+    "arcane"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "isekai_mahou:wandering_spirit_spawn_egg",
+    "isekai_mahou:essence_arcane"
+  ],
+  "order": 47,
+  "entities": [
+    "isekai_mahou:wandering_spirit"
+  ]
+}

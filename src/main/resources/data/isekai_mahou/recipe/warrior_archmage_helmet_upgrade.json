@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "isekai_mahou:arcane_upgrade_template"
+    }
+  ],
+  "template": {
+    "item": "isekai_mahou:arcane_upgrade_template"
+  },
+  "type": "minecraft:smithing_transform",
+  "base": {
+    "item": "isekai_mahou:warrior_master_helmet"
+  },
+  "addition": {
+    "tag": "isekai_mahou:outfits/upgrade/archmage"
+  },
+  "result": {
+    "id": "isekai_mahou:warrior_archmage_helmet",
+    "count": 1
+  }
+}

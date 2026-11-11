@@ -1,0 +1,132 @@
+{
+  "version": 3,
+  "name": "gunslinger_reload",
+  "author": "Isekai Mahou",
+  "description": "Recarga: arma na frente do peito, a outra mao enche o tambor",
+  "emote": {
+    "beginTick": 0,
+    "endTick": 22,
+    "stopTick": 26,
+    "degrees": true,
+    "nsfw": false,
+    "easeBeforeKeyframe": true,
+    "moves": [
+      {
+        "tick": 0,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -45,
+          "yaw": -28,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -40,
+          "yaw": 30,
+          "roll": 0
+        },
+        "head": {
+          "pitch": 12,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 4,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -48,
+          "yaw": -30,
+          "roll": 6
+        },
+        "leftArm": {
+          "pitch": -58,
+          "yaw": 36,
+          "roll": 0
+        },
+        "head": {
+          "pitch": 16,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 8,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -48,
+          "yaw": -30,
+          "roll": 6
+        },
+        "leftArm": {
+          "pitch": -44,
+          "yaw": 26,
+          "roll": 0
+        },
+        "head": {
+          "pitch": 16,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 12,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -48,
+          "yaw": -30,
+          "roll": 6
+        },
+        "leftArm": {
+          "pitch": -58,
+          "yaw": 36,
+          "roll": 0
+        },
+        "head": {
+          "pitch": 16,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 16,
+        "easing": "EASEOUTBACK",
+        "rightArm": {
+          "pitch": -70,
+          "yaw": -14,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -30,
+          "yaw": 20,
+          "roll": 0
+        },
+        "head": {
+          "pitch": 8,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 22,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -20,
+          "yaw": 0,
+          "roll": 6
+        },
+        "leftArm": {
+          "pitch": 4,
+          "yaw": 0,
+          "roll": -6
+        },
+        "head": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      }
+    ],
+    "isLoop": false,
+    "returnTick": 0
+  }
+}

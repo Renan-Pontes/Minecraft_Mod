@@ -1,0 +1,17 @@
+{
+  "rank": "C",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:goblin_king",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 18,
+    "xp": 220,
+    "points": 32,
+    "glyph": "random"
+  }
+}

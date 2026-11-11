@@ -1,0 +1,33 @@
+{
+  "color": "#FFE9A8",
+  "icon": "isekai_mahou:essence_light",
+  "order": 30,
+  "rivals": {"underworld": 1.0},
+  "allies": {"kingdom": 1.0},
+  "kill_penalty": -40,
+  "rewards": {
+    "friendly": {
+      "xp": 100,
+      "items": [{"id": "isekai_mahou:essence_light", "count": 2}, {"id": "minecraft:golden_apple", "count": 1}],
+      "title": "reputation.isekai_mahou.title.church.friendly"
+    },
+    "honored": {
+      "xp": 250,
+      "items": [{"id": "isekai_mahou:essence_light", "count": 4}, {"id": "minecraft:golden_apple", "count": 3}],
+      "glyph_scrolls": 1,
+      "glyph_tier": 2,
+      "title": "reputation.isekai_mahou.title.church.honored"
+    },
+    "revered": {
+      "xp": 500,
+      "items": [{"id": "isekai_mahou:essence_light", "count": 6}, {"id": "minecraft:enchanted_golden_apple", "count": 1}],
+      "title": "reputation.isekai_mahou.title.church.revered"
+    },
+    "exalted": {
+      "xp": 1000,
+      "items": [{"id": "minecraft:totem_of_undying", "count": 1}, {"id": "minecraft:enchanted_golden_apple", "count": 1}],
+      "legend": "random",
+      "title": "reputation.isekai_mahou.title.church.exalted"
+    }
+  }
+}

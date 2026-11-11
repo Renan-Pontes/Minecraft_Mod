@@ -1,0 +1,16 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:deep_ocean",
+    "minecraft:deep_lukewarm_ocean",
+    "minecraft:deep_cold_ocean"
+  ],
+  "spawners": [
+    {
+      "type": "isekai_mahou:tide_serpent",
+      "weight": 7,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

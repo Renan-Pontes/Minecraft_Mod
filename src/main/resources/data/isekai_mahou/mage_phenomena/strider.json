@@ -1,0 +1,14 @@
+{
+  "category": "creature",
+  "elements": [
+    "fire"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:warped_fungus_on_a_stick"
+  ],
+  "order": 40,
+  "entities": [
+    "minecraft:strider"
+  ]
+}

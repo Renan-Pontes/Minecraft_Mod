@@ -1,0 +1,15 @@
+{
+  "category": "structure",
+  "elements": [
+    "shadow",
+    "void"
+  ],
+  "rarity": "epic",
+  "icon": [
+    "minecraft:sculk_catalyst"
+  ],
+  "order": 80,
+  "structures": [
+    "minecraft:ancient_city"
+  ]
+}

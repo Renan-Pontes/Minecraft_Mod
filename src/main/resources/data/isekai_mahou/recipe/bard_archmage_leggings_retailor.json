@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_archmage_leggings",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/archmage/leggings"
+    },
+    {
+      "item": "minecraft:pink_wool"
+    },
+    {
+      "item": "minecraft:note_block"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:bard_archmage_leggings",
+    "count": 1
+  }
+}

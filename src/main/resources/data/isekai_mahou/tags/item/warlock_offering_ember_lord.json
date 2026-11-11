@@ -1,0 +1,20 @@
+{
+  "values": [
+    "minecraft:blaze_rod",
+    "minecraft:blaze_powder",
+    "minecraft:magma_cream",
+    "minecraft:magma_block",
+    "#minecraft:coals",
+    "minecraft:coal_block",
+    "minecraft:fire_charge",
+    "minecraft:lava_bucket",
+    {
+      "id": "isekai_mahou:essence_fire",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:guardian_core_fire",
+      "required": false
+    }
+  ]
+}

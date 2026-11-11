@@ -1,0 +1,22 @@
+{
+  "rank": "D",
+  "category": "study",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "reaction.electrocute",
+      "count": 5,
+      "label": "guild.isekai_mahou.target.v08.electrocute",
+      "icon": "minecraft:lightning_rod"
+    }
+  ],
+  "rewards": {
+    "coins": 10,
+    "xp": 120,
+    "reputation": {
+      "academy": 22
+    }
+  },
+  "faction": "academy",
+  "standing": "friendly"
+}

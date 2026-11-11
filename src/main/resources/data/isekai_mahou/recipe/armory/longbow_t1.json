@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou_armory",
+  "pattern": [
+    " SX",
+    "E X",
+    " SX"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "item": "minecraft:string"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_wind"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:longbow_t1",
+    "count": 1
+  }
+}

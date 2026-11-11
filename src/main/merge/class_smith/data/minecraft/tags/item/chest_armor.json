@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "isekai_mahou:smith_chestplate",
+    "isekai_mahou:smith_adept_chestplate",
+    "isekai_mahou:smith_master_chestplate",
+    "isekai_mahou:smith_archmage_chestplate"
+  ]
+}

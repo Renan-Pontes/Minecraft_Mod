@@ -1,0 +1,15 @@
+{
+  "category": "structure",
+  "elements": [
+    "earth",
+    "light"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:bell"
+  ],
+  "order": 77,
+  "structures": [
+    "#minecraft:village"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "rank": "E",
+  "category": "delivery",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "isekai_mahou:mana_crystal",
+      "count": 6
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 70,
+    "reputation": {
+      "academy": 15
+    }
+  },
+  "faction": "academy"
+}

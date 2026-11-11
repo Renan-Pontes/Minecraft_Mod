@@ -1,0 +1,24 @@
+{
+  "rank": "C",
+  "category": "hunt",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "minecraft:pillager_outpost"
+    },
+    {
+      "type": "kill",
+      "entity": "minecraft:pillager",
+      "count": 10
+    }
+  ],
+  "rewards": {
+    "coins": 16,
+    "xp": 200,
+    "reputation": {
+      "kingdom": 45
+    }
+  },
+  "faction": "kingdom",
+  "standing": "honored"
+}

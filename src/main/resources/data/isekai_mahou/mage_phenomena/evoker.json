@@ -1,0 +1,14 @@
+{
+  "category": "creature",
+  "elements": [
+    "arcane"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:totem_of_undying"
+  ],
+  "order": 33,
+  "entities": [
+    "minecraft:evoker"
+  ]
+}

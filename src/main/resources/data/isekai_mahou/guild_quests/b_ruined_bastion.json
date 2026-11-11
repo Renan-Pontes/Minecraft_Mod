@@ -1,0 +1,19 @@
+{
+  "rank": "B",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "minecraft:bastion_remnant"
+    },
+    {
+      "type": "kill",
+      "entity": "minecraft:piglin_brute",
+      "count": 2
+    }
+  ],
+  "rewards": {
+    "coins": 25,
+    "xp": 320,
+    "points": 44
+  }
+}

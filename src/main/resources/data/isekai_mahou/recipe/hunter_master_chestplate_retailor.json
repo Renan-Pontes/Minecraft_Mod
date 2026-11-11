@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_master_chestplate",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/master/chestplate"
+    },
+    {
+      "item": "minecraft:brown_wool"
+    },
+    {
+      "item": "minecraft:rabbit_hide"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:hunter_master_chestplate",
+    "count": 1
+  }
+}

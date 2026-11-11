@@ -1,0 +1,22 @@
+{
+  "rank": "B",
+  "category": "task",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "counter.success",
+      "count": 2,
+      "label": "guild.isekai_mahou.target.v08.counter",
+      "icon": "minecraft:echo_shard"
+    }
+  ],
+  "rewards": {
+    "coins": 25,
+    "xp": 320,
+    "points": 34,
+    "glyph": "random"
+  },
+  "requires": [
+    "isekai_mahou:counterspell"
+  ]
+}

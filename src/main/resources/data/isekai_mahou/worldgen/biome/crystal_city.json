@@ -1,0 +1,65 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.7,
+  "downfall": 0.0,
+  "effects": {
+    "sky_color": 12572927,
+    "fog_color": 16051455,
+    "water_color": 10479871,
+    "water_fog_color": 3828362,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "music": {
+      "sound": "minecraft:music.overworld.cherry_grove",
+      "min_delay": 12000,
+      "max_delay": 24000,
+      "replace_current_music": false
+    },
+    "grass_color": 11071688,
+    "foliage_color": 10021056,
+    "particle": {
+      "options": {
+        "type": "minecraft:end_rod"
+      },
+      "probability": 0.003
+    }
+  },
+  "spawners": {
+    "monster": [],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "isekai_mahou:cs_ore_radiant",
+      "isekai_mahou:cs_ore_gold",
+      "isekai_mahou:cs_ore_diamond"
+    ],
+    [
+      "isekai_mahou:cs_cloud_puffs"
+    ],
+    [],
+    [
+      "isekai_mahou:cs_crystal_spires",
+      "isekai_mahou:cs_marble_ruins"
+    ],
+    []
+  ]
+}

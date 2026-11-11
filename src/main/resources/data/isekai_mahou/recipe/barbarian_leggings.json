@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_leggings",
+  "pattern": [
+    "LBL",
+    "L L",
+    "H H"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "B": {
+      "item": "minecraft:bone"
+    },
+    "H": {
+      "item": "minecraft:rabbit_hide"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:barbarian_leggings",
+    "count": 1
+  }
+}

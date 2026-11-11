@@ -1,0 +1,530 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 2,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:glyph_scroll",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "isekai_mahou:ruin_glyph_scroll",
+              "min_tier": 1,
+              "max_tier": 4,
+              "glyphs": [
+                "isekai_mahou:beam",
+                "isekai_mahou:cone",
+                "isekai_mahou:nova",
+                "isekai_mahou:zone",
+                "isekai_mahou:wall",
+                "isekai_mahou:rune",
+                "isekai_mahou:turret",
+                "isekai_mahou:orbit",
+                "isekai_mahou:blink",
+                "isekai_mahou:shield",
+                "isekai_mahou:counterspell",
+                "isekai_mahou:dispel",
+                "isekai_mahou:telekinesis",
+                "isekai_mahou:mana_drain",
+                "isekai_mahou:reflect",
+                "isekai_mahou:haste_time",
+                "isekai_mahou:slow_time",
+                "isekai_mahou:levitate",
+                "isekai_mahou:pulse",
+                "isekai_mahou:aura"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 5
+      },
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:mana_crystal",
+          "weight": 15,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:essence_arcane",
+          "weight": 12,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:essence_fire",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:essence_water",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:essence_earth",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:essence_wind",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:essence_light",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:essence_shadow",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:book",
+          "weight": 8,
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "type": "minecraft:uniform",
+                "min": 15,
+                "max": 30
+              },
+              "options": "#minecraft:on_random_loot"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:experience_bottle",
+          "weight": 8,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:amethyst_shard",
+          "weight": 6,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:ender_pearl",
+          "weight": 5,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:spyglass",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:arcane_lens"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:mana_crystal",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 1
+              }
+            },
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:arcane_amulet"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:mana_crystal",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:mana_ring"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:spell_scroll",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:essence_fire",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:focus_fire"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:essence_water",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:focus_water"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:essence_earth",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:focus_earth"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:essence_wind",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:focus_wind"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:essence_light",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:focus_light"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:essence_shadow",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:focus_shadow"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:paper",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            },
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:research_note",
+              "components": {
+                "isekai_mahou:mage_research_note": {
+                  "phenomenon": "isekai_mahou:mage_tower",
+                  "element": "arcane"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:paper",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            },
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:research_note",
+              "components": {
+                "isekai_mahou:mage_research_note": {
+                  "phenomenon": "isekai_mahou:mage_tower",
+                  "element": "fire"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:paper",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            },
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:research_note",
+              "components": {
+                "isekai_mahou:mage_research_note": {
+                  "phenomenon": "isekai_mahou:mage_tower",
+                  "element": "water"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:paper",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            },
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:research_note",
+              "components": {
+                "isekai_mahou:mage_research_note": {
+                  "phenomenon": "isekai_mahou:mage_tower",
+                  "element": "earth"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:paper",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            },
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:research_note",
+              "components": {
+                "isekai_mahou:mage_research_note": {
+                  "phenomenon": "isekai_mahou:mage_tower",
+                  "element": "wind"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:paper",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            },
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:research_note",
+              "components": {
+                "isekai_mahou:mage_research_note": {
+                  "phenomenon": "isekai_mahou:mage_tower",
+                  "element": "light"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:paper",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            },
+            {
+              "function": "isekai_mahou:item_if_present",
+              "item": "isekai_mahou:research_note",
+              "components": {
+                "isekai_mahou:mage_research_note": {
+                  "phenomenon": "isekai_mahou:mage_tower",
+                  "element": "shadow"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "random_sequence": "isekai_mahou:chests/mage_tower"
+}

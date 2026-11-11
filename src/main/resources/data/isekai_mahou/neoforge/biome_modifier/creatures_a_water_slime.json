@@ -1,0 +1,20 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "#c:is_swamp",
+      "#minecraft:is_river",
+      "#minecraft:is_beach",
+      "minecraft:lush_caves"
+    ]
+  },
+  "spawners": [
+    {
+      "type": "isekai_mahou:water_slime",
+      "weight": 18,
+      "minCount": 1,
+      "maxCount": 3
+    }
+  ]
+}

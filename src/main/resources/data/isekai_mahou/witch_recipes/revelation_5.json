@@ -1,0 +1,22 @@
+{
+  "ingredients": [
+    "isekai_mahou:guardian_core_water",
+    "isekai_mahou:guardian_core_shadow",
+    "minecraft:nether_star",
+    "minecraft:dragon_breath",
+    "isekai_mahou:witch_moonpetal",
+    "minecraft:totem_of_undying"
+  ],
+  "stirs": 9,
+  "heat": "high",
+  "moon_phases": [
+    4
+  ],
+  "night": true,
+  "result": {
+    "id": "isekai_mahou:revelation_potion_5",
+    "count": 1
+  },
+  "xp": 100,
+  "color": "#C06AA0"
+}

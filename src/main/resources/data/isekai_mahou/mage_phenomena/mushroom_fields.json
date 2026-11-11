@@ -1,0 +1,14 @@
+{
+  "category": "biome",
+  "elements": [
+    "nature"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:red_mushroom"
+  ],
+  "order": 52,
+  "biomes": [
+    "minecraft:mushroom_fields"
+  ]
+}

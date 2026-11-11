@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "isekai_mahou:block/arcane_stone_generator_side_active",
+    "top": "isekai_mahou:block/arcane_stone_generator_top_active",
+    "bottom": "isekai_mahou:block/arcane_stone_generator_bottom"
+  }
+}

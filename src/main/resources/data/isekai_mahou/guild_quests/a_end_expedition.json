@@ -1,0 +1,19 @@
+{
+  "rank": "A",
+  "objectives": [
+    {
+      "type": "explore",
+      "dimension": "minecraft:the_end"
+    },
+    {
+      "type": "kill",
+      "entity": "minecraft:enderman",
+      "count": 10
+    }
+  ],
+  "rewards": {
+    "coins": 34,
+    "xp": 460,
+    "points": 58
+  }
+}

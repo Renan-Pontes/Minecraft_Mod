@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_chestplate",
+  "pattern": [
+    "W W",
+    "GBG",
+    "WWW"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:blue_wool"
+    },
+    "G": {
+      "item": "minecraft:gold_nugget"
+    },
+    "B": {
+      "item": "minecraft:lapis_lazuli"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:mage_chestplate",
+    "count": 1
+  }
+}

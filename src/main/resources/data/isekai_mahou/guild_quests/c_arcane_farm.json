@@ -1,0 +1,22 @@
+{
+  "rank": "C",
+  "category": "task",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "pedestal.cast",
+      "count": 150,
+      "label": "guild.isekai_mahou.target.pedestal_casts",
+      "icon": "isekai_mahou:runic_pedestal"
+    }
+  ],
+  "rewards": {
+    "coins": 14,
+    "xp": 150,
+    "points": 26
+  },
+  "weight": 6,
+  "requires": [
+    "isekai_mahou:runic_pedestal"
+  ]
+}

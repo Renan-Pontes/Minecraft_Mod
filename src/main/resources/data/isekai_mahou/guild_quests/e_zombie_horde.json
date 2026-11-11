@@ -1,0 +1,21 @@
+{
+  "rank": "E",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "minecraft:zombie",
+        "minecraft:husk",
+        "minecraft:zombie_villager",
+        "minecraft:drowned"
+      ],
+      "count": 15,
+      "label": "guild.isekai_mahou.target.zombies"
+    }
+  ],
+  "rewards": {
+    "coins": 5,
+    "xp": 45,
+    "points": 11
+  }
+}

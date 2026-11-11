@@ -1,0 +1,103 @@
+{
+  "version": 3,
+  "name": "cast_self",
+  "author": "Isekai Mahou",
+  "description": "Bracos cruzados que se abrem ao conjurar em si mesmo",
+  "emote": {
+    "beginTick": 0,
+    "endTick": 22,
+    "stopTick": 25,
+    "degrees": true,
+    "nsfw": false,
+    "easeBeforeKeyframe": true,
+    "moves": [
+      {
+        "tick": 0,
+        "easing": "LINEAR",
+        "rightArm": {
+          "pitch": -20,
+          "yaw": 0,
+          "roll": 6
+        },
+        "leftArm": {
+          "pitch": -20,
+          "yaw": 0,
+          "roll": -6
+        },
+        "head": {
+          "pitch": 0
+        }
+      },
+      {
+        "tick": 4,
+        "easing": "EASEOUTQUAD",
+        "rightArm": {
+          "pitch": -72,
+          "yaw": -42,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -72,
+          "yaw": 42,
+          "roll": 0
+        },
+        "head": {
+          "pitch": 16
+        }
+      },
+      {
+        "tick": 9,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -76,
+          "yaw": -46,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -76,
+          "yaw": 46,
+          "roll": 0
+        },
+        "head": {
+          "pitch": 20
+        }
+      },
+      {
+        "tick": 13,
+        "easing": "EASEOUTBACK",
+        "rightArm": {
+          "pitch": -32,
+          "yaw": 0,
+          "roll": 58
+        },
+        "leftArm": {
+          "pitch": -32,
+          "yaw": 0,
+          "roll": -58
+        },
+        "head": {
+          "pitch": -12
+        }
+      },
+      {
+        "tick": 22,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -4,
+          "yaw": 0,
+          "roll": 6
+        },
+        "leftArm": {
+          "pitch": -4,
+          "yaw": 0,
+          "roll": -6
+        },
+        "head": {
+          "pitch": 0
+        }
+      }
+    ],
+    "isLoop": false,
+    "returnTick": 0
+  }
+}

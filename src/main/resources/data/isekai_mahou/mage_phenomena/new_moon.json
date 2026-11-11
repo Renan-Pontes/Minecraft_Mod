@@ -1,0 +1,16 @@
+{
+  "category": "sky",
+  "elements": [
+    "shadow"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:ink_sac"
+  ],
+  "order": 67,
+  "moon": [
+    4
+  ],
+  "sky": true,
+  "clear": true
+}

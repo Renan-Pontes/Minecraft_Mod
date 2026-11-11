@@ -1,0 +1,30 @@
+{
+  "rank": "D",
+  "category": "study",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "reaction.melt",
+      "count": 3,
+      "label": "guild.isekai_mahou.target.v08.melt",
+      "icon": "minecraft:magma_cream"
+    },
+    {
+      "type": "counter",
+      "key": "reaction.freeze",
+      "count": 3,
+      "label": "guild.isekai_mahou.target.v08.freeze",
+      "icon": "minecraft:blue_ice"
+    }
+  ],
+  "rewards": {
+    "coins": 10,
+    "xp": 120,
+    "glyph": "random",
+    "reputation": {
+      "academy": 25
+    }
+  },
+  "faction": "academy",
+  "standing": "friendly"
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "isekai_mahou:item/rogue_shade_t2_helmet"
+  }
+}

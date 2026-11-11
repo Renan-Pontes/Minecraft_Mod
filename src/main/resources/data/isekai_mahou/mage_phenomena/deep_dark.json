@@ -1,0 +1,14 @@
+{
+  "category": "biome",
+  "elements": [
+    "shadow"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:sculk_shrieker"
+  ],
+  "order": 51,
+  "biomes": [
+    "minecraft:deep_dark"
+  ]
+}

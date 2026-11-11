@@ -1,0 +1,21 @@
+{
+  "rank": "F",
+  "category": "faith",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "kill.spell.light",
+      "count": 8,
+      "label": "guild.isekai_mahou.target.v08.light_kills",
+      "icon": "isekai_mahou:essence_light"
+    }
+  ],
+  "rewards": {
+    "coins": 4,
+    "xp": 40,
+    "reputation": {
+      "church": 12
+    }
+  },
+  "faction": "church"
+}

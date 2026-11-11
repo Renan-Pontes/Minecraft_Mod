@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "isekai_mahou:arcane_upgrade_template"
+    }
+  ],
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "isekai_mahou:arcane_upgrade_template"
+  },
+  "base": {
+    "item": "isekai_mahou:enchanter_gauntlets_t3"
+  },
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "result": {
+    "id": "isekai_mahou:enchanter_gauntlets_t4",
+    "count": 1
+  }
+}

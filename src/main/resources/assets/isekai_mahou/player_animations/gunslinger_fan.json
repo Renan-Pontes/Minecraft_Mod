@@ -1,0 +1,116 @@
+{
+  "version": 3,
+  "name": "gunslinger_fan",
+  "author": "Isekai Mahou",
+  "description": "Leque do cao: a mao de apoio bate no cao varias vezes",
+  "emote": {
+    "beginTick": 0,
+    "endTick": 14,
+    "stopTick": 18,
+    "degrees": true,
+    "nsfw": false,
+    "easeBeforeKeyframe": true,
+    "moves": [
+      {
+        "tick": 0,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -90,
+          "yaw": -4,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -72,
+          "yaw": 40,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 2,
+        "easing": "EASEOUTQUAD",
+        "rightArm": {
+          "pitch": -100,
+          "yaw": -4,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -88,
+          "yaw": 16,
+          "roll": 14
+        }
+      },
+      {
+        "tick": 4,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -90,
+          "yaw": -4,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -72,
+          "yaw": 40,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 6,
+        "easing": "EASEOUTQUAD",
+        "rightArm": {
+          "pitch": -100,
+          "yaw": -4,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -88,
+          "yaw": 16,
+          "roll": 14
+        }
+      },
+      {
+        "tick": 8,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -90,
+          "yaw": -4,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -72,
+          "yaw": 40,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 10,
+        "easing": "EASEOUTQUAD",
+        "rightArm": {
+          "pitch": -100,
+          "yaw": -4,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -88,
+          "yaw": 16,
+          "roll": 14
+        }
+      },
+      {
+        "tick": 14,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -90,
+          "yaw": -4,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": -40,
+          "yaw": 24,
+          "roll": 0
+        }
+      }
+    ],
+    "isLoop": false,
+    "returnTick": 0
+  }
+}

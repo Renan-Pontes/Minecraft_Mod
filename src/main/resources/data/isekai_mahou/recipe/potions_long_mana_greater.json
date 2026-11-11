@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "isekai_mahou_potions",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:mana_potion_greater"
+    },
+    {
+      "item": "minecraft:redstone"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:long_mana_potion_greater",
+    "count": 1
+  }
+}

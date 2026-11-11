@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "G G",
+    "BBB",
+    " B "
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "B": [
+      {
+        "item": "minecraft:polished_blackstone"
+      },
+      {
+        "item": "minecraft:polished_deepslate"
+      }
+    ]
+  },
+  "result": {
+    "id": "isekai_mahou:offering_altar",
+    "count": 1
+  }
+}

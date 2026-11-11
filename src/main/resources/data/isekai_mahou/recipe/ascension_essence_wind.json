@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    {
+      "item": "minecraft:feather"
+    },
+    {
+      "item": "minecraft:phantom_membrane"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:essence_wind",
+    "count": 1
+  }
+}

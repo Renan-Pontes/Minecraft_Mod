@@ -1,0 +1,34 @@
+{
+  "offers": [
+    {
+      "rank": "F",
+      "price": 15,
+      "glyph_tier": 1
+    },
+    {
+      "rank": "D",
+      "price": 30,
+      "glyph_tier": 2
+    },
+    {
+      "rank": "B",
+      "price": 55,
+      "glyph_tier": 3
+    },
+    {
+      "rank": "A",
+      "price": 100,
+      "glyph_tier": 4
+    },
+    {
+      "rank": "S",
+      "price": 250,
+      "glyph_tier": 5
+    },
+    {
+      "rank": "S",
+      "price": 300,
+      "legend_scroll": true
+    }
+  ]
+}

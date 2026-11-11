@@ -1,0 +1,21 @@
+{
+  "rank": "E",
+  "category": "study",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "reaction.any",
+      "count": 10,
+      "label": "guild.isekai_mahou.target.v08.reactions",
+      "icon": "minecraft:brewing_stand"
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 70,
+    "reputation": {
+      "academy": 15
+    }
+  },
+  "faction": "academy"
+}

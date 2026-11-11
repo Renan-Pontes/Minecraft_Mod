@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_leggings",
+  "pattern": [
+    "LCL",
+    "L L",
+    "B B"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "C": {
+      "item": "minecraft:copper_ingot"
+    },
+    "B": {
+      "item": "minecraft:brown_wool"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:artificer_leggings",
+    "count": 1
+  }
+}

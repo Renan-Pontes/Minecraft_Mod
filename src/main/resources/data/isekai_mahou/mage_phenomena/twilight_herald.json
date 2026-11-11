@@ -1,0 +1,23 @@
+{
+  "category": "boss",
+  "elements": [
+    "twilight",
+    "light",
+    "shadow"
+  ],
+  "rarity": "legendary",
+  "icon": [
+    "isekai_mahou:twilight_rift",
+    "minecraft:end_crystal"
+  ],
+  "order": 97,
+  "entities": [
+    "isekai_mahou:twilight_herald"
+  ],
+  "memory": [
+    "boss.isekai_mahou.twilight_herald",
+    "boss.twilight_herald",
+    "kill.isekai_mahou.twilight_herald"
+  ],
+  "repeatable": false
+}

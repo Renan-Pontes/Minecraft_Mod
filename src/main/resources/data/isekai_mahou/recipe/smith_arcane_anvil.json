@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "EAE",
+    " C ",
+    "III"
+  ],
+  "key": {
+    "E": {
+      "item": "isekai_mahou:essence_fire"
+    },
+    "A": {
+      "item": "minecraft:anvil"
+    },
+    "C": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:smith_arcane_anvil",
+    "count": 1
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.6,
+  "downfall": 0.0,
+  "effects": {
+    "sky_color": 329485,
+    "fog_color": 1777968,
+    "water_color": 3033722,
+    "water_fog_color": 395800,
+    "particle": {
+      "options": {
+        "type": "minecraft:white_ash"
+      },
+      "probability": 0.0035
+    },
+    "ambient_sound": "minecraft:ambient.soul_sand_valley.loop",
+    "mood_sound": {
+      "sound": "minecraft:ambient.soul_sand_valley.mood",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "additions_sound": {
+      "sound": "minecraft:ambient.soul_sand_valley.additions",
+      "tick_chance": 0.0111
+    },
+    "music": {
+      "sound": "minecraft:music.nether.soul_sand_valley",
+      "min_delay": 12000,
+      "max_delay": 24000,
+      "replace_current_music": false
+    }
+  },
+  "spawners": {
+    "monster": [
+      {
+        "type": "isekai_mahou:hollow_crawler",
+        "weight": 60,
+        "minCount": 2,
+        "maxCount": 4
+      },
+      {
+        "type": "isekai_mahou:hollow_wraith",
+        "weight": 30,
+        "minCount": 1,
+        "maxCount": 2
+      },
+      {
+        "type": "isekai_mahou:hollow_brute",
+        "weight": 18,
+        "minCount": 1,
+        "maxCount": 1
+      },
+      {
+        "type": "isekai_mahou:arrancar",
+        "weight": 2,
+        "minCount": 1,
+        "maxCount": 1
+      }
+    ],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [
+      "isekai_mahou:hm_ruins_common",
+      "isekai_mahou:hm_bones_rare"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [
+      "isekai_mahou:hm_quartz_trees_sparse",
+      "isekai_mahou:hm_crystals_sparse"
+    ],
+    []
+  ]
+}

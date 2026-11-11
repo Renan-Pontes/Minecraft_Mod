@@ -1,0 +1,16 @@
+{
+  "command.isekai_mahou.boss_kit.demo": "Demonstração de telegrafias: %s",
+  "command.isekai_mahou.boss_kit.unknown": "Forma desconhecida: %s. Use uma destas: %s",
+  "command.isekai_mahou.boss_kit.hit": "%s: %s alvo(s) dentro da área (demonstração, sem dano)",
+  "command.isekai_mahou.boss_kit.shake": "Tremor de câmera (intensidade %s)",
+  "command.isekai_mahou.boss_kit.shape.all": "todas as formas",
+  "command.isekai_mahou.boss_kit.shape.circle": "Círculo",
+  "command.isekai_mahou.boss_kit.shape.ring": "Anel",
+  "command.isekai_mahou.boss_kit.shape.line": "Linha",
+  "command.isekai_mahou.boss_kit.shape.cone": "Cone",
+  "command.isekai_mahou.boss_kit.shape.follow": "Perseguição",
+  "command.isekai_mahou.boss_kit.shape.safe": "Zona segura",
+  "command.isekai_mahou.boss_kit.shape.blast": "Explosão atrasada",
+  "command.isekai_mahou.boss_kit.shape.line_blast": "Rajada em linha",
+  "message.isekai_mahou.boss_kit.reward": "%s derrotado! +%s XP mágico"
+}

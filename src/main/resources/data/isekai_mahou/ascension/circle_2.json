@@ -1,0 +1,15 @@
+{
+  "circle": 2,
+  "tribute": [
+    {
+      "type": "item",
+      "item": "isekai_mahou:essence_arcane",
+      "count": 1
+    },
+    {
+      "type": "item",
+      "item": "isekai_mahou:mana_crystal",
+      "count": 4
+    }
+  ]
+}

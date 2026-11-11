@@ -1,0 +1,20 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "#c:is_mountain",
+      "#c:is_windswept",
+      "#c:is_hill",
+      "#c:is_plateau"
+    ]
+  },
+  "spawners": [
+    {
+      "type": "isekai_mahou:ogre",
+      "weight": 6,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

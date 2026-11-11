@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "element=fire": {
+      "model": "isekai_mahou:block/shrine_altar_fire"
+    },
+    "element=water": {
+      "model": "isekai_mahou:block/shrine_altar_water"
+    },
+    "element=earth": {
+      "model": "isekai_mahou:block/shrine_altar_earth"
+    },
+    "element=wind": {
+      "model": "isekai_mahou:block/shrine_altar_wind"
+    },
+    "element=light": {
+      "model": "isekai_mahou:block/shrine_altar_light"
+    },
+    "element=shadow": {
+      "model": "isekai_mahou:block/shrine_altar_shadow"
+    }
+  }
+}

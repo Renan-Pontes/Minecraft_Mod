@@ -1,0 +1,16 @@
+{
+  "rank": "C",
+  "category": "trial",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:goblin_king",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 25,
+    "xp": 300
+  },
+  "trial": true
+}

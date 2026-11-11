@@ -1,0 +1,15 @@
+{
+  "rank": "C",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:troll",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 14,
+    "xp": 160,
+    "points": 26
+  }
+}

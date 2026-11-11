@@ -1,0 +1,15 @@
+{
+  "rank": "E",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:kobold",
+      "count": 8
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 50,
+    "points": 12
+  }
+}

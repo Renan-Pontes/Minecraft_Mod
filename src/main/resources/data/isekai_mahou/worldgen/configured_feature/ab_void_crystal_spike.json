@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:block_column",
+  "config": {
+    "direction": "up",
+    "prioritize_tip": true,
+    "allowed_placement": {
+      "type": "minecraft:matching_blocks",
+      "blocks": "minecraft:air"
+    },
+    "layers": [
+      {
+        "height": {
+          "type": "minecraft:uniform",
+          "min_inclusive": 1,
+          "max_inclusive": 3
+        },
+        "provider": {
+          "type": "minecraft:simple_state_provider",
+          "state": {
+            "Name": "isekai_mahou:void_crystal"
+          }
+        }
+      }
+    ]
+  }
+}

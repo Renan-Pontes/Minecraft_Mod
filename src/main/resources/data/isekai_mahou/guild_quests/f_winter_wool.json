@@ -1,0 +1,16 @@
+{
+  "rank": "F",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "#minecraft:wool",
+      "count": 8,
+      "label": "guild.isekai_mahou.item.wool"
+    }
+  ],
+  "rewards": {
+    "coins": 3,
+    "xp": 20,
+    "points": 5
+  }
+}

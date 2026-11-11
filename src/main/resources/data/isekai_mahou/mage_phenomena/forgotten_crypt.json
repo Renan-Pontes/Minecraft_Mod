@@ -1,0 +1,15 @@
+{
+  "category": "structure",
+  "elements": [
+    "shadow",
+    "light"
+  ],
+  "rarity": "epic",
+  "icon": [
+    "minecraft:skeleton_skull"
+  ],
+  "order": 304,
+  "structures": [
+    "isekai_mahou:forgotten_crypt"
+  ]
+}

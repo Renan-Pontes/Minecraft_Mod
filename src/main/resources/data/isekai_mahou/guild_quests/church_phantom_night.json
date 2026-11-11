@@ -1,0 +1,19 @@
+{
+  "rank": "E",
+  "category": "hunt",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "minecraft:phantom",
+      "count": 5
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 70,
+    "reputation": {
+      "church": 15
+    }
+  },
+  "faction": "church"
+}

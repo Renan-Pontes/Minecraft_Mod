@@ -1,0 +1,15 @@
+{
+  "category": "creature",
+  "elements": [
+    "shadow",
+    "water"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:glass_bottle"
+  ],
+  "order": 39,
+  "entities": [
+    "minecraft:witch"
+  ]
+}

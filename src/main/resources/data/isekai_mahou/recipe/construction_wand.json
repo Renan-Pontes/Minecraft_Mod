@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "  M",
+    " A ",
+    "S  "
+  ],
+  "key": {
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:construction_wand",
+    "count": 1
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "category": "boss",
+  "elements": [
+    "fire",
+    "magma"
+  ],
+  "rarity": "legendary",
+  "icon": [
+    "isekai_mahou:guardian_core_fire"
+  ],
+  "order": 91,
+  "entities": [
+    "isekai_mahou:ignis"
+  ],
+  "memory": [
+    "boss.isekai_mahou.ignis",
+    "boss.ignis",
+    "kill.isekai_mahou.ignis"
+  ],
+  "repeatable": false
+}

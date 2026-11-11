@@ -1,0 +1,15 @@
+{
+  "category": "block",
+  "elements": [
+    "wind",
+    "water"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:powder_snow_bucket"
+  ],
+  "order": 11,
+  "blocks": [
+    "minecraft:powder_snow"
+  ]
+}

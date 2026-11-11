@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou_armory",
+  "pattern": [
+    "EDE",
+    "I I",
+    " I "
+  ],
+  "key": {
+    "E": {
+      "item": "isekai_mahou:essence_earth"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:ward_ring",
+    "count": 1
+  }
+}

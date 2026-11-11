@@ -1,0 +1,17 @@
+{
+  "rank": "B",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:orc_lord",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 25,
+    "xp": 320,
+    "points": 45,
+    "glyph": "random"
+  }
+}

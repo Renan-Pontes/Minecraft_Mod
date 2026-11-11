@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "WME",
+    "I I",
+    " I "
+  ],
+  "key": {
+    "W": {
+      "item": "isekai_mahou:essence_water"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_earth"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:regen_ring",
+    "count": 1
+  }
+}

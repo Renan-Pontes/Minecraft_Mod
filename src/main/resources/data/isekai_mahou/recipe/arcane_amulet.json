@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "S S",
+    "G G",
+    "ADA"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:string"
+    },
+    "G": {
+      "item": "minecraft:gold_nugget"
+    },
+    "A": {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:arcane_amulet",
+    "count": 1
+  }
+}

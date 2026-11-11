@@ -1,0 +1,15 @@
+{
+  "rank": "D",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "minecraft:gold_ingot",
+      "count": 10
+    }
+  ],
+  "rewards": {
+    "coins": 11,
+    "xp": 70,
+    "points": 16
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "category": "creature",
+  "elements": [
+    "wind"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:breeze_rod"
+  ],
+  "order": 32,
+  "entities": [
+    "minecraft:breeze"
+  ]
+}

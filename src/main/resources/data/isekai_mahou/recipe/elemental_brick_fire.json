@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "isekai_mahou:elemental_brick",
+  "pattern": [
+    "BBB",
+    "BEB",
+    "BBB"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:stone_bricks"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_fire"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:elemental_brick_fire",
+    "count": 8
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.7,
+  "downfall": 0.0,
+  "effects": {
+    "sky_color": 11065599,
+    "fog_color": 16775400,
+    "water_color": 8378623,
+    "water_fog_color": 2775674,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "music": {
+      "sound": "minecraft:music.overworld.meadow",
+      "min_delay": 12000,
+      "max_delay": 24000,
+      "replace_current_music": false
+    },
+    "grass_color": 10154144,
+    "foliage_color": 15775968,
+    "particle": {
+      "options": {
+        "type": "minecraft:cherry_leaves"
+      },
+      "probability": 0.01
+    }
+  },
+  "spawners": {
+    "monster": [],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "isekai_mahou:cs_ore_radiant",
+      "isekai_mahou:cs_ore_gold"
+    ],
+    [
+      "isekai_mahou:cs_cloud_puffs"
+    ],
+    [],
+    [
+      "isekai_mahou:cs_cherry_trees",
+      "isekai_mahou:cs_patch_grass",
+      "isekai_mahou:cs_flowers"
+    ],
+    []
+  ]
+}

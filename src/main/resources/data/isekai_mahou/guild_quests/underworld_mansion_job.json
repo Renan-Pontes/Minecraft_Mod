@@ -1,0 +1,31 @@
+{
+  "rank": "A",
+  "category": "contract",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "minecraft:mansion"
+    },
+    {
+      "type": "kill",
+      "entity": "minecraft:vindicator",
+      "count": 10
+    }
+  ],
+  "rewards": {
+    "coins": 40,
+    "xp": 500,
+    "glyph": "random",
+    "items": [
+      {
+        "id": "minecraft:totem_of_undying",
+        "count": 1
+      }
+    ],
+    "reputation": {
+      "underworld": 60
+    }
+  },
+  "faction": "underworld",
+  "standing": "revered"
+}

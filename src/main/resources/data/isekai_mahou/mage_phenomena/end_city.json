@@ -1,0 +1,15 @@
+{
+  "category": "structure",
+  "elements": [
+    "void",
+    "astral"
+  ],
+  "rarity": "epic",
+  "icon": [
+    "minecraft:purpur_block"
+  ],
+  "order": 83,
+  "structures": [
+    "minecraft:end_city"
+  ]
+}

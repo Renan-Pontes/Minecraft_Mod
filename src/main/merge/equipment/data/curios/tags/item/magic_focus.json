@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "isekai_mahou:focus_fire",
+    "isekai_mahou:greater_focus_fire",
+    "isekai_mahou:focus_water",
+    "isekai_mahou:greater_focus_water",
+    "isekai_mahou:focus_earth",
+    "isekai_mahou:greater_focus_earth",
+    "isekai_mahou:focus_wind",
+    "isekai_mahou:greater_focus_wind",
+    "isekai_mahou:focus_light",
+    "isekai_mahou:greater_focus_light",
+    "isekai_mahou:focus_shadow",
+    "isekai_mahou:greater_focus_shadow",
+    "isekai_mahou:arcane_focus"
+  ]
+}

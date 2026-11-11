@@ -1,0 +1,40 @@
+{
+  "color": "#3F6FD8",
+  "icon": "minecraft:bell",
+  "order": 10,
+  "rivals": {"horde": 1.0, "underworld": 0.5},
+  "allies": {"church": 1.0},
+  "kill_penalty": -25,
+  "kill_penalties": {
+    "isekai_mahou:city_guard": -40,
+    "isekai_mahou:city_lord": -150,
+    "isekai_mahou:citizen": -30,
+    "isekai_mahou:city_merchant": -35,
+    "minecraft:villager": -30,
+    "minecraft:iron_golem": -10
+  },
+  "guards": ["minecraft:iron_golem"],
+  "traders": ["minecraft:villager"],
+  "rewards": {
+    "friendly": {
+      "xp": 100,
+      "items": [{"id": "minecraft:emerald", "count": 8}, {"id": "minecraft:bread", "count": 8}],
+      "title": "reputation.isekai_mahou.title.kingdom.friendly"
+    },
+    "honored": {
+      "xp": 250,
+      "items": [{"id": "minecraft:emerald", "count": 20}, {"id": "minecraft:golden_apple", "count": 2}],
+      "title": "reputation.isekai_mahou.title.kingdom.honored"
+    },
+    "revered": {
+      "xp": 500,
+      "items": [{"id": "minecraft:emerald", "count": 40}, {"id": "isekai_mahou:ward_ring", "count": 1}],
+      "title": "reputation.isekai_mahou.title.kingdom.revered"
+    },
+    "exalted": {
+      "xp": 1000,
+      "items": [{"id": "minecraft:emerald", "count": 64}, {"id": "minecraft:totem_of_undying", "count": 1}],
+      "title": "reputation.isekai_mahou.title.kingdom.exalted"
+    }
+  }
+}

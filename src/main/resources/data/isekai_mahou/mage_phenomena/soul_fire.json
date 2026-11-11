@@ -1,0 +1,20 @@
+{
+  "category": "block",
+  "elements": [
+    "hellfire"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:soul_lantern"
+  ],
+  "order": 13,
+  "blocks": [
+    "minecraft:soul_fire",
+    "minecraft:soul_sand",
+    "minecraft:soul_soil",
+    "minecraft:soul_campfire",
+    "minecraft:soul_lantern",
+    "minecraft:soul_torch",
+    "minecraft:soul_wall_torch"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "rank": "B",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "minecraft:netherite_scrap",
+      "count": 2
+    }
+  ],
+  "rewards": {
+    "coins": 24,
+    "xp": 280,
+    "points": 42,
+    "glyph": "isekai_mahou:silk_touch"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "rank": "A",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "minecraft:ancient_city"
+    },
+    {
+      "type": "gather",
+      "item": "minecraft:echo_shard",
+      "count": 2
+    }
+  ],
+  "rewards": {
+    "coins": 36,
+    "xp": 480,
+    "points": 60
+  }
+}

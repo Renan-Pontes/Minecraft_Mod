@@ -1,0 +1,203 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.zephyr_tornado",
+        "texture_width": 256,
+        "texture_height": 128,
+        "visible_bounds_width": 4,
+        "visible_bounds_height": 4,
+        "visible_bounds_offset": [
+          0,
+          1.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "l0",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -3.0,
+                0,
+                -3.0
+              ],
+              "size": [
+                6,
+                6,
+                6
+              ],
+              "uv": [
+                0,
+                64
+              ]
+            }
+          ]
+        },
+        {
+          "name": "l1",
+          "pivot": [
+            0,
+            6,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -5.0,
+                6,
+                -5.0
+              ],
+              "size": [
+                10,
+                6,
+                10
+              ],
+              "uv": [
+                216,
+                36
+              ]
+            }
+          ]
+        },
+        {
+          "name": "l2",
+          "pivot": [
+            0,
+            12,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -7.0,
+                12,
+                -7.0
+              ],
+              "size": [
+                14,
+                6,
+                14
+              ],
+              "uv": [
+                160,
+                36
+              ]
+            }
+          ]
+        },
+        {
+          "name": "l3",
+          "pivot": [
+            0,
+            18,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -9.0,
+                18,
+                -9.0
+              ],
+              "size": [
+                18,
+                6,
+                18
+              ],
+              "uv": [
+                88,
+                36
+              ]
+            }
+          ]
+        },
+        {
+          "name": "l4",
+          "pivot": [
+            0,
+            24,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -11.0,
+                24,
+                -11.0
+              ],
+              "size": [
+                22,
+                6,
+                22
+              ],
+              "uv": [
+                0,
+                36
+              ]
+            }
+          ]
+        },
+        {
+          "name": "l5",
+          "pivot": [
+            0,
+            30,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -13.0,
+                30,
+                -13.0
+              ],
+              "size": [
+                26,
+                6,
+                26
+              ],
+              "uv": [
+                120,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "l6",
+          "pivot": [
+            0,
+            36,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -15.0,
+                36,
+                -15.0
+              ],
+              "size": [
+                30,
+                6,
+                30
+              ],
+              "uv": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

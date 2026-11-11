@@ -1,0 +1,21 @@
+{
+  "rank": "E",
+  "category": "study",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "cast.earth",
+      "count": 20,
+      "label": "guild.isekai_mahou.target.v08.cast_earth",
+      "icon": "isekai_mahou:essence_earth"
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 70,
+    "reputation": {
+      "academy": 10
+    }
+  },
+  "faction": "academy"
+}

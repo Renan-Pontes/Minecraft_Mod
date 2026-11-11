@@ -1,0 +1,16 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:windswept_hills",
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:windswept_forest"
+  ],
+  "spawners": [
+    {
+      "type": "isekai_mahou:griffin",
+      "weight": 3,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

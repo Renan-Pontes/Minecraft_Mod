@@ -1,0 +1,14 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:profane_altar",
+        "processors": "isekai_mahou:profane_altar_decay",
+        "projection": "rigid"
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_chestplate",
+  "pattern": [
+    "W W",
+    "WRW",
+    "WLW"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:black_wool"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:warlock_chestplate",
+    "count": 1
+  }
+}

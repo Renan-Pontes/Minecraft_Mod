@@ -1,0 +1,21 @@
+{
+  "rank": "E",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "#minecraft:village",
+      "label": "guild.isekai_mahou.place.village"
+    }
+  ],
+  "rewards": {
+    "coins": 5,
+    "xp": 40,
+    "points": 10,
+    "items": [
+      {
+        "id": "minecraft:map",
+        "count": 1
+      }
+    ]
+  }
+}

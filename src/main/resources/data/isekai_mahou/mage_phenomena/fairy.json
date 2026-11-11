@@ -1,0 +1,16 @@
+{
+  "category": "creature",
+  "elements": [
+    "light",
+    "nature"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "isekai_mahou:fairy_spawn_egg",
+    "minecraft:glow_berries"
+  ],
+  "order": 46,
+  "entities": [
+    "isekai_mahou:fairy"
+  ]
+}

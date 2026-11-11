@@ -1,0 +1,115 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.twilight_orb",
+        "texture_width": 64,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 2,
+        "visible_bounds_offset": [
+          0,
+          0.4,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "core",
+          "pivot": [
+            0.0,
+            6.4,
+            0.0
+          ],
+          "parent": "root",
+          "cubes": [
+            {
+              "origin": [
+                -2.5,
+                4.0,
+                -2.5
+              ],
+              "size": [
+                5,
+                5,
+                5
+              ],
+              "uv": [
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "rings",
+          "pivot": [
+            0.0,
+            6.4,
+            0.0
+          ],
+          "parent": "root",
+          "cubes": [
+            {
+              "origin": [
+                -4.5,
+                6.0,
+                -0.5
+              ],
+              "size": [
+                9,
+                1,
+                1
+              ],
+              "uv": [
+                44,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -0.5,
+                6.0,
+                -4.5
+              ],
+              "size": [
+                1,
+                1,
+                9
+              ],
+              "uv": [
+                20,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -0.5,
+                2.0,
+                -0.5
+              ],
+              "size": [
+                1,
+                9,
+                1
+              ],
+              "uv": [
+                40,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

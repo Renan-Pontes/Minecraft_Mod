@@ -1,0 +1,15 @@
+{
+  "rank": "A",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:void_crawler",
+      "count": 4
+    }
+  ],
+  "rewards": {
+    "coins": 36,
+    "xp": 480,
+    "points": 60
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "isekai_mahou:block/arcane_stone_generator"
+    },
+    "active=true": {
+      "model": "isekai_mahou:block/arcane_stone_generator_active"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "rank": "B",
+  "category": "study",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "reaction.overload",
+      "count": 4,
+      "label": "guild.isekai_mahou.target.v08.overload",
+      "icon": "minecraft:tnt"
+    },
+    {
+      "type": "counter",
+      "key": "reaction.any",
+      "count": 25,
+      "label": "guild.isekai_mahou.target.v08.reactions",
+      "icon": "minecraft:brewing_stand"
+    }
+  ],
+  "rewards": {
+    "coins": 25,
+    "xp": 320,
+    "glyph": "random",
+    "reputation": {
+      "academy": 40
+    }
+  },
+  "faction": "academy",
+  "standing": "honored"
+}

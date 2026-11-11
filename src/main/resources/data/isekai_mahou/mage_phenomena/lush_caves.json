@@ -1,0 +1,15 @@
+{
+  "category": "biome",
+  "elements": [
+    "nature",
+    "light"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:glow_berries"
+  ],
+  "order": 58,
+  "biomes": [
+    "minecraft:lush_caves"
+  ]
+}

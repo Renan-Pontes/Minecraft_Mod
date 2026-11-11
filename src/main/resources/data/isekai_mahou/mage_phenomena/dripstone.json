@@ -1,0 +1,15 @@
+{
+  "category": "block",
+  "elements": [
+    "earth"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:pointed_dripstone"
+  ],
+  "order": 14,
+  "blocks": [
+    "minecraft:pointed_dripstone",
+    "minecraft:dripstone_block"
+  ]
+}

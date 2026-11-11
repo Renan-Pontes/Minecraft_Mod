@@ -1,0 +1,38 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "#c:is_plains",
+      "#minecraft:is_forest",
+      "#minecraft:is_taiga",
+      "#minecraft:is_savanna"
+    ]
+  },
+  "spawners": [
+    {
+      "type": "isekai_mahou:goblin",
+      "weight": 15,
+      "minCount": 2,
+      "maxCount": 5
+    },
+    {
+      "type": "isekai_mahou:goblin_archer",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "isekai_mahou:goblin_shaman",
+      "weight": 3,
+      "minCount": 1,
+      "maxCount": 1
+    },
+    {
+      "type": "isekai_mahou:hobgoblin",
+      "weight": 3,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

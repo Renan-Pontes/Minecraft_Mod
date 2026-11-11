@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_helmet",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/helmet"
+    },
+    {
+      "item": "minecraft:green_wool"
+    },
+    {
+      "item": "minecraft:arrow"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:ranger_helmet",
+    "count": 1
+  }
+}

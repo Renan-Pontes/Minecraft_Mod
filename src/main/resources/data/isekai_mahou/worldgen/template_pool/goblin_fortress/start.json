@@ -1,0 +1,14 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:goblin_fortress/fortress",
+        "processors": "isekai_mahou:goblin_fortress_decay",
+        "projection": "rigid"
+      }
+    }
+  ]
+}

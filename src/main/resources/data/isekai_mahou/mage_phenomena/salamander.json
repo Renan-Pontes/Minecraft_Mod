@@ -1,0 +1,15 @@
+{
+  "category": "creature",
+  "elements": [
+    "fire"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "isekai_mahou:salamander_spawn_egg",
+    "minecraft:fire_charge"
+  ],
+  "order": 43,
+  "entities": [
+    "isekai_mahou:salamander"
+  ]
+}

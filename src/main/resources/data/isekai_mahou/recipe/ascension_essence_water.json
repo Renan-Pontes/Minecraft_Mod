@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    {
+      "item": "minecraft:prismarine_shard"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:essence_water",
+    "count": 1
+  }
+}

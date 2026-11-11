@@ -1,0 +1,8 @@
+{
+  "parent": "isekai_mahou:block/shrine_altar_template",
+  "textures": {
+    "side": "isekai_mahou:block/shrine_altar_fire_side",
+    "top": "isekai_mahou:block/shrine_altar_fire_top",
+    "bottom": "isekai_mahou:block/elemental_brick_fire"
+  }
+}

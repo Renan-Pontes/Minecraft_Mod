@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GMG",
+    "GSG",
+    "PBP"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "S": {
+      "tag": "minecraft:saplings"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "B": {
+      "item": "minecraft:bone_block"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:accelerated_tree",
+    "count": 1
+  }
+}

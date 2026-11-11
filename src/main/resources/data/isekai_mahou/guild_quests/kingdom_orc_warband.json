@@ -1,0 +1,25 @@
+{
+  "rank": "C",
+  "category": "hunt",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "isekai_mahou:orc",
+        "isekai_mahou:orc_berserker"
+      ],
+      "count": 10,
+      "label": "guild.isekai_mahou.target.v08.orcs"
+    }
+  ],
+  "rewards": {
+    "coins": 16,
+    "xp": 200,
+    "glyph": "random",
+    "reputation": {
+      "kingdom": 30
+    }
+  },
+  "faction": "kingdom",
+  "standing": "friendly"
+}

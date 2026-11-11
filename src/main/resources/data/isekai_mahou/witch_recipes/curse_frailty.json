@@ -1,0 +1,16 @@
+{
+  "ingredients": [
+    "isekai_mahou:witch_bat_wing",
+    "minecraft:spider_eye",
+    "minecraft:bone_meal"
+  ],
+  "stirs": 2,
+  "heat": "low",
+  "result": {
+    "id": "isekai_mahou:bottled_curse_frailty",
+    "count": 3
+  },
+  "xp": 8,
+  "color": "#8E9A5B",
+  "element": "shadow"
+}

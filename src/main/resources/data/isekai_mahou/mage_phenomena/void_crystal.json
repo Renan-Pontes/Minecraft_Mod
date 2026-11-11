@@ -1,0 +1,15 @@
+{
+  "category": "block",
+  "elements": [
+    "void"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "isekai_mahou:void_crystal",
+    "minecraft:amethyst_cluster"
+  ],
+  "order": 21,
+  "blocks": [
+    "isekai_mahou:void_crystal"
+  ]
+}

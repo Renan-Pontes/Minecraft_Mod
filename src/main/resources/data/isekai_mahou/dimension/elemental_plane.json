@@ -1,0 +1,84 @@
+{
+  "type": "isekai_mahou:elemental_plane",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "isekai_mahou:elemental_plane",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "biomes": [
+        {
+          "biome": "isekai_mahou:ember_isles",
+          "parameters": {
+            "temperature": [
+              0.0,
+              1.0
+            ],
+            "humidity": [
+              -1.0,
+              0.0
+            ],
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "weirdness": 0.0,
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "isekai_mahou:suspended_sea",
+          "parameters": {
+            "temperature": [
+              -1.0,
+              0.0
+            ],
+            "humidity": [
+              0.0,
+              1.0
+            ],
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "weirdness": 0.0,
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "isekai_mahou:earthen_peaks",
+          "parameters": {
+            "temperature": [
+              -1.0,
+              0.0
+            ],
+            "humidity": [
+              -1.0,
+              0.0
+            ],
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "weirdness": 0.0,
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "isekai_mahou:storm_skies",
+          "parameters": {
+            "temperature": [
+              0.0,
+              1.0
+            ],
+            "humidity": [
+              0.0,
+              1.0
+            ],
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "weirdness": 0.0,
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        }
+      ]
+    }
+  }
+}

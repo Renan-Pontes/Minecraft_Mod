@@ -1,0 +1,13 @@
+{
+  "key.isekai_mahou.dodge": "Esquivar (rolamento)",
+  "message.isekai_mahou.anim.dodge_hungry": "Com fome demais para esquivar!",
+  "isekai_mahou.configuration.dodgeEnabled": "Esquiva ligada",
+  "isekai_mahou.configuration.dodgeCooldownTicks": "Recarga da esquiva (ticks)",
+  "isekai_mahou.configuration.dodgeInvulnerableTicks": "Invulnerabilidade da esquiva (ticks)",
+  "isekai_mahou.configuration.dodgeExhaustion": "Cansaço por esquiva",
+  "isekai_mahou.configuration.combatAnimations": "Animações de combate (combos, esquiva, guarda)",
+  "isekai_mahou.configuration.spellGestures": "Gestos ao conjurar magias",
+  "isekai_mahou.configuration.firstPersonArms": "Braços animados em primeira pessoa",
+  "isekai_mahou.configuration.doubleTapDodge": "Esquivar com toque duplo (Trás/Esquerda/Direita)",
+  "isekai_mahou.configuration.doubleTapWindowTicks": "Janela do toque duplo (ticks)"
+}

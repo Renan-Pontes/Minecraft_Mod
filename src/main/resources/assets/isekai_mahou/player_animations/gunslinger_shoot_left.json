@@ -1,0 +1,74 @@
+{
+  "version": 3,
+  "name": "gunslinger_shoot_left",
+  "author": "Isekai Mahou",
+  "description": "Tiro com a mao esquerda (pistolas duplas)",
+  "emote": {
+    "beginTick": 0,
+    "endTick": 10,
+    "stopTick": 14,
+    "degrees": true,
+    "nsfw": false,
+    "easeBeforeKeyframe": true,
+    "moves": [
+      {
+        "tick": 0,
+        "easing": "EASEOUTQUAD",
+        "leftArm": {
+          "pitch": -90,
+          "yaw": 4,
+          "roll": 0
+        },
+        "rightArm": {
+          "pitch": -80,
+          "yaw": -4,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 2,
+        "easing": "EASEOUTQUAD",
+        "leftArm": {
+          "pitch": -112,
+          "yaw": 4,
+          "roll": -4
+        },
+        "rightArm": {
+          "pitch": -80,
+          "yaw": -4,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 7,
+        "easing": "EASEINOUTSINE",
+        "leftArm": {
+          "pitch": -90,
+          "yaw": 4,
+          "roll": 0
+        },
+        "rightArm": {
+          "pitch": -80,
+          "yaw": -4,
+          "roll": 0
+        }
+      },
+      {
+        "tick": 10,
+        "easing": "EASEINOUTSINE",
+        "leftArm": {
+          "pitch": -90,
+          "yaw": 4,
+          "roll": 0
+        },
+        "rightArm": {
+          "pitch": -80,
+          "yaw": -4,
+          "roll": 0
+        }
+      }
+    ],
+    "isLoop": false,
+    "returnTick": 0
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "rank": "S",
+  "objectives": [
+    {
+      "type": "explore",
+      "dimension": "isekai_mahou:celestial_sanctuary"
+    }
+  ],
+  "rewards": {
+    "coins": 70,
+    "xp": 900,
+    "points": 100
+  }
+}

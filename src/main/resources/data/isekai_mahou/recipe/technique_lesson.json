@@ -1,0 +1,39 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:ink_sac"
+    },
+    [
+      {
+        "item": "isekai_mahou:essence_arcane"
+      },
+      {
+        "item": "isekai_mahou:essence_fire"
+      },
+      {
+        "item": "isekai_mahou:essence_water"
+      },
+      {
+        "item": "isekai_mahou:essence_earth"
+      },
+      {
+        "item": "isekai_mahou:essence_wind"
+      },
+      {
+        "item": "isekai_mahou:essence_light"
+      },
+      {
+        "item": "isekai_mahou:essence_shadow"
+      }
+    ]
+  ],
+  "result": {
+    "id": "isekai_mahou:technique_lesson",
+    "count": 1
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "ingredients": [
+    "minecraft:feather",
+    "minecraft:rabbit_foot",
+    "isekai_mahou:witch_moonpetal"
+  ],
+  "stirs": 2,
+  "heat": "low",
+  "moon_phases": [
+    0,
+    1,
+    5,
+    6,
+    7
+  ],
+  "result": {
+    "id": "isekai_mahou:witch_elixir_feather",
+    "count": 3
+  },
+  "xp": 10,
+  "color": "#DDE7F5",
+  "element": "water"
+}

@@ -1,0 +1,15 @@
+{
+  "category": "creature",
+  "elements": [
+    "lightning"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "isekai_mahou:storm_hawk_spawn_egg",
+    "minecraft:lightning_rod"
+  ],
+  "order": 48,
+  "entities": [
+    "isekai_mahou:storm_hawk"
+  ]
+}

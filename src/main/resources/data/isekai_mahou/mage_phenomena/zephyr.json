@@ -1,0 +1,21 @@
+{
+  "category": "boss",
+  "elements": [
+    "wind",
+    "lightning"
+  ],
+  "rarity": "legendary",
+  "icon": [
+    "isekai_mahou:guardian_core_wind"
+  ],
+  "order": 94,
+  "entities": [
+    "isekai_mahou:zephyr"
+  ],
+  "memory": [
+    "boss.isekai_mahou.zephyr",
+    "boss.zephyr",
+    "kill.isekai_mahou.zephyr"
+  ],
+  "repeatable": false
+}

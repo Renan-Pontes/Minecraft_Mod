@@ -1,0 +1,22 @@
+{
+  "rank": "D",
+  "category": "nature",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "guild.plant",
+      "count": 40,
+      "label": "guild.isekai_mahou.target.v08.plant",
+      "icon": "minecraft:birch_sapling"
+    }
+  ],
+  "rewards": {
+    "coins": 10,
+    "xp": 120,
+    "points": 16,
+    "glyph": "random",
+    "reputation": {
+      "wildfolk": 30
+    }
+  }
+}

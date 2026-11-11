@@ -1,0 +1,25 @@
+{
+  "structures": [
+    {
+      "structure": "isekai_mahou:capital_nordheim",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "isekai_mahou:kingdom_ring",
+    "distance": 36,
+    "spread": 6,
+    "count": 6,
+    "salt": 1946300804,
+    "preferred_biomes": [
+      "minecraft:snowy_plains",
+      "minecraft:snowy_taiga",
+      "minecraft:ice_spikes"
+    ],
+    "candidates": [
+      4,
+      5,
+      0
+    ]
+  }
+}

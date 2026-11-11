@@ -1,0 +1,15 @@
+{
+  "category": "creature",
+  "elements": [
+    "fire",
+    "wind"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:ghast_tear"
+  ],
+  "order": 29,
+  "entities": [
+    "minecraft:ghast"
+  ]
+}

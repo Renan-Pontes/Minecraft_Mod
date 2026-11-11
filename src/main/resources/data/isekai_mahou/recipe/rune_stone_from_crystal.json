@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "BBB",
+    "BMB",
+    "BBB"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:stone_bricks"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:rune_stone",
+    "count": 8
+  }
+}

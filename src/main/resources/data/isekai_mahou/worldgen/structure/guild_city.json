@@ -1,0 +1,11 @@
+{
+  "type": "isekai_mahou:guild_city",
+  "step": "strongholds",
+  "terrain_adaptation": "beard_box",
+  "spawn_overrides": {},
+  "biomes": "#isekai_mahou:has_structure/guild_city",
+  "capital": false,
+  "size": 2,
+  "max_slope": 36,
+  "max_water": 0.3
+}

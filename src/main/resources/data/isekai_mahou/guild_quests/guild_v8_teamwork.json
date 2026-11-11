@@ -1,0 +1,26 @@
+{
+  "rank": "E",
+  "category": "kill",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "guild.hired",
+      "count": 1,
+      "absolute": true,
+      "label": "guild.isekai_mahou.target.v08.hired",
+      "icon": "isekai_mahou:adventurer_spawn_egg"
+    },
+    {
+      "type": "counter",
+      "key": "guild.companion_kills",
+      "count": 10,
+      "label": "guild.isekai_mahou.target.v08.companion_kills",
+      "icon": "minecraft:iron_sword"
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 70,
+    "points": 10
+  }
+}

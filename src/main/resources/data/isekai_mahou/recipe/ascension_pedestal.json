@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " M ",
+    " S ",
+    "SSS"
+  ],
+  "key": {
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "S": {
+      "item": "minecraft:stone_bricks"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:ascension_pedestal",
+    "count": 2
+  }
+}

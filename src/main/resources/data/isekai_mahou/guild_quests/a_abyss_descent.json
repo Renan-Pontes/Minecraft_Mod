@@ -1,0 +1,14 @@
+{
+  "rank": "A",
+  "objectives": [
+    {
+      "type": "explore",
+      "dimension": "isekai_mahou:abyss"
+    }
+  ],
+  "rewards": {
+    "coins": 38,
+    "xp": 500,
+    "points": 62
+  }
+}

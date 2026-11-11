@@ -1,0 +1,68 @@
+{
+  "offers": [
+    {
+      "rank": "F",
+      "price": 18,
+      "item": {
+        "id": "isekai_mahou:mana_crystal",
+        "count": 3
+      },
+      "standing": "friendly"
+    },
+    {
+      "rank": "E",
+      "price": 6,
+      "item": {
+        "id": "minecraft:potion",
+        "count": 1,
+        "potion": "minecraft:strong_healing"
+      },
+      "standing": "friendly"
+    },
+    {
+      "rank": "D",
+      "price": 18,
+      "item": {
+        "id": "minecraft:experience_bottle",
+        "count": 16
+      },
+      "standing": "honored"
+    },
+    {
+      "rank": "D",
+      "price": 45,
+      "glyph_tier": 3,
+      "standing": "honored"
+    },
+    {
+      "rank": "B",
+      "price": 85,
+      "glyph_tier": 4,
+      "standing": "revered"
+    },
+    {
+      "rank": "B",
+      "price": 45,
+      "item": {
+        "id": "minecraft:totem_of_undying",
+        "count": 1
+      },
+      "standing": "revered"
+    },
+    {
+      "rank": "A",
+      "price": 60,
+      "item": {
+        "id": "minecraft:enchanted_golden_apple",
+        "count": 1
+      },
+      "standing": "exalted"
+    },
+    {
+      "rank": "S",
+      "price": 220,
+      "legend_scroll": true,
+      "standing": "exalted"
+    }
+  ]
+}

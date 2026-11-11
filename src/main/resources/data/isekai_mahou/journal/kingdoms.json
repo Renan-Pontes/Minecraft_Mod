@@ -1,0 +1,155 @@
+{
+  "chapters": [
+    {
+      "id": "kingdoms",
+      "order": 22,
+      "color": "#3F6FD8",
+      "icon": [
+        "isekai_mahou:faction_board",
+        "isekai_mahou:adventurer_spawn_egg",
+        "minecraft:bell"
+      ],
+      "steps": [
+        {
+          "id": "reach_city",
+          "xp": 60,
+          "icon": "minecraft:bell",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "visit.capital",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "visit.city",
+                "min": 1
+              }
+            ]
+          },
+          "locate": {
+            "tag": "isekai_mahou:city",
+            "dimension": "minecraft:overworld"
+          },
+          "requires": [
+            "isekai_mahou:city_heart"
+          ]
+        },
+        {
+          "id": "hire_adventurer",
+          "xp": 50,
+          "icon": "isekai_mahou:adventurer_spawn_egg",
+          "condition": {
+            "type": "counter",
+            "key": "guild.hired",
+            "min": 1
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:guild_coin",
+                "count": 8
+              }
+            ]
+          }
+        },
+        {
+          "id": "faction_quest",
+          "xp": 50,
+          "icon": "isekai_mahou:faction_board",
+          "condition": {
+            "type": "counter",
+            "key": "guild.faction_quests",
+            "min": 1
+          }
+        },
+        {
+          "id": "faction_friendly",
+          "xp": 80,
+          "icon": "minecraft:emerald",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "rep.guild",
+                "min": 100
+              },
+              {
+                "type": "counter",
+                "key": "rep.kingdom",
+                "min": 100
+              },
+              {
+                "type": "counter",
+                "key": "rep.academy",
+                "min": 100
+              },
+              {
+                "type": "counter",
+                "key": "rep.church",
+                "min": 100
+              },
+              {
+                "type": "counter",
+                "key": "rep.underworld",
+                "min": 100
+              },
+              {
+                "type": "counter",
+                "key": "rep.wildfolk",
+                "min": 100
+              },
+              {
+                "type": "counter",
+                "key": "rep.horde",
+                "min": 100
+              }
+            ]
+          }
+        },
+        {
+          "id": "reactions",
+          "xp": 60,
+          "icon": "minecraft:blaze_powder",
+          "condition": {
+            "type": "counter",
+            "key": "reaction.any",
+            "min": 10
+          }
+        },
+        {
+          "id": "counterspell",
+          "xp": 80,
+          "icon": "minecraft:echo_shard",
+          "optional": true,
+          "condition": {
+            "type": "counter",
+            "key": "counter.success",
+            "min": 1
+          },
+          "requires": [
+            "isekai_mahou:counterspell"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 450,
+        "items": [
+          {
+            "id": "isekai_mahou:guild_coin",
+            "count": 25
+          },
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 6
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 3
+      }
+    }
+  ]
+}

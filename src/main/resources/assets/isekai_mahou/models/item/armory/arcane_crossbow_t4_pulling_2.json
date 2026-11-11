@@ -1,0 +1,24 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "textures": {
+    "particle": "isekai_mahou:item/arcane_crossbow_t4"
+  },
+  "base": {
+    "parent": "isekai_mahou:item/armory/arcane_crossbow_t4_pulling_2_held"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": "isekai_mahou:item/arcane_crossbow_t4"
+      }
+    },
+    "fixed": {
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": "isekai_mahou:item/arcane_crossbow_t4"
+      }
+    }
+  }
+}

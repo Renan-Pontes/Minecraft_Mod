@@ -1,0 +1,17 @@
+{
+  "category": "sky",
+  "elements": [
+    "astral"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:firework_star"
+  ],
+  "order": 70,
+  "time": [
+    13400,
+    22600
+  ],
+  "sky": true,
+  "clear": true
+}

@@ -1,0 +1,51 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:nether_star",
+    "minecraft:dragon_breath",
+    {
+      "id": "isekai_mahou:guardian_core_fire",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:guardian_core_water",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:guardian_core_earth",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:guardian_core_wind",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:guardian_core_light",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:guardian_core_shadow",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:false_hydra_heart",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:manticore_stinger",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:arrancar_soul_shard",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:twilight_heart",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:primordial_dragon_heart",
+      "required": false
+    }
+  ]
+}

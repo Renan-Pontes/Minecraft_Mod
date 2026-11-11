@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "isekai_mahou:guardian_temple_fire",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 18,
+    "separation": 6,
+    "salt": 718293501
+  }
+}

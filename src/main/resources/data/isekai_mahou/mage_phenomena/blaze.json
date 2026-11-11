@@ -1,0 +1,14 @@
+{
+  "category": "creature",
+  "elements": [
+    "fire"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:blaze_rod"
+  ],
+  "order": 23,
+  "entities": [
+    "minecraft:blaze"
+  ]
+}

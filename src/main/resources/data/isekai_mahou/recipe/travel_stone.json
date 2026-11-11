@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "CEC",
+    "ADA",
+    "SOS"
+  ],
+  "key": {
+    "C": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "A": {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "S": {
+      "item": "minecraft:chiseled_stone_bricks"
+    },
+    "O": {
+      "item": "minecraft:crying_obsidian"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:travel_stone",
+    "count": 1
+  }
+}

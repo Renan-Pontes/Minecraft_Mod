@@ -1,0 +1,26 @@
+{
+  "glyph.isekai_mahou.meteor": "Meteor",
+  "glyph.isekai_mahou.meteor.desc": "A rift opens in the sky and a blazing rock crashes onto the aimed point: area effects, shockwave and a crater. Amplify = bigger rock; Split = more rocks.",
+  "glyph.isekai_mahou.meteor_shower": "Meteor Shower",
+  "glyph.isekai_mahou.meteor_shower.desc": "Ultimate: the sky darkens and bleeds; for 15 s, 10 + 4×Circle meteors fall on the aimed area, each with the effects and its own crater. Can be countered while it lasts.",
+  "glyph.isekai_mahou.transcend": "Transcendence",
+  "glyph.isekai_mahou.transcend.desc": "Ultimate: awaken for 30 s with a halo and wings of light: flight, +50% power, ×3 mana regeneration, halved cooldowns and the effects pulsing on enemies within 6 blocks. Then, Magic Exhaustion.",
+  "glyph.isekai_mahou.colossus": "Colossus",
+  "glyph.isekai_mahou.colossus.desc": "Ultimate: summons a 12-block spectral giant in the element's color for 30 s. It follows you, cuts in wide arcs, stomps the ground applying the effects and blocks projectiles coming from the front.",
+
+  "legend.isekai_mahou.meteor": "Meteor",
+  "legend.isekai_mahou.meteor_swarm": "Meteor Swarm",
+  "legend.isekai_mahou.awakening": "Awakening",
+  "legend.isekai_mahou.spectral_colossus": "Spectral Colossus",
+
+  "entity.isekai_mahou.meteor": "Meteor",
+  "entity.isekai_mahou.spectral_colossus": "Spectral Colossus",
+
+  "effect.isekai_mahou.transcendence": "Transcendence",
+  "effect.isekai_mahou.transcendence.description": "Flight, +50% spell power, ×3 mana and halved cooldowns. When it ends, Magic Exhaustion.",
+
+  "message.isekai_mahou.ultimates.transcend_start": "✦ TRANSCENDENCE ✦  %s s",
+  "message.isekai_mahou.ultimates.transcend_fading": "Your Transcendence is fading...",
+  "message.isekai_mahou.ultimates.transcend_end": "The power fades... Magic Exhaustion.",
+  "message.isekai_mahou.ultimates.colossus_summon": "The Spectral Colossus awakens! (%s s)"
+}

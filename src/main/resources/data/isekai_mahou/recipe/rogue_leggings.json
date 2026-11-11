@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_leggings",
+  "pattern": [
+    "KNK",
+    "L L",
+    "K K"
+  ],
+  "key": {
+    "K": {
+      "item": "minecraft:black_wool"
+    },
+    "N": {
+      "item": "minecraft:iron_nugget"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:rogue_leggings",
+    "count": 1
+  }
+}

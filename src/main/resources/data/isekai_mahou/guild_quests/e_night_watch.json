@@ -1,0 +1,22 @@
+{
+  "rank": "E",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "minecraft:zombie",
+        "minecraft:skeleton",
+        "minecraft:spider",
+        "minecraft:creeper",
+        "minecraft:witch"
+      ],
+      "count": 15,
+      "label": "guild.isekai_mahou.target.monsters"
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 55,
+    "points": 12
+  }
+}

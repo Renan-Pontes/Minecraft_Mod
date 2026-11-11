@@ -1,0 +1,72 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.5,
+  "downfall": 0.0,
+  "effects": {
+    "sky_color": 8030888,
+    "fog_color": 10135228,
+    "water_color": 5929640,
+    "water_fog_color": 1714762,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "music": {
+      "sound": "minecraft:music.overworld.stony_peaks",
+      "min_delay": 12000,
+      "max_delay": 24000,
+      "replace_current_music": false
+    },
+    "grass_color": 8048544,
+    "foliage_color": 6994064,
+    "particle": {
+      "options": {
+        "type": "minecraft:white_ash"
+      },
+      "probability": 0.03
+    },
+    "additions_sound": {
+      "sound": "minecraft:weather.rain.above",
+      "tick_chance": 0.004
+    }
+  },
+  "spawners": {
+    "monster": [],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "isekai_mahou:ep_ore_iron",
+      "isekai_mahou:ep_ore_copper",
+      "isekai_mahou:ep_ore_lapis"
+    ],
+    [
+      "isekai_mahou:ep_storm_clouds"
+    ],
+    [
+      "isekai_mahou:ep_waterfall"
+    ],
+    [
+      "isekai_mahou:ep_trees_storm",
+      "isekai_mahou:ep_patch_grass",
+      "isekai_mahou:ep_flowers"
+    ],
+    []
+  ]
+}

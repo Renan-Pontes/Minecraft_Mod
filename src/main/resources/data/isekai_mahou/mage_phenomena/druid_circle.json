@@ -1,0 +1,15 @@
+{
+  "category": "structure",
+  "elements": [
+    "earth",
+    "nature"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:mossy_cobblestone"
+  ],
+  "order": 303,
+  "structures": [
+    "isekai_mahou:druid_circle"
+  ]
+}

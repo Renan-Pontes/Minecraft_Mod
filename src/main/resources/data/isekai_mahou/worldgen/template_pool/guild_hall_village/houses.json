@@ -1,0 +1,50 @@
+{
+  "fallback": "isekai_mahou:guild_hall_village/road_ends",
+  "elements": [
+    {
+      "weight": 3,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:guild_hall_village/cottage_oak",
+        "processors": "isekai_mahou:guild_hall_village_aging",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:guild_hall_village/cottage_spruce",
+        "processors": "isekai_mahou:guild_hall_village_aging",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:guild_hall_village/smithy",
+        "processors": "isekai_mahou:guild_hall_village_aging",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:guild_hall_village/adventurer_camp",
+        "processors": "minecraft:empty",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:guild_hall_village/market",
+        "processors": "minecraft:empty",
+        "projection": "rigid"
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "rank": "E",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:poison_jelly",
+      "count": 4
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 50,
+    "points": 12
+  }
+}

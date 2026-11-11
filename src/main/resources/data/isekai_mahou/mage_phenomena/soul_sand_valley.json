@@ -1,0 +1,14 @@
+{
+  "category": "biome",
+  "elements": [
+    "hellfire"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:soul_sand"
+  ],
+  "order": 60,
+  "biomes": [
+    "minecraft:soul_sand_valley"
+  ]
+}

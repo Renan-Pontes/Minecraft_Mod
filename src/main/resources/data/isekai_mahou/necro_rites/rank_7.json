@@ -1,0 +1,37 @@
+{
+  "rank": 7,
+  "xp": 5000,
+  "glyph_tier": 5,
+  "element_xp": {
+    "shadow": 220,
+    "earth": 140
+  },
+  "servant_cap": 2,
+  "servant_gift": 3,
+  "required_skulls": 4,
+  "min_circle": 6,
+  "souls": [
+    {
+      "entity": "minecraft:wither",
+      "count": 1
+    },
+    {
+      "entity": "isekai_mahou:orc_lord",
+      "count": 1,
+      "fallback": "minecraft:warden",
+      "fallback_count": 1
+    },
+    {
+      "entity": "isekai_mahou:minotaur",
+      "count": 1,
+      "fallback": "minecraft:ravager",
+      "fallback_count": 2
+    },
+    {
+      "entity": "isekai_mahou:lich",
+      "count": 1,
+      "fallback": "minecraft:wither_skeleton",
+      "fallback_count": 10
+    }
+  ]
+}

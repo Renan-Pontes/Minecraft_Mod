@@ -1,0 +1,16 @@
+{
+  "rank": "B",
+  "category": "trial",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:orc_lord",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 35,
+    "xp": 450
+  },
+  "trial": true
+}

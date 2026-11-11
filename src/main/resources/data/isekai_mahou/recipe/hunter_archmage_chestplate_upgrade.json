@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "isekai_mahou:arcane_upgrade_template"
+    }
+  ],
+  "template": {
+    "item": "isekai_mahou:arcane_upgrade_template"
+  },
+  "type": "minecraft:smithing_transform",
+  "base": {
+    "item": "isekai_mahou:hunter_master_chestplate"
+  },
+  "addition": {
+    "tag": "isekai_mahou:outfits/upgrade/archmage"
+  },
+  "result": {
+    "id": "isekai_mahou:hunter_archmage_chestplate",
+    "count": 1
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "ingredients": [
+    "isekai_mahou:essence_arcane",
+    "isekai_mahou:mana_crystal",
+    "minecraft:glow_berries",
+    "isekai_mahou:essence_arcane"
+  ],
+  "stirs": 4,
+  "heat": "high",
+  "moon_phases": [
+    3,
+    4,
+    5
+  ],
+  "result": {
+    "id": "isekai_mahou:mana_potion_superior",
+    "count": 2
+  },
+  "xp": 16,
+  "color": "#5A3CF0",
+  "element": "water"
+}

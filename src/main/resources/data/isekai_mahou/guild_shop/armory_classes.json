@@ -1,0 +1,172 @@
+{
+  "offers": [
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:longsword_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:holy_mace_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:greataxe_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:ki_gauntlets_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:knight_blade_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:longbow_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:twin_daggers_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:lute_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:arcane_crossbow_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:hunter_crossbow_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 25,
+      "item": {
+        "id": "isekai_mahou:knight_shield",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:longsword_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:holy_mace_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:greataxe_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:ki_gauntlets_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:knight_blade_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:longbow_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:twin_daggers_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:lute_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:arcane_crossbow_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:hunter_crossbow_t2",
+        "count": 1
+      }
+    }
+  ]
+}

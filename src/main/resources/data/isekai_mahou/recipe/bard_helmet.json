@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_helmet",
+  "pattern": [
+    "PFP",
+    "P P"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:pink_wool"
+    },
+    "F": {
+      "item": "minecraft:feather"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:bard_helmet",
+    "count": 1
+  }
+}

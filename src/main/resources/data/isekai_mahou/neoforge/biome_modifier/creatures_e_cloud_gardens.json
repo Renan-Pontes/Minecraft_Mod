@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#isekai_mahou:creatures_e/cloud_gardens",
+  "spawners": [
+    {
+      "type": "isekai_mahou:cherub",
+      "weight": 20,
+      "minCount": 2,
+      "maxCount": 3
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "rank": "B",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "isekai_mahou:greater_fire_elemental",
+        "isekai_mahou:greater_water_elemental",
+        "isekai_mahou:greater_earth_elemental",
+        "isekai_mahou:greater_air_elemental"
+      ],
+      "count": 2,
+      "label": "guild.isekai_mahou.target.greater_elementals"
+    }
+  ],
+  "rewards": {
+    "coins": 26,
+    "xp": 340,
+    "points": 46
+  }
+}

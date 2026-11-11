@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "isekai_mahou:essence_earth"
+  },
+  "base": [
+    {
+      "item": "isekai_mahou:runic_blade_t2"
+    }
+  ],
+  "addition": {
+    "item": "isekai_mahou:mana_crystal"
+  },
+  "result": {
+    "id": "isekai_mahou:runic_blade_t3",
+    "count": 1
+  }
+}

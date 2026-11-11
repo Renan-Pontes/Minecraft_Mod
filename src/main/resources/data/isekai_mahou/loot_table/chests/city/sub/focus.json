@@ -1,0 +1,47 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "isekai_mahou:focus_fire"
+    }
+  ],
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:focus_fire",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:focus_water",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:focus_earth",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:focus_wind",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:focus_light",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:focus_shadow",
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}

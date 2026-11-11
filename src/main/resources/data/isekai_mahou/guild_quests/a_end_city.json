@@ -1,0 +1,20 @@
+{
+  "rank": "A",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "minecraft:end_city"
+    },
+    {
+      "type": "gather",
+      "item": "minecraft:shulker_shell",
+      "count": 4
+    }
+  ],
+  "rewards": {
+    "coins": 38,
+    "xp": 500,
+    "points": 62,
+    "glyph": "random"
+  }
+}

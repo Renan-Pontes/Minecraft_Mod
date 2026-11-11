@@ -1,0 +1,19 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "#c:is_swamp",
+      "#minecraft:is_forest",
+      "#c:is_plains"
+    ]
+  },
+  "spawners": [
+    {
+      "type": "isekai_mahou:slime",
+      "weight": 22,
+      "minCount": 1,
+      "maxCount": 3
+    }
+  ]
+}

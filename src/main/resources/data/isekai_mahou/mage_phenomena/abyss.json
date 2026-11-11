@@ -1,0 +1,16 @@
+{
+  "category": "dimension",
+  "elements": [
+    "abyss",
+    "shadow"
+  ],
+  "rarity": "epic",
+  "icon": [
+    "isekai_mahou:abyssal_stone",
+    "isekai_mahou:essence_shadow"
+  ],
+  "order": 74,
+  "dimensions": [
+    "isekai_mahou:abyss"
+  ]
+}

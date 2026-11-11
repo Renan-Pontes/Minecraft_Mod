@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "isekai_mahou:block/sky_grass_top",
+    "side": "isekai_mahou:block/sky_grass_side",
+    "bottom": "isekai_mahou:block/sky_soil"
+  }
+}

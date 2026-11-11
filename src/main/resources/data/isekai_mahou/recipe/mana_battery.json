@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IGI",
+    "MEM",
+    "IGI"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_arcane"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:mana_battery",
+    "count": 1
+  }
+}

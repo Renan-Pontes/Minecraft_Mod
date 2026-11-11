@@ -1,0 +1,16 @@
+{
+  "rank": "S",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "minecraft:ender_dragon",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 80,
+    "xp": 1000,
+    "points": 110
+  }
+}

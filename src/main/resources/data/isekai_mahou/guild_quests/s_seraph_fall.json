@@ -1,0 +1,17 @@
+{
+  "rank": "S",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:seraph",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 80,
+    "xp": 1000,
+    "points": 110,
+    "glyph": "random"
+  }
+}

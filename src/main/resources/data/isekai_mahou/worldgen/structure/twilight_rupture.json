@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "#isekai_mahou:has_structure/twilight_rupture",
+  "step": "surface_structures",
+  "terrain_adaptation": "none",
+  "spawn_overrides": {},
+  "start_pool": "isekai_mahou:world_v09/twilight_rupture",
+  "size": 1,
+  "start_height": {
+    "absolute": 43
+  },
+  "max_distance_from_center": 80,
+  "use_expansion_hack": false
+}

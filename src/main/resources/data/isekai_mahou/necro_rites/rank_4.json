@@ -1,0 +1,33 @@
+{
+  "rank": 4,
+  "xp": 1500,
+  "glyph_tier": 3,
+  "element_xp": {
+    "shadow": 90,
+    "earth": 60
+  },
+  "servant_cap": 1,
+  "servant_gift": 1,
+  "required_skulls": 1,
+  "min_circle": 3,
+  "souls": [
+    {
+      "entity": "minecraft:enderman",
+      "count": 4
+    },
+    {
+      "entity": "minecraft:phantom",
+      "count": 3
+    },
+    {
+      "entity": "minecraft:drowned",
+      "count": 5
+    },
+    {
+      "entity": "isekai_mahou:orc",
+      "count": 5,
+      "fallback": "minecraft:pillager",
+      "fallback_count": 5
+    }
+  ]
+}

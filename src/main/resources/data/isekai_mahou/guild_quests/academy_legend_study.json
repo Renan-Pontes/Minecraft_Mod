@@ -1,0 +1,29 @@
+{
+  "rank": "S",
+  "category": "study",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "spell.legend",
+      "count": 1,
+      "label": "guild.isekai_mahou.target.v08.legend",
+      "icon": "isekai_mahou:spell_scroll"
+    }
+  ],
+  "rewards": {
+    "coins": 70,
+    "xp": 900,
+    "glyph": "random",
+    "items": [
+      {
+        "id": "isekai_mahou:mana_crystal",
+        "count": 8
+      }
+    ],
+    "reputation": {
+      "academy": 100
+    }
+  },
+  "faction": "academy",
+  "standing": "exalted"
+}

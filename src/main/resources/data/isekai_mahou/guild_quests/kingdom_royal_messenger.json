@@ -1,0 +1,31 @@
+{
+  "rank": "E",
+  "category": "explore",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "visit.city",
+      "count": 1,
+      "label": "guild.isekai_mahou.target.v08.new_city",
+      "icon": "minecraft:filled_map"
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 70,
+    "items": [
+      {
+        "id": "minecraft:map",
+        "count": 1
+      }
+    ],
+    "reputation": {
+      "kingdom": 22
+    }
+  },
+  "requires": [
+    "isekai_mahou:city_heart"
+  ],
+  "faction": "kingdom",
+  "standing": "friendly"
+}

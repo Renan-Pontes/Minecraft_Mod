@@ -1,0 +1,18 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "minecraft:nether_wastes",
+      "minecraft:basalt_deltas"
+    ]
+  },
+  "spawners": [
+    {
+      "type": "isekai_mahou:fire_slime",
+      "weight": 12,
+      "minCount": 1,
+      "maxCount": 3
+    }
+  ]
+}

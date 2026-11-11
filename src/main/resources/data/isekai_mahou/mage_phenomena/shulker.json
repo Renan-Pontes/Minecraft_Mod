@@ -1,0 +1,14 @@
+{
+  "category": "creature",
+  "elements": [
+    "gravity"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:shulker_shell"
+  ],
+  "order": 36,
+  "entities": [
+    "minecraft:shulker"
+  ]
+}

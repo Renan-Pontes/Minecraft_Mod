@@ -1,0 +1,84 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "isekai_mahou:item/zanpakuto"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "isekai_mahou:release": 1,
+        "isekai_mahou:archetype": 1
+      },
+      "model": "isekai_mahou:item/zanpakuto_shikai_weight"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:release": 1,
+        "isekai_mahou:archetype": 2
+      },
+      "model": "isekai_mahou:item/zanpakuto_shikai_petals"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:release": 1,
+        "isekai_mahou:archetype": 3
+      },
+      "model": "isekai_mahou:item/zanpakuto_shikai_frost"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:release": 1,
+        "isekai_mahou:archetype": 4
+      },
+      "model": "isekai_mahou:item/zanpakuto_shikai_flame"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:release": 1,
+        "isekai_mahou:archetype": 5
+      },
+      "model": "isekai_mahou:item/zanpakuto_shikai_brush"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:release": 2,
+        "isekai_mahou:archetype": 1
+      },
+      "model": "isekai_mahou:item/zanpakuto_bankai_weight"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:release": 2,
+        "isekai_mahou:archetype": 2
+      },
+      "model": "isekai_mahou:item/zanpakuto_bankai_petals"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:release": 2,
+        "isekai_mahou:archetype": 3
+      },
+      "model": "isekai_mahou:item/zanpakuto_bankai_frost"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:release": 2,
+        "isekai_mahou:archetype": 4
+      },
+      "model": "isekai_mahou:item/zanpakuto_bankai_flame"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:release": 2,
+        "isekai_mahou:archetype": 5
+      },
+      "model": "isekai_mahou:item/zanpakuto_bankai_brush"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:petals_out": 1
+      },
+      "model": "isekai_mahou:item/zanpakuto_petals_hilt"
+    }
+  ]
+}

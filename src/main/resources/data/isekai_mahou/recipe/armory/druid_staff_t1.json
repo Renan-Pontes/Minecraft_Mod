@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou_armory",
+  "pattern": [
+    "  E",
+    " L ",
+    "S  "
+  ],
+  "key": {
+    "E": {
+      "item": "isekai_mahou:essence_earth"
+    },
+    "L": {
+      "tag": "minecraft:leaves"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:druid_staff_t1",
+    "count": 1
+  }
+}

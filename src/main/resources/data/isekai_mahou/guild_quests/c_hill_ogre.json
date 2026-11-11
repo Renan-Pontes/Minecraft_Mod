@@ -1,0 +1,15 @@
+{
+  "rank": "C",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:ogre",
+      "count": 2
+    }
+  ],
+  "rewards": {
+    "coins": 15,
+    "xp": 170,
+    "points": 28
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "version": 3,
+  "name": "gunslinger_shoot",
+  "author": "Isekai Mahou",
+  "description": "Tiro com coice (braco direito)",
+  "emote": {
+    "beginTick": 0,
+    "endTick": 10,
+    "stopTick": 14,
+    "degrees": true,
+    "nsfw": false,
+    "easeBeforeKeyframe": true,
+    "moves": [
+      {
+        "tick": 0,
+        "easing": "EASEOUTQUAD",
+        "rightArm": {
+          "pitch": -90,
+          "yaw": -4,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": 6,
+          "yaw": 0,
+          "roll": -6
+        }
+      },
+      {
+        "tick": 2,
+        "easing": "EASEOUTQUAD",
+        "rightArm": {
+          "pitch": -112,
+          "yaw": -4,
+          "roll": 4
+        },
+        "leftArm": {
+          "pitch": 6,
+          "yaw": 0,
+          "roll": -6
+        }
+      },
+      {
+        "tick": 7,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -90,
+          "yaw": -4,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": 6,
+          "yaw": 0,
+          "roll": -6
+        }
+      },
+      {
+        "tick": 10,
+        "easing": "EASEINOUTSINE",
+        "rightArm": {
+          "pitch": -90,
+          "yaw": -4,
+          "roll": 0
+        },
+        "leftArm": {
+          "pitch": 6,
+          "yaw": 0,
+          "roll": -6
+        }
+      }
+    ],
+    "isLoop": false,
+    "returnTick": 0
+  }
+}

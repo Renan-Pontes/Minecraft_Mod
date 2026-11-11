@@ -1,0 +1,14 @@
+{
+  "category": "creature",
+  "elements": [
+    "earth"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:iron_ingot"
+  ],
+  "order": 30,
+  "entities": [
+    "minecraft:iron_golem"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "category": "sky",
+  "elements": [
+    "twilight"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:orange_dye"
+  ],
+  "order": 68,
+  "time": [
+    12000,
+    13400
+  ],
+  "sky": true,
+  "clear": true
+}

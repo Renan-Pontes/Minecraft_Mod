@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_helmet",
+  "pattern": [
+    "S S",
+    "LFL"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "L": {
+      "tag": "minecraft:leaves"
+    },
+    "F": {
+      "tag": "minecraft:small_flowers"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:druid_helmet",
+    "count": 1
+  }
+}

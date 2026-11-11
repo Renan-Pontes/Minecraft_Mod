@@ -1,0 +1,14 @@
+{
+  "category": "creature",
+  "elements": [
+    "ice"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:snowball"
+  ],
+  "order": 38,
+  "entities": [
+    "minecraft:snow_golem"
+  ]
+}

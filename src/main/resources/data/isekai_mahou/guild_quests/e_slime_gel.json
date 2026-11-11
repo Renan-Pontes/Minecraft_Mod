@@ -1,0 +1,15 @@
+{
+  "rank": "E",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "isekai_mahou:slime_gel",
+      "count": 10
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 40,
+    "points": 11
+  }
+}

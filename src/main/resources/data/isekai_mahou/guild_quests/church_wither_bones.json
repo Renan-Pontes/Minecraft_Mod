@@ -1,0 +1,21 @@
+{
+  "rank": "B",
+  "category": "faith",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "minecraft:wither_skeleton",
+      "count": 8
+    }
+  ],
+  "rewards": {
+    "coins": 25,
+    "xp": 320,
+    "glyph": "random",
+    "reputation": {
+      "church": 40
+    }
+  },
+  "faction": "church",
+  "standing": "honored"
+}

@@ -1,0 +1,24 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "textures": {
+    "particle": "isekai_mahou:item/rogue_throwing_knife"
+  },
+  "base": {
+    "parent": "isekai_mahou:item/class_rogue/rogue_throwing_knife_held"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": "isekai_mahou:item/rogue_throwing_knife"
+      }
+    },
+    "fixed": {
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": "isekai_mahou:item/rogue_throwing_knife"
+      }
+    }
+  }
+}

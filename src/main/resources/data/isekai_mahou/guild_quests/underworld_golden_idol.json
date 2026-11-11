@@ -1,0 +1,24 @@
+{
+  "rank": "C",
+  "category": "contract",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "minecraft:desert_pyramid"
+    },
+    {
+      "type": "gather",
+      "item": "minecraft:gold_block",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 16,
+    "xp": 200,
+    "reputation": {
+      "underworld": 30
+    }
+  },
+  "faction": "underworld",
+  "standing": "friendly"
+}

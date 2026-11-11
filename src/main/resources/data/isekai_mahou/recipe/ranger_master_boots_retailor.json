@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_master_boots",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/master/boots"
+    },
+    {
+      "item": "minecraft:green_wool"
+    },
+    {
+      "item": "minecraft:arrow"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:ranger_master_boots",
+    "count": 1
+  }
+}

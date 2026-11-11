@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "FMW",
+    "BDB",
+    "EMA"
+  ],
+  "key": {
+    "F": {
+      "item": "isekai_mahou:essence_fire"
+    },
+    "W": {
+      "item": "isekai_mahou:essence_water"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_earth"
+    },
+    "A": {
+      "item": "isekai_mahou:essence_wind"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "B": {
+      "item": "isekai_mahou:floating_stone_bricks"
+    },
+    "D": {
+      "item": "minecraft:diamond_block"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:convergence_altar",
+    "count": 1
+  }
+}

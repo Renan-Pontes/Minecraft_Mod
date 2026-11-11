@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "AMA",
+    "G G",
+    " G "
+  ],
+  "key": {
+    "A": {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:mana_ring",
+    "count": 1
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "category": "block",
+  "elements": [
+    "fire"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:lava_bucket"
+  ],
+  "order": 0,
+  "blocks": [
+    "minecraft:lava"
+  ]
+}

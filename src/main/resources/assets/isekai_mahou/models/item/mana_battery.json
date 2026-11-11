@@ -1,0 +1,29 @@
+{
+  "parent": "isekai_mahou:block/mana_battery_0",
+  "overrides": [
+    {
+      "predicate": {
+        "isekai_mahou:charge": 0.0001
+      },
+      "model": "isekai_mahou:block/mana_battery_1"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:charge": 0.34
+      },
+      "model": "isekai_mahou:block/mana_battery_2"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:charge": 0.67
+      },
+      "model": "isekai_mahou:block/mana_battery_3"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:charge": 1.0
+      },
+      "model": "isekai_mahou:block/mana_battery_4"
+    }
+  ]
+}

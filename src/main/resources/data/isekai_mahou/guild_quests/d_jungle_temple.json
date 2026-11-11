@@ -1,0 +1,14 @@
+{
+  "rank": "D",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "minecraft:jungle_pyramid"
+    }
+  ],
+  "rewards": {
+    "coins": 9,
+    "xp": 80,
+    "points": 16
+  }
+}

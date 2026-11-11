@@ -1,0 +1,16 @@
+{
+  "rank": "B",
+  "category": "trial",
+  "objectives": [
+    {
+      "type": "trial_clear",
+      "count": 1,
+      "rank": 3
+    }
+  ],
+  "rewards": {
+    "coins": 35,
+    "xp": 450
+  },
+  "trial": true
+}

@@ -1,0 +1,14 @@
+{
+  "category": "structure",
+  "elements": [
+    "arcane"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:chiseled_stone_bricks"
+  ],
+  "order": 305,
+  "structures": [
+    "isekai_mahou:arcane_ruins"
+  ]
+}

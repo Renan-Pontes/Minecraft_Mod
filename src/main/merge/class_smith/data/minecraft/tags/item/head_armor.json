@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "isekai_mahou:smith_helmet",
+    "isekai_mahou:smith_adept_helmet",
+    "isekai_mahou:smith_master_helmet",
+    "isekai_mahou:smith_archmage_helmet"
+  ]
+}

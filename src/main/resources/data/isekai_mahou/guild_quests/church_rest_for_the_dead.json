@@ -1,0 +1,22 @@
+{
+  "rank": "F",
+  "category": "faith",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "guild.kill_undead",
+      "count": 10,
+      "label": "guild.isekai_mahou.target.v08.undead",
+      "icon": "minecraft:bone"
+    }
+  ],
+  "rewards": {
+    "coins": 4,
+    "xp": 40,
+    "reputation": {
+      "church": 14
+    }
+  },
+  "faction": "church",
+  "standing": "unfriendly"
+}

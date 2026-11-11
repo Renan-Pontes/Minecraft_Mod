@@ -1,0 +1,22 @@
+{
+  "rank": "F",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "isekai_mahou:slime",
+        "isekai_mahou:fire_slime",
+        "isekai_mahou:water_slime",
+        "isekai_mahou:stone_slime",
+        "isekai_mahou:wind_slime"
+      ],
+      "count": 8,
+      "label": "guild.isekai_mahou.target.slimes"
+    }
+  ],
+  "rewards": {
+    "coins": 3,
+    "xp": 25,
+    "points": 6
+  }
+}

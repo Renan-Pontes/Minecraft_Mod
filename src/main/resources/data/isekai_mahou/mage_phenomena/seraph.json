@@ -1,0 +1,21 @@
+{
+  "category": "boss",
+  "elements": [
+    "light",
+    "purity"
+  ],
+  "rarity": "legendary",
+  "icon": [
+    "isekai_mahou:guardian_core_light"
+  ],
+  "order": 96,
+  "entities": [
+    "isekai_mahou:seraph"
+  ],
+  "memory": [
+    "boss.isekai_mahou.seraph",
+    "boss.seraph",
+    "kill.isekai_mahou.seraph"
+  ],
+  "repeatable": false
+}

@@ -1,0 +1,15 @@
+{
+  "category": "block",
+  "elements": [
+    "earth",
+    "fire"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:obsidian"
+  ],
+  "order": 2,
+  "blocks": [
+    "minecraft:obsidian"
+  ]
+}

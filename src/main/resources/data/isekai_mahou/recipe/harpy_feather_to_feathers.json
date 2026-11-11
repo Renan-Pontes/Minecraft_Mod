@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:harpy_feather"
+    }
+  ],
+  "result": {
+    "id": "minecraft:feather",
+    "count": 3
+  }
+}

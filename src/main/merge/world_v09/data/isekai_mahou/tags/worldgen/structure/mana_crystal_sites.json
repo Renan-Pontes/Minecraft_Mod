@@ -1,0 +1,22 @@
+{
+  "values": [
+    "isekai_mahou:ascension_sanctum",
+    "isekai_mahou:elemental_gate",
+    {
+      "id": "#isekai_mahou:elemental_shrines",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:druid_circle",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:arcane_ruins",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:fairy_lake",
+      "required": false
+    }
+  ]
+}

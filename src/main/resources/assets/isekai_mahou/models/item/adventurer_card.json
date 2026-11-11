@@ -1,0 +1,44 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "isekai_mahou:item/adventurer_card_f"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "isekai_mahou:rank": 0.15
+      },
+      "model": "isekai_mahou:item/adventurer_card_e"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:rank": 0.25
+      },
+      "model": "isekai_mahou:item/adventurer_card_d"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:rank": 0.35
+      },
+      "model": "isekai_mahou:item/adventurer_card_c"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:rank": 0.45
+      },
+      "model": "isekai_mahou:item/adventurer_card_b"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:rank": 0.55
+      },
+      "model": "isekai_mahou:item/adventurer_card_a"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:rank": 0.65
+      },
+      "model": "isekai_mahou:item/adventurer_card_s"
+    }
+  ]
+}

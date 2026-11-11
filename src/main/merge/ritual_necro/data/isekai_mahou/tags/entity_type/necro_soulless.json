@@ -1,0 +1,104 @@
+{
+  "values": [
+    {
+      "id": "isekai_mahou:undead_servant",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:bone_warrior",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:summoned_imp",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:summoned_demon",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:familiar_crow",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:familiar_cat",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:living_shadow",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:summoned_salamander",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:summoned_undine",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:summoned_stone_golem",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:summoned_sylph",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:summoned_guardian_fairy",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:summoned_ent",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:animal_spirit",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:spell_illusion",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:spell_conjurer",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:spell_turret",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:ascension_shadow",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:guide_spirit",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:archmage_illusion",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:hex_cat",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:lich_phylactery",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:corrupted_ent_root",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:hellfire_imp",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:abyss_tentacle",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "category": "block",
+  "elements": [
+    "abyss"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:crying_obsidian"
+  ],
+  "order": 3,
+  "blocks": [
+    "minecraft:crying_obsidian"
+  ]
+}

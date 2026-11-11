@@ -1,0 +1,17 @@
+{
+  "rank": "D",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:king_slime",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 12,
+    "xp": 120,
+    "points": 22,
+    "glyph": "random"
+  }
+}

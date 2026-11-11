@@ -1,0 +1,15 @@
+{
+  "rank": "D",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:lizardman",
+      "count": 6
+    }
+  ],
+  "rewards": {
+    "coins": 10,
+    "xp": 100,
+    "points": 18
+  }
+}

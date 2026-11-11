@@ -1,0 +1,14 @@
+{
+  "category": "creature",
+  "elements": [
+    "nature"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:slime_ball"
+  ],
+  "order": 26,
+  "entities": [
+    "minecraft:slime"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "circle": 6,
+  "tribute": [
+    {
+      "type": "any_guardian_core",
+      "count": 1
+    },
+    {
+      "type": "elemental_essences",
+      "count": 2,
+      "min_types": 3,
+      "max_types": 3,
+      "arcane_substitute": true
+    },
+    {
+      "type": "item",
+      "item": "isekai_mahou:essence_arcane",
+      "count": 4
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "category": "block",
+  "elements": [
+    "shadow",
+    "arcane"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:spawner"
+  ],
+  "order": 19,
+  "blocks": [
+    "minecraft:spawner",
+    "minecraft:trial_spawner"
+  ]
+}

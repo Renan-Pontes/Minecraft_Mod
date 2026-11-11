@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "isekai_mahou:item/knight_runeguard_boots"
+  }
+}

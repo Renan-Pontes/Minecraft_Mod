@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:spring_feature",
+  "config": {
+    "state": {
+      "Name": "minecraft:water",
+      "Properties": {
+        "falling": "true"
+      }
+    },
+    "requires_block_below": false,
+    "rock_count": 4,
+    "hole_count": 1,
+    "valid_blocks": [
+      "isekai_mahou:floating_stone",
+      "isekai_mahou:sky_soil",
+      "minecraft:prismarine"
+    ]
+  }
+}

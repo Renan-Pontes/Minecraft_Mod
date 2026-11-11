@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BAC",
+    "WWW",
+    "S S"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:book"
+    },
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "C": {
+      "item": "minecraft:candle"
+    },
+    "W": {
+      "tag": "minecraft:wooden_slabs"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:research_table",
+    "count": 1
+  }
+}

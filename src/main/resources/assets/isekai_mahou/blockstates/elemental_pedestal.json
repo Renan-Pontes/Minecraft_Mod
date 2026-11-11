@@ -1,0 +1,40 @@
+{
+  "variants": {
+    "active=false,element=fire": {
+      "model": "isekai_mahou:block/elemental_pedestal_fire"
+    },
+    "active=true,element=fire": {
+      "model": "isekai_mahou:block/elemental_pedestal_fire"
+    },
+    "active=false,element=water": {
+      "model": "isekai_mahou:block/elemental_pedestal_water"
+    },
+    "active=true,element=water": {
+      "model": "isekai_mahou:block/elemental_pedestal_water"
+    },
+    "active=false,element=earth": {
+      "model": "isekai_mahou:block/elemental_pedestal_earth"
+    },
+    "active=true,element=earth": {
+      "model": "isekai_mahou:block/elemental_pedestal_earth"
+    },
+    "active=false,element=wind": {
+      "model": "isekai_mahou:block/elemental_pedestal_wind"
+    },
+    "active=true,element=wind": {
+      "model": "isekai_mahou:block/elemental_pedestal_wind"
+    },
+    "active=false,element=light": {
+      "model": "isekai_mahou:block/elemental_pedestal_light"
+    },
+    "active=true,element=light": {
+      "model": "isekai_mahou:block/elemental_pedestal_light"
+    },
+    "active=false,element=shadow": {
+      "model": "isekai_mahou:block/elemental_pedestal_shadow"
+    },
+    "active=true,element=shadow": {
+      "model": "isekai_mahou:block/elemental_pedestal_shadow"
+    }
+  }
+}

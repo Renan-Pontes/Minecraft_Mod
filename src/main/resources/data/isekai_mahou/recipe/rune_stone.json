@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "BAB",
+    "BLB",
+    "BBB"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:stone_bricks"
+    },
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "L": {
+      "item": "minecraft:lapis_lazuli"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:rune_stone",
+    "count": 8
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "rank": "B",
+  "category": "defense",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "minecraft:pillager",
+        "minecraft:vindicator"
+      ],
+      "count": 15,
+      "label": "guild.isekai_mahou.target.v08.raiders"
+    }
+  ],
+  "rewards": {
+    "coins": 25,
+    "xp": 320,
+    "items": [
+      {
+        "id": "minecraft:golden_apple",
+        "count": 1
+      }
+    ],
+    "reputation": {
+      "kingdom": 50
+    }
+  },
+  "faction": "kingdom",
+  "standing": "honored"
+}

@@ -1,0 +1,378 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "isekai_mahou:block/reincarnation_altar_base",
+    "base": "isekai_mahou:block/reincarnation_altar_base",
+    "base_top": "isekai_mahou:block/reincarnation_altar_base_top",
+    "bottom": "isekai_mahou:block/reincarnation_altar_bottom",
+    "pillar": "isekai_mahou:block/reincarnation_altar_pillar",
+    "top": "isekai_mahou:block/reincarnation_altar_top",
+    "rim": "isekai_mahou:block/reincarnation_altar_rim",
+    "crystal": "isekai_mahou:block/reincarnation_altar_crystal"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        4,
+        16
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#bottom",
+          "cullface": "down"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#base_top"
+        },
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ],
+          "texture": "#base",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ],
+          "texture": "#base",
+          "cullface": "south"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ],
+          "texture": "#base",
+          "cullface": "west"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ],
+          "texture": "#base",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        4,
+        3
+      ],
+      "to": [
+        13,
+        11,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            4,
+            13,
+            11
+          ],
+          "texture": "#pillar"
+        },
+        "south": {
+          "uv": [
+            3,
+            4,
+            13,
+            11
+          ],
+          "texture": "#pillar"
+        },
+        "west": {
+          "uv": [
+            3,
+            4,
+            13,
+            11
+          ],
+          "texture": "#pillar"
+        },
+        "east": {
+          "uv": [
+            3,
+            4,
+            13,
+            11
+          ],
+          "texture": "#pillar"
+        }
+      }
+    },
+    {
+      "from": [
+        1,
+        11,
+        1
+      ],
+      "to": [
+        15,
+        14,
+        15
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#bottom"
+        },
+        "up": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#top"
+        },
+        "north": {
+          "uv": [
+            1,
+            12,
+            15,
+            15
+          ],
+          "texture": "#rim"
+        },
+        "south": {
+          "uv": [
+            1,
+            12,
+            15,
+            15
+          ],
+          "texture": "#rim"
+        },
+        "west": {
+          "uv": [
+            1,
+            12,
+            15,
+            15
+          ],
+          "texture": "#rim"
+        },
+        "east": {
+          "uv": [
+            1,
+            12,
+            15,
+            15
+          ],
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "from": [
+        6.5,
+        14,
+        6.5
+      ],
+      "to": [
+        9.5,
+        17,
+        9.5
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          15,
+          8
+        ],
+        "axis": "y",
+        "angle": 45
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            4,
+            10,
+            10
+          ],
+          "texture": "#crystal"
+        },
+        "south": {
+          "uv": [
+            4,
+            4,
+            10,
+            10
+          ],
+          "texture": "#crystal"
+        },
+        "west": {
+          "uv": [
+            4,
+            4,
+            10,
+            10
+          ],
+          "texture": "#crystal"
+        },
+        "east": {
+          "uv": [
+            4,
+            4,
+            10,
+            10
+          ],
+          "texture": "#crystal"
+        },
+        "up": {
+          "uv": [
+            4,
+            4,
+            10,
+            10
+          ],
+          "texture": "#crystal"
+        }
+      }
+    }
+  ],
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.625,
+        0.625,
+        0.625
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        75,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        225,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    }
+  }
+}

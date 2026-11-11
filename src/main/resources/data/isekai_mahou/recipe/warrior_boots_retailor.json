@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_boots",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/boots"
+    },
+    {
+      "item": "minecraft:red_wool"
+    },
+    {
+      "item": "minecraft:chain"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:warrior_boots",
+    "count": 1
+  }
+}

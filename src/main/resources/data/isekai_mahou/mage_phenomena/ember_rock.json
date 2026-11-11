@@ -1,0 +1,15 @@
+{
+  "category": "block",
+  "elements": [
+    "magma"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "isekai_mahou:ember_rock",
+    "minecraft:magma_cream"
+  ],
+  "order": 22,
+  "blocks": [
+    "isekai_mahou:ember_rock"
+  ]
+}

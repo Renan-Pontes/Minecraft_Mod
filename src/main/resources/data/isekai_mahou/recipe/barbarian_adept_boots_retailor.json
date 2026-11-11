@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_adept_boots",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/adept/boots"
+    },
+    {
+      "item": "minecraft:brown_wool"
+    },
+    {
+      "item": "minecraft:bone"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:barbarian_adept_boots",
+    "count": 1
+  }
+}

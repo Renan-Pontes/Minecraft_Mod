@@ -1,0 +1,21 @@
+{
+  "glyph.isekai_mahou.link_hit": "Ao Acertar",
+  "glyph.isekai_mahou.link_hit.desc": "Liga dois estágios: a próxima forma nasce no ponto onde a anterior acertou, na mesma direção.",
+  "glyph.isekai_mahou.link_end": "Ao Terminar",
+  "glyph.isekai_mahou.link_end.desc": "Liga dois estágios: a próxima forma nasce onde a anterior terminou (projétil sumiu, zona acabou, feixe chegou ao fim).",
+  "glyph.isekai_mahou.link_kill": "Ao Abater",
+  "glyph.isekai_mahou.link_kill.desc": "Liga dois estágios: a próxima forma nasce onde um inimigo morreu pelo dano da anterior.",
+  "glyph.isekai_mahou.link_leap": "Saltar",
+  "glyph.isekai_mahou.link_leap.desc": "Fim da magia: ao acertar, ela se repete a partir do alvo rumo ao inimigo mais próximo ainda não atingido. Cada salto custa 15% do mana da magia (mín. 2); até 64 saltos.",
+  "glyph.isekai_mahou.relentless": "Insaciável",
+  "glyph.isekai_mahou.relentless.desc": "O Encadear continua pulando (alcance 8, 8% mais fraco a cada pulo) enquanto houver outro inimigo e você tiver mana para pagar o pulo.",
+
+  "spell_error.isekai_mahou.link_first": "%s precisa vir depois de uma forma.",
+  "spell_error.isekai_mahou.link_needs_form": "Depois de %s precisa vir uma forma (ex.: Projétil, Toque).",
+  "spell_error.isekai_mahou.form_needs_link": "Para usar a forma %s, ligue-a ao estágio anterior com uma ligação antes dela (ex.: Ao Acertar).",
+  "spell_error.isekai_mahou.stage_form_not_allowed": "A forma %s não funciona como estágio de magia programável (nem com Saltar).",
+  "spell_error.isekai_mahou.stage_no_effect": "O estágio %s precisa de pelo menos um efeito.",
+  "spell_error.isekai_mahou.leap_not_last": "Saltar precisa ser o último glifo da magia.",
+  "spell_error.isekai_mahou.too_many_elements": "Elementos demais: %s (seu Círculo permite %s).",
+  "spell_error.isekai_mahou.too_many_glyphs": "Glifos demais: %s (seu nível e Círculo permitem %s)."
+}

@@ -1,0 +1,68 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:vex",
+    "minecraft:ghast",
+    "minecraft:wither",
+    {
+      "id": "isekai_mahou:summoned_imp",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:summoned_demon",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:ember_imp",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:creeping_shade",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:void_bat",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:void_crawler",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:watcher_eye",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:abyss_sovereign",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:imprisoned_patron",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:patron_void_lady",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:patron_ember_lord",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:living_shadow",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:lich",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:undead_servant",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:bone_warrior",
+      "required": false
+    }
+  ]
+}

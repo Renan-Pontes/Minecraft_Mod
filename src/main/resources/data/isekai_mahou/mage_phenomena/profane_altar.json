@@ -1,0 +1,15 @@
+{
+  "category": "structure",
+  "elements": [
+    "shadow",
+    "fire"
+  ],
+  "rarity": "epic",
+  "icon": [
+    "minecraft:crying_obsidian"
+  ],
+  "order": 302,
+  "structures": [
+    "isekai_mahou:profane_altar"
+  ]
+}

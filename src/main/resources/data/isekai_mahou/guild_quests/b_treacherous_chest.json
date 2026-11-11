@@ -1,0 +1,15 @@
+{
+  "rank": "B",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:mimic",
+      "count": 2
+    }
+  ],
+  "rewards": {
+    "coins": 22,
+    "xp": 280,
+    "points": 40
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "ingredients": [
+    "isekai_mahou:witch_mandrake_root",
+    "isekai_mahou:witch_moonpetal",
+    "minecraft:amethyst_shard"
+  ],
+  "stirs": 3,
+  "heat": "low",
+  "moon_phases": [
+    0,
+    1,
+    2,
+    6,
+    7
+  ],
+  "night": true,
+  "result": {
+    "id": "isekai_mahou:revelation_potion_1",
+    "count": 1
+  },
+  "xp": 20,
+  "color": "#B57EDC"
+}

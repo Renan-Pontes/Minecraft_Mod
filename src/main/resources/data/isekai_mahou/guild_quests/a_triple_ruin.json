@@ -1,0 +1,16 @@
+{
+  "rank": "A",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "minecraft:wither",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 40,
+    "xp": 520,
+    "points": 65
+  }
+}

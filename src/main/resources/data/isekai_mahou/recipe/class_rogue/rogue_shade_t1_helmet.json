@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "LKL",
+    "S S"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "K": {
+      "item": "minecraft:black_wool"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:rogue_shade_t1_helmet",
+    "count": 1
+  }
+}

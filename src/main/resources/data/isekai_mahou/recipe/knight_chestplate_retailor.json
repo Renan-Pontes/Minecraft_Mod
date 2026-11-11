@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_chestplate",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/chestplate"
+    },
+    {
+      "item": "minecraft:blue_wool"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:knight_chestplate",
+    "count": 1
+  }
+}

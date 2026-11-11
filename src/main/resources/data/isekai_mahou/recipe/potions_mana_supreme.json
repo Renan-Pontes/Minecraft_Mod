@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "isekai_mahou_potions",
+  "pattern": [
+    "E E",
+    "GPG",
+    "ETE"
+  ],
+  "key": {
+    "E": {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    "G": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "P": {
+      "item": "isekai_mahou:mana_potion_superior"
+    },
+    "T": {
+      "tag": "isekai_mahou:potions_boss_trophies"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:mana_potion_supreme",
+    "count": 1
+  }
+}

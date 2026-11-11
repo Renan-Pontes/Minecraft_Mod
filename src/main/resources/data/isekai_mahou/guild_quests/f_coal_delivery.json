@@ -1,0 +1,15 @@
+{
+  "rank": "F",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "minecraft:coal",
+      "count": 16
+    }
+  ],
+  "rewards": {
+    "coins": 4,
+    "xp": 20,
+    "points": 5
+  }
+}

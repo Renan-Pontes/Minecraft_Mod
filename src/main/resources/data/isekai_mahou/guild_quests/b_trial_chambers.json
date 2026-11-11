@@ -1,0 +1,19 @@
+{
+  "rank": "B",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "minecraft:trial_chambers"
+    },
+    {
+      "type": "kill",
+      "entity": "minecraft:breeze",
+      "count": 3
+    }
+  ],
+  "rewards": {
+    "coins": 24,
+    "xp": 300,
+    "points": 42
+  }
+}

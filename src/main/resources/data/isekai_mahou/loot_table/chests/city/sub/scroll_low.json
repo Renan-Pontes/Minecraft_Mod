@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "isekai_mahou:glyph_scroll"
+    }
+  ],
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:glyph_scroll",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "isekai_mahou:rpg_glyph_scroll",
+              "elements": [
+                "arcane",
+                "fire",
+                "water",
+                "earth",
+                "wind",
+                "light",
+                "shadow"
+              ],
+              "min_tier": 1,
+              "max_tier": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

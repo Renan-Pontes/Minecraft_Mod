@@ -1,0 +1,16 @@
+{
+  "category": "sky",
+  "elements": [
+    "light"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:clock"
+  ],
+  "order": 66,
+  "moon": [
+    0
+  ],
+  "sky": true,
+  "clear": true
+}

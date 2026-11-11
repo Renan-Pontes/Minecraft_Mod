@@ -1,0 +1,21 @@
+{
+  "category": "boss",
+  "elements": [
+    "shadow",
+    "hellfire"
+  ],
+  "rarity": "legendary",
+  "icon": [
+    "minecraft:nether_star"
+  ],
+  "order": 88,
+  "entities": [
+    "minecraft:wither"
+  ],
+  "memory": [
+    "boss.minecraft.wither",
+    "boss.wither",
+    "kill.minecraft.wither"
+  ],
+  "repeatable": false
+}

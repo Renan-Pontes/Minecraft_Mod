@@ -1,0 +1,19 @@
+{
+  "rank": "C",
+  "objectives": [
+    {
+      "type": "explore",
+      "dimension": "minecraft:the_nether"
+    },
+    {
+      "type": "gather",
+      "item": "minecraft:quartz",
+      "count": 16
+    }
+  ],
+  "rewards": {
+    "coins": 14,
+    "xp": 150,
+    "points": 26
+  }
+}

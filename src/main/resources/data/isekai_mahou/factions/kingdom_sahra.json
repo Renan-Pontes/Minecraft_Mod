@@ -1,0 +1,38 @@
+{
+  "color": "#E07B2A",
+  "icon": "minecraft:sunflower",
+  "order": 12,
+  "rivals": {"horde": 1.0, "underworld": 0.5, "kingdom_nordheim": 0.25},
+  "allies": {"church": 0.5},
+  "kill_penalty": -25,
+  "kill_penalties": {
+    "isekai_mahou:city_guard": -40,
+    "isekai_mahou:city_lord": -150,
+    "isekai_mahou:citizen": -30,
+    "isekai_mahou:city_merchant": -35
+  },
+  "rewards": {
+    "friendly": {
+      "xp": 100,
+      "items": [{"id": "minecraft:gold_ingot", "count": 8}, {"id": "isekai_mahou:guild_coin", "count": 10}, {"id": "minecraft:dried_kelp_block", "count": 2}],
+      "title": "reputation.isekai_mahou.title.kingdom_sahra.friendly"
+    },
+    "honored": {
+      "xp": 250,
+      "items": [{"id": "minecraft:emerald", "count": 20}, {"id": "minecraft:golden_apple", "count": 2}, {"id": "isekai_mahou:essence_fire", "count": 6}],
+      "title": "reputation.isekai_mahou.title.kingdom_sahra.honored"
+    },
+    "revered": {
+      "xp": 500,
+      "items": [{"id": "isekai_mahou:guild_coin", "count": 40}, {"id": "minecraft:gold_block", "count": 2}],
+      "glyph_scrolls": 1, "glyph_tier": 3,
+      "title": "reputation.isekai_mahou.title.kingdom_sahra.revered"
+    },
+    "exalted": {
+      "xp": 1000,
+      "items": [{"id": "minecraft:emerald", "count": 64}, {"id": "minecraft:totem_of_undying", "count": 1}],
+      "legend": "random",
+      "title": "reputation.isekai_mahou.title.kingdom_sahra.exalted"
+    }
+  }
+}

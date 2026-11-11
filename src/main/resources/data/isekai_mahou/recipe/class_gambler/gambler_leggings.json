@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "KSK",
+    "K K",
+    "K K"
+  ],
+  "key": {
+    "K": {
+      "item": "minecraft:black_wool"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:gambler_leggings",
+    "count": 1
+  }
+}

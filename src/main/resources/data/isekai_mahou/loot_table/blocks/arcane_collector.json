@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "isekai_mahou:blocks/arcane_collector",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:arcane_collector"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

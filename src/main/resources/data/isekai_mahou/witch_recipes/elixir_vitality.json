@@ -1,0 +1,16 @@
+{
+  "ingredients": [
+    "isekai_mahou:witch_mandrake_root",
+    "minecraft:sweet_berries",
+    "minecraft:apple"
+  ],
+  "stirs": 2,
+  "heat": "low",
+  "result": {
+    "id": "isekai_mahou:witch_elixir_vitality",
+    "count": 3
+  },
+  "xp": 8,
+  "color": "#E0465A",
+  "element": "water"
+}

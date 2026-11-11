@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "isekai_mahou:block/arcane_hatchery"
+    },
+    "active=true": {
+      "model": "isekai_mahou:block/arcane_hatchery_active"
+    }
+  }
+}

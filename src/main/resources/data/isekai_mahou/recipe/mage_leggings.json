@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_leggings",
+  "pattern": [
+    "WGW",
+    "W W",
+    "W W"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:blue_wool"
+    },
+    "G": {
+      "item": "minecraft:gold_nugget"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:mage_leggings",
+    "count": 1
+  }
+}

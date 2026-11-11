@@ -1,0 +1,15 @@
+{
+  "category": "structure",
+  "elements": [
+    "fire",
+    "shadow"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:nether_bricks"
+  ],
+  "order": 78,
+  "structures": [
+    "minecraft:fortress"
+  ]
+}

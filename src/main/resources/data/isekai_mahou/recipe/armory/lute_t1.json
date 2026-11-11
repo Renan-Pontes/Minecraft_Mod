@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou_armory",
+  "pattern": [
+    " S ",
+    "XNX",
+    "PLP"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "item": "minecraft:string"
+    },
+    "N": {
+      "item": "minecraft:note_block"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "L": {
+      "item": "isekai_mahou:essence_light"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:lute_t1",
+    "count": 1
+  }
+}

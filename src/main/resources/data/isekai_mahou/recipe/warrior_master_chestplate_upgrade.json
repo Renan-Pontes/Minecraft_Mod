@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "isekai_mahou:arcane_upgrade_template"
+    }
+  ],
+  "template": {
+    "item": "isekai_mahou:arcane_upgrade_template"
+  },
+  "type": "minecraft:smithing_transform",
+  "base": {
+    "item": "isekai_mahou:warrior_adept_chestplate"
+  },
+  "addition": {
+    "tag": "isekai_mahou:outfits/upgrade/master"
+  },
+  "result": {
+    "id": "isekai_mahou:warrior_master_chestplate",
+    "count": 1
+  }
+}

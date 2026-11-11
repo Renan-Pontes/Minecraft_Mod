@@ -1,0 +1,22 @@
+{
+  "ingredients": [
+    "isekai_mahou:witch_grave_dust",
+    "minecraft:iron_nugget",
+    "minecraft:flint",
+    "isekai_mahou:witch_mandrake_root"
+  ],
+  "stirs": 5,
+  "heat": "high",
+  "moon_phases": [
+    1,
+    2,
+    3
+  ],
+  "result": {
+    "id": "isekai_mahou:witch_elixir_stone_skin",
+    "count": 3
+  },
+  "xp": 15,
+  "color": "#8C8A7E",
+  "element": "water"
+}

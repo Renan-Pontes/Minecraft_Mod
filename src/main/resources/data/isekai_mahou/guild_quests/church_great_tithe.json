@@ -1,0 +1,25 @@
+{
+  "rank": "D",
+  "category": "faith",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "isekai_mahou:guild_coin",
+      "count": 40
+    },
+    {
+      "type": "gather",
+      "item": "minecraft:gold_ingot",
+      "count": 4
+    }
+  ],
+  "rewards": {
+    "coins": 0,
+    "xp": 150,
+    "reputation": {
+      "church": 40
+    }
+  },
+  "faction": "church",
+  "standing": "friendly"
+}

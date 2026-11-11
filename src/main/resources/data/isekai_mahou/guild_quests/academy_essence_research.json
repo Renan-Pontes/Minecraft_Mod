@@ -1,0 +1,36 @@
+{
+  "rank": "D",
+  "category": "delivery",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "isekai_mahou:essence_fire",
+      "count": 2
+    },
+    {
+      "type": "gather",
+      "item": "isekai_mahou:essence_water",
+      "count": 2
+    },
+    {
+      "type": "gather",
+      "item": "isekai_mahou:essence_earth",
+      "count": 2
+    },
+    {
+      "type": "gather",
+      "item": "isekai_mahou:essence_wind",
+      "count": 2
+    }
+  ],
+  "rewards": {
+    "coins": 10,
+    "xp": 120,
+    "glyph": "random",
+    "reputation": {
+      "academy": 25
+    }
+  },
+  "faction": "academy",
+  "standing": "friendly"
+}

@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "isekai_mahou:mana_crystal_block"
+    }
+  ],
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "isekai_mahou:arcane_upgrade_template"
+  },
+  "base": {
+    "item": "isekai_mahou:arcane_crossbow_t1"
+  },
+  "addition": {
+    "item": "isekai_mahou:mana_crystal_block"
+  },
+  "result": {
+    "id": "isekai_mahou:arcane_crossbow_t2",
+    "count": 1
+  }
+}

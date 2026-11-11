@@ -1,0 +1,8 @@
+{
+  "parent": "isekai_mahou:block/ritual_chalk_base",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "chalk": "isekai_mahou:block/ritual_chalk_6",
+    "particle": "isekai_mahou:block/ritual_chalk_6"
+  }
+}

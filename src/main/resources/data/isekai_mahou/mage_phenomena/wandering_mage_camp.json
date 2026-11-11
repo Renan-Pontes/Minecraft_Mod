@@ -1,0 +1,15 @@
+{
+  "category": "structure",
+  "elements": [
+    "arcane",
+    "fire"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:campfire"
+  ],
+  "order": 306,
+  "structures": [
+    "isekai_mahou:wandering_mage_camp"
+  ]
+}

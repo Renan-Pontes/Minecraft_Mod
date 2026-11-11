@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:faction_board",
+          "functions": [
+            {
+              "function": "minecraft:copy_state",
+              "block": "isekai_mahou:faction_board",
+              "properties": [
+                "faction"
+              ]
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "isekai_mahou:blocks/faction_board"
+}

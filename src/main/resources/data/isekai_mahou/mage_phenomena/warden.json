@@ -1,0 +1,15 @@
+{
+  "category": "creature",
+  "elements": [
+    "shadow",
+    "earth"
+  ],
+  "rarity": "epic",
+  "icon": [
+    "minecraft:echo_shard"
+  ],
+  "order": 25,
+  "entities": [
+    "minecraft:warden"
+  ]
+}

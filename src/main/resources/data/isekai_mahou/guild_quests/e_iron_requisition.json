@@ -1,0 +1,15 @@
+{
+  "rank": "E",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "minecraft:iron_ingot",
+      "count": 12
+    }
+  ],
+  "rewards": {
+    "coins": 7,
+    "xp": 40,
+    "points": 11
+  }
+}

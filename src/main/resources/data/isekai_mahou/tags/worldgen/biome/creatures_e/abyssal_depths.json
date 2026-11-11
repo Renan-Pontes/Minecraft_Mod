@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "isekai_mahou:abyssal_depths",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "rank": "F",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "#minecraft:small_flowers",
+      "count": 10,
+      "label": "guild.isekai_mahou.item.flowers"
+    },
+    {
+      "type": "gather",
+      "item": "minecraft:wheat_seeds",
+      "count": 8
+    }
+  ],
+  "rewards": {
+    "coins": 3,
+    "xp": 20,
+    "points": 5,
+    "items": [
+      {
+        "id": "minecraft:bread",
+        "count": 3
+      }
+    ]
+  }
+}

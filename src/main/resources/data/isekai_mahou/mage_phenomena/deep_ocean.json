@@ -1,0 +1,14 @@
+{
+  "category": "biome",
+  "elements": [
+    "abyss"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:nautilus_shell"
+  ],
+  "order": 53,
+  "biomes": [
+    "#minecraft:is_deep_ocean"
+  ]
+}

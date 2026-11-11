@@ -1,0 +1,132 @@
+{
+  "offers": [
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:mage_staff_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:witch_wand_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:pact_blade_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:druid_staff_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 20,
+      "item": {
+        "id": "isekai_mahou:reaper_scythe_t1",
+        "count": 1
+      }
+    },
+    {
+      "rank": "D",
+      "price": 25,
+      "item": {
+        "id": "isekai_mahou:arcane_upgrade_template",
+        "count": 1
+      }
+    },
+    {
+      "rank": "D",
+      "price": 45,
+      "item": {
+        "id": "isekai_mahou:vitality_charm",
+        "count": 1
+      }
+    },
+    {
+      "rank": "C",
+      "price": 40,
+      "item": {
+        "id": "isekai_mahou:arcane_diamond",
+        "count": 1
+      }
+    },
+    {
+      "rank": "C",
+      "price": 80,
+      "item": {
+        "id": "isekai_mahou:ward_ring",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:mage_staff_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:witch_wand_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:pact_blade_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:druid_staff_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "B",
+      "price": 120,
+      "item": {
+        "id": "isekai_mahou:reaper_scythe_t2",
+        "count": 1
+      }
+    },
+    {
+      "rank": "A",
+      "price": 70,
+      "item": {
+        "id": "isekai_mahou:arcane_upgrade_template",
+        "count": 2
+      }
+    },
+    {
+      "rank": "A",
+      "price": 260,
+      "item": {
+        "id": "isekai_mahou:archmage_sigil",
+        "count": 1
+      }
+    }
+  ]
+}

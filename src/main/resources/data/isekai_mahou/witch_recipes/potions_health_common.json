@@ -1,0 +1,16 @@
+{
+  "ingredients": [
+    "minecraft:sweet_berries",
+    "minecraft:glistering_melon_slice",
+    "minecraft:apple"
+  ],
+  "stirs": 2,
+  "heat": "low",
+  "result": {
+    "id": "isekai_mahou:health_potion_common",
+    "count": 3
+  },
+  "xp": 6,
+  "color": "#E8384F",
+  "element": "light"
+}

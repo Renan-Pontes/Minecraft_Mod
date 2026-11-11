@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:is_badlands",
+    "minecraft:desert",
+    "minecraft:savanna",
+    "minecraft:savanna_plateau",
+    "minecraft:plains",
+    "minecraft:snowy_plains",
+    "minecraft:windswept_savanna",
+    "minecraft:ice_spikes"
+  ]
+}

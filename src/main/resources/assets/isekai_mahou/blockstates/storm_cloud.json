@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "isekai_mahou:block/storm_cloud"
+      },
+      {
+        "model": "isekai_mahou:block/storm_cloud",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/storm_cloud",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/storm_cloud",
+        "y": 270
+      }
+    ]
+  }
+}

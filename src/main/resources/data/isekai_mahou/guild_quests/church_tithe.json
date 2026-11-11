@@ -1,0 +1,19 @@
+{
+  "rank": "F",
+  "category": "faith",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "isekai_mahou:guild_coin",
+      "count": 10
+    }
+  ],
+  "rewards": {
+    "coins": 0,
+    "xp": 30,
+    "reputation": {
+      "church": 15
+    }
+  },
+  "faction": "church"
+}

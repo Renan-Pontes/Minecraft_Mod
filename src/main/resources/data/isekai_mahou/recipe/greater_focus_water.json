@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "EDE",
+    "MFM",
+    "EDE"
+  ],
+  "key": {
+    "E": {
+      "item": "isekai_mahou:essence_water"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "F": {
+      "item": "isekai_mahou:focus_water"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:greater_focus_water",
+    "count": 1
+  }
+}

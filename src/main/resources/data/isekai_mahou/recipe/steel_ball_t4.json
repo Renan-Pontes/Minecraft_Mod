@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:steel_ball_t3"
+    },
+    {
+      "item": "minecraft:netherite_ingot"
+    },
+    {
+      "item": "isekai_mahou:steelball_relic"
+    },
+    {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    {
+      "item": "isekai_mahou:essence_earth"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:steel_ball_t4",
+    "count": 1
+  }
+}

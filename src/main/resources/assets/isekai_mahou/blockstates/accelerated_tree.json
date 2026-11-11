@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "isekai_mahou:block/accelerated_tree"
+    },
+    "active=true": {
+      "model": "isekai_mahou:block/accelerated_tree_active"
+    }
+  }
+}

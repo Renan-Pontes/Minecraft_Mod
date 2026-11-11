@@ -1,0 +1,19 @@
+{
+  "rank": "F",
+  "category": "delivery",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "minecraft:arrow",
+      "count": 48
+    }
+  ],
+  "rewards": {
+    "coins": 4,
+    "xp": 40,
+    "reputation": {
+      "kingdom": 10
+    }
+  },
+  "faction": "kingdom"
+}

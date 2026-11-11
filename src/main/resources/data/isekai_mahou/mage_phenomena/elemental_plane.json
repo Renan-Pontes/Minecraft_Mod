@@ -1,0 +1,18 @@
+{
+  "category": "dimension",
+  "elements": [
+    "fire",
+    "water",
+    "earth",
+    "wind"
+  ],
+  "rarity": "epic",
+  "icon": [
+    "isekai_mahou:elemental_portal_frame",
+    "isekai_mahou:essence_fire"
+  ],
+  "order": 73,
+  "dimensions": [
+    "isekai_mahou:elemental_plane"
+  ]
+}

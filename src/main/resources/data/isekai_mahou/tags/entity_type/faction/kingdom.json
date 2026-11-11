@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    {"id": "isekai_mahou:city_guard", "required": false},
+    {"id": "isekai_mahou:citizen", "required": false},
+    {"id": "isekai_mahou:city_lord", "required": false},
+    {"id": "isekai_mahou:city_merchant", "required": false},
+    "minecraft:villager",
+    "minecraft:iron_golem"
+  ]
+}

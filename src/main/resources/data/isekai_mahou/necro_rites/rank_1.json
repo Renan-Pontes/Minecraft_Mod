@@ -1,0 +1,23 @@
+{
+  "rank": 1,
+  "xp": 300,
+  "glyph_tier": 1,
+  "awaken": "shadow",
+  "element_xp": {
+    "shadow": 30
+  },
+  "servant_cap": 1,
+  "servant_gift": 1,
+  "required_skulls": 0,
+  "min_circle": 1,
+  "souls": [
+    {
+      "entity": "minecraft:zombie",
+      "count": 10
+    },
+    {
+      "entity": "minecraft:skeleton",
+      "count": 5
+    }
+  ]
+}

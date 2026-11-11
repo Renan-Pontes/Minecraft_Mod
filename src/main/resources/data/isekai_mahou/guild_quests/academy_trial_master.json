@@ -1,0 +1,22 @@
+{
+  "rank": "A",
+  "category": "chamber",
+  "objectives": [
+    {
+      "type": "trial_clear",
+      "count": 3,
+      "rank": 3,
+      "distinct": true
+    }
+  ],
+  "rewards": {
+    "coins": 40,
+    "xp": 500,
+    "glyph": "random",
+    "reputation": {
+      "academy": 60
+    }
+  },
+  "faction": "academy",
+  "standing": "revered"
+}

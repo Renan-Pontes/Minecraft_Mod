@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:dark_forest",
+    "#minecraft:is_badlands",
+    "minecraft:desert",
+    "minecraft:savanna_plateau",
+    "minecraft:windswept_savanna",
+    "minecraft:snowy_taiga",
+    "minecraft:old_growth_spruce_taiga"
+  ]
+}

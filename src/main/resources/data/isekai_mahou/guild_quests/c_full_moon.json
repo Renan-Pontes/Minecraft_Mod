@@ -1,0 +1,15 @@
+{
+  "rank": "C",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:werewolf",
+      "count": 2
+    }
+  ],
+  "rewards": {
+    "coins": 15,
+    "xp": 180,
+    "points": 28
+  }
+}

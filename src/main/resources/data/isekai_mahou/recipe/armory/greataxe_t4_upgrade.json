@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "isekai_mahou:arcane_upgrade_template"
+  },
+  "base": {
+    "item": "isekai_mahou:greataxe_t3"
+  },
+  "addition": [
+    {
+      "item": "isekai_mahou:guardian_core_fire"
+    },
+    {
+      "item": "isekai_mahou:guardian_core_water"
+    },
+    {
+      "item": "isekai_mahou:guardian_core_earth"
+    },
+    {
+      "item": "isekai_mahou:guardian_core_wind"
+    },
+    {
+      "item": "isekai_mahou:guardian_core_light"
+    },
+    {
+      "item": "isekai_mahou:guardian_core_shadow"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:greataxe_t4",
+    "count": 1
+  }
+}

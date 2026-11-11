@@ -1,0 +1,15 @@
+{
+  "rank": "E",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "minecraft:creeper",
+      "count": 6
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 45,
+    "points": 12
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "rank": "A",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:storm_wyvern",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 35,
+    "xp": 480,
+    "points": 60
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "rank": "C",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:goblin_king",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 30,
+    "xp": 200,
+    "glyph": "random",
+    "reputation": {
+      "kingdom": 60
+    }
+  },
+  "faction": "kingdom",
+  "standing": "honored"
+}

@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_adept_chestplate",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/adept/chestplate"
+    },
+    {
+      "item": "minecraft:brown_wool"
+    },
+    {
+      "item": "minecraft:bone"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:barbarian_adept_chestplate",
+    "count": 1
+  }
+}

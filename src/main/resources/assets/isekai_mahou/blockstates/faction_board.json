@@ -1,0 +1,79 @@
+{
+  "variants": {
+    "facing=north,faction=guild": {
+      "model": "isekai_mahou:block/faction_board_guild"
+    },
+    "facing=east,faction=guild": {
+      "model": "isekai_mahou:block/faction_board_guild",
+      "y": 90
+    },
+    "facing=south,faction=guild": {
+      "model": "isekai_mahou:block/faction_board_guild",
+      "y": 180
+    },
+    "facing=west,faction=guild": {
+      "model": "isekai_mahou:block/faction_board_guild",
+      "y": 270
+    },
+    "facing=north,faction=kingdom": {
+      "model": "isekai_mahou:block/faction_board_kingdom"
+    },
+    "facing=east,faction=kingdom": {
+      "model": "isekai_mahou:block/faction_board_kingdom",
+      "y": 90
+    },
+    "facing=south,faction=kingdom": {
+      "model": "isekai_mahou:block/faction_board_kingdom",
+      "y": 180
+    },
+    "facing=west,faction=kingdom": {
+      "model": "isekai_mahou:block/faction_board_kingdom",
+      "y": 270
+    },
+    "facing=north,faction=academy": {
+      "model": "isekai_mahou:block/faction_board_academy"
+    },
+    "facing=east,faction=academy": {
+      "model": "isekai_mahou:block/faction_board_academy",
+      "y": 90
+    },
+    "facing=south,faction=academy": {
+      "model": "isekai_mahou:block/faction_board_academy",
+      "y": 180
+    },
+    "facing=west,faction=academy": {
+      "model": "isekai_mahou:block/faction_board_academy",
+      "y": 270
+    },
+    "facing=north,faction=church": {
+      "model": "isekai_mahou:block/faction_board_church"
+    },
+    "facing=east,faction=church": {
+      "model": "isekai_mahou:block/faction_board_church",
+      "y": 90
+    },
+    "facing=south,faction=church": {
+      "model": "isekai_mahou:block/faction_board_church",
+      "y": 180
+    },
+    "facing=west,faction=church": {
+      "model": "isekai_mahou:block/faction_board_church",
+      "y": 270
+    },
+    "facing=north,faction=underworld": {
+      "model": "isekai_mahou:block/faction_board_underworld"
+    },
+    "facing=east,faction=underworld": {
+      "model": "isekai_mahou:block/faction_board_underworld",
+      "y": 90
+    },
+    "facing=south,faction=underworld": {
+      "model": "isekai_mahou:block/faction_board_underworld",
+      "y": 180
+    },
+    "facing=west,faction=underworld": {
+      "model": "isekai_mahou:block/faction_board_underworld",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "rank": "A",
+  "category": "trial",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "minecraft:wither",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 50,
+    "xp": 700
+  },
+  "trial": true
+}

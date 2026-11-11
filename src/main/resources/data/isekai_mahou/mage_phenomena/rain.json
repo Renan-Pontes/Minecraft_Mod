@@ -1,0 +1,13 @@
+{
+  "category": "sky",
+  "elements": [
+    "water"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:water_bucket"
+  ],
+  "order": 63,
+  "weather": "rain",
+  "sky": true
+}

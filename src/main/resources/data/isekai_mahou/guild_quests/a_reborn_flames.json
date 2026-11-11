@@ -1,0 +1,15 @@
+{
+  "rank": "A",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:lesser_phoenix",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 36,
+    "xp": 480,
+    "points": 60
+  }
+}

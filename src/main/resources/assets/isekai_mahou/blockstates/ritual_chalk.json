@@ -1,0 +1,292 @@
+{
+  "variants": {
+    "blood=false,rune=0": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_0",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_0",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_0",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_0",
+        "y": 270
+      }
+    ],
+    "blood=false,rune=1": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_1",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_1",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_1",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_1",
+        "y": 270
+      }
+    ],
+    "blood=false,rune=2": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_2",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_2",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_2",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_2",
+        "y": 270
+      }
+    ],
+    "blood=false,rune=3": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_3",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_3",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_3",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_3",
+        "y": 270
+      }
+    ],
+    "blood=false,rune=4": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_4",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_4",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_4",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_4",
+        "y": 270
+      }
+    ],
+    "blood=false,rune=5": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_5",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_5",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_5",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_5",
+        "y": 270
+      }
+    ],
+    "blood=false,rune=6": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_6",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_6",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_6",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_6",
+        "y": 270
+      }
+    ],
+    "blood=false,rune=7": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_7",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_7",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_7",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_7",
+        "y": 270
+      }
+    ],
+    "blood=true,rune=0": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_0",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_0",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_0",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_0",
+        "y": 270
+      }
+    ],
+    "blood=true,rune=1": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_1",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_1",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_1",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_1",
+        "y": 270
+      }
+    ],
+    "blood=true,rune=2": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_2",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_2",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_2",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_2",
+        "y": 270
+      }
+    ],
+    "blood=true,rune=3": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_3",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_3",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_3",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_3",
+        "y": 270
+      }
+    ],
+    "blood=true,rune=4": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_4",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_4",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_4",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_4",
+        "y": 270
+      }
+    ],
+    "blood=true,rune=5": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_5",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_5",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_5",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_5",
+        "y": 270
+      }
+    ],
+    "blood=true,rune=6": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_6",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_6",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_6",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_6",
+        "y": 270
+      }
+    ],
+    "blood=true,rune=7": [
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_7",
+        "y": 0
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_7",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_7",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/ritual_chalk_red_7",
+        "y": 270
+      }
+    ]
+  }
+}

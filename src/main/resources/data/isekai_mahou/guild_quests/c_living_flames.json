@@ -1,0 +1,15 @@
+{
+  "rank": "C",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "minecraft:blaze",
+      "count": 6
+    }
+  ],
+  "rewards": {
+    "coins": 15,
+    "xp": 180,
+    "points": 28
+  }
+}

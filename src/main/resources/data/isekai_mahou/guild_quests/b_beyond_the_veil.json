@@ -1,0 +1,15 @@
+{
+  "rank": "B",
+  "objectives": [
+    {
+      "type": "explore",
+      "dimension": "isekai_mahou:elemental_plane"
+    }
+  ],
+  "rewards": {
+    "coins": 24,
+    "xp": 300,
+    "points": 42,
+    "glyph": "random"
+  }
+}

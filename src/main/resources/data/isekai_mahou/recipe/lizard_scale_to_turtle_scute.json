@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:lizard_scale"
+    },
+    {
+      "item": "isekai_mahou:lizard_scale"
+    },
+    {
+      "item": "isekai_mahou:lizard_scale"
+    },
+    {
+      "item": "isekai_mahou:lizard_scale"
+    }
+  ],
+  "result": {
+    "id": "minecraft:turtle_scute",
+    "count": 1
+  }
+}

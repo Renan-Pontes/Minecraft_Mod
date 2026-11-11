@@ -1,0 +1,14 @@
+{
+  "category": "block",
+  "elements": [
+    "light"
+  ],
+  "rarity": "common",
+  "icon": [
+    "minecraft:glowstone_dust"
+  ],
+  "order": 12,
+  "blocks": [
+    "minecraft:glowstone"
+  ]
+}

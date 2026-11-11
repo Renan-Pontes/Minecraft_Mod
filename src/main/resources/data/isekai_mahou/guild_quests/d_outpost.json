@@ -1,0 +1,20 @@
+{
+  "rank": "D",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "minecraft:pillager_outpost"
+    },
+    {
+      "type": "kill",
+      "entity": "minecraft:pillager",
+      "count": 5
+    }
+  ],
+  "rewards": {
+    "coins": 12,
+    "xp": 100,
+    "points": 20,
+    "glyph": "isekai_mahou:pierce"
+  }
+}

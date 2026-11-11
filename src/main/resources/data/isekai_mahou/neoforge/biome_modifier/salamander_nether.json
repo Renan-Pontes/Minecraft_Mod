@@ -1,0 +1,16 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:nether_wastes",
+    "minecraft:basalt_deltas",
+    "minecraft:crimson_forest"
+  ],
+  "spawners": [
+    {
+      "type": "isekai_mahou:salamander",
+      "weight": 12,
+      "minCount": 1,
+      "maxCount": 3
+    }
+  ]
+}

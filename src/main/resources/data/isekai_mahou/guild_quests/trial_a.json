@@ -1,0 +1,22 @@
+{
+  "rank": "A",
+  "category": "trial",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "isekai_mahou:ignis",
+        "isekai_mahou:tide_guardian",
+        "isekai_mahou:primordial_golem",
+        "isekai_mahou:zephyr"
+      ],
+      "count": 1,
+      "label": "guild.isekai_mahou.target.guardians"
+    }
+  ],
+  "rewards": {
+    "coins": 50,
+    "xp": 700
+  },
+  "trial": true
+}

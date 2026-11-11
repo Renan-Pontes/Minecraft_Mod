@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "isekai_mahou:block/mana_battery_side_0",
+    "top": "isekai_mahou:block/mana_battery_top",
+    "bottom": "isekai_mahou:block/mana_battery_bottom"
+  }
+}

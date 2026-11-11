@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_helmet",
+  "pattern": [
+    "OSO"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:orange_wool"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:monk_helmet",
+    "count": 1
+  }
+}

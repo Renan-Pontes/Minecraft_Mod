@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "isekai_mahou:block/floating_stone"
+      },
+      {
+        "model": "isekai_mahou:block/floating_stone",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/floating_stone",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/floating_stone",
+        "y": 270
+      }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "rank": "C",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "minecraft:diamond",
+      "count": 5
+    }
+  ],
+  "rewards": {
+    "coins": 16,
+    "xp": 150,
+    "points": 28
+  }
+}

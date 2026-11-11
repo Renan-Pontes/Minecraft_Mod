@@ -1,0 +1,44 @@
+{
+  "circle": 5,
+  "tribute": [
+    {
+      "type": "elemental_essences",
+      "count": 2,
+      "min_types": 3,
+      "max_types": 3,
+      "arcane_substitute": true
+    },
+    {
+      "type": "item",
+      "item": "isekai_mahou:essence_arcane",
+      "count": 4
+    },
+    {
+      "type": "boss_trophy",
+      "count": 1,
+      "items": [
+        "isekai_mahou:minotaur_horn",
+        "isekai_mahou:king_slime_crown",
+        "isekai_mahou:goblin_king_crown"
+      ],
+      "bosses": [
+        "king_slime",
+        "goblin_king",
+        "orc_lord",
+        "minotaur",
+        "corrupted_ent",
+        "corrupted_witch",
+        "renegade_archmage",
+        "lich",
+        "imprisoned_patron"
+      ],
+      "fallback": [
+        {
+          "type": "item",
+          "item": "isekai_mahou:mana_crystal",
+          "count": 12
+        }
+      ]
+    }
+  ]
+}

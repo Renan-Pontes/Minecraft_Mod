@@ -1,0 +1,16 @@
+{
+  "rank": "A",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:minotaur",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 35,
+    "xp": 480,
+    "points": 60
+  }
+}

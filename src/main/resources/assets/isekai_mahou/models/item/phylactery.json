@@ -1,0 +1,26 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "isekai_mahou:item/phylactery"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "isekai_mahou:soul_glow": 0.25
+      },
+      "model": "isekai_mahou:item/phylactery_glow_1"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:soul_glow": 0.5
+      },
+      "model": "isekai_mahou:item/phylactery_glow_2"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:soul_glow": 0.75
+      },
+      "model": "isekai_mahou:item/phylactery_glow_3"
+    }
+  ]
+}

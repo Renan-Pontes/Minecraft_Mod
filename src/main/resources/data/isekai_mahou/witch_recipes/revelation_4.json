@@ -1,0 +1,22 @@
+{
+  "ingredients": [
+    "isekai_mahou:witch_moonpetal",
+    "isekai_mahou:essence_water",
+    "isekai_mahou:essence_shadow",
+    "minecraft:echo_shard",
+    "minecraft:heart_of_the_sea",
+    "isekai_mahou:mana_crystal"
+  ],
+  "stirs": 7,
+  "heat": "medium",
+  "moon_phases": [
+    0
+  ],
+  "night": true,
+  "result": {
+    "id": "isekai_mahou:revelation_potion_4",
+    "count": 1
+  },
+  "xp": 60,
+  "color": "#2A4F9A"
+}

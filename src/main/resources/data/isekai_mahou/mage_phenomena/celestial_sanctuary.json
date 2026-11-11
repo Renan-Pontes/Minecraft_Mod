@@ -1,0 +1,16 @@
+{
+  "category": "dimension",
+  "elements": [
+    "light",
+    "astral"
+  ],
+  "rarity": "epic",
+  "icon": [
+    "isekai_mahou:celestial_marble",
+    "isekai_mahou:essence_light"
+  ],
+  "order": 75,
+  "dimensions": [
+    "isekai_mahou:celestial_sanctuary"
+  ]
+}

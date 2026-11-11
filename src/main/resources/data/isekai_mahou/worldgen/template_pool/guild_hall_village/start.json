@@ -1,0 +1,14 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:guild_hall_village/plaza",
+        "processors": "isekai_mahou:guild_hall_village_aging",
+        "projection": "rigid"
+      }
+    }
+  ]
+}

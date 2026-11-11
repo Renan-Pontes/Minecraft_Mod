@@ -1,0 +1,16 @@
+{
+  "ingredients": [
+    "isekai_mahou:witch_bat_wing",
+    "minecraft:golden_carrot",
+    "minecraft:spider_eye"
+  ],
+  "stirs": 1,
+  "heat": "low",
+  "result": {
+    "id": "isekai_mahou:witch_elixir_owl_eyes",
+    "count": 3
+  },
+  "xp": 8,
+  "color": "#F2C14E",
+  "element": "shadow"
+}

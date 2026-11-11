@@ -1,0 +1,14 @@
+{
+  "category": "block",
+  "elements": [
+    "abyss"
+  ],
+  "rarity": "epic",
+  "icon": [
+    "minecraft:conduit"
+  ],
+  "order": 18,
+  "blocks": [
+    "minecraft:conduit"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "parent": "isekai_mahou:item/armory/lute_t3_held",
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        180,
+        0,
+        -20
+      ],
+      "translation": [
+        2,
+        -1,
+        1
+      ],
+      "scale": [
+        0.85,
+        0.85,
+        0.85
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        0,
+        160
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    }
+  }
+}

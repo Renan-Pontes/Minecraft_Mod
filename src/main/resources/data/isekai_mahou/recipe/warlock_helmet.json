@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_helmet",
+  "pattern": [
+    "HWH",
+    "W W"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:black_wool"
+    },
+    "H": {
+      "item": "minecraft:goat_horn"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:warlock_helmet",
+    "count": 1
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "rank": "D",
+  "category": "hunt",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:hobgoblin",
+      "count": 4
+    }
+  ],
+  "rewards": {
+    "coins": 10,
+    "xp": 120,
+    "reputation": {
+      "kingdom": 25
+    }
+  },
+  "faction": "kingdom",
+  "standing": "friendly"
+}

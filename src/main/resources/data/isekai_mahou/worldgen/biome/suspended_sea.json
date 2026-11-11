@@ -1,0 +1,78 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.7,
+  "downfall": 0.4,
+  "effects": {
+    "sky_color": 7325951,
+    "fog_color": 11068159,
+    "water_color": 3127551,
+    "water_fog_color": 674426,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "music": {
+      "sound": "minecraft:music.overworld.meadow",
+      "min_delay": 12000,
+      "max_delay": 24000,
+      "replace_current_music": false
+    },
+    "grass_color": 6281392,
+    "foliage_color": 5226656,
+    "particle": {
+      "options": {
+        "type": "minecraft:falling_water"
+      },
+      "probability": 0.01
+    }
+  },
+  "spawners": {
+    "monster": [],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [
+      {
+        "type": "minecraft:tropical_fish",
+        "weight": 15,
+        "minCount": 2,
+        "maxCount": 5
+      }
+    ],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [
+      "isekai_mahou:ep_water_lake"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [
+      "isekai_mahou:ep_ore_prismarine",
+      "isekai_mahou:ep_ore_sea_lantern",
+      "isekai_mahou:ep_ore_iron",
+      "isekai_mahou:ep_ore_copper",
+      "isekai_mahou:ep_ore_lapis"
+    ],
+    [],
+    [
+      "isekai_mahou:ep_waterfall"
+    ],
+    [
+      "isekai_mahou:ep_trees_sea",
+      "isekai_mahou:ep_patch_grass",
+      "isekai_mahou:ep_flowers",
+      "isekai_mahou:ep_waterlily"
+    ],
+    []
+  ]
+}

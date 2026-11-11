@@ -1,0 +1,13 @@
+{
+  "category": "sky",
+  "elements": [
+    "ice"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:snowball"
+  ],
+  "order": 65,
+  "weather": "snow",
+  "sky": true
+}

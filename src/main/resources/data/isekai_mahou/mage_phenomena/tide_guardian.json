@@ -1,0 +1,21 @@
+{
+  "category": "boss",
+  "elements": [
+    "water",
+    "abyss"
+  ],
+  "rarity": "legendary",
+  "icon": [
+    "isekai_mahou:guardian_core_water"
+  ],
+  "order": 92,
+  "entities": [
+    "isekai_mahou:tide_guardian"
+  ],
+  "memory": [
+    "boss.isekai_mahou.tide_guardian",
+    "boss.tide_guardian",
+    "kill.isekai_mahou.tide_guardian"
+  ],
+  "repeatable": false
+}

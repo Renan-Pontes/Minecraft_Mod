@@ -1,0 +1,21 @@
+{
+  "category": "boss",
+  "elements": [
+    "earth",
+    "crystal"
+  ],
+  "rarity": "legendary",
+  "icon": [
+    "isekai_mahou:guardian_core_earth"
+  ],
+  "order": 93,
+  "entities": [
+    "isekai_mahou:primordial_golem"
+  ],
+  "memory": [
+    "boss.isekai_mahou.primordial_golem",
+    "boss.primordial_golem",
+    "kill.isekai_mahou.primordial_golem"
+  ],
+  "repeatable": false
+}

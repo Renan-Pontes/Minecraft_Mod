@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "isekai_mahou:blocks/mana_crystal_block",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:mana_crystal_block"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

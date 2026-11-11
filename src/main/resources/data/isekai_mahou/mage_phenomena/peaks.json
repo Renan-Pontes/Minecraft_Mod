@@ -1,0 +1,17 @@
+{
+  "category": "biome",
+  "elements": [
+    "wind",
+    "earth"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:goat_horn"
+  ],
+  "order": 50,
+  "biomes": [
+    "minecraft:jagged_peaks",
+    "minecraft:frozen_peaks",
+    "minecraft:stony_peaks"
+  ]
+}

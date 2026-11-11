@@ -1,0 +1,20 @@
+{
+  "rank": "E",
+  "category": "trial",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "minecraft:zombie",
+        "minecraft:husk"
+      ],
+      "count": 12,
+      "label": "guild.isekai_mahou.target.zombies"
+    }
+  ],
+  "rewards": {
+    "coins": 10,
+    "xp": 80
+  },
+  "trial": true
+}

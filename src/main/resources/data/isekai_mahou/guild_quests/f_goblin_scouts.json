@@ -1,0 +1,15 @@
+{
+  "rank": "F",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:goblin",
+      "count": 5
+    }
+  ],
+  "rewards": {
+    "coins": 4,
+    "xp": 30,
+    "points": 7
+  }
+}

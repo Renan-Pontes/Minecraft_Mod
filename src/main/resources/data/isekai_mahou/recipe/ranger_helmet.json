@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_helmet",
+  "pattern": [
+    "GLG",
+    "G G"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:green_wool"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:ranger_helmet",
+    "count": 1
+  }
+}

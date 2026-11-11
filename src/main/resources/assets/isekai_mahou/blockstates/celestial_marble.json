@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "isekai_mahou:block/celestial_marble"
+      },
+      {
+        "model": "isekai_mahou:block/celestial_marble",
+        "y": 90
+      },
+      {
+        "model": "isekai_mahou:block/celestial_marble",
+        "y": 180
+      },
+      {
+        "model": "isekai_mahou:block/celestial_marble",
+        "y": 270
+      }
+    ]
+  }
+}

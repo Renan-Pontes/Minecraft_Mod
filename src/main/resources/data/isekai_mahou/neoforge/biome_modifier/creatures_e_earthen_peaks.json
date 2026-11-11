@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#isekai_mahou:creatures_e/earthen_peaks",
+  "spawners": [
+    {
+      "type": "isekai_mahou:greater_earth_elemental",
+      "weight": 25,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

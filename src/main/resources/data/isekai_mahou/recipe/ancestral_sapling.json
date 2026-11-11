@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " A ",
+    "BSB",
+    " E "
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:golden_apple"
+    },
+    "B": {
+      "item": "minecraft:bone_meal"
+    },
+    "S": {
+      "tag": "minecraft:saplings"
+    },
+    "E": {
+      "item": "minecraft:emerald"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:ancestral_sapling",
+    "count": 1
+  }
+}

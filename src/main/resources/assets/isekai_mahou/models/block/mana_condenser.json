@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "front": "isekai_mahou:block/mana_condenser_front",
+    "side": "isekai_mahou:block/mana_condenser_side",
+    "top": "isekai_mahou:block/mana_condenser_top",
+    "bottom": "isekai_mahou:block/mana_condenser_bottom"
+  }
+}

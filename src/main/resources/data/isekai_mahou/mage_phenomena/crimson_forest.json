@@ -1,0 +1,15 @@
+{
+  "category": "biome",
+  "elements": [
+    "fire",
+    "nature"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:crimson_fungus"
+  ],
+  "order": 61,
+  "biomes": [
+    "minecraft:crimson_forest"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "isekai_mahou_potions",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:health_potion_common"
+    },
+    {
+      "item": "isekai_mahou:essence_light"
+    },
+    {
+      "item": "minecraft:golden_carrot"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:health_potion_greater",
+    "count": 1
+  }
+}

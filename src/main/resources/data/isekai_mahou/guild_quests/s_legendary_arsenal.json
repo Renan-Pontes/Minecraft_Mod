@@ -1,0 +1,15 @@
+{
+  "rank": "S",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "minecraft:netherite_ingot",
+      "count": 4
+    }
+  ],
+  "rewards": {
+    "coins": 60,
+    "xp": 800,
+    "points": 95
+  }
+}

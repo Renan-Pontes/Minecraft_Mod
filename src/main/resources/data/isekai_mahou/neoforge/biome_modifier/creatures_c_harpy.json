@@ -1,0 +1,18 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "#minecraft:is_mountain",
+      "#c:is_windswept"
+    ]
+  },
+  "spawners": [
+    {
+      "type": "isekai_mahou:harpy",
+      "weight": 12,
+      "minCount": 1,
+      "maxCount": 3
+    }
+  ]
+}

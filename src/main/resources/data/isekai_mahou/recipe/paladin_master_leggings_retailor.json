@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_master_leggings",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/master/leggings"
+    },
+    {
+      "item": "minecraft:white_wool"
+    },
+    {
+      "item": "minecraft:sunflower"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:paladin_master_leggings",
+    "count": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "rank": "D",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:trial_avatar",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 11,
+    "xp": 120,
+    "points": 20
+  },
+  "requires": [
+    "isekai_mahou:trial_altar"
+  ]
+}

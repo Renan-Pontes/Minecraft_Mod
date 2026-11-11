@@ -1,0 +1,26 @@
+{
+  "rank": "F",
+  "category": "explore",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "visit.capital",
+      "count": 1,
+      "absolute": true,
+      "label": "guild.isekai_mahou.target.v08.capital",
+      "icon": "minecraft:bell"
+    }
+  ],
+  "rewards": {
+    "coins": 4,
+    "xp": 40,
+    "points": 6,
+    "reputation": {
+      "kingdom": 10
+    }
+  },
+  "repeatable": false,
+  "requires": [
+    "isekai_mahou:city_heart"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "isekai_mahou:block/elemental_pedestal_template",
+  "textures": {
+    "particle": "isekai_mahou:block/elemental_pedestal_wind_base",
+    "base": "isekai_mahou:block/elemental_pedestal_wind_base",
+    "column": "isekai_mahou:block/elemental_pedestal_wind_column",
+    "top": "isekai_mahou:block/elemental_pedestal_wind_top"
+  }
+}

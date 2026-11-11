@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "isekai_mahou:elemental_brick_water"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "isekai_mahou:guardian_core_water"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BCB",
+    "BMB",
+    "BBB"
+  ],
+  "key": {
+    "B": {
+      "item": "isekai_mahou:elemental_brick_water"
+    },
+    "C": {
+      "item": "isekai_mahou:guardian_core_water"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:elemental_pedestal",
+    "count": 1,
+    "components": {
+      "minecraft:block_state": {
+        "element": "water"
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " T ",
+    "MCM",
+    "DDD"
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:totem_of_undying"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "C": {
+      "item": "minecraft:crying_obsidian"
+    },
+    "D": {
+      "item": "minecraft:polished_deepslate"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:reincarnation_altar",
+    "count": 1
+  }
+}

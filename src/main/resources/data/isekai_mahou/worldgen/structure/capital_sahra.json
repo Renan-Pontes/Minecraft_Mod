@@ -1,0 +1,12 @@
+{
+  "type": "isekai_mahou:guild_city",
+  "step": "strongholds",
+  "terrain_adaptation": "beard_box",
+  "spawn_overrides": {},
+  "capital": true,
+  "size": 3,
+  "max_slope": 64,
+  "max_water": 0.5,
+  "biomes": "#isekai_mahou:has_structure/capital_sahra",
+  "kingdom": "sahra"
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_chestplate",
+  "pattern": [
+    "C C",
+    "RCR",
+    "CLC"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:chain"
+    },
+    "R": {
+      "item": "minecraft:red_wool"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:warrior_chestplate",
+    "count": 1
+  }
+}

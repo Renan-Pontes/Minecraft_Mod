@@ -1,0 +1,19 @@
+{
+  "rank": "D",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "minecraft:pillager",
+        "minecraft:vindicator"
+      ],
+      "count": 8,
+      "label": "guild.isekai_mahou.target.illagers"
+    }
+  ],
+  "rewards": {
+    "coins": 10,
+    "xp": 90,
+    "points": 18
+  }
+}

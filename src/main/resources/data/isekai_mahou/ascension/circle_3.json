@@ -1,0 +1,17 @@
+{
+  "circle": 3,
+  "tribute": [
+    {
+      "type": "elemental_essences",
+      "count": 1,
+      "min_types": 2,
+      "max_types": 2,
+      "arcane_substitute": true
+    },
+    {
+      "type": "item",
+      "item": "isekai_mahou:essence_arcane",
+      "count": 2
+    }
+  ]
+}

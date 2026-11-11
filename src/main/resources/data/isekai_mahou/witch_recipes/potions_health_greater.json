@@ -1,0 +1,16 @@
+{
+  "ingredients": [
+    "isekai_mahou:essence_light",
+    "minecraft:glistering_melon_slice",
+    "minecraft:golden_carrot"
+  ],
+  "stirs": 3,
+  "heat": "medium",
+  "result": {
+    "id": "isekai_mahou:health_potion_greater",
+    "count": 3
+  },
+  "xp": 10,
+  "color": "#D41E3C",
+  "element": "light"
+}

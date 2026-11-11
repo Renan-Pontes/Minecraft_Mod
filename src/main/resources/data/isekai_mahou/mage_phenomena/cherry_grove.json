@@ -1,0 +1,15 @@
+{
+  "category": "biome",
+  "elements": [
+    "light",
+    "nature"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:pink_petals"
+  ],
+  "order": 56,
+  "biomes": [
+    "minecraft:cherry_grove"
+  ]
+}

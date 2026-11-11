@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_chestplate",
+  "pattern": [
+    "I I",
+    "IBI",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "minecraft:blue_wool"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:knight_chestplate",
+    "count": 1
+  }
+}

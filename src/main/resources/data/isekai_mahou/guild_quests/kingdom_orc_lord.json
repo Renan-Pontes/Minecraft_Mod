@@ -1,0 +1,27 @@
+{
+  "rank": "B",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "isekai_mahou:orc_lord",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 45,
+    "xp": 320,
+    "glyph": "random",
+    "items": [
+      {
+        "id": "minecraft:diamond",
+        "count": 3
+      }
+    ],
+    "reputation": {
+      "kingdom": 80
+    }
+  },
+  "faction": "kingdom",
+  "standing": "revered"
+}

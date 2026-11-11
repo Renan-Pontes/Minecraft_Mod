@@ -1,0 +1,28 @@
+{
+  "rank": 2,
+  "xp": 550,
+  "glyph_tier": 2,
+  "element_xp": {
+    "shadow": 60
+  },
+  "servant_cap": 1,
+  "servant_gift": 1,
+  "required_skulls": 0,
+  "min_circle": 1,
+  "souls": [
+    {
+      "entity": "minecraft:skeleton",
+      "count": 8
+    },
+    {
+      "entity": "minecraft:spider",
+      "count": 6
+    },
+    {
+      "entity": "isekai_mahou:goblin",
+      "count": 6,
+      "fallback": "minecraft:zombie",
+      "fallback_count": 8
+    }
+  ]
+}

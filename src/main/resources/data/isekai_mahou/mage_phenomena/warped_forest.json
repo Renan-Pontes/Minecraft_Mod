@@ -1,0 +1,14 @@
+{
+  "category": "biome",
+  "elements": [
+    "void"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:warped_fungus"
+  ],
+  "order": 62,
+  "biomes": [
+    "minecraft:warped_forest"
+  ]
+}

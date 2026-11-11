@@ -1,0 +1,19 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "#c:is_desert",
+      "#minecraft:is_badlands",
+      "#minecraft:is_savanna"
+    ]
+  },
+  "spawners": [
+    {
+      "type": "isekai_mahou:fire_slime",
+      "weight": 18,
+      "minCount": 1,
+      "maxCount": 3
+    }
+  ]
+}

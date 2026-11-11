@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_boots",
+  "pattern": [
+    "W W",
+    "L L"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:blue_wool"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:mage_boots",
+    "count": 1
+  }
+}

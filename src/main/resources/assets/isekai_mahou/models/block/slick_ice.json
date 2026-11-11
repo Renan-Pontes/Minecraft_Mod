@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "isekai_mahou:block/slick_ice"
+  }
+}

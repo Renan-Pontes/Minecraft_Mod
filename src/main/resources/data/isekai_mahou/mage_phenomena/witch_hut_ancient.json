@@ -1,0 +1,15 @@
+{
+  "category": "structure",
+  "elements": [
+    "water",
+    "shadow"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:cauldron"
+  ],
+  "order": 301,
+  "structures": [
+    "isekai_mahou:witch_hut_ancient"
+  ]
+}

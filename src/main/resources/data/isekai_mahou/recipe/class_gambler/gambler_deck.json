@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "CCC",
+    "CGC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "isekai_mahou:gambler_card"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:gambler_deck",
+    "count": 1
+  }
+}

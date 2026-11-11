@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "isekai_mahou:arcane_upgrade_template"
+    }
+  ],
+  "template": {
+    "item": "isekai_mahou:arcane_upgrade_template"
+  },
+  "type": "minecraft:smithing_transform",
+  "base": {
+    "item": "isekai_mahou:barbarian_leggings"
+  },
+  "addition": {
+    "tag": "isekai_mahou:outfits/upgrade/adept"
+  },
+  "result": {
+    "id": "isekai_mahou:barbarian_adept_leggings",
+    "count": 1
+  }
+}

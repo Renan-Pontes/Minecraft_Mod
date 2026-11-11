@@ -1,0 +1,21 @@
+{
+  "ingredients": [
+    "isekai_mahou:witch_grave_dust",
+    "isekai_mahou:witch_bat_wing",
+    "isekai_mahou:essence_shadow",
+    "minecraft:ghast_tear",
+    "minecraft:crying_obsidian"
+  ],
+  "stirs": 5,
+  "heat": "high",
+  "moon_phases": [
+    4
+  ],
+  "night": true,
+  "result": {
+    "id": "isekai_mahou:revelation_potion_3",
+    "count": 1
+  },
+  "xp": 45,
+  "color": "#7A2FC0"
+}

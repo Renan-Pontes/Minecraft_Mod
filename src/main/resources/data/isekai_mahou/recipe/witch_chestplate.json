@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_chestplate",
+  "pattern": [
+    "W W",
+    "WSW",
+    "FPF"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:purple_wool"
+    },
+    "S": {
+      "item": "minecraft:string"
+    },
+    "F": {
+      "item": "minecraft:fern"
+    },
+    "P": {
+      "item": "minecraft:white_wool"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:witch_chestplate",
+    "count": 1
+  }
+}

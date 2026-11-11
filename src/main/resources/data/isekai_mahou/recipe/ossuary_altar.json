@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "BGB",
+    "BBB"
+  ],
+  "key": {
+    "C": {
+      "tag": "minecraft:candles"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "B": {
+      "item": "minecraft:bone_block"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:ossuary_altar",
+    "count": 1
+  }
+}

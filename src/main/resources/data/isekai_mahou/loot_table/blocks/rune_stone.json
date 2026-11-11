@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "isekai_mahou:blocks/rune_stone",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "isekai_mahou:rune_stone"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

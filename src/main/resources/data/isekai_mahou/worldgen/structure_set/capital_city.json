@@ -1,0 +1,22 @@
+{
+  "structures": [
+    {
+      "structure": "isekai_mahou:capital_city",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:concentric_rings",
+    "distance": 6,
+    "spread": 1,
+    "count": 1,
+    "salt": 1946300802,
+    "preferred_biomes": [
+      "minecraft:plains",
+      "minecraft:sunflower_plains",
+      "minecraft:forest",
+      "minecraft:birch_forest",
+      "minecraft:flower_forest"
+    ]
+  }
+}

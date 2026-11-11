@@ -1,0 +1,19 @@
+{
+  "rank": "E",
+  "category": "contract",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "minecraft:pillager",
+      "count": 8
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 70,
+    "reputation": {
+      "underworld": 15
+    }
+  },
+  "faction": "underworld"
+}

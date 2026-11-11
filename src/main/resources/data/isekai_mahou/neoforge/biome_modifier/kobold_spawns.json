@@ -1,0 +1,24 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": {
+    "type": "neoforge:and",
+    "values": [
+      "#minecraft:is_overworld",
+      {
+        "type": "neoforge:not",
+        "value": [
+          "minecraft:deep_dark",
+          "minecraft:mushroom_fields"
+        ]
+      }
+    ]
+  },
+  "spawners": [
+    {
+      "type": "isekai_mahou:kobold",
+      "weight": 25,
+      "minCount": 2,
+      "maxCount": 4
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "isekai_mahou:block/witch_cauldron"
+    },
+    "lit=true": {
+      "model": "isekai_mahou:block/witch_cauldron"
+    }
+  }
+}

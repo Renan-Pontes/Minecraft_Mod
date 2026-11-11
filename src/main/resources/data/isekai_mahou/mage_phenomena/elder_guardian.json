@@ -1,0 +1,21 @@
+{
+  "category": "boss",
+  "elements": [
+    "abyss",
+    "water"
+  ],
+  "rarity": "epic",
+  "icon": [
+    "minecraft:wet_sponge"
+  ],
+  "order": 89,
+  "entities": [
+    "minecraft:elder_guardian"
+  ],
+  "memory": [
+    "boss.minecraft.elder_guardian",
+    "boss.elder_guardian",
+    "kill.minecraft.elder_guardian"
+  ],
+  "repeatable": false
+}

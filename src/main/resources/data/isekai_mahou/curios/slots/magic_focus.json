@@ -1,0 +1,9 @@
+{
+  "order": 5,
+  "size": 1,
+  "icon": "isekai_mahou:slot/magic_focus",
+  "add_cosmetic": false,
+  "validators": [
+    "curios:tag"
+  ]
+}

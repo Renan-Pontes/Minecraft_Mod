@@ -1,0 +1,26 @@
+{
+  "rank": "B",
+  "category": "study",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "counter.success",
+      "count": 3,
+      "label": "guild.isekai_mahou.target.v08.counter",
+      "icon": "minecraft:echo_shard"
+    }
+  ],
+  "rewards": {
+    "coins": 25,
+    "xp": 320,
+    "glyph": "random",
+    "reputation": {
+      "academy": 45
+    }
+  },
+  "requires": [
+    "isekai_mahou:counterspell"
+  ],
+  "faction": "academy",
+  "standing": "honored"
+}

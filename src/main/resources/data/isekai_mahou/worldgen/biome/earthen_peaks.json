@@ -1,0 +1,68 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.8,
+  "downfall": 0.0,
+  "effects": {
+    "sky_color": 14267002,
+    "fog_color": 15127208,
+    "water_color": 5216874,
+    "water_fog_color": 1718826,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "music": {
+      "sound": "minecraft:music.overworld.jagged_peaks",
+      "min_delay": 12000,
+      "max_delay": 24000,
+      "replace_current_music": false
+    },
+    "grass_color": 8037704,
+    "foliage_color": 6986298,
+    "particle": {
+      "options": {
+        "type": "minecraft:spore_blossom_air"
+      },
+      "probability": 0.008
+    }
+  },
+  "spawners": {
+    "monster": [],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [
+      "isekai_mahou:ep_amethyst_geode"
+    ],
+    [],
+    [],
+    [],
+    [
+      "isekai_mahou:ep_ore_iron",
+      "isekai_mahou:ep_ore_copper",
+      "isekai_mahou:ep_ore_gold",
+      "isekai_mahou:ep_ore_diamond",
+      "isekai_mahou:ep_ore_emerald"
+    ],
+    [],
+    [],
+    [
+      "isekai_mahou:ep_trees_earthen",
+      "isekai_mahou:ep_boulders",
+      "isekai_mahou:ep_patch_grass"
+    ],
+    []
+  ]
+}

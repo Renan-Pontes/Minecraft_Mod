@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "isekai_mahou:block/heart_tree_log"
+    },
+    "axis=z": {
+      "model": "isekai_mahou:block/heart_tree_log",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "isekai_mahou:block/heart_tree_log",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

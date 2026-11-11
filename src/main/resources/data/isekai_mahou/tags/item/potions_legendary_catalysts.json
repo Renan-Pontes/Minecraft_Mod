@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:nether_star",
+    "minecraft:enchanted_golden_apple",
+    {
+      "id": "isekai_mahou:twilight_heart",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:primordial_dragon_heart",
+      "required": false
+    }
+  ]
+}

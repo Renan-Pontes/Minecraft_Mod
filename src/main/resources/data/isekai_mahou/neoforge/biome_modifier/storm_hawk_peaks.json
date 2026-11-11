@@ -1,0 +1,18 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:jagged_peaks",
+    "minecraft:frozen_peaks",
+    "minecraft:stony_peaks",
+    "minecraft:snowy_slopes",
+    "minecraft:windswept_hills"
+  ],
+  "spawners": [
+    {
+      "type": "isekai_mahou:storm_hawk",
+      "weight": 10,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " S ",
+    "AMA",
+    " L "
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:string"
+    },
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "L": {
+      "item": "isekai_mahou:essence_light"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:meditation_charm",
+    "count": 1
+  }
+}

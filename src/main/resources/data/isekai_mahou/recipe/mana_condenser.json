@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "DMD",
+    "EFE",
+    "DRD"
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:cobbled_deepslate"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_fire"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:mana_condenser",
+    "count": 1
+  }
+}

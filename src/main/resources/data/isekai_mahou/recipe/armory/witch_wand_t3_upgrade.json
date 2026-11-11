@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "isekai_mahou:arcane_upgrade_template"
+  },
+  "base": {
+    "item": "isekai_mahou:witch_wand_t2"
+  },
+  "addition": {
+    "item": "isekai_mahou:arcane_diamond"
+  },
+  "result": {
+    "id": "isekai_mahou:witch_wand_t3",
+    "count": 1
+  }
+}

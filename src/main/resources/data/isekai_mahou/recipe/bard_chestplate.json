@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_chestplate",
+  "pattern": [
+    "P P",
+    "YPY",
+    "PYP"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:pink_wool"
+    },
+    "Y": {
+      "item": "minecraft:yellow_wool"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:bard_chestplate",
+    "count": 1
+  }
+}

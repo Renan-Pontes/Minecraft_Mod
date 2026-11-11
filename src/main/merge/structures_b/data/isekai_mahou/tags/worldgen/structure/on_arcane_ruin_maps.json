@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "isekai_mahou:mage_tower",
+    "isekai_mahou:witch_hut_ancient",
+    "isekai_mahou:profane_altar",
+    "isekai_mahou:druid_circle",
+    "isekai_mahou:forgotten_crypt"
+  ]
+}

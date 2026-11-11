@@ -1,0 +1,26 @@
+{
+  "rank": "D",
+  "category": "delivery",
+  "objectives": [
+    {
+      "type": "gather",
+      "item": "minecraft:diamond",
+      "count": 3
+    },
+    {
+      "type": "gather",
+      "item": "minecraft:gold_ingot",
+      "count": 8
+    }
+  ],
+  "rewards": {
+    "coins": 10,
+    "xp": 120,
+    "glyph": "random",
+    "reputation": {
+      "underworld": 25
+    }
+  },
+  "faction": "underworld",
+  "standing": "friendly"
+}

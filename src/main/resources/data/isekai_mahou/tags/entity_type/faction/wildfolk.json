@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    {"id": "isekai_mahou:fairy", "required": false},
+    {"id": "isekai_mahou:sylph", "required": false},
+    {"id": "isekai_mahou:undine", "required": false},
+    {"id": "isekai_mahou:lumen_sprite", "required": false},
+    {"id": "isekai_mahou:moss_golem", "required": false},
+    {"id": "isekai_mahou:wandering_spirit", "required": false}
+  ]
+}

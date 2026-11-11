@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "isekai_mahou:arcane_upgrade_template"
+    }
+  ],
+  "template": {
+    "item": "isekai_mahou:arcane_upgrade_template"
+  },
+  "type": "minecraft:smithing_transform",
+  "base": {
+    "item": "isekai_mahou:mage_master_leggings"
+  },
+  "addition": {
+    "tag": "isekai_mahou:outfits/upgrade/archmage"
+  },
+  "result": {
+    "id": "isekai_mahou:mage_archmage_leggings",
+    "count": 1
+  }
+}

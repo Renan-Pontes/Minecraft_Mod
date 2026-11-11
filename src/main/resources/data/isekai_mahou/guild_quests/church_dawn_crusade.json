@@ -1,0 +1,34 @@
+{
+  "rank": "S",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "guild.kill_undead",
+      "count": 150,
+      "label": "guild.isekai_mahou.target.v08.undead",
+      "icon": "minecraft:totem_of_undying"
+    },
+    {
+      "type": "kill",
+      "entity": "minecraft:wither",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 70,
+    "xp": 900,
+    "glyph": "random",
+    "items": [
+      {
+        "id": "minecraft:totem_of_undying",
+        "count": 1
+      }
+    ],
+    "reputation": {
+      "church": 100
+    }
+  },
+  "faction": "church",
+  "standing": "exalted"
+}

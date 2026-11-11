@@ -1,0 +1,15 @@
+{
+  "rank": "A",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": "minecraft:elder_guardian",
+      "count": 1
+    }
+  ],
+  "rewards": {
+    "coins": 32,
+    "xp": 450,
+    "points": 55
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " M ",
+    "GEG",
+    "SSS"
+  ],
+  "key": {
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    "S": {
+      "item": "minecraft:polished_deepslate"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:runic_pedestal",
+    "count": 1
+  }
+}

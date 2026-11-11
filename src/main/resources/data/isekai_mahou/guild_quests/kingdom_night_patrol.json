@@ -1,0 +1,21 @@
+{
+  "rank": "E",
+  "category": "defense",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "guild.kill_night",
+      "count": 12,
+      "label": "guild.isekai_mahou.target.v08.night",
+      "icon": "minecraft:lantern"
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 70,
+    "reputation": {
+      "kingdom": 15
+    }
+  },
+  "faction": "kingdom"
+}

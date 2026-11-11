@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:hollow_crystal"
+    },
+    {
+      "item": "isekai_mahou:hollow_crystal"
+    },
+    {
+      "item": "isekai_mahou:hollow_mask_fragment"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:reishi_crystal",
+    "count": 1
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "category": "dimension",
+  "elements": [
+    "hellfire",
+    "fire"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:netherrack"
+  ],
+  "order": 71,
+  "dimensions": [
+    "minecraft:the_nether"
+  ]
+}

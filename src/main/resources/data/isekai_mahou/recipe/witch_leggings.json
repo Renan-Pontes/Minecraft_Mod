@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_leggings",
+  "pattern": [
+    "PBP",
+    "W W",
+    "B B"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:white_wool"
+    },
+    "P": {
+      "item": "minecraft:purple_wool"
+    },
+    "B": {
+      "item": "minecraft:black_wool"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:witch_leggings",
+    "count": 1
+  }
+}

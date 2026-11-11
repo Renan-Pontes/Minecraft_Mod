@@ -1,0 +1,17 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:nether_wastes",
+    "minecraft:crimson_forest",
+    "minecraft:soul_sand_valley",
+    "minecraft:basalt_deltas"
+  ],
+  "spawners": [
+    {
+      "type": "isekai_mahou:ember_imp",
+      "weight": 10,
+      "minCount": 1,
+      "maxCount": 3
+    }
+  ]
+}

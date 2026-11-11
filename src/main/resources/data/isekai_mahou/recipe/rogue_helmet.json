@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_helmet",
+  "pattern": [
+    "KNK",
+    "K K"
+  ],
+  "key": {
+    "K": {
+      "item": "minecraft:black_wool"
+    },
+    "N": {
+      "item": "minecraft:iron_nugget"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:rogue_helmet",
+    "count": 1
+  }
+}

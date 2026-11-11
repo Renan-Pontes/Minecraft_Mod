@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "T T",
+    "TGT",
+    " L "
+  ],
+  "key": {
+    "T": {
+      "item": "isekai_mahou:orc_tusk"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:orc_war_horn",
+    "count": 1
+  }
+}

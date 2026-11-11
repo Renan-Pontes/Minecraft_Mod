@@ -1,0 +1,36 @@
+{
+  "rank": "S",
+  "category": "contract",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "minecraft:ender_dragon",
+        "minecraft:warden"
+      ],
+      "count": 1,
+      "label": "guild.isekai_mahou.target.v08.kingpin"
+    },
+    {
+      "type": "gather",
+      "item": "minecraft:netherite_ingot",
+      "count": 2
+    }
+  ],
+  "rewards": {
+    "coins": 70,
+    "xp": 900,
+    "glyph": "random",
+    "items": [
+      {
+        "id": "minecraft:enchanted_golden_apple",
+        "count": 2
+      }
+    ],
+    "reputation": {
+      "underworld": 100
+    }
+  },
+  "faction": "underworld",
+  "standing": "exalted"
+}

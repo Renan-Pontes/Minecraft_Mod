@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "isekai_mahou:block/runic_pedestal"
+    },
+    "active=true": {
+      "model": "isekai_mahou:block/runic_pedestal_active"
+    }
+  }
+}

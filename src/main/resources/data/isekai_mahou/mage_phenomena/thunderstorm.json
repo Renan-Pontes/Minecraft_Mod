@@ -1,0 +1,13 @@
+{
+  "category": "sky",
+  "elements": [
+    "lightning"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:lightning_rod"
+  ],
+  "order": 64,
+  "weather": "thunder",
+  "sky": true
+}

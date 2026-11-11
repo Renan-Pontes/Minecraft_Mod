@@ -1,0 +1,18 @@
+{
+  "type": "isekai_mahou:twilight_rift",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "isekai_mahou:twilight_rift",
+      "layers": [
+        {
+          "block": "minecraft:air",
+          "height": 1
+        }
+      ],
+      "lakes": false,
+      "features": false,
+      "structure_overrides": []
+    }
+  }
+}

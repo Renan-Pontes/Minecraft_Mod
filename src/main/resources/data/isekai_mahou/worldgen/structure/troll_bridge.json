@@ -1,0 +1,9 @@
+{
+  "type": "isekai_mahou:troll_bridge",
+  "template": "isekai_mahou:troll_bridge/bridge",
+  "water_line": 6,
+  "biomes": "#isekai_mahou:has_structure/troll_bridge",
+  "step": "surface_structures",
+  "terrain_adaptation": "none",
+  "spawn_overrides": {}
+}

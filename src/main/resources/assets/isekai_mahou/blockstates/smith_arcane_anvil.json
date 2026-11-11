@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "isekai_mahou:block/smith_arcane_anvil"
+    },
+    "facing=east": {
+      "model": "isekai_mahou:block/smith_arcane_anvil",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "isekai_mahou:block/smith_arcane_anvil",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "isekai_mahou:block/smith_arcane_anvil",
+      "y": 270
+    }
+  }
+}

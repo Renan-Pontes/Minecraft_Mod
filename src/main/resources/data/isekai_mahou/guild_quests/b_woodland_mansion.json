@@ -1,0 +1,20 @@
+{
+  "rank": "B",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "minecraft:mansion"
+    },
+    {
+      "type": "kill",
+      "entity": "minecraft:vindicator",
+      "count": 4
+    }
+  ],
+  "rewards": {
+    "coins": 26,
+    "xp": 340,
+    "points": 46,
+    "glyph": "random"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:steel_ball_t2"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:gold_block"
+    },
+    {
+      "item": "isekai_mahou:essence_earth"
+    },
+    {
+      "item": "isekai_mahou:essence_wind"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:steel_ball_t3",
+    "count": 1
+  }
+}

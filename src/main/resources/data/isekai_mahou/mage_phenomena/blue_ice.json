@@ -1,0 +1,14 @@
+{
+  "category": "block",
+  "elements": [
+    "ice"
+  ],
+  "rarity": "rare",
+  "icon": [
+    "minecraft:blue_ice"
+  ],
+  "order": 5,
+  "blocks": [
+    "minecraft:blue_ice"
+  ]
+}

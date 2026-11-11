@@ -1,0 +1,32 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:minotaur_labyrinth/maze_a",
+        "processors": "isekai_mahou:minotaur_labyrinth_decay",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:minotaur_labyrinth/maze_b",
+        "processors": "isekai_mahou:minotaur_labyrinth_decay",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "isekai_mahou:minotaur_labyrinth/maze_c",
+        "processors": "isekai_mahou:minotaur_labyrinth_decay",
+        "projection": "rigid"
+      }
+    }
+  ]
+}

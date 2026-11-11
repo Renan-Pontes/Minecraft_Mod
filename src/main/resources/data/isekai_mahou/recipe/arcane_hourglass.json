@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GCG",
+    "DND",
+    "GCG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_block"
+    },
+    "C": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:arcane_hourglass",
+    "count": 1
+  }
+}

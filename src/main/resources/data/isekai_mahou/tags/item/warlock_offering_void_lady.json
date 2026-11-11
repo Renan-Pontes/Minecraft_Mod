@@ -1,0 +1,24 @@
+{
+  "values": [
+    "minecraft:ender_pearl",
+    "minecraft:ender_eye",
+    "minecraft:phantom_membrane",
+    "minecraft:echo_shard",
+    "minecraft:chorus_fruit",
+    "minecraft:popped_chorus_fruit",
+    "minecraft:shulker_shell",
+    "minecraft:dragon_breath",
+    "minecraft:sculk",
+    "minecraft:crying_obsidian",
+    "minecraft:wither_rose",
+    "minecraft:nether_star",
+    {
+      "id": "isekai_mahou:essence_shadow",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:guardian_core_shadow",
+      "required": false
+    }
+  ]
+}

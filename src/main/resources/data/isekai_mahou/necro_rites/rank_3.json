@@ -1,0 +1,28 @@
+{
+  "rank": 3,
+  "xp": 900,
+  "glyph_tier": 2,
+  "awaken": "earth",
+  "element_xp": {
+    "shadow": 60,
+    "earth": 40
+  },
+  "servant_cap": 1,
+  "servant_gift": 1,
+  "required_skulls": 0,
+  "min_circle": 2,
+  "souls": [
+    {
+      "entity": "minecraft:creeper",
+      "count": 5
+    },
+    {
+      "entity": "minecraft:spider",
+      "count": 5
+    },
+    {
+      "entity": "minecraft:witch",
+      "count": 2
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "category": "creature",
+  "elements": [
+    "water"
+  ],
+  "rarity": "common",
+  "icon": [
+    "isekai_mahou:slime_gel",
+    "minecraft:slime_ball"
+  ],
+  "order": 41,
+  "entities": [
+    "isekai_mahou:slime"
+  ]
+}

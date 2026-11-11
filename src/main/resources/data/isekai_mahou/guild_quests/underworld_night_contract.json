@@ -1,0 +1,21 @@
+{
+  "rank": "E",
+  "category": "contract",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "guild.kill_night",
+      "count": 15,
+      "label": "guild.isekai_mahou.target.v08.night",
+      "icon": "minecraft:iron_sword"
+    }
+  ],
+  "rewards": {
+    "coins": 6,
+    "xp": 70,
+    "reputation": {
+      "underworld": 15
+    }
+  },
+  "faction": "underworld"
+}

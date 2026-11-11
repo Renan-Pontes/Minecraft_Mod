@@ -1,0 +1,33 @@
+{
+  "color": "#8A2B3A",
+  "icon": "isekai_mahou:essence_shadow",
+  "order": 40,
+  "rivals": {"church": 1.0, "kingdom": 0.5},
+  "allies": {},
+  "kill_penalty": -35,
+  "rewards": {
+    "friendly": {
+      "xp": 100,
+      "items": [{"id": "isekai_mahou:guild_coin", "count": 10}, {"id": "minecraft:ender_pearl", "count": 4}],
+      "title": "reputation.isekai_mahou.title.underworld.friendly"
+    },
+    "honored": {
+      "xp": 250,
+      "items": [{"id": "isekai_mahou:essence_shadow", "count": 4}, {"id": "minecraft:emerald", "count": 20}],
+      "title": "reputation.isekai_mahou.title.underworld.honored"
+    },
+    "revered": {
+      "xp": 500,
+      "items": [{"id": "minecraft:diamond", "count": 4}],
+      "glyph_scrolls": 1,
+      "glyph_tier": 3,
+      "title": "reputation.isekai_mahou.title.underworld.revered"
+    },
+    "exalted": {
+      "xp": 1000,
+      "items": [{"id": "minecraft:netherite_scrap", "count": 2}],
+      "legend": "random",
+      "title": "reputation.isekai_mahou.title.underworld.exalted"
+    }
+  }
+}

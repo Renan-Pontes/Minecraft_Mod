@@ -1,0 +1,23 @@
+{
+  "rank": "A",
+  "category": "boss",
+  "objectives": [
+    {
+      "type": "kill",
+      "entity": [
+        "isekai_mahou:renegade_archmage",
+        "isekai_mahou:corrupted_witch",
+        "isekai_mahou:corrupted_ent",
+        "isekai_mahou:lich"
+      ],
+      "count": 1,
+      "label": "guild.isekai_mahou.target.fallen"
+    }
+  ],
+  "rewards": {
+    "coins": 40,
+    "xp": 520,
+    "points": 65,
+    "glyph": "random"
+  }
+}

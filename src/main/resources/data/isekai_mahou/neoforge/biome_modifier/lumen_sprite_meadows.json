@@ -1,0 +1,18 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:flower_forest",
+    "minecraft:sunflower_plains",
+    "minecraft:plains",
+    "minecraft:meadow",
+    "minecraft:cherry_grove"
+  ],
+  "spawners": [
+    {
+      "type": "isekai_mahou:lumen_sprite",
+      "weight": 12,
+      "minCount": 1,
+      "maxCount": 3
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "isekai_mahou_potions",
+  "pattern": [
+    "EKE",
+    "TPT",
+    "EGE"
+  ],
+  "key": {
+    "E": {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    "K": {
+      "tag": "isekai_mahou:potions_legendary_catalysts"
+    },
+    "T": {
+      "tag": "isekai_mahou:potions_boss_trophies"
+    },
+    "P": {
+      "item": "isekai_mahou:mana_potion_supreme"
+    },
+    "G": {
+      "item": "isekai_mahou:mana_crystal"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:mana_potion_legendary",
+    "count": 1
+  }
+}

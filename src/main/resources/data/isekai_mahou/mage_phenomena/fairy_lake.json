@@ -1,0 +1,16 @@
+{
+  "category": "structure",
+  "elements": [
+    "light",
+    "water"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "isekai_mahou:fairy_glowbloom",
+    "minecraft:lily_pad"
+  ],
+  "order": 307,
+  "structures": [
+    "isekai_mahou:fairy_lake"
+  ]
+}

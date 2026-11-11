@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#isekai_mahou:creatures_e/void_hollows",
+  "spawners": [
+    {
+      "type": "isekai_mahou:watcher_eye",
+      "weight": 30,
+      "minCount": 1,
+      "maxCount": 2
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "category": "creature",
+  "elements": [
+    "void"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:ender_pearl"
+  ],
+  "order": 24,
+  "entities": [
+    "minecraft:enderman"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "category": "structure",
+  "elements": [
+    "sand"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:chiseled_sandstone"
+  ],
+  "order": 86,
+  "structures": [
+    "minecraft:desert_pyramid"
+  ]
+}

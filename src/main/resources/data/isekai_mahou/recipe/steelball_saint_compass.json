@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " G ",
+    "GCG",
+    " E "
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "C": {
+      "item": "minecraft:compass"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_earth"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:steelball_saint_compass",
+    "count": 1
+  }
+}

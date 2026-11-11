@@ -1,0 +1,30 @@
+{
+  "rank": "B",
+  "category": "contract",
+  "objectives": [
+    {
+      "type": "explore",
+      "structure": "minecraft:monument"
+    },
+    {
+      "type": "gather",
+      "item": "minecraft:gold_block",
+      "count": 2
+    },
+    {
+      "type": "gather",
+      "item": "minecraft:sponge",
+      "count": 4
+    }
+  ],
+  "rewards": {
+    "coins": 25,
+    "xp": 320,
+    "glyph": "random",
+    "reputation": {
+      "underworld": 45
+    }
+  },
+  "faction": "underworld",
+  "standing": "honored"
+}

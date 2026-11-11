@@ -1,0 +1,21 @@
+{
+  "rank": "F",
+  "category": "contract",
+  "objectives": [
+    {
+      "type": "counter",
+      "key": "cast.shadow",
+      "count": 15,
+      "label": "guild.isekai_mahou.target.v08.cast_shadow",
+      "icon": "isekai_mahou:essence_shadow"
+    }
+  ],
+  "rewards": {
+    "coins": 4,
+    "xp": 40,
+    "reputation": {
+      "underworld": 10
+    }
+  },
+  "faction": "underworld"
+}

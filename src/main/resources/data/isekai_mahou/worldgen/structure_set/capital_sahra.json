@@ -1,0 +1,25 @@
+{
+  "structures": [
+    {
+      "structure": "isekai_mahou:capital_sahra",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "isekai_mahou:kingdom_ring",
+    "distance": 30,
+    "spread": 6,
+    "count": 6,
+    "salt": 1946300803,
+    "preferred_biomes": [
+      "minecraft:desert",
+      "minecraft:badlands",
+      "minecraft:wooded_badlands"
+    ],
+    "candidates": [
+      2,
+      1,
+      3
+    ]
+  }
+}

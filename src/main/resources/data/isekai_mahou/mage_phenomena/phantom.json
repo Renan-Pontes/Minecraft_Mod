@@ -1,0 +1,15 @@
+{
+  "category": "creature",
+  "elements": [
+    "shadow",
+    "wind"
+  ],
+  "rarity": "uncommon",
+  "icon": [
+    "minecraft:phantom_membrane"
+  ],
+  "order": 28,
+  "entities": [
+    "minecraft:phantom"
+  ]
+}

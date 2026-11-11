@@ -1,0 +1,21 @@
+{
+  "ingredients": [
+    "isekai_mahou:witch_grave_dust",
+    "minecraft:poisonous_potato",
+    "minecraft:rotten_flesh",
+    "minecraft:wither_rose"
+  ],
+  "stirs": 6,
+  "heat": "high",
+  "moon_phases": [
+    4
+  ],
+  "night": true,
+  "result": {
+    "id": "isekai_mahou:bottled_curse_blight",
+    "count": 2
+  },
+  "xp": 20,
+  "color": "#4E6B1F",
+  "element": "shadow"
+}

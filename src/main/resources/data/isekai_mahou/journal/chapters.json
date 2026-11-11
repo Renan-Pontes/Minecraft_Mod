@@ -1,0 +1,2816 @@
+{
+  "chapters": [
+    {
+      "id": "awakening",
+      "order": 10,
+      "color": "#B98CFF",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:essence_arcane",
+        "isekai_mahou:spell_scroll"
+      ],
+      "steps": [
+        {
+          "id": "choose_path",
+          "condition": {
+            "type": "path"
+          },
+          "icon": "isekai_mahou:essence_arcane"
+        },
+        {
+          "id": "open_grimoire",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "flag",
+                "flag": "journal.tutorial.grimoire"
+              },
+              {
+                "type": "flag",
+                "flag": "journal.tutorial.spell_built"
+              }
+            ]
+          },
+          "xp": 10,
+          "icon": "minecraft:book"
+        },
+        {
+          "id": "build_spell",
+          "condition": {
+            "type": "flag",
+            "flag": "journal.tutorial.spell_built"
+          },
+          "xp": 20,
+          "icon": "isekai_mahou:spell_scroll",
+          "hint_by": "category"
+        },
+        {
+          "id": "first_spell",
+          "condition": {
+            "type": "counter_prefix",
+            "prefix": "cast.",
+            "min": 1
+          },
+          "xp": 10,
+          "icon": "isekai_mahou:glyph_scroll",
+          "hint_by": "category"
+        },
+        {
+          "id": "awaken_element",
+          "condition": {
+            "type": "elements",
+            "set": "any",
+            "min": 1
+          },
+          "xp": 15,
+          "icon": "isekai_mahou:essence_fire"
+        },
+        {
+          "id": "slime_hunt",
+          "condition": {
+            "type": "kills",
+            "ids": [
+              "slime",
+              "fire_slime",
+              "water_slime",
+              "stone_slime",
+              "wind_slime",
+              "poison_jelly",
+              "minecraft:slime",
+              "minecraft:magma_cube"
+            ],
+            "min": 5
+          },
+          "xp": 30,
+          "icon": "isekai_mahou:slime_gel",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 2
+              }
+            ]
+          }
+        },
+        {
+          "id": "first_ritual",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 1
+          },
+          "optional": true,
+          "xp": 60,
+          "icon": "minecraft:writable_book",
+          "hint_by": "path"
+        }
+      ],
+      "rewards": {
+        "xp": 120,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 4
+          },
+          {
+            "id": "isekai_mahou:essence_arcane",
+            "count": 3
+          }
+        ],
+        "glyph_scrolls": 1,
+        "glyph_tier": 1
+      }
+    },
+    {
+      "id": "guild_and_trials",
+      "order": 15,
+      "color": "#6FD3A0",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:adventurer_card",
+        "isekai_mahou:guild_coin"
+      ],
+      "steps": [
+        {
+          "id": "element_level",
+          "condition": {
+            "type": "element_level",
+            "min": 3
+          },
+          "xp": 30,
+          "icon": "minecraft:experience_bottle"
+        },
+        {
+          "id": "level_5",
+          "condition": {
+            "type": "level",
+            "min": 5
+          },
+          "xp": 30,
+          "icon": "minecraft:experience_bottle"
+        },
+        {
+          "id": "reach_city",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "visit.city",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "visit.capital",
+                "min": 1
+              }
+            ]
+          },
+          "xp": 50,
+          "icon": "minecraft:bell",
+          "locate": {
+            "tag": "isekai_mahou:city",
+            "dimension": "minecraft:overworld"
+          },
+          "requires": [
+            "isekai_mahou:city_heart"
+          ]
+        },
+        {
+          "id": "discover_waystone",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "visit.waystone",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "travel.count",
+                "min": 1
+              },
+              {
+                "type": "flag_prefix",
+                "prefix": "travel.",
+                "exclude": [
+                  "travel.hub_"
+                ],
+                "min": 1
+              }
+            ]
+          },
+          "xp": 50,
+          "icon": "isekai_mahou:travel_stone",
+          "locate": {
+            "tag": "isekai_mahou:city",
+            "dimension": "minecraft:overworld"
+          },
+          "requires": [
+            "isekai_mahou:travel_stone"
+          ]
+        },
+        {
+          "id": "join_guild",
+          "condition": {
+            "type": "counter",
+            "key": "guild_rank",
+            "min": 1
+          },
+          "xp": 40,
+          "icon": "isekai_mahou:adventurer_card",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "tag": "isekai_mahou:city"
+              },
+              {
+                "structure": "isekai_mahou:guild_hall_village"
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:guild_coin",
+                "count": 10
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:adventurer_card"
+          ]
+        },
+        {
+          "id": "trial_one",
+          "condition": {
+            "type": "trial",
+            "rank": 1
+          },
+          "xp": 80,
+          "icon": "minecraft:iron_sword",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 3
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:trial_altar"
+          ]
+        },
+        {
+          "id": "guild_quest",
+          "condition": {
+            "type": "counter",
+            "key": "guild_quests",
+            "min": 1
+          },
+          "xp": 40,
+          "icon": "isekai_mahou:quest_board",
+          "requires": [
+            "isekai_mahou:adventurer_card"
+          ]
+        },
+        {
+          "id": "king_slime",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "king_slime"
+            ],
+            "min": 1
+          },
+          "optional": true,
+          "xp": 150,
+          "icon": "isekai_mahou:king_slime_crown",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "biome": "#c:is_swamp"
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:king_slime"
+          ]
+        },
+        {
+          "id": "level_10",
+          "condition": {
+            "type": "level",
+            "min": 10
+          },
+          "xp": 40,
+          "icon": "minecraft:experience_bottle"
+        },
+        {
+          "id": "train_resource",
+          "condition": {
+            "type": "counter",
+            "key": "resource_training",
+            "min": 1
+          },
+          "optional": true,
+          "xp": 40,
+          "icon": "isekai_mahou:mana_crystal"
+        },
+        {
+          "id": "ascension_2",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "circle",
+                "min": 2
+              },
+              {
+                "type": "all",
+                "conditions": [
+                  {
+                    "type": "level",
+                    "min": 10
+                  },
+                  {
+                    "type": "any",
+                    "conditions": [
+                      {
+                        "type": "trial",
+                        "rank": 1
+                      },
+                      {
+                        "type": "bosses",
+                        "ids": [
+                          "king_slime"
+                        ],
+                        "min": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "xp": 80,
+          "icon": "isekai_mahou:ascension_tribute_2",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:ascension_tribute_2",
+                "count": 1
+              }
+            ]
+          },
+          "reward_unless": {
+            "type": "circle",
+            "min": 2
+          },
+          "requires": [
+            "isekai_mahou:ascension_tribute_2"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 300,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 6
+          },
+          {
+            "id": "isekai_mahou:guild_coin",
+            "count": 15
+          }
+        ],
+        "element_essences": 2,
+        "glyph_scrolls": 2,
+        "glyph_tier": 2
+      }
+    },
+    {
+      "id": "six_shrines",
+      "order": 20,
+      "color": "#FFB347",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:essence_fire",
+        "isekai_mahou:essence_water",
+        "isekai_mahou:essence_earth",
+        "isekai_mahou:essence_wind",
+        "isekai_mahou:essence_light",
+        "isekai_mahou:essence_shadow"
+      ],
+      "steps": [
+        {
+          "id": "second_circle",
+          "condition": {
+            "type": "circle",
+            "min": 2
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:ascension_core",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "tag": "isekai_mahou:city"
+              },
+              {
+                "structure": "isekai_mahou:ascension_sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "id": "shrine_trial",
+          "condition": {
+            "type": "counter_prefix",
+            "prefix": "shrine.",
+            "min": 1,
+            "distinct": true
+          },
+          "xp": 80,
+          "icon": "minecraft:lodestone",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:shrine_fire",
+                "unless": {
+                  "type": "counter",
+                  "key": "shrine.fire"
+                }
+              },
+              {
+                "structure": "isekai_mahou:shrine_water",
+                "unless": {
+                  "type": "counter",
+                  "key": "shrine.water"
+                }
+              },
+              {
+                "structure": "isekai_mahou:shrine_earth",
+                "unless": {
+                  "type": "counter",
+                  "key": "shrine.earth"
+                }
+              },
+              {
+                "structure": "isekai_mahou:shrine_wind",
+                "unless": {
+                  "type": "counter",
+                  "key": "shrine.wind"
+                }
+              },
+              {
+                "structure": "isekai_mahou:shrine_light",
+                "unless": {
+                  "type": "counter",
+                  "key": "shrine.light"
+                }
+              },
+              {
+                "structure": "isekai_mahou:shrine_shadow",
+                "unless": {
+                  "type": "counter",
+                  "key": "shrine.shadow"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "second_element",
+          "condition": {
+            "type": "elements",
+            "set": "any",
+            "min": 2
+          },
+          "xp": 60,
+          "icon": "isekai_mahou:essence_water",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:shrine_fire",
+                "unless": {
+                  "type": "element",
+                  "element": "fire"
+                }
+              },
+              {
+                "structure": "isekai_mahou:shrine_water",
+                "unless": {
+                  "type": "element",
+                  "element": "water"
+                }
+              },
+              {
+                "structure": "isekai_mahou:shrine_earth",
+                "unless": {
+                  "type": "element",
+                  "element": "earth"
+                }
+              },
+              {
+                "structure": "isekai_mahou:shrine_wind",
+                "unless": {
+                  "type": "element",
+                  "element": "wind"
+                }
+              },
+              {
+                "structure": "isekai_mahou:shrine_light",
+                "unless": {
+                  "type": "element",
+                  "element": "light"
+                }
+              },
+              {
+                "structure": "isekai_mahou:shrine_shadow",
+                "unless": {
+                  "type": "element",
+                  "element": "shadow"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "goblin_king",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "goblin_king"
+            ],
+            "min": 1
+          },
+          "xp": 200,
+          "icon": "isekai_mahou:goblin_king_crown",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:goblin_fortress",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "goblin_king"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 2
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:goblin_king"
+          ]
+        },
+        {
+          "id": "multi_spell",
+          "condition": {
+            "type": "counter",
+            "key": "spell.multi_element",
+            "min": 1
+          },
+          "xp": 50,
+          "icon": "isekai_mahou:spell_scroll"
+        },
+        {
+          "id": "trial_two",
+          "condition": {
+            "type": "trial",
+            "rank": 2
+          },
+          "xp": 100,
+          "icon": "minecraft:iron_sword",
+          "requires": [
+            "isekai_mahou:trial_altar"
+          ]
+        },
+        {
+          "id": "ascension_3",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "circle",
+                "min": 3
+              },
+              {
+                "type": "all",
+                "conditions": [
+                  {
+                    "type": "level",
+                    "min": 20
+                  },
+                  {
+                    "type": "any",
+                    "conditions": [
+                      {
+                        "type": "bosses",
+                        "ids": [
+                          "goblin_king"
+                        ],
+                        "min": 1
+                      },
+                      {
+                        "type": "trial",
+                        "rank": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:ascension_tribute_3",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:ascension_tribute_3",
+                "count": 1
+              }
+            ]
+          },
+          "reward_unless": {
+            "type": "circle",
+            "min": 3
+          },
+          "requires": [
+            "isekai_mahou:ascension_tribute_3"
+          ]
+        },
+        {
+          "id": "third_circle",
+          "condition": {
+            "type": "circle",
+            "min": 3
+          },
+          "xp": 80,
+          "icon": "isekai_mahou:ascension_core",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "tag": "isekai_mahou:city"
+              },
+              {
+                "structure": "isekai_mahou:ascension_sanctum"
+              }
+            ]
+          }
+        }
+      ],
+      "rewards": {
+        "xp": 550,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 8
+          },
+          {
+            "id": "isekai_mahou:guild_coin",
+            "count": 20
+          },
+          {
+            "id": "minecraft:golden_apple",
+            "count": 2
+          },
+          {
+            "id": "isekai_mahou:arcane_upgrade_template",
+            "count": 1
+          }
+        ],
+        "element_essences": 3,
+        "glyph_scrolls": 3,
+        "glyph_tier": 2
+      }
+    },
+    {
+      "id": "monster_lords",
+      "order": 23,
+      "color": "#D2783C",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:orc_lord_cleaver",
+        "isekai_mahou:minotaur_labrys"
+      ],
+      "steps": [
+        {
+          "id": "orc_lord",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "orc_lord"
+            ],
+            "min": 1
+          },
+          "xp": 250,
+          "icon": "isekai_mahou:orc_lord_cleaver",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:orc_camp",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "orc_lord"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 2
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:orc_lord"
+          ]
+        },
+        {
+          "id": "minotaur",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "minotaur"
+            ],
+            "min": 1
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:minotaur_labrys",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:minotaur_labyrinth",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "minotaur"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 2
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:minotaur"
+          ]
+        },
+        {
+          "id": "corrupted_ent",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "corrupted_ent"
+            ],
+            "min": 1
+          },
+          "optional": true,
+          "xp": 300,
+          "icon": "isekai_mahou:ancestral_sapling",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:druid_circle",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "corrupted_ent"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:corrupted_ent"
+          ]
+        },
+        {
+          "id": "ascension_4",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "circle",
+                "min": 4
+              },
+              {
+                "type": "all",
+                "conditions": [
+                  {
+                    "type": "level",
+                    "min": 30
+                  },
+                  {
+                    "type": "bosses",
+                    "ids": [
+                      "orc_lord",
+                      "minotaur",
+                      "corrupted_ent"
+                    ],
+                    "min": 1
+                  }
+                ]
+              }
+            ]
+          },
+          "xp": 160,
+          "icon": "isekai_mahou:ascension_tribute_4",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:ascension_tribute_4",
+                "count": 1
+              }
+            ]
+          },
+          "reward_unless": {
+            "type": "circle",
+            "min": 4
+          },
+          "requires": [
+            "isekai_mahou:ascension_tribute_4"
+          ]
+        },
+        {
+          "id": "fourth_circle",
+          "condition": {
+            "type": "circle",
+            "min": 4
+          },
+          "xp": 120,
+          "icon": "isekai_mahou:ascension_core",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "tag": "isekai_mahou:city"
+              },
+              {
+                "structure": "isekai_mahou:ascension_sanctum"
+              }
+            ]
+          }
+        }
+      ],
+      "rewards": {
+        "xp": 700,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 8
+          },
+          {
+            "id": "isekai_mahou:guild_coin",
+            "count": 20
+          },
+          {
+            "id": "minecraft:golden_apple",
+            "count": 2
+          }
+        ],
+        "element_essences": 2,
+        "glyph_scrolls": 2,
+        "glyph_tier": 3
+      }
+    },
+    {
+      "id": "programmed_magic",
+      "order": 25,
+      "color": "#5FC8FF",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:spell_scroll",
+        "isekai_mahou:glyph_scroll"
+      ],
+      "steps": [
+        {
+          "id": "learn_link",
+          "condition": {
+            "type": "glyph",
+            "ids": [
+              "link_hit",
+              "link_end",
+              "link_kill"
+            ],
+            "min": 1
+          },
+          "xp": 30,
+          "icon": "isekai_mahou:glyph_scroll"
+        },
+        {
+          "id": "program_spell",
+          "condition": {
+            "type": "counter",
+            "key": "spell.linked",
+            "min": 1
+          },
+          "xp": 80,
+          "icon": "isekai_mahou:spell_scroll",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_battery",
+                "count": 1
+              },
+              {
+                "id": "minecraft:paper",
+                "count": 4
+              }
+            ]
+          }
+        },
+        {
+          "id": "leap_spell",
+          "condition": {
+            "type": "counter",
+            "key": "spell.leap",
+            "min": 1
+          },
+          "xp": 100,
+          "icon": "minecraft:chain",
+          "requires": [
+            "link_leap"
+          ]
+        },
+        {
+          "id": "renegade_archmage",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "renegade_archmage"
+            ],
+            "min": 1
+          },
+          "xp": 350,
+          "icon": "isekai_mahou:research_note",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:mage_tower",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "renegade_archmage"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 5
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:renegade_archmage"
+          ]
+        },
+        {
+          "id": "trial_three",
+          "condition": {
+            "type": "trial",
+            "rank": 3
+          },
+          "xp": 140,
+          "icon": "minecraft:diamond_sword",
+          "requires": [
+            "isekai_mahou:trial_altar"
+          ]
+        },
+        {
+          "id": "corrupted_witch",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "corrupted_witch"
+            ],
+            "min": 1
+          },
+          "optional": true,
+          "xp": 300,
+          "icon": "isekai_mahou:witch_recipe_page",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:witch_hut_ancient",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "corrupted_witch"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:corrupted_witch"
+          ]
+        },
+        {
+          "id": "pedestal",
+          "condition": {
+            "type": "counter",
+            "key": "pedestal.cast",
+            "min": 1
+          },
+          "optional": true,
+          "xp": 150,
+          "icon": "isekai_mahou:runic_pedestal",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 4
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:runic_pedestal"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 900,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 10
+          },
+          {
+            "id": "isekai_mahou:guild_coin",
+            "count": 30
+          },
+          {
+            "id": "isekai_mahou:arcane_upgrade_template",
+            "count": 1
+          }
+        ],
+        "element_essences": 3,
+        "glyph_scrolls": 3,
+        "glyph_tier": 3
+      }
+    },
+    {
+      "id": "dark_masters",
+      "order": 27,
+      "color": "#8E6BD8",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:phylactery",
+        "isekai_mahou:ritual_chalk_item"
+      ],
+      "steps": [
+        {
+          "id": "lich",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "lich"
+            ],
+            "min": 1
+          },
+          "xp": 450,
+          "icon": "isekai_mahou:phylactery",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:forgotten_crypt",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "lich"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 2
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:lich"
+          ]
+        },
+        {
+          "id": "imprisoned_patron",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "imprisoned_patron"
+            ],
+            "min": 1
+          },
+          "xp": 450,
+          "icon": "isekai_mahou:ritual_chalk_item",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:profane_altar",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "imprisoned_patron"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 2
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:imprisoned_patron"
+          ]
+        },
+        {
+          "id": "class_rank_3",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 3
+          },
+          "optional": true,
+          "xp": 250,
+          "icon": "minecraft:writable_book"
+        },
+        {
+          "id": "write_lesson",
+          "condition": {
+            "type": "counter",
+            "key": "lesson.written",
+            "min": 1
+          },
+          "optional": true,
+          "xp": 150,
+          "icon": "isekai_mahou:technique_lesson",
+          "requires": [
+            "isekai_mahou:technique_lesson"
+          ]
+        },
+        {
+          "id": "ascension_5",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "circle",
+                "min": 5
+              },
+              {
+                "type": "all",
+                "conditions": [
+                  {
+                    "type": "level",
+                    "min": 40
+                  },
+                  {
+                    "type": "bosses",
+                    "ids": [
+                      "corrupted_ent",
+                      "renegade_archmage",
+                      "corrupted_witch",
+                      "lich",
+                      "imprisoned_patron"
+                    ],
+                    "min": 1
+                  }
+                ]
+              }
+            ]
+          },
+          "xp": 200,
+          "icon": "isekai_mahou:ascension_tribute_5",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:ascension_tribute_5",
+                "count": 1
+              }
+            ]
+          },
+          "reward_unless": {
+            "type": "circle",
+            "min": 5
+          },
+          "requires": [
+            "isekai_mahou:ascension_tribute_5"
+          ]
+        },
+        {
+          "id": "fifth_circle",
+          "condition": {
+            "type": "circle",
+            "min": 5
+          },
+          "xp": 150,
+          "icon": "isekai_mahou:ascension_core",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "tag": "isekai_mahou:city"
+              },
+              {
+                "structure": "isekai_mahou:ascension_sanctum"
+              }
+            ]
+          }
+        }
+      ],
+      "rewards": {
+        "xp": 1100,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 12
+          },
+          {
+            "id": "isekai_mahou:guild_coin",
+            "count": 30
+          },
+          {
+            "id": "isekai_mahou:arcane_upgrade_template",
+            "count": 1
+          }
+        ],
+        "element_essences": 3,
+        "glyph_scrolls": 2,
+        "glyph_tier": 3,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "wild_titans",
+      "order": 28,
+      "color": "#5DB86A",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:swamp_hydra_spawn_egg",
+        "isekai_mahou:desert_basilisk_spawn_egg",
+        "isekai_mahou:ruin_colossus_spawn_egg",
+        "isekai_mahou:wyvern_king_spawn_egg",
+        "minecraft:dragon_head"
+      ],
+      "steps": [
+        {
+          "id": "two_titans",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "swamp_hydra",
+              "desert_basilisk",
+              "ruin_colossus",
+              "wyvern_king"
+            ],
+            "min": 2
+          },
+          "xp": 400,
+          "icon": "minecraft:dragon_head",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:hydra_lair",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "swamp_hydra"
+                  ]
+                }
+              },
+              {
+                "structure": "isekai_mahou:basilisk_tomb",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "desert_basilisk"
+                  ]
+                }
+              },
+              {
+                "structure": "isekai_mahou:colossus_ruins",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "ruin_colossus"
+                  ]
+                }
+              },
+              {
+                "structure": "isekai_mahou:wyvern_peak",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "wyvern_king"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 3
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:swamp_hydra",
+            "isekai_mahou:desert_basilisk",
+            "isekai_mahou:ruin_colossus",
+            "isekai_mahou:wyvern_king"
+          ]
+        },
+        {
+          "id": "swamp_hydra",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "swamp_hydra"
+            ],
+            "min": 1
+          },
+          "optional": true,
+          "xp": 350,
+          "icon": "isekai_mahou:swamp_hydra_spawn_egg",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:hydra_lair",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "swamp_hydra"
+                  ]
+                }
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:swamp_hydra"
+          ]
+        },
+        {
+          "id": "desert_basilisk",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "desert_basilisk"
+            ],
+            "min": 1
+          },
+          "optional": true,
+          "xp": 350,
+          "icon": "isekai_mahou:desert_basilisk_spawn_egg",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:basilisk_tomb",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "desert_basilisk"
+                  ]
+                }
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:desert_basilisk"
+          ]
+        },
+        {
+          "id": "ruin_colossus",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "ruin_colossus"
+            ],
+            "min": 1
+          },
+          "optional": true,
+          "xp": 350,
+          "icon": "isekai_mahou:ruin_colossus_spawn_egg",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:colossus_ruins",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "ruin_colossus"
+                  ]
+                }
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ruin_colossus"
+          ]
+        },
+        {
+          "id": "wyvern_king",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "wyvern_king"
+            ],
+            "min": 1
+          },
+          "optional": true,
+          "xp": 350,
+          "icon": "isekai_mahou:wyvern_king_spawn_egg",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:wyvern_peak",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "wyvern_king"
+                  ]
+                }
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:wyvern_king"
+          ]
+        },
+        {
+          "id": "trial_four",
+          "condition": {
+            "type": "trial",
+            "rank": 4
+          },
+          "xp": 180,
+          "icon": "minecraft:diamond_sword",
+          "requires": [
+            "isekai_mahou:trial_altar"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 1400,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 12
+          },
+          {
+            "id": "minecraft:golden_apple",
+            "count": 3
+          },
+          {
+            "id": "isekai_mahou:arcane_upgrade_template",
+            "count": 1
+          }
+        ],
+        "element_essences": 3,
+        "glyph_scrolls": 2,
+        "glyph_tier": 4
+      }
+    },
+    {
+      "id": "hidden_horrors",
+      "order": 29,
+      "color": "#B04A6E",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:false_hydra_spawn_egg",
+        "isekai_mahou:manticore_spawn_egg",
+        "isekai_mahou:mimic_king_spawn_egg",
+        "isekai_mahou:mimic_tooth"
+      ],
+      "steps": [
+        {
+          "id": "false_hydra",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "false_hydra"
+            ],
+            "min": 1
+          },
+          "xp": 500,
+          "icon": "isekai_mahou:false_hydra_spawn_egg",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:false_hydra_lair",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "false_hydra"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 2
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:false_hydra"
+          ]
+        },
+        {
+          "id": "manticore",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "manticore"
+            ],
+            "min": 1
+          },
+          "xp": 450,
+          "icon": "isekai_mahou:manticore_spawn_egg",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:manticore_den",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "manticore"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 2
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:manticore"
+          ]
+        },
+        {
+          "id": "mimic_king",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "mimic_king"
+            ],
+            "min": 1
+          },
+          "optional": true,
+          "xp": 450,
+          "icon": "isekai_mahou:mimic_king_spawn_egg",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:mimic_vault",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "mimic_king"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:gold_block",
+                "count": 2
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:mimic_king"
+          ]
+        },
+        {
+          "id": "element_level_12",
+          "condition": {
+            "type": "element_level",
+            "min": 12
+          },
+          "xp": 200,
+          "icon": "minecraft:experience_bottle"
+        }
+      ],
+      "rewards": {
+        "xp": 1600,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 14
+          },
+          {
+            "id": "isekai_mahou:guild_coin",
+            "count": 40
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "element_essences": 3,
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "elemental_plane",
+      "order": 30,
+      "color": "#7FD4FF",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:guardian_core_fire",
+        "isekai_mahou:guardian_core_water",
+        "isekai_mahou:guardian_core_earth",
+        "isekai_mahou:guardian_core_wind"
+      ],
+      "steps": [
+        {
+          "id": "enter_plane",
+          "condition": {
+            "type": "visit",
+            "dimension": "isekai_mahou:elemental_plane"
+          },
+          "xp": 150,
+          "icon": "isekai_mahou:elemental_portal_frame",
+          "locate": {
+            "structure": "isekai_mahou:elemental_gate",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "first_guardian",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "ignis",
+              "tide_guardian",
+              "primordial_golem",
+              "zephyr"
+            ],
+            "min": 1
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:guardian_core_fire",
+          "locate": {
+            "dimension": "isekai_mahou:elemental_plane",
+            "any": [
+              {
+                "structure": "isekai_mahou:guardian_temple_fire",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "ignis"
+                  ]
+                }
+              },
+              {
+                "structure": "isekai_mahou:guardian_temple_water",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "tide_guardian"
+                  ]
+                }
+              },
+              {
+                "structure": "isekai_mahou:guardian_temple_earth",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "primordial_golem"
+                  ]
+                }
+              },
+              {
+                "structure": "isekai_mahou:guardian_temple_wind",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "zephyr"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 2
+              }
+            ]
+          }
+        },
+        {
+          "id": "two_masters",
+          "condition": {
+            "type": "node",
+            "node": "master",
+            "min": 2
+          },
+          "xp": 150,
+          "icon": "minecraft:enchanted_book"
+        },
+        {
+          "id": "first_fusion",
+          "condition": {
+            "type": "elements",
+            "set": "fusion",
+            "min": 1
+          },
+          "xp": 200,
+          "icon": "isekai_mahou:convergence_altar"
+        },
+        {
+          "id": "ascension_6",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "circle",
+                "min": 6
+              },
+              {
+                "type": "all",
+                "conditions": [
+                  {
+                    "type": "level",
+                    "min": 50
+                  },
+                  {
+                    "type": "any",
+                    "conditions": [
+                      {
+                        "type": "bosses",
+                        "ids": [
+                          "ignis",
+                          "tide_guardian",
+                          "primordial_golem",
+                          "zephyr"
+                        ],
+                        "min": 1
+                      },
+                      {
+                        "type": "trial",
+                        "rank": 5
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "xp": 240,
+          "icon": "isekai_mahou:ascension_tribute_6",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:ascension_tribute_6",
+                "count": 1
+              }
+            ]
+          },
+          "reward_unless": {
+            "type": "circle",
+            "min": 6
+          },
+          "requires": [
+            "isekai_mahou:ascension_tribute_6"
+          ]
+        },
+        {
+          "id": "sixth_circle",
+          "condition": {
+            "type": "circle",
+            "min": 6
+          },
+          "xp": 180,
+          "icon": "isekai_mahou:ascension_core",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "tag": "isekai_mahou:city"
+              },
+              {
+                "structure": "isekai_mahou:ascension_sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "id": "all_guardians",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "ignis",
+              "tide_guardian",
+              "primordial_golem",
+              "zephyr"
+            ],
+            "min": 4
+          },
+          "optional": true,
+          "xp": 600,
+          "icon": "isekai_mahou:guardian_core_wind",
+          "locate": {
+            "dimension": "isekai_mahou:elemental_plane",
+            "any": [
+              {
+                "structure": "isekai_mahou:guardian_temple_fire",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "ignis"
+                  ]
+                }
+              },
+              {
+                "structure": "isekai_mahou:guardian_temple_water",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "tide_guardian"
+                  ]
+                }
+              },
+              {
+                "structure": "isekai_mahou:guardian_temple_earth",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "primordial_golem"
+                  ]
+                }
+              },
+              {
+                "structure": "isekai_mahou:guardian_temple_wind",
+                "unless": {
+                  "type": "bosses",
+                  "ids": [
+                    "zephyr"
+                  ]
+                }
+              }
+            ]
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 3
+              }
+            ]
+          }
+        }
+      ],
+      "rewards": {
+        "xp": 1800,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 14
+          },
+          {
+            "id": "minecraft:golden_apple",
+            "count": 3
+          },
+          {
+            "id": "isekai_mahou:arcane_upgrade_template",
+            "count": 1
+          }
+        ],
+        "element_essences": 4,
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "light_and_shadow",
+      "order": 40,
+      "color": "#E8C46A",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:guardian_core_light",
+        "isekai_mahou:guardian_core_shadow"
+      ],
+      "steps": [
+        {
+          "id": "enter_abyss",
+          "condition": {
+            "type": "visit",
+            "dimension": "isekai_mahou:abyss"
+          },
+          "xp": 200,
+          "icon": "isekai_mahou:abyss_portal_frame",
+          "locate": {
+            "structure": "isekai_mahou:abyssal_chasm",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "abyss_sovereign",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "abyss_sovereign"
+            ],
+            "min": 1
+          },
+          "xp": 500,
+          "icon": "isekai_mahou:guardian_core_shadow",
+          "locate": {
+            "structure": "isekai_mahou:abyss_throne",
+            "dimension": "isekai_mahou:abyss"
+          }
+        },
+        {
+          "id": "enter_sanctuary",
+          "condition": {
+            "type": "visit",
+            "dimension": "isekai_mahou:celestial_sanctuary"
+          },
+          "xp": 200,
+          "icon": "isekai_mahou:celestial_beacon",
+          "locate": {
+            "structure": "isekai_mahou:celestial_stairway",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "seraph",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "seraph"
+            ],
+            "min": 1
+          },
+          "xp": 500,
+          "icon": "isekai_mahou:guardian_core_light",
+          "locate": {
+            "structure": "isekai_mahou:celestial_cathedral",
+            "dimension": "isekai_mahou:celestial_sanctuary"
+          }
+        },
+        {
+          "id": "trial_five",
+          "condition": {
+            "type": "trial",
+            "rank": 5
+          },
+          "xp": 250,
+          "icon": "minecraft:netherite_sword",
+          "requires": [
+            "isekai_mahou:trial_altar"
+          ]
+        },
+        {
+          "id": "ascension_7",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "circle",
+                "min": 7
+              },
+              {
+                "type": "all",
+                "conditions": [
+                  {
+                    "type": "level",
+                    "min": 60
+                  },
+                  {
+                    "type": "bosses",
+                    "ids": [
+                      "abyss_sovereign",
+                      "seraph"
+                    ],
+                    "min": 1
+                  }
+                ]
+              }
+            ]
+          },
+          "xp": 280,
+          "icon": "isekai_mahou:ascension_tribute_7",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:ascension_tribute_7",
+                "count": 1
+              }
+            ]
+          },
+          "reward_unless": {
+            "type": "circle",
+            "min": 7
+          },
+          "requires": [
+            "isekai_mahou:ascension_tribute_7"
+          ]
+        },
+        {
+          "id": "seventh_circle",
+          "condition": {
+            "type": "circle",
+            "min": 7
+          },
+          "xp": 250,
+          "icon": "isekai_mahou:ascension_core",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "tag": "isekai_mahou:city"
+              },
+              {
+                "structure": "isekai_mahou:ascension_sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "id": "cast_legend",
+          "condition": {
+            "type": "counter",
+            "key": "spell.legend",
+            "min": 1
+          },
+          "optional": true,
+          "xp": 250,
+          "icon": "isekai_mahou:spell_scroll",
+          "requires": [
+            "legends"
+          ]
+        },
+        {
+          "id": "domain",
+          "condition": {
+            "type": "node",
+            "node": "domain",
+            "min": 1
+          },
+          "optional": true,
+          "xp": 600,
+          "icon": "minecraft:end_crystal"
+        }
+      ],
+      "rewards": {
+        "xp": 2400,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          },
+          {
+            "id": "minecraft:totem_of_undying",
+            "count": 1
+          },
+          {
+            "id": "isekai_mahou:arcane_upgrade_template",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 2,
+        "glyph_tier": 4,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "twilight",
+      "order": 50,
+      "color": "#C06AA0",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:twilight_rift",
+        "minecraft:nether_star"
+      ],
+      "steps": [
+        {
+          "id": "ascension_8",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "circle",
+                "min": 8
+              },
+              {
+                "type": "all",
+                "conditions": [
+                  {
+                    "type": "level",
+                    "min": 70
+                  },
+                  {
+                    "type": "bosses",
+                    "ids": [
+                      "abyss_sovereign",
+                      "seraph"
+                    ],
+                    "min": 2
+                  }
+                ]
+              }
+            ]
+          },
+          "xp": 320,
+          "icon": "isekai_mahou:ascension_tribute_8",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:ascension_tribute_8",
+                "count": 1
+              }
+            ]
+          },
+          "reward_unless": {
+            "type": "circle",
+            "min": 8
+          },
+          "requires": [
+            "isekai_mahou:ascension_tribute_8"
+          ]
+        },
+        {
+          "id": "eighth_circle",
+          "condition": {
+            "type": "circle",
+            "min": 8
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:ascension_core",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "tag": "isekai_mahou:city"
+              },
+              {
+                "structure": "isekai_mahou:ascension_sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "id": "ascension_9",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "circle",
+                "min": 9
+              },
+              {
+                "type": "all",
+                "conditions": [
+                  {
+                    "type": "level",
+                    "min": 80
+                  },
+                  {
+                    "type": "any",
+                    "conditions": [
+                      {
+                        "type": "trial",
+                        "rank": 6
+                      },
+                      {
+                        "type": "bosses",
+                        "ids": [
+                          "ignis",
+                          "tide_guardian",
+                          "primordial_golem",
+                          "zephyr"
+                        ],
+                        "min": 4
+                      },
+                      {
+                        "type": "bosses",
+                        "ids": [
+                          "false_hydra",
+                          "manticore",
+                          "mimic_king"
+                        ],
+                        "min": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "xp": 360,
+          "icon": "isekai_mahou:ascension_tribute_9",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:ascension_tribute_9",
+                "count": 1
+              }
+            ]
+          },
+          "reward_unless": {
+            "type": "circle",
+            "min": 9
+          },
+          "requires": [
+            "isekai_mahou:ascension_tribute_9"
+          ]
+        },
+        {
+          "id": "ninth_circle",
+          "condition": {
+            "type": "circle",
+            "min": 9
+          },
+          "xp": 400,
+          "icon": "isekai_mahou:ascension_core",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "tag": "isekai_mahou:city"
+              },
+              {
+                "structure": "isekai_mahou:ascension_sanctum"
+              }
+            ]
+          }
+        },
+        {
+          "id": "enter_rift",
+          "condition": {
+            "type": "visit",
+            "dimension": "isekai_mahou:twilight_rift"
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:twilight_rift",
+          "locate": {
+            "structure": "isekai_mahou:twilight_rupture",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "herald",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "twilight_herald"
+            ],
+            "min": 1
+          },
+          "xp": 1000,
+          "icon": "minecraft:nether_star",
+          "locate": {
+            "structure": "isekai_mahou:twilight_arena",
+            "dimension": "isekai_mahou:twilight_rift"
+          }
+        },
+        {
+          "id": "archmage",
+          "condition": {
+            "type": "node",
+            "node": "archmage",
+            "min": 1
+          },
+          "optional": true,
+          "xp": 1000,
+          "icon": "minecraft:dragon_breath"
+        }
+      ],
+      "rewards": {
+        "xp": 3000,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 20
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 1,
+        "glyph_tier": 5,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "hollow_world",
+      "order": 55,
+      "color": "#B8C8E8",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:hollow_mask_fragment",
+        "isekai_mahou:garganta_key",
+        "isekai_mahou:menos_core"
+      ],
+      "steps": [
+        {
+          "id": "garganta",
+          "condition": {
+            "type": "visit",
+            "dimension": "isekai_mahou:hollow_world"
+          },
+          "xp": 400,
+          "icon": "isekai_mahou:garganta_key",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:garganta_site"
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:garganta_altar"
+          ]
+        },
+        {
+          "id": "hollow_hunt",
+          "condition": {
+            "type": "kills",
+            "ids": [
+              "hollow_crawler",
+              "hollow_brute",
+              "hollow_wraith"
+            ],
+            "min": 20
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:hollow_mask_fragment",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:mana_crystal",
+                "count": 6
+              }
+            ]
+          }
+        },
+        {
+          "id": "menos",
+          "condition": {
+            "type": "kills",
+            "ids": [
+              "menos_giant"
+            ],
+            "min": 1
+          },
+          "optional": true,
+          "xp": 400,
+          "icon": "isekai_mahou:menos_core"
+        },
+        {
+          "id": "arrancar",
+          "condition": {
+            "type": "kills",
+            "ids": [
+              "arrancar"
+            ],
+            "min": 3
+          },
+          "optional": true,
+          "xp": 400,
+          "icon": "isekai_mahou:arrancar_soul_shard"
+        },
+        {
+          "id": "sand_empress",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "sand_empress"
+            ],
+            "min": 1
+          },
+          "xp": 1200,
+          "icon": "isekai_mahou:tide_sand_blade",
+          "locate": {
+            "place": "hollow_palace",
+            "dimension": "isekai_mahou:hollow_world"
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 3
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:sand_empress"
+          ]
+        },
+        {
+          "id": "hollow_king",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "hollow_king"
+            ],
+            "min": 1
+          },
+          "xp": 1500,
+          "icon": "isekai_mahou:decay_axe",
+          "locate": {
+            "place": "hollow_palace",
+            "dimension": "isekai_mahou:hollow_world"
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:enchanted_golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:hollow_king"
+          ]
+        },
+        {
+          "id": "fey_realm",
+          "condition": {
+            "type": "visit",
+            "dimension": "isekai_mahou:fey_realm"
+          },
+          "optional": true,
+          "xp": 300,
+          "icon": "isekai_mahou:fey_dust",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "structure": "isekai_mahou:fey_ring"
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:fey_ring_stone"
+          ]
+        },
+        {
+          "id": "thorn_queen",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "thorn_queen"
+            ],
+            "min": 1
+          },
+          "optional": true,
+          "xp": 1200,
+          "icon": "isekai_mahou:queen_wings",
+          "locate": {
+            "place": "fey_court",
+            "dimension": "isekai_mahou:fey_realm"
+          },
+          "requires": [
+            "isekai_mahou:thorn_queen"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 3500,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 20
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 1
+          }
+        ],
+        "glyph_scrolls": 1,
+        "glyph_tier": 5,
+        "legend_scrolls": 1
+      }
+    },
+    {
+      "id": "primordial",
+      "order": 60,
+      "color": "#FF8A3D",
+      "intro": true,
+      "finale": true,
+      "epilogue": 7,
+      "icon": [
+        "isekai_mahou:primordial_dragon_heart",
+        "minecraft:dragon_egg",
+        "minecraft:nether_star"
+      ],
+      "steps": [
+        {
+          "id": "primordial_dragon",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "primordial_dragon"
+            ],
+            "min": 1
+          },
+          "xp": 3000,
+          "icon": "isekai_mahou:primordial_dragon_heart",
+          "locate": {
+            "structure": "isekai_mahou:twilight_arena",
+            "dimension": "isekai_mahou:twilight_rift"
+          },
+          "requires": [
+            "isekai_mahou:primordial_dragon"
+          ]
+        },
+        {
+          "id": "ascension_10",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "circle",
+                "min": 10
+              },
+              {
+                "type": "all",
+                "conditions": [
+                  {
+                    "type": "level",
+                    "min": 100
+                  },
+                  {
+                    "type": "bosses",
+                    "ids": [
+                      "twilight_herald",
+                      "primordial_dragon"
+                    ],
+                    "min": 1
+                  }
+                ]
+              }
+            ]
+          },
+          "optional": true,
+          "xp": 400,
+          "icon": "isekai_mahou:ascension_tribute_10",
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:ascension_tribute_10",
+                "count": 1
+              }
+            ]
+          },
+          "reward_unless": {
+            "type": "circle",
+            "min": 10
+          },
+          "requires": [
+            "isekai_mahou:ascension_tribute_10"
+          ]
+        },
+        {
+          "id": "tenth_circle",
+          "condition": {
+            "type": "circle",
+            "min": 10
+          },
+          "optional": true,
+          "xp": 1500,
+          "icon": "isekai_mahou:ascension_core",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "tag": "isekai_mahou:city"
+              },
+              {
+                "structure": "isekai_mahou:ascension_sanctum"
+              }
+            ]
+          }
+        }
+      ],
+      "rewards": {
+        "xp": 6000,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 32
+          },
+          {
+            "id": "minecraft:nether_star",
+            "count": 1
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 2
+          }
+        ],
+        "glyph_scrolls": 1,
+        "glyph_tier": 5,
+        "legend_scrolls": 2
+      }
+    },
+    {
+      "id": "beyond_limit",
+      "order": 70,
+      "color": "#FFE27A",
+      "intro": true,
+      "secret": true,
+      "icon": [
+        "minecraft:nether_star",
+        "isekai_mahou:primordial_dragon_heart",
+        "minecraft:dragon_breath"
+      ],
+      "steps": [
+        {
+          "id": "level_160",
+          "condition": {
+            "type": "level",
+            "min": 160
+          },
+          "xp": 2000,
+          "icon": "minecraft:experience_bottle"
+        },
+        {
+          "id": "dragon_again",
+          "condition": {
+            "type": "counter",
+            "key": "boss.primordial_dragon",
+            "min": 2
+          },
+          "optional": true,
+          "xp": 3000,
+          "icon": "isekai_mahou:primordial_dragon_heart",
+          "locate": {
+            "structure": "isekai_mahou:twilight_arena",
+            "dimension": "isekai_mahou:twilight_rift"
+          }
+        },
+        {
+          "id": "class_master",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank",
+            "min": 5
+          },
+          "optional": true,
+          "xp": 2000,
+          "icon": "minecraft:writable_book"
+        },
+        {
+          "id": "level_180",
+          "condition": {
+            "type": "level",
+            "min": 180
+          },
+          "xp": 3000,
+          "icon": "minecraft:experience_bottle"
+        },
+        {
+          "id": "hollow_again",
+          "condition": {
+            "type": "counter",
+            "key": "boss.hollow_king",
+            "min": 2
+          },
+          "optional": true,
+          "xp": 2500,
+          "icon": "isekai_mahou:decay_axe",
+          "locate": {
+            "place": "hollow_palace",
+            "dimension": "isekai_mahou:hollow_world"
+          },
+          "requires": [
+            "isekai_mahou:hollow_king"
+          ]
+        },
+        {
+          "id": "level_200",
+          "condition": {
+            "type": "level",
+            "min": 200
+          },
+          "xp": 5000,
+          "icon": "minecraft:nether_star"
+        }
+      ],
+      "rewards": {
+        "xp": 10000,
+        "items": [
+          {
+            "id": "minecraft:nether_star",
+            "count": 2
+          },
+          {
+            "id": "minecraft:enchanted_golden_apple",
+            "count": 3
+          },
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 64
+          }
+        ],
+        "legend_scrolls": 2
+      }
+    }
+  ]
+}

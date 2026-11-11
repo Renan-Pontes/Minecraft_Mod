@@ -1,0 +1,7 @@
+{
+  "type": "isekai_mahou:potions_loot",
+  "conditions": [],
+  "mod_chest_chance": 0.45,
+  "other_chest_chance": 0.2,
+  "boss_drops": 2
+}

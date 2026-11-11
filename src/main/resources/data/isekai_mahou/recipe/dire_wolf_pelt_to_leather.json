@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:dire_wolf_pelt"
+    }
+  ],
+  "result": {
+    "id": "minecraft:leather",
+    "count": 3
+  }
+}

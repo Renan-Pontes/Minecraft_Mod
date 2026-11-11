@@ -1,0 +1,20 @@
+{
+  "type": "isekai_mahou:outfit_retailor",
+  "category": "equipment",
+  "group": "isekai_mahou:outfit_retailor_adept_chestplate",
+  "ingredients": [
+    {
+      "tag": "isekai_mahou:outfits/adept/chestplate"
+    },
+    {
+      "item": "minecraft:white_wool"
+    },
+    {
+      "item": "minecraft:sunflower"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:paladin_adept_chestplate",
+    "count": 1
+  }
+}

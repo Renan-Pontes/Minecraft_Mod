@@ -1,0 +1,35 @@
+{
+  "parent": "isekai_mahou:block/shrine_altar_fire",
+  "overrides": [
+    {
+      "predicate": {
+        "isekai_mahou:element": 1
+      },
+      "model": "isekai_mahou:block/shrine_altar_water"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:element": 2
+      },
+      "model": "isekai_mahou:block/shrine_altar_earth"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:element": 3
+      },
+      "model": "isekai_mahou:block/shrine_altar_wind"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:element": 4
+      },
+      "model": "isekai_mahou:block/shrine_altar_light"
+    },
+    {
+      "predicate": {
+        "isekai_mahou:element": 5
+      },
+      "model": "isekai_mahou:block/shrine_altar_shadow"
+    }
+  ]
+}

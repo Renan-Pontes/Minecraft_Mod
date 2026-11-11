@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:quest_board"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "minecraft:purple_dye"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:faction_board",
+    "count": 1,
+    "components": {
+      "minecraft:block_state": {
+        "faction": "academy"
+      }
+    }
+  }
+}
