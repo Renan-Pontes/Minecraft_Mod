@@ -7,6 +7,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -34,7 +35,7 @@ public class WindBladeEffect extends EffectGlyph {
         if (target != ctx.caster() && look.lengthSqr() > 1.0E-4) EwUtil.push(target, look.normalize().scale(0.35), 0.1);
         Vec3 at = target.position().add(0, target.getBbHeight() * 0.6, 0);
         level.sendParticles(ParticleTypes.SWEEP_ATTACK, at.x, at.y, at.z, 1 + Math.max(0, stats.amplify), 0.2, 0.2, 0.2, 0);
-        level.sendParticles(ParticleTypes.CLOUD, at.x, at.y, at.z, 6, 0.25, 0.25, 0.25, 0.05);
+        level.sendParticles(Vfx.cloud(), at.x, at.y, at.z, 6, 0.25, 0.25, 0.25, 0.05);
         EwFx.sound(level, at, SoundEvents.PLAYER_ATTACK_SWEEP, 1.0F, 1.4F);
         EwFx.sound(level, at, SoundEvents.BREEZE_SHOOT, 0.5F, 1.6F);
     }

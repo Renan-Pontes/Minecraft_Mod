@@ -32,6 +32,7 @@ import com.renanpontes.isekaimahou.glyph.LawGlyph;
 import com.renanpontes.isekaimahou.glyph.ParsedSpell;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -726,9 +727,18 @@ public class DomainDomeEntity extends Entity {
         float r = radius() * (1 - (1 - t) * (1 - t) * (1 - t));
         // Anel crescendo; magias multi-elemento alternam os elementos a cada anel
         Element el = elementAt(age / 2);
-        if (age % 2 == 0) ElementFx.ring(sl, center().add(0, 0.15, 0), el, r, ringPoints(r, 5));
+        if (age % 4 == 0) ElementFx.ring(sl, center().add(0, 0.15, 0), el, r, ringPoints(r, 3));
         if (age == 1) {
             sl.sendParticles(ParticleTypes.FLASH, getX(), getY() + 1, getZ(), 1, 0, 0, 0, 0);
+            // v1.3: a cúpula se fecha do chão ao topo junto com a expansão; ao fechar, clarão de troca de paisagem
+            if (!isSimple()) {
+                List<Element> els = elements();
+                ElementFx.domainSphere(sl, center(), el, color(), radius(), EXPAND_TICKS);
+                if (els.size() > 1) ElementFx.domainSphere(sl, center(), els.get(1), els.get(1).color, radius() * 0.97F, EXPAND_TICKS + 4);
+                ElementFx.gatherAt(sl, center().add(0, 1.2, 0), el, color(), 3.5F, 5, EXPAND_TICKS);
+            } else {
+                ElementFx.runeCircle(sl, center().add(0, 0.05, 0), color(), radius(), 40, 3);
+            }
         }
     }
 
@@ -753,9 +763,12 @@ public class DomainDomeEntity extends Entity {
         sl.playSound(null, getX(), getY(), getZ(), SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 3.0F, 0.6F);
         sl.playSound(null, getX(), getY(), getZ(), ElementFx.castSoundOf(el), SoundSource.PLAYERS, 2.5F, 0.6F);
         List<Element> els = elements();
-        for (Element e : els) {
-            DomainFx.far(sl, ElementFx.dust(e, 2.0F), getX(), getY() + r * 0.5, getZ(), 120 / els.size(), r * 0.4, r * 0.3, r * 0.4, 0);
-            DomainFx.far(sl, ElementFx.signature(e), getX(), getY() + 1, getZ(), 60 / els.size(), r * 0.4, 0.5, r * 0.4, 0.05);
+        // v1.3: explosão de ativação montada no cliente (preset gráfico) + chão do elemento por alguns segundos
+        for (int i = 0; i < Math.min(2, els.size()); i++) {
+            Element e = els.get(i);
+            ElementFx.nova(sl, center(), e, i == 0 ? color() : e.color, r * (i == 0 ? 0.7F : 0.5F), 5, false);
+            ElementFx.area(sl, center(), e, i == 0 ? color() : e.color, r * 0.9F, 3, 100);
+            DomainFx.far(sl, ElementFx.signature(e), getX(), getY() + 1, getZ(), 24 / els.size(), r * 0.4, 0.5, r * 0.4, 0.05);
         }
         // Quem já está dentro fica preso (Sem Fuga) e, numa barreira invertida, é "de dentro"
         for (LivingEntity e : livingInside(sl, -1.5)) {
@@ -772,7 +785,7 @@ public class DomainDomeEntity extends Entity {
             sl.playSound(null, getX(), getY(), getZ(), SoundEvents.RESPAWN_ANCHOR_CHARGE, SoundSource.PLAYERS, 2.0F, 0.5F);
             for (int i = 0; i < 48; i++) {
                 Vec3 p = center().add(upperDir(sl.random).scale(r));
-                DomainFx.far(sl, ParticleTypes.REVERSE_PORTAL, p.x, p.y, p.z, 3, 0.3, 0.3, 0.3, 0.05);
+                DomainFx.far(sl, Vfx.reversePortal(), p.x, p.y, p.z, 3, 0.3, 0.3, 0.3, 0.05);
             }
         }
         if (has(F_LANDSCAPE)) {
@@ -977,7 +990,7 @@ public class DomainDomeEntity extends Entity {
                     e.setDeltaMovement(Vec3.ZERO);
                     e.resetFallDistance();
                     e.hurtMarked = true;
-                    sl.sendParticles(ParticleTypes.REVERSE_PORTAL, back.x, back.y + 1, back.z, 20, 0.3, 0.6, 0.3, 0.05);
+                    sl.sendParticles(Vfx.reversePortal(), back.x, back.y + 1, back.z, 20, 0.3, 0.6, 0.3, 0.05);
                     sl.playSound(null, back.x, back.y, back.z, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1.0F, 0.6F);
                 } else {
                     trapped.remove(id);
@@ -994,7 +1007,7 @@ public class DomainDomeEntity extends Entity {
                 if (tickCount % 4 == 0) {
                     Vec3 wall = c0.add(p.subtract(c0).normalize().scale(r));
                     sl.sendParticles(ElementFx.dust(el, 1.6F), wall.x, wall.y, wall.z, 8, 0.4, 0.4, 0.4, 0);
-                    sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, wall.x, wall.y, wall.z, 4, 0.3, 0.3, 0.3, 0.1);
+                    sl.sendParticles(Vfx.electric(), wall.x, wall.y, wall.z, 4, 0.3, 0.3, 0.3, 0.1);
                     sl.playSound(null, wall.x, wall.y, wall.z, SoundEvents.AMETHYST_BLOCK_HIT, SoundSource.PLAYERS, 1.0F, 0.5F);
                 }
                 if (abs && tickCount % 10 == 0) e.hurt(c.damageSource(this), 2.0F);
@@ -1027,8 +1040,8 @@ public class DomainDomeEntity extends Entity {
             e.hurtMarked = true;
             if (tickCount % 4 == 0) {
                 Vec3 wall = c0.add(out.scale(r));
-                sl.sendParticles(ParticleTypes.REVERSE_PORTAL, wall.x, wall.y, wall.z, 8, 0.4, 0.4, 0.4, 0.05);
-                sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, wall.x, wall.y, wall.z, 4, 0.3, 0.3, 0.3, 0.1);
+                sl.sendParticles(Vfx.reversePortal(), wall.x, wall.y, wall.z, 8, 0.4, 0.4, 0.4, 0.05);
+                sl.sendParticles(Vfx.electric(), wall.x, wall.y, wall.z, 4, 0.3, 0.3, 0.3, 0.1);
                 sl.playSound(null, wall.x, wall.y, wall.z, SoundEvents.AMETHYST_BLOCK_HIT, SoundSource.PLAYERS, 1.0F, 0.35F);
             }
         }
@@ -1063,7 +1076,7 @@ public class DomainDomeEntity extends Entity {
             // Lado do ataque: de onde o projétil veio
             Vec3 from = inward ? hit.add(normal.scale(0.6)) : hit.subtract(normal.scale(0.6));
             DomainBarrier.hitAt(sl, this, hit, from, p, DomainBarrier.projectileDamage(p));
-            sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, hit.x, hit.y, hit.z, 10, 0.2, 0.2, 0.2, 0.2);
+            sl.sendParticles(Vfx.electric(), hit.x, hit.y, hit.z, 10, 0.2, 0.2, 0.2, 0.2);
             sl.sendParticles(ElementFx.dust(element(), 1.4F), hit.x, hit.y, hit.z, 8, 0.3, 0.3, 0.3, 0);
             if (p instanceof AbstractArrow) {
                 // Ricochete para o lado de onde veio
@@ -1096,7 +1109,7 @@ public class DomainDomeEntity extends Entity {
             Vec3 wall = d.center().add(dir.scale(d.radius())).add(0, Math.min(d.radius(), radius()) * 0.3, 0);
             Vec3 mine = center().subtract(dir.scale(radius())).add(0, Math.min(d.radius(), radius()) * 0.3, 0);
             Vec3 mid = wall.add(mine).scale(0.5);
-            DomainFx.far(sl, ParticleTypes.ELECTRIC_SPARK, mid.x, mid.y, mid.z, 16, 1.0, 1.0, 1.0, 0.25);
+            DomainFx.far(sl, Vfx.electric(), mid.x, mid.y, mid.z, 16, 1.0, 1.0, 1.0, 0.25);
             DomainFx.far(sl, ElementFx.dust(element(), 2.0F), mid.x, mid.y, mid.z, 10, 1.2, 1.2, 1.2, 0);
             ElementFx.line(sl, mine, mid, element());
             if (tickCount % 20 == 5) sl.playSound(null, mid.x, mid.y, mid.z, SoundEvents.RESPAWN_ANCHOR_DEPLETE.value(), SoundSource.PLAYERS, 2.0F, 0.6F);
@@ -1138,7 +1151,7 @@ public class DomainDomeEntity extends Entity {
         for (LivingEntity e : livingInside(sl, 0)) {
             if (e instanceof ServerPlayer sp && isEnemy(c, owner, sp) && !shieldedFromThis(sp)) {
                 MagicApi.get(sp).addMana(-NULLIFY_DRAIN);
-                sl.sendParticles(ParticleTypes.ENCHANT, sp.getX(), sp.getY() + 1.2, sp.getZ(), 12, 0.4, 0.5, 0.4, 0.6);
+                sl.sendParticles(Vfx.enchant(), sp.getX(), sp.getY() + 1.2, sp.getZ(), 12, 0.4, 0.5, 0.4, 0.6);
             }
         }
     }
@@ -1150,7 +1163,7 @@ public class DomainDomeEntity extends Entity {
         for (int i = 0; i < n; i++) {
             Vec3 dir = upperDir(sl.random);
             Vec3 p = center().add(dir.scale(r));
-            sl.sendParticles(isInverted() ? ParticleTypes.REVERSE_PORTAL : ElementFx.dust(elementAt(i), 1.5F), p.x, p.y, p.z, 2, 0.2, 0.2, 0.2, 0);
+            sl.sendParticles(isInverted() ? Vfx.reversePortal() : ElementFx.dust(elementAt(i), 1.5F), p.x, p.y, p.z, 2, 0.2, 0.2, 0.2, 0);
         }
         if (isOpen()) ElementFx.ring(sl, center().add(0, 0.1, 0), el, r, ringPoints(r, 3));
         // Barreira rachada: lascas caindo das rachaduras
@@ -1323,8 +1336,11 @@ public class DomainDomeEntity extends Entity {
             return;
         }
         sl.playSound(null, getX(), getY(), getZ(), SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 3.0F, 0.6F);
+        // v1.3: o domo se desfaz numa onda do elemento (montada no cliente) em vez de 80 partículas de pó
+        ElementFx.nova(sl, center(), element(), color(), radius() * 0.5F, 4, false);
+        ElementFx.shockwave(sl, center().add(0, radius() * 0.5, 0), color(), radius() * 1.1F, 18, null);
         for (Element e : els) {
-            DomainFx.far(sl, ElementFx.dust(e, 1.8F), getX(), getY() + radius() * 0.4, getZ(), 80 / els.size(),
+            DomainFx.far(sl, ElementFx.dust(e, 1.8F), getX(), getY() + radius() * 0.4, getZ(), 24 / els.size(),
                     radius() * 0.5, radius() * 0.3, radius() * 0.5, 0);
         }
     }
@@ -1353,12 +1369,15 @@ public class DomainDomeEntity extends Entity {
         sl.playSound(null, getX(), getY(), getZ(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.PLAYERS, 2.0F, 1.4F);
         sl.playSound(null, getX(), getY(), getZ(), SoundEvents.WITHER_BREAK_BLOCK, SoundSource.PLAYERS, 2.5F, 0.6F);
         BlockParticleOption glass = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.GLASS.defaultBlockState());
-        int shards = Mth.clamp((int) (r * 2.5), 40, 140);
+        // Estilhaços: menos pacotes (eram até 140×9 partículas) + clarão e nova do elemento montados no cliente
+        int shards = Mth.clamp((int) (r * 1.5), 24, 72);
         for (int i = 0; i < shards; i++) {
             Vec3 p = center().add(upperDir(sl.random).scale(r));
-            DomainFx.far(sl, glass, p.x, p.y, p.z, 6, 0.6, 0.6, 0.6, 0.1);
-            DomainFx.far(sl, ElementFx.dust(i % 2 == 0 ? el : elementAt(i / 2), 1.8F), p.x, p.y, p.z, 3, 0.5, 0.5, 0.5, 0);
+            DomainFx.far(sl, glass, p.x, p.y, p.z, 4, 0.6, 0.6, 0.6, 0.1);
+            if (i % 2 == 0) DomainFx.far(sl, ElementFx.dust(i % 4 == 0 ? el : elementAt(i / 2), 1.8F), p.x, p.y, p.z, 2, 0.5, 0.5, 0.5, 0);
         }
+        ElementFx.flash(sl, center().add(0, r * 0.5, 0), 0xFFFFFF, (float) Math.min(20, r));
+        ElementFx.nova(sl, center(), el, color(), (float) r * 0.6F, 5, false);
         DomainFx.shake(sl, center(), r * 2 + 24, 1.8F, 22);
         LivingEntity owner = owner(sl);
         if (owner != null) {

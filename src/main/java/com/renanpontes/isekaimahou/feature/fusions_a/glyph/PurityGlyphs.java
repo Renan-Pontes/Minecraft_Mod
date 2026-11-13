@@ -13,6 +13,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -39,8 +40,8 @@ public final class PurityGlyphs {
 
     static void holyFx(ServerLevel sl, LivingEntity e) {
         FaUtil.spiral(sl, e, FaUtil.dustFade(0xFFFFFF, 0x9FE0FF, 1.1F), 2, 28);
-        FaUtil.spiral(sl, e, ParticleTypes.SPLASH, 3, 18);
-        sl.sendParticles(ParticleTypes.END_ROD, e.getX(), e.getY() + e.getBbHeight() + 0.2, e.getZ(), 6, 0.3, 0.2, 0.3, 0.03);
+        FaUtil.spiral(sl, e, Vfx.splash(), 3, 18);
+        sl.sendParticles(Vfx.endRod(), e.getX(), e.getY() + e.getBbHeight() + 0.2, e.getZ(), 6, 0.3, 0.2, 0.3, 0.03);
     }
 
     /** Cura Maior: cura forte com água luminosa e um pouco de regeneração. Invertido: castiga (em dobro mortos-vivos). */
@@ -60,7 +61,7 @@ public final class PurityGlyphs {
             ServerLevel sl = ctx.level();
             if (stats.inverted && !ctx.isAlly(le)) {
                 FaUtil.hurt(ctx, le, FaUtil.isUndead(le) ? 10.0F : 4.0F, stats, null);
-                FaUtil.around(sl, le, ParticleTypes.END_ROD, 12, 0.05);
+                FaUtil.around(sl, le, Vfx.endRod(), 12, 0.05);
                 FaUtil.sound(sl, le.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 1.0F, 0.7F);
                 return;
             }
@@ -118,9 +119,9 @@ public final class PurityGlyphs {
         }
 
         private static void splashFx(ServerLevel sl, Vec3 c, float r) {
-            sl.sendParticles(ParticleTypes.SPLASH, c.x, c.y, c.z, 40, r * 0.3, 0.3, r * 0.3, 0.2);
+            sl.sendParticles(Vfx.splash(), c.x, c.y, c.z, 40, r * 0.3, 0.3, r * 0.3, 0.2);
             sl.sendParticles(FaUtil.dustFade(0xFFFFFF, 0x9FE0FF, 1.2F), c.x, c.y, c.z, 20, r * 0.3, 0.3, r * 0.3, 0);
-            sl.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 8, 0.4, 0.4, 0.4, 0.06);
+            sl.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 8, 0.4, 0.4, 0.4, 0.06);
             FaUtil.sound(sl, c, SoundEvents.SPLASH_POTION_BREAK, 1.0F, 1.0F);
             FaUtil.sound(sl, c, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.2F);
         }
@@ -130,8 +131,8 @@ public final class PurityGlyphs {
             if (FaUtil.isUndead(e)) {
                 FaUtil.hurt(ctx, e, 9.0F, stats, null);
                 e.igniteForSeconds(3);
-                FaUtil.around(sl, e, ParticleTypes.END_ROD, 10, 0.05);
-                FaUtil.around(sl, e, ParticleTypes.SMOKE, 8, 0.02);
+                FaUtil.around(sl, e, Vfx.endRod(), 10, 0.05);
+                FaUtil.around(sl, e, Vfx.smoke(), 8, 0.02);
             } else {
                 FaUtil.hurt(ctx, e, 3.0F, stats, null);
                 e.addEffect(new MobEffectInstance(CoreRegistries.SOAKED, stats.duration(100), 0), ctx.caster());
@@ -166,7 +167,7 @@ public final class PurityGlyphs {
             for (Holder<MobEffect> eff : list) le.removeEffect(eff);
             if (dispel) {
                 FaUtil.hurt(ctx, le, 2.0F, stats, null);
-                FaUtil.around(sl, le, ParticleTypes.WHITE_SMOKE, 16, 0.05);
+                FaUtil.around(sl, le, Vfx.whiteSmoke(), 16, 0.05);
             } else {
                 le.clearFire();
                 le.setTicksFrozen(0);
@@ -205,7 +206,7 @@ public final class PurityGlyphs {
                 le.addEffect(new MobEffectInstance(FaRegistries.PROTECTIVE_BUBBLE, stats.duration(400), 0), ctx.caster());
                 FaUtil.sphere(sl, c, FaUtil.dustFade(0xE8F8FF, 0x7FD4FF, 1.2F), r, 50);
             }
-            FaUtil.sphere(sl, c, ParticleTypes.SPLASH, r, 20);
+            FaUtil.sphere(sl, c, Vfx.splash(), r, 20);
             FaUtil.sound(sl, c, SoundEvents.BUBBLE_COLUMN_UPWARDS_INSIDE, 1.0F, 1.2F);
             FaUtil.sound(sl, c, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.5F);
         }

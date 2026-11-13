@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "isekai_mahou:luminous_crystal_cluster"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:luminous_crystal_block",
+    "count": 1
+  }
+}

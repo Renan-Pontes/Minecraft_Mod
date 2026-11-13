@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "SMS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "isekai_mahou:abyss_shard"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:abyss_core",
+    "count": 1
+  }
+}

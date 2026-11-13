@@ -33,7 +33,7 @@ import net.neoforged.bus.api.IEventBus;
  * </pre>
  */
 public class CinematicModule implements Module {
-    static final List<String> KINDS = List.of("ultimate", "domain", "boss_intro", "boss_phase", "patron", "ascension", "portal");
+    static final List<String> KINDS = List.of("ultimate", "domain", "boss_intro", "boss_phase", "patron", "ascension", "portal", "story");
     static final List<String> STYLES = List.of("spell", "ultimate", "boss", "system");
 
     @Override

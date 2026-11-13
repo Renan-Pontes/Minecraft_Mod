@@ -11,6 +11,7 @@ import com.renanpontes.isekaimahou.feature.fusions_d.FdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -102,7 +103,7 @@ public class DimensionCutEntity extends FdSpellEntity {
         Destruction.line(sl, a, b, 0.9F, h, owner(), Destruction.Mode.ERASE);
         for (int i = 0; i <= 10; i++) {
             Vec3 q = a.add(d.scale(i / 10.0));
-            sl.sendParticles(ParticleTypes.REVERSE_PORTAL, q.x, q.y, q.z, 6, 0.1, h * 0.3, 0.1, 0.05);
+            sl.sendParticles(Vfx.reversePortal(), q.x, q.y, q.z, 6, 0.1, h * 0.3, 0.1, 0.05);
         }
         FdFx.sound(sl, a.lerp(b, 0.5), SoundEvents.WARDEN_SONIC_BOOM, 1.6F, 1.5F);
         FdFx.sound(sl, a.lerp(b, 0.5), SoundEvents.GLASS_BREAK, 2F, 0.4F);
@@ -116,7 +117,7 @@ public class DimensionCutEntity extends FdSpellEntity {
         Vec3 a = from(), b = to();
         for (int i = 0; i < 2; i++) {
             Vec3 q = a.lerp(b, random.nextDouble());
-            level().addParticle(ParticleTypes.REVERSE_PORTAL, q.x, q.y + (random.nextDouble() - 0.5) * height(), q.z, 0, 0, 0);
+            level().addParticle(Vfx.reversePortal(), q.x, q.y + (random.nextDouble() - 0.5) * height(), q.z, 0, 0, 0);
         }
     }
 }

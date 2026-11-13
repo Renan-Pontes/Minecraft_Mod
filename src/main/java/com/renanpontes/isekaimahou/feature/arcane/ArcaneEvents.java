@@ -4,7 +4,7 @@ import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.entity.SpellProjectileEntity;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -129,7 +129,7 @@ public final class ArcaneEvents {
             proj.setPos(at.add(dir.scale(0.6)));
         }
 
-        level.sendParticles(ParticleTypes.ENCHANTED_HIT, at.x, at.y, at.z, 12, 0.2, 0.2, 0.2, 0.3);
+        level.sendParticles(Vfx.magicCrit(), at.x, at.y, at.z, 12, 0.2, 0.2, 0.2, 0.3);
         level.sendParticles(ArcaneUtil.dust(0xC9A6FF, 1.2F), at.x, at.y, at.z, 10, 0.25, 0.25, 0.25, 0);
         level.playSound(null, at.x, at.y, at.z, SoundEvents.AMETHYST_BLOCK_HIT, reflector.getSoundSource(), 1.0F, 1.6F);
         level.playSound(null, at.x, at.y, at.z, SoundEvents.SHIELD_BLOCK, reflector.getSoundSource(), 0.6F, 1.5F);

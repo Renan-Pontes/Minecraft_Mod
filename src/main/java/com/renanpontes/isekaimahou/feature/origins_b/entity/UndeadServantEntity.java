@@ -3,8 +3,8 @@ package com.renanpontes.isekaimahou.feature.origins_b.entity;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.feature.origins_b.ObFx;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -104,7 +104,7 @@ public class UndeadServantEntity extends ObSummonEntity {
         if (target instanceof LivingEntity le && random.nextInt(4) == 0) {
             le.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60, 0), this);
         }
-        level.sendParticles(ParticleTypes.SOUL, target.getX(), target.getY() + target.getBbHeight() * 0.6, target.getZ(), 3, 0.2, 0.2, 0.2, 0.02);
+        level.sendParticles(Vfx.soul(), target.getX(), target.getY() + target.getBbHeight() * 0.6, target.getZ(), 3, 0.2, 0.2, 0.2, 0.02);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class UndeadServantEntity extends ObSummonEntity {
         super.tick();
         if (level().isClientSide && random.nextInt(8) == 0) {
             // Olhos e manto soltando fiapos de alma
-            level().addParticle(ParticleTypes.SOUL_FIRE_FLAME, getX() + (random.nextDouble() - 0.5) * 0.4, getY() + 1.6 + random.nextDouble() * 0.2,
+            level().addParticle(Vfx.soulFlame(), getX() + (random.nextDouble() - 0.5) * 0.4, getY() + 1.6 + random.nextDouble() * 0.2,
                     getZ() + (random.nextDouble() - 0.5) * 0.4, 0, 0.005, 0);
         }
     }

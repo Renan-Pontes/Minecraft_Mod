@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -116,11 +117,11 @@ public final class FireGlyphs {
             ServerLevel sl = ctx.level();
             float secs = stats.duration(80) / 20F;
             boolean self = FwUtil.isSelf(ctx, target);
-            if (self) FwUtil.ring(sl, target.position().add(0, 0.2, 0), ParticleTypes.FLAME, stats.radius(2.5F), 28, 0.02);
+            if (self) FwUtil.ring(sl, target.position().add(0, 0.2, 0), Vfx.flame(), stats.radius(2.5F), 28, 0.02);
             for (LivingEntity e : FwUtil.offensiveTargets(ctx, target, stats.radius(2.5F))) {
                 FwUtil.hurt(ctx, e, 3.0F, stats, null);
                 e.igniteForSeconds(secs);
-                FwUtil.around(sl, e, ParticleTypes.FLAME, 14, 0.04);
+                FwUtil.around(sl, e, Vfx.flame(), 14, 0.04);
                 sl.sendParticles(ParticleTypes.LAVA, e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 2, 0.2, 0.2, 0.2, 0);
             }
             FwUtil.sound(sl, target.position(), SoundEvents.FIRECHARGE_USE, 0.6F, 1.2F);
@@ -210,8 +211,8 @@ public final class FireGlyphs {
             if (!FwUtil.once(ctx, "explosion_fx@" + BlockPos.containing(c).asLong())) return;
             sl.sendParticles(r >= 3.5F ? ParticleTypes.EXPLOSION_EMITTER : ParticleTypes.EXPLOSION, c.x, c.y, c.z, 1, 0, 0, 0, 0);
             sl.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y, c.z, Math.round(r * 2), r * 0.35, r * 0.3, r * 0.35, 0);
-            FwUtil.shockwave(sl, c, ParticleTypes.FLAME, 30, 0.1 * r);
-            sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y, c.z, 14, r * 0.3, r * 0.2, r * 0.3, 0.03);
+            FwUtil.shockwave(sl, c, Vfx.flame(), 30, 0.1 * r);
+            sl.sendParticles(Vfx.largeSmoke(), c.x, c.y, c.z, 14, r * 0.3, r * 0.2, r * 0.3, 0.03);
             sl.sendParticles(ParticleTypes.LAVA, c.x, c.y, c.z, 6, r * 0.2, 0.2, r * 0.2, 0);
             FwUtil.sound(sl, c, SoundEvents.GENERIC_EXPLODE.value(), 1.4F, 1.0F);
         }
@@ -255,7 +256,7 @@ public final class FireGlyphs {
                 FwUtil.hurt(ctx, e, 2.0F, stats, null);
                 e.igniteForSeconds(3.0F);
                 e.addEffect(new MobEffectInstance(FwRegistries.LINGERING_EMBER, stats.duration(160), amp), ctx.caster());
-                FwUtil.around(sl, e, ParticleTypes.SMALL_FLAME, 16, 0.03);
+                FwUtil.around(sl, e, Vfx.smallFlame(), 16, 0.03);
                 sl.sendParticles(ParticleTypes.LAVA, e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 4, 0.25, 0.3, 0.25, 0);
             }
             FwUtil.sound(sl, target.position(), SoundEvents.LAVA_POP, 1.0F, 0.9F);
@@ -360,7 +361,7 @@ public final class FireGlyphs {
             if (FwUtil.isSelf(ctx, target)) {
                 // Em Si Mesmo: detona todos os inimigos queimando ao redor
                 float r = stats.radius(6.0F);
-                FwUtil.ring(sl, target.position().add(0, 0.3, 0), ParticleTypes.FLAME, r, 40, 0.01);
+                FwUtil.ring(sl, target.position().add(0, 0.3, 0), Vfx.flame(), r, 40, 0.01);
                 for (LivingEntity e : ctx.enemiesAround(target.position(), r)) if (burning(e)) detonate(ctx, e, stats);
                 FwUtil.sound(sl, target.position(), SoundEvents.FIRECHARGE_USE, 1.0F, 0.6F);
                 return;
@@ -371,8 +372,8 @@ public final class FireGlyphs {
             } else {
                 FwUtil.hurt(ctx, le, 2.0F, stats, null);
                 le.igniteForSeconds(3.0F);
-                FwUtil.around(sl, le, ParticleTypes.SMOKE, 10, 0.02);
-                FwUtil.around(sl, le, ParticleTypes.FLAME, 6, 0.02);
+                FwUtil.around(sl, le, Vfx.smoke(), 10, 0.02);
+                FwUtil.around(sl, le, Vfx.flame(), 6, 0.02);
                 FwUtil.sound(sl, le.position(), SoundEvents.FIRECHARGE_USE, 0.6F, 1.5F);
             }
         }
@@ -394,9 +395,9 @@ public final class FireGlyphs {
                 if (push.lengthSqr() > 1.0E-4) FwUtil.addMotion(e, push.normalize().scale(0.6).add(0, 0.3, 0));
             }
             sl.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y, c.z, 3, 0.4, 0.4, 0.4, 0);
-            FwUtil.shockwave(sl, c, azure ? ParticleTypes.SOUL_FIRE_FLAME : ParticleTypes.FLAME, 36, 0.3);
+            FwUtil.shockwave(sl, c, azure ? Vfx.soulFlame() : Vfx.flame(), 36, 0.3);
             sl.sendParticles(ParticleTypes.LAVA, c.x, c.y, c.z, 10, 0.4, 0.4, 0.4, 0);
-            sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y, c.z, 12, 0.5, 0.5, 0.5, 0.04);
+            sl.sendParticles(Vfx.largeSmoke(), c.x, c.y, c.z, 12, 0.5, 0.5, 0.5, 0.04);
             FwUtil.sound(sl, c, SoundEvents.GENERIC_EXPLODE.value(), 1.2F, 1.2F);
             FwUtil.sound(sl, c, SoundEvents.FIRECHARGE_USE, 1.0F, 0.8F);
         }
@@ -430,7 +431,7 @@ public final class FireGlyphs {
             Vec3 pos = FwUtil.ground(sl, at, 4);
             // Debaixo d'água as chamas não pegam: só vapor e chiado
             if (sl.getFluidState(BlockPos.containing(pos)).is(FluidTags.WATER)) {
-                sl.sendParticles(ParticleTypes.CLOUD, pos.x, pos.y + 0.8, pos.z, 24, stats.radius(3.5F) * 0.4, 0.3, 0.6, 0.02);
+                sl.sendParticles(Vfx.cloud(), pos.x, pos.y + 0.8, pos.z, 24, stats.radius(3.5F) * 0.4, 0.3, 0.6, 0.02);
                 sl.sendParticles(ParticleTypes.BUBBLE_COLUMN_UP, pos.x, pos.y + 0.5, pos.z, 20, 1.2, 0.3, 0.6, 0.05);
                 FwUtil.sound(sl, pos, SoundEvents.FIRE_EXTINGUISH, 1.0F, 0.8F);
                 return;
@@ -463,7 +464,7 @@ public final class FireGlyphs {
             if (!FwUtil.isSelf(ctx, target) && target instanceof LivingEntity le) {
                 FwUtil.hurt(ctx, le, 4.0F, stats, null);
                 le.igniteForSeconds(2.0F);
-                FwUtil.around(sl, le, ParticleTypes.FLAME, 10, 0.03);
+                FwUtil.around(sl, le, Vfx.flame(), 10, 0.03);
             }
             if (cookItems(ctx, target.position(), 1.5 + Math.max(0, stats.aoe)) > 0) crackle(sl, target.position());
         }
@@ -510,8 +511,8 @@ public final class FireGlyphs {
             }
             awardXp(sl, Vec3.atCenterOf(pos), res.get().xp());
             Vec3 c = Vec3.atCenterOf(pos);
-            sl.sendParticles(ParticleTypes.FLAME, c.x, c.y, c.z, 8, 0.35, 0.35, 0.35, 0.02);
-            sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y + 0.4, c.z, 3, 0.25, 0.2, 0.25, 0.02);
+            sl.sendParticles(Vfx.flame(), c.x, c.y, c.z, 8, 0.35, 0.35, 0.35, 0.02);
+            sl.sendParticles(Vfx.largeSmoke(), c.x, c.y + 0.4, c.z, 3, 0.25, 0.2, 0.25, 0.02);
             if (sl.random.nextInt(3) == 0) sl.sendParticles(ParticleTypes.LAVA, c.x, c.y + 0.5, c.z, 1, 0.2, 0, 0.2, 0);
             return true;
         }
@@ -536,8 +537,8 @@ public final class FireGlyphs {
                     sl.addFreshEntity(extra);
                 }
                 awardXp(sl, ie.position(), res.get().xp() * st.getCount());
-                sl.sendParticles(ParticleTypes.FLAME, ie.getX(), ie.getY() + 0.2, ie.getZ(), 6, 0.15, 0.1, 0.15, 0.02);
-                sl.sendParticles(ParticleTypes.SMOKE, ie.getX(), ie.getY() + 0.3, ie.getZ(), 4, 0.1, 0.1, 0.1, 0.02);
+                sl.sendParticles(Vfx.flame(), ie.getX(), ie.getY() + 0.2, ie.getZ(), 6, 0.15, 0.1, 0.15, 0.02);
+                sl.sendParticles(Vfx.smoke(), ie.getX(), ie.getY() + 0.3, ie.getZ(), 4, 0.1, 0.1, 0.1, 0.02);
                 cooked++;
             }
             return cooked;
@@ -576,7 +577,13 @@ public final class FireGlyphs {
 
         private SummonedSalamander summon(SpellContext ctx, Vec3 near, SpellStats stats) {
             if (!FwUtil.once(ctx, "summon_salamander")) return null;
-            return FwSummon.summon(ctx, FwRegistries.SALAMANDER.get(), near, stats.duration(600), FwUtil.power(ctx, stats), 2);
+            // v1.0: Dividir chama a segunda salamandra de uma vez (o limite por dono continua 2)
+            SummonedSalamander first = null;
+            for (int i = 0; i < Math.min(2, stats.count()); i++) {
+                SummonedSalamander s = FwSummon.summon(ctx, FwRegistries.SALAMANDER.get(), near, stats.duration(600), FwUtil.power(ctx, stats), 2);
+                if (first == null) first = s;
+            }
+            return first;
         }
     }
 
@@ -610,7 +617,7 @@ public final class FireGlyphs {
                 e.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, stats.duration(160), 1), ctx.caster());
                 e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, stats.duration(60), 0), ctx.caster());
                 FwUtil.around(sl, e, FwUtil.dust(0xFF3B1A, 1.3F), 24, 0);
-                FwUtil.around(sl, e, ParticleTypes.SMOKE, 12, 0.03);
+                FwUtil.around(sl, e, Vfx.smoke(), 12, 0.03);
                 sl.sendParticles(ParticleTypes.LAVA, e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(), 4, 0.25, 0.3, 0.25, 0);
                 FwUtil.sound(sl, e.position(), SoundEvents.LAVA_POP, 1.2F, 0.8F);
                 FwUtil.sound(sl, e.position(), SoundEvents.FIRE_EXTINGUISH, 0.6F, 1.6F);
@@ -631,13 +638,13 @@ public final class FireGlyphs {
             ServerLevel sl = ctx.level();
             int amp = FwUtil.amp(ctx, stats);
             if (FwUtil.isSelf(ctx, target)) {
-                FwUtil.ring(sl, target.position().add(0, 0.2, 0), ParticleTypes.SOUL_FIRE_FLAME, stats.radius(3.0F), 32, 0.02);
+                FwUtil.ring(sl, target.position().add(0, 0.2, 0), Vfx.soulFlame(), stats.radius(3.0F), 32, 0.02);
             }
             for (LivingEntity e : FwUtil.offensiveTargets(ctx, target, stats.radius(3.0F))) {
                 FwUtil.hurt(ctx, e, 8.0F, stats, null);
                 e.addEffect(new MobEffectInstance(FwRegistries.AZURE_FLAME, stats.duration(120), amp), ctx.caster());
-                FwUtil.around(sl, e, ParticleTypes.SOUL_FIRE_FLAME, 28, 0.05);
-                FwUtil.around(sl, e, ParticleTypes.SOUL, 4, 0.03);
+                FwUtil.around(sl, e, Vfx.soulFlame(), 28, 0.05);
+                FwUtil.around(sl, e, Vfx.soul(), 4, 0.03);
                 FwUtil.around(sl, e, FwUtil.dust(0x3FC8FF, 1.4F), 12, 0);
             }
             FwUtil.sound(sl, target.position(), SoundEvents.SOUL_ESCAPE.value(), 1.4F, 0.8F);
@@ -669,8 +676,8 @@ public final class FireGlyphs {
                 e.setTicksFrozen(0);
                 boolean cold = e.getType().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES);
                 FwUtil.hurt(ctx, e, cold ? 7.5F : 3.0F, stats, null);
-                FwUtil.around(sl, e, ParticleTypes.CLOUD, 8, 0.03);
-                FwUtil.around(sl, e, ParticleTypes.DRIPPING_WATER, 8, 0);
+                FwUtil.around(sl, e, Vfx.cloud(), 8, 0.03);
+                FwUtil.around(sl, e, Vfx.water(), 8, 0);
             }
             meltAround(ctx, target.blockPosition(), stats.radius(2.5F));
         }
@@ -688,7 +695,7 @@ public final class FireGlyphs {
                 if (e.hasEffect(CoreRegistries.FROZEN) || e.getTicksFrozen() > 0) {
                     e.removeEffect(CoreRegistries.FROZEN);
                     e.setTicksFrozen(0);
-                    FwUtil.around(sl, e, ParticleTypes.CLOUD, 6, 0.02);
+                    FwUtil.around(sl, e, Vfx.cloud(), 6, 0.02);
                 }
             }
             int ir = Mth.ceil(r), melted = 0;
@@ -710,8 +717,8 @@ public final class FireGlyphs {
                 if (!FwUtil.canBreak(ctx, fixed)) continue;
                 sl.setBlockAndUpdate(fixed, to);
                 Vec3 pc = Vec3.atCenterOf(fixed);
-                sl.sendParticles(ParticleTypes.CLOUD, pc.x, pc.y + 0.3, pc.z, 2, 0.25, 0.2, 0.25, 0.02);
-                sl.sendParticles(ParticleTypes.DRIPPING_WATER, pc.x, pc.y, pc.z, 2, 0.3, 0.3, 0.3, 0);
+                sl.sendParticles(Vfx.cloud(), pc.x, pc.y + 0.3, pc.z, 2, 0.25, 0.2, 0.25, 0.02);
+                sl.sendParticles(Vfx.water(), pc.x, pc.y, pc.z, 2, 0.3, 0.3, 0.3, 0);
                 if (++melted >= 160) break;
             }
             if (melted > 0) {
@@ -747,7 +754,7 @@ public final class FireGlyphs {
             if (stats.inverted && !ctx.isAlly(le)) {
                 le.addEffect(new MobEffectInstance(FwRegistries.LINGERING_EMBER, stats.duration(400), Math.min(4, amp + 1)), ctx.caster());
                 le.igniteForSeconds(5.0F);
-                FwUtil.around(sl, le, ParticleTypes.SOUL_FIRE_FLAME, 20, 0.04);
+                FwUtil.around(sl, le, Vfx.soulFlame(), 20, 0.04);
                 FwUtil.sound(sl, le.position(), SoundEvents.SOUL_ESCAPE.value(), 1.2F, 0.6F);
                 return;
             }
@@ -756,13 +763,17 @@ public final class FireGlyphs {
             for (int i = 0; i < 30; i++) {
                 double a = i * 0.55, h = i * 0.075;
                 double r = 0.8 - i * 0.012;
-                sl.sendParticles(ParticleTypes.FLAME, le.getX() + Math.cos(a) * r, le.getY() + h, le.getZ() + Math.sin(a) * r, 1, 0, 0, 0, 0.005);
+                sl.sendParticles(Vfx.flame(), le.getX() + Math.cos(a) * r, le.getY() + h, le.getZ() + Math.sin(a) * r, 1, 0, 0, 0, 0.005);
                 if (i % 3 == 0) {
                     sl.sendParticles(FwUtil.dust(0xFFC23D, 1.2F), le.getX() + Math.cos(a + Math.PI) * r, le.getY() + h,
                             le.getZ() + Math.sin(a + Math.PI) * r, 1, 0, 0, 0, 0);
                 }
             }
-            sl.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, le.getX(), le.getY() + le.getBbHeight(), le.getZ(), 16, 0.3, 0.3, 0.3, 0.2);
+            sl.sendParticles(Vfx.totem(), le.getX(), le.getY() + le.getBbHeight(), le.getZ(), 16, 0.3, 0.3, 0.3, 0.2);
+            // v1.3: coluna da fênix + asas de brasa (aura) por alguns segundos
+            com.renanpontes.isekaimahou.core.ElementFx.pillar(sl, le.position(), 0xFFB040, 0.8F, 12F, 28);
+            com.renanpontes.isekaimahou.core.ElementFx.impactFx(sl, le.position().add(0, 0.2, 0), Element.SUN, 0xFFC23D, 4, null, 1.0F);
+            com.renanpontes.isekaimahou.core.ElementFx.aura(sl, le, Element.FIRE, 0xFF8A2B, 1.0F, 4, 100);
             FwUtil.sound(sl, le.position(), SoundEvents.BEACON_POWER_SELECT, 1.0F, 1.4F);
             FwUtil.sound(sl, le.position(), SoundEvents.BLAZE_SHOOT, 0.8F, 0.7F);
         }

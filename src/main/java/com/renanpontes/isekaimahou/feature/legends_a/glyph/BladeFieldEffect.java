@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -85,7 +86,7 @@ public class BladeFieldEffect extends EffectGlyph {
             // Sem chão para as espadas (ou limite de lâminas): estocada direta de pedra
             ctx.damage(le, DAMAGE, stats, null);
             Vec3 c = le.position();
-            sl.sendParticles(ParticleTypes.CRIT, c.x, c.y + 0.5, c.z, 10, 0.3, 0.4, 0.3, 0.2);
+            sl.sendParticles(Vfx.crit(), c.x, c.y + 0.5, c.z, 10, 0.3, 0.4, 0.3, 0.2);
         }
         sl.sendParticles(LegendFx.dust(color, 1.3F), ground.x, ground.y + 0.1, ground.z, 16, 1.4, 0.05, 1.4, 0);
         LegendFx.sound(sl, ground, SoundEvents.STONE_BREAK, 0.9F, 0.7F);

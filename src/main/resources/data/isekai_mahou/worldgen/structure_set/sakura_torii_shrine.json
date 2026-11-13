@@ -1,0 +1,36 @@
+{
+  "structures": [
+    {
+      "structure": "isekai_mahou:sakura_torii_shrine",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "isekai_mahou:random_spread_multi",
+    "spacing": 32,
+    "separation": 11,
+    "salt": 1946316001,
+    "exclusion_zones": [
+      {
+        "other_set": "minecraft:villages",
+        "chunk_count": 4
+      },
+      {
+        "other_set": "isekai_mahou:guild_city",
+        "chunk_count": 10
+      },
+      {
+        "other_set": "isekai_mahou:capital_city",
+        "chunk_count": 13
+      },
+      {
+        "other_set": "isekai_mahou:capital_sahra",
+        "chunk_count": 13
+      },
+      {
+        "other_set": "isekai_mahou:capital_nordheim",
+        "chunk_count": 13
+      }
+    ]
+  }
+}

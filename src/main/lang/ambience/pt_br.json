@@ -1,0 +1,32 @@
+{
+  "hint.isekai_mahou.ambience_music": "Música ambiente ligada · volume em Mods > Isekai Mahou > Config",
+
+  "ambience.isekai_mahou.zone.none": "nenhuma",
+  "ambience.isekai_mahou.zone.dungeon": "Masmorra",
+  "ambience.isekai_mahou.zone.citadel": "Cidadela",
+  "ambience.isekai_mahou.zone.library": "Biblioteca",
+  "ambience.isekai_mahou.zone.tower": "Torre",
+  "ambience.isekai_mahou.zone.city": "Cidade",
+  "ambience.isekai_mahou.zone.abyss": "Abismo",
+  "ambience.isekai_mahou.zone.home": "Reino do Lar",
+
+  "subtitles.isekai_mahou.ambience.spell_cast": "Magia conjurada",
+  "subtitles.isekai_mahou.ambience.spell_impact": "Magia acerta",
+
+  "command.isekai_mahou.ambience.zone": "Zona de música aqui: %s",
+  "command.isekai_mahou.ambience.music": "Música ambiente forçada: %s (volte ao normal com /mahou ambience music auto)",
+  "command.isekai_mahou.ambience.music_auto": "Música ambiente de volta ao automático.",
+  "command.isekai_mahou.ambience.sfx": "Som de magia de teste: %s · %s · tamanho %s",
+  "command.isekai_mahou.ambience.unknown": "Não conheço \"%s\".",
+
+  "isekai_mahou.configuration.ambientMusic": "Música ambiente",
+  "isekai_mahou.configuration.ambientMusic.tooltip": "Música baixa de dark fantasy em masmorras, torres, cidades, no Abismo e no Reino do Lar. Chefes continuam com a música deles.",
+  "isekai_mahou.configuration.ambientMusicVolume": "Volume da música ambiente",
+  "isekai_mahou.configuration.ambientMusicVolume.tooltip": "De 0 a 100. O controle \"Música\" do jogo também vale. 0 = sem música ambiente.",
+  "isekai_mahou.configuration.spellSounds": "Sons próprios das magias",
+  "isekai_mahou.configuration.spellSounds.tooltip": "Cada elemento tem o seu som ao conjurar e ao acertar; magia maior, som maior.",
+  "isekai_mahou.configuration.spellSoundVolume": "Volume dos sons das magias",
+  "isekai_mahou.configuration.spellSoundVolume.tooltip": "De 0 a 100. 0 = só os sons antigos.",
+  "isekai_mahou.configuration.glowInDark": "Brilho no escuro",
+  "isekai_mahou.configuration.glowInDark.tooltip": "Cristais, runas e essências brilham no escuro. Para a mudança valer, recarregue os recursos (F3+T)."
+}

@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.feature.legends_c.LcFx;
 import com.renanpontes.isekaimahou.feature.legends_c.LcRegistry;
 import com.renanpontes.isekaimahou.feature.legends_c.infinity.Infinity;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -134,6 +135,6 @@ public class InfinityFieldEntity extends LcEntity {
         double r = Infinity.STOP + o.getBbWidth() * 0.5 + 0.2;
         double z = random.nextDouble() * 2 - 1, a = random.nextDouble() * Math.PI * 2, s = Math.sqrt(1 - z * z);
         Vec3 c = o.position().add(0, o.getBbHeight() * 0.5, 0).add(Math.cos(a) * s * r, z * r, Math.sin(a) * s * r);
-        level().addParticle(pierced() ? ParticleTypes.CRIT : ParticleTypes.END_ROD, c.x, c.y, c.z, 0, 0, 0);
+        level().addParticle(pierced() ? Vfx.crit() : Vfx.endRod(), c.x, c.y, c.z, 0, 0, 0);
     }
 }

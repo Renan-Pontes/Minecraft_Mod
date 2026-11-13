@@ -1,0 +1,871 @@
+{
+  "layout": 2,
+  "branches": [
+    {
+      "id": "trigger",
+      "color": "D9A441"
+    },
+    {
+      "id": "powder",
+      "color": "FF6A2E"
+    },
+    {
+      "id": "duel",
+      "color": "C8B89A"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "quick_draw",
+      "branch": 0,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:golden_sword",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.attack_speed",
+          "amount": 0.015,
+          "op": "add_multiplied_base"
+        }
+      ]
+    },
+    {
+      "id": "dead_eye",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:spyglass",
+      "effects": [
+        {
+          "stat": "crit_chance",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "caliber",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:bow",
+      "effects": [
+        {
+          "stat": "ranged_damage",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "sure_shot",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:crossbow",
+      "effects": [
+        {
+          "stat": "first_strike",
+          "amount": 0.08
+        },
+        {
+          "stat": "crit_mana",
+          "amount": 3.0
+        }
+      ]
+    },
+    {
+      "id": "fan_the_hammer",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "isekai_mahou:essence_wind",
+      "effects": [
+        {
+          "stat": "spell_damage.wind",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "bullseye",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:diamond_sword",
+      "effects": [
+        {
+          "stat": "crit_damage",
+          "amount": 0.04
+        },
+        {
+          "stat": "crit_chance",
+          "amount": 0.006
+        }
+      ]
+    },
+    {
+      "id": "sixth_bullet",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:bell",
+      "effects": [
+        {
+          "stat": "fifth_hit",
+          "amount": 0.6
+        }
+      ],
+      "exclusive": [
+        "burst_fire"
+      ]
+    },
+    {
+      "id": "burst_fire",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:blaze_powder",
+      "effects": [
+        {
+          "stat": "combo",
+          "amount": 0.04
+        }
+      ],
+      "exclusive": [
+        "sixth_bullet"
+      ]
+    },
+    {
+      "id": "long_barrel",
+      "branch": 0,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:spectral_arrow",
+      "effects": [
+        {
+          "stat": "far_damage",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "steady_hand",
+      "branch": 0,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:target",
+      "effects": [
+        {
+          "stat": "aim_power",
+          "amount": 0.06
+        }
+      ]
+    },
+    {
+      "id": "silver_bullet",
+      "branch": 0,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:dragon_head",
+      "effects": [
+        {
+          "stat": "boss_damage",
+          "amount": 0.15
+        },
+        {
+          "stat": "crit_cdr",
+          "amount": 1.0
+        }
+      ]
+    },
+    {
+      "id": "mastery_trigger",
+      "branch": 0,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "ranged_damage",
+          "amount": 0.005
+        }
+      ]
+    },
+    {
+      "id": "hot_lead",
+      "branch": 1,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "isekai_mahou:essence_fire",
+      "effects": [
+        {
+          "stat": "spell_damage.fire",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "incendiary",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:flint_and_steel",
+      "effects": [
+        {
+          "stat": "on_hit.burn",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "powder_keg",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:amethyst_shard",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:spell_power",
+          "amount": 0.01,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "black_powder",
+      "branch": 1,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:poisonous_potato",
+      "effects": [
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.07
+        }
+      ]
+    },
+    {
+      "id": "smoke_screen",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:arrow",
+      "effects": [
+        {
+          "stat": "projectile_resist",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "dragon_breath",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "isekai_mahou:essence_fire",
+      "effects": [
+        {
+          "stat": "spell_damage.fire",
+          "amount": 0.012
+        },
+        {
+          "stat": "execute",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "explosive_rounds",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:gunpowder",
+      "effects": [
+        {
+          "stat": "kill_burst",
+          "amount": 0.2
+        }
+      ],
+      "exclusive": [
+        "piercing_rounds"
+      ]
+    },
+    {
+      "id": "piercing_rounds",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:dragon_head",
+      "effects": [
+        {
+          "stat": "boss_damage",
+          "amount": 0.1
+        }
+      ],
+      "exclusive": [
+        "explosive_rounds"
+      ]
+    },
+    {
+      "id": "fuse",
+      "branch": 1,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:nether_star",
+      "effects": [
+        {
+          "stat": "all_damage",
+          "amount": 0.008
+        }
+      ]
+    },
+    {
+      "id": "crossfire",
+      "branch": 1,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:blaze_rod",
+      "effects": [
+        {
+          "stat": "kill_fury",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "dynamite",
+      "branch": 1,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:gunpowder",
+      "effects": [
+        {
+          "stat": "kill_burst",
+          "amount": 0.25
+        },
+        {
+          "stat": "charge_on_kill",
+          "amount": 2.0
+        }
+      ]
+    },
+    {
+      "id": "mastery_powder",
+      "branch": 1,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "all_damage",
+          "amount": 0.004
+        }
+      ]
+    },
+    {
+      "id": "high_noon",
+      "branch": 2,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:crossbow",
+      "effects": [
+        {
+          "stat": "first_strike",
+          "amount": 0.04
+        }
+      ]
+    },
+    {
+      "id": "roll",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:phantom_membrane",
+      "effects": [
+        {
+          "stat": "dodge",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "spurs",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:sugar",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.movement_speed",
+          "amount": 0.01,
+          "op": "add_multiplied_base"
+        }
+      ]
+    },
+    {
+      "id": "roll_and_shoot",
+      "branch": 2,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:wind_charge",
+      "effects": [
+        {
+          "stat": "dodge_power",
+          "amount": 0.12
+        },
+        {
+          "stat": "dodge",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "grit",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:golden_apple",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 1.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "last_bullet",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:redstone",
+      "effects": [
+        {
+          "stat": "low_health_power",
+          "amount": 0.025
+        },
+        {
+          "stat": "mana_on_kill",
+          "amount": 1.5
+        }
+      ]
+    },
+    {
+      "id": "ice_in_the_veins",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:golden_carrot",
+      "effects": [
+        {
+          "stat": "full_health_power",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "cornered"
+      ]
+    },
+    {
+      "id": "cornered",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:turtle_helmet",
+      "effects": [
+        {
+          "stat": "low_health_resist",
+          "amount": 0.15
+        }
+      ],
+      "exclusive": [
+        "ice_in_the_veins"
+      ]
+    },
+    {
+      "id": "quick_holster",
+      "branch": 2,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:prismarine_crystals",
+      "effects": [
+        {
+          "stat": "mana_on_hit",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "id": "eye_to_eye",
+      "branch": 2,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:mace",
+      "effects": [
+        {
+          "stat": "near_damage",
+          "amount": 0.06
+        },
+        {
+          "stat": "revenge",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "sundown_duel",
+      "branch": 2,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:totem_of_undying",
+      "effects": [
+        {
+          "stat": "cheat_death",
+          "amount": 0.3
+        },
+        {
+          "stat": "kill_cdr",
+          "amount": 2.0
+        }
+      ]
+    },
+    {
+      "id": "mastery_duel",
+      "branch": 2,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 0.5,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "scope",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "gunslinger_deadeye",
+      "icon": "minecraft:spectral_arrow",
+      "effects": [
+        {
+          "stat": "far_damage",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "held_breath",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "gunslinger_deadeye",
+      "icon": "minecraft:target",
+      "effects": [
+        {
+          "stat": "aim_power",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "one_shot",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "gunslinger_deadeye",
+      "icon": "minecraft:dragon_head",
+      "effects": [
+        {
+          "stat": "boss_damage",
+          "amount": 0.06
+        },
+        {
+          "stat": "crit_cdr",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "id": "headshot",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "gunslinger_deadeye",
+      "icon": "minecraft:netherite_axe",
+      "effects": [
+        {
+          "stat": "cull",
+          "amount": 0.08
+        },
+        {
+          "stat": "fifth_hit",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "id": "worn_boots",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "gunslinger_outlaw",
+      "icon": "minecraft:rabbit_hide",
+      "effects": [
+        {
+          "stat": "run_power",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "hand_on_holster",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "gunslinger_outlaw",
+      "icon": "minecraft:golden_sword",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.attack_speed",
+          "amount": 0.02,
+          "op": "add_multiplied_base"
+        }
+      ]
+    },
+    {
+      "id": "shootout",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "gunslinger_outlaw",
+      "icon": "minecraft:blaze_rod",
+      "effects": [
+        {
+          "stat": "kill_fury",
+          "amount": 0.05
+        },
+        {
+          "stat": "near_damage",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "wanted",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "gunslinger_outlaw",
+      "icon": "minecraft:wind_charge",
+      "effects": [
+        {
+          "stat": "dodge_power",
+          "amount": 0.2
+        },
+        {
+          "stat": "charge_on_kill",
+          "amount": 2.0
+        }
+      ]
+    }
+  ],
+  "subclasses": [
+    {
+      "id": "gunslinger_deadeye",
+      "color": "D9A441",
+      "icon": "minecraft:spyglass",
+      "effects": [
+        {
+          "stat": "crit_chance",
+          "amount": 0.1
+        },
+        {
+          "stat": "crit_damage",
+          "amount": 0.3
+        },
+        {
+          "stat": "first_strike",
+          "amount": 0.2
+        },
+        {
+          "stat": "aim_power",
+          "amount": 0.2
+        },
+        {
+          "stat": "far_damage",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "gunslinger_outlaw",
+      "color": "FF6A2E",
+      "icon": "minecraft:fire_charge",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.movement_speed",
+          "amount": 0.08,
+          "op": "add_multiplied_base"
+        },
+        {
+          "stat": "dodge",
+          "amount": 0.08
+        },
+        {
+          "stat": "spell_damage.fire",
+          "amount": 0.1
+        },
+        {
+          "stat": "kill_speed",
+          "amount": 3.0
+        },
+        {
+          "stat": "run_power",
+          "amount": 0.2
+        },
+        {
+          "stat": "kill_cdr",
+          "amount": 1.5
+        }
+      ]
+    }
+  ]
+}

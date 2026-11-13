@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.renanpontes.isekaimahou.feature.origins_a.OaUtil;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -112,17 +112,17 @@ public abstract class FamiliarEntity extends PathfinderMob implements GeoEntity,
     protected void keepUp(ServerLevel level, LivingEntity o, double maxDist, double yOffset) {
         if (o == null || distanceToSqr(o) < maxDist * maxDist) return;
         Vec3 to = o.position().add(o.getLookAngle().scale(-1.5)).add(0, yOffset, 0);
-        level.sendParticles(ParticleTypes.SMOKE, getX(), getY() + 0.3, getZ(), 10, 0.2, 0.2, 0.2, 0.02);
+        level.sendParticles(Vfx.smoke(), getX(), getY() + 0.3, getZ(), 10, 0.2, 0.2, 0.2, 0.02);
         teleportTo(to.x, to.y, to.z);
         getNavigation().stop();
-        level.sendParticles(ParticleTypes.WITCH, to.x, to.y + 0.3, to.z, 10, 0.2, 0.2, 0.2, 0.05);
+        level.sendParticles(Vfx.witch(), to.x, to.y + 0.3, to.z, 10, 0.2, 0.2, 0.2, 0.05);
     }
 
     /** Some num puf de fumaça (fim do tempo ou dispensado). */
     public void vanish(ServerLevel level) {
         Vec3 c = position().add(0, getBbHeight() * 0.5, 0);
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y, c.z, 14, 0.25, 0.25, 0.25, 0.02);
-        level.sendParticles(ParticleTypes.WITCH, c.x, c.y, c.z, 12, 0.3, 0.3, 0.3, 0.1);
+        level.sendParticles(Vfx.largeSmoke(), c.x, c.y, c.z, 14, 0.25, 0.25, 0.25, 0.02);
+        level.sendParticles(Vfx.witch(), c.x, c.y, c.z, 12, 0.3, 0.3, 0.3, 0.1);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.NEUTRAL, 0.8F, 1.4F);
         onVanish(level);
         discard();

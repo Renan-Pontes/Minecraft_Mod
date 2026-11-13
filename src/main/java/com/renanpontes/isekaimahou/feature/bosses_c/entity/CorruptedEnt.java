@@ -245,6 +245,9 @@ public class CorruptedEnt extends ClassBossEntity {
         BossFx.ring(level, c.add(0, 0.1, 0), 1.5, 20, dust, 0.15);
         BossFx.ring(level, c.add(0, 0.1, 0), 3.0, 30, dust, 0.15);
         level.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y + 0.2, c.z, 2, 0.6, 0.1, 0.6, 0);
+        // Impacto: chão trincado (só visual) e torrões voando
+        BossKit.crackFloor(level, c, SLAM_RADIUS, 6, 70);
+        BossKit.debris(level, c, SLAM_RADIUS * 0.6, 16);
         playSound(SoundEvents.GENERIC_EXPLODE.value(), 1.4F, 0.6F);
         playSound(SoundEvents.ZOMBIE_BREAK_WOODEN_DOOR, 1.6F, 0.5F);
         BossKit.shake(level, c, 16, 0.9F, 10);
@@ -356,6 +359,9 @@ public class CorruptedEnt extends ClassBossEntity {
         cloud.setRadiusPerTick(0F);
         cloud.setParticle(ParticleTypes.SPORE_BLOSSOM_AIR);
         cloud.addEffect(new MobEffectInstance(MobEffects.POISON, 100, amp));
+        // Esporos na cabeça: tudo gira e as pernas pesam (as raízes pegam mais fácil quem fica na nuvem)
+        cloud.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 120, 0));
+        cloud.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 0));
         level.addFreshEntity(cloud);
         level.playSound(null, at.x, at.y, at.z, SoundEvents.SPORE_BLOSSOM_PLACE, SoundSource.HOSTILE, 1.5F, 0.6F);
     }

@@ -5,6 +5,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.feature.ritual_warlock.ritual.PatronKind;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -81,7 +82,7 @@ public class DrownedKingEntity extends PatronEntity {
     private void royalTide(ServerLevel level) {
         Vec3 c = position();
         for (double r = 1.5; r <= 6.0; r += 1.5) ElementFx.ring(level, c.add(0, 0.3, 0), Element.WATER, r, (int) (10 * r));
-        level.sendParticles(ParticleTypes.SPLASH, c.x, c.y + 0.5, c.z, 120, 3.0, 0.3, 3.0, 0.3);
+        level.sendParticles(Vfx.splash(), c.x, c.y + 0.5, c.z, 120, 3.0, 0.3, 3.0, 0.3);
         level.sendParticles(ParticleTypes.BUBBLE_POP, c.x, c.y + 0.8, c.z, 40, 2.5, 0.5, 2.5, 0.05);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.GENERIC_SPLASH, SoundSource.HOSTILE, 2.0F, 0.5F);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.ELDER_GUARDIAN_AMBIENT, SoundSource.HOSTILE, 1.5F, 0.6F);
@@ -115,7 +116,7 @@ public class DrownedKingEntity extends PatronEntity {
             }
             d.setTarget(target);
             level.addFreshEntity(d);
-            level.sendParticles(ParticleTypes.SPLASH, x, getY() + 0.5, z, 30, 0.4, 0.6, 0.4, 0.2);
+            level.sendParticles(Vfx.splash(), x, getY() + 0.5, z, 30, 0.4, 0.6, 0.4, 0.2);
             level.sendParticles(ParticleTypes.BUBBLE_COLUMN_UP, x, getY() + 0.2, z, 15, 0.3, 0.2, 0.3, 0.1);
         }
         level.playSound(null, getX(), getY(), getZ(), SoundEvents.DROWNED_AMBIENT_WATER, SoundSource.HOSTILE, 2.0F, 0.5F);
@@ -166,14 +167,14 @@ public class DrownedKingEntity extends PatronEntity {
     @Override
     protected void clientAmbient() {
         if (random.nextInt(3) == 0) {
-            level().addParticle(ParticleTypes.DRIPPING_WATER, getRandomX(0.6), getY() + getBbHeight() * (0.4 + random.nextDouble() * 0.5),
+            level().addParticle(Vfx.water(), getRandomX(0.6), getY() + getBbHeight() * (0.4 + random.nextDouble() * 0.5),
                     getRandomZ(0.6), 0, 0, 0);
         }
         if (isInWater() && random.nextInt(2) == 0) {
             level().addParticle(ParticleTypes.BUBBLE, getRandomX(0.6), getY() + random.nextDouble() * getBbHeight(), getRandomZ(0.6), 0, 0.05, 0);
         }
         if (random.nextInt(12) == 0) {
-            level().addParticle(ParticleTypes.FALLING_WATER, getRandomX(0.3), getY() + getBbHeight() * 0.75, getRandomZ(0.3), 0, 0, 0);
+            level().addParticle(Vfx.water(), getRandomX(0.3), getY() + getBbHeight() * 0.75, getRandomZ(0.3), 0, 0, 0);
         }
     }
 

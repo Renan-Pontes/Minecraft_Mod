@@ -16,6 +16,7 @@ import com.renanpontes.isekaimahou.feature.ritual_druid.DruidStages;
 import com.renanpontes.isekaimahou.feature.ritual_druid.Harmony;
 import com.renanpontes.isekaimahou.feature.ritual_druid.HeartTreeShape;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -136,9 +137,9 @@ public class HeartTreeCoreBlockEntity extends BlockEntity {
         core.setStage(player != null ? DruidProgress.rank(player) : 0);
 
         double x = pos.getX() + 0.5, y = pos.getY() + 0.8, z = pos.getZ() + 0.5;
-        level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, x, y, z, 60, 0.4, 0.6, 0.4, 0.35);
+        level.sendParticles(Vfx.totem(), x, y, z, 60, 0.4, 0.6, 0.4, 0.35);
         level.sendParticles(GROW_DUST, x, y, z, 40, 0.8, 0.5, 0.8, 0.0);
-        level.sendParticles(ParticleTypes.HAPPY_VILLAGER, x, y, z, 25, 1.2, 0.4, 1.2, 0.0);
+        level.sendParticles(Vfx.happy(), x, y, z, 25, 1.2, 0.4, 1.2, 0.0);
         level.playSound(null, pos, SoundEvents.BONE_MEAL_USE, SoundSource.BLOCKS, 1.0F, 0.7F);
         level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.BLOCKS, 1.2F, 0.8F);
         level.playSound(null, pos, SoundEvents.ROOTED_DIRT_PLACE, SoundSource.BLOCKS, 1.0F, 0.6F);
@@ -209,8 +210,8 @@ public class HeartTreeCoreBlockEntity extends BlockEntity {
         if (!(level instanceof ServerLevel sl)) return;
         double x = worldPosition.getX() + 0.5, y = worldPosition.getY() + 0.9, z = worldPosition.getZ() + 0.5;
         sl.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, shown), x, y + 0.3, z, 14, 0.25, 0.25, 0.25, 0.06);
-        sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, x, y, z, 10, 0.5, 0.4, 0.5, 0.0);
-        sl.sendParticles(ParticleTypes.END_ROD, x, y + 0.4, z, 6, 0.2, 0.3, 0.2, 0.03);
+        sl.sendParticles(Vfx.happy(), x, y, z, 10, 0.5, 0.4, 0.5, 0.0);
+        sl.sendParticles(Vfx.endRod(), x, y + 0.4, z, 6, 0.2, 0.3, 0.2, 0.03);
         sl.playSound(null, worldPosition, SoundEvents.COMPOSTER_FILL_SUCCESS, SoundSource.BLOCKS, 1.0F, 1.0F);
         sl.playSound(null, worldPosition, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.7F, 1.5F);
     }
@@ -261,8 +262,8 @@ public class HeartTreeCoreBlockEntity extends BlockEntity {
                 if (sl.random.nextInt(3) == 0) {
                     boolean gold = s.part() == HeartTreeShape.Part.GOLDEN;
                     sl.sendParticles(gold ? GOLD_DUST : GROW_DUST, wp.getX() + 0.5, wp.getY() + 0.5, wp.getZ() + 0.5, 2, 0.4, 0.4, 0.4, 0.0);
-                    if (gold) sl.sendParticles(ParticleTypes.WAX_ON, wp.getX() + 0.5, wp.getY() + 0.5, wp.getZ() + 0.5, 1, 0.3, 0.3, 0.3, 0.0);
-                    else sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, wp.getX() + 0.5, wp.getY() + 0.5, wp.getZ() + 0.5, 1, 0.3, 0.3, 0.3, 0.0);
+                    if (gold) sl.sendParticles(Vfx.waxOn(), wp.getX() + 0.5, wp.getY() + 0.5, wp.getZ() + 0.5, 1, 0.3, 0.3, 0.3, 0.0);
+                    else sl.sendParticles(Vfx.happy(), wp.getX() + 0.5, wp.getY() + 0.5, wp.getZ() + 0.5, 1, 0.3, 0.3, 0.3, 0.0);
                 }
             }
         }
@@ -284,7 +285,7 @@ public class HeartTreeCoreBlockEntity extends BlockEntity {
         double top = worldPosition.getY() + HeartTreeShape.trunkHeight(builtStage) + 1;
         float r = HeartTreeShape.canopyRadius(builtStage);
         sl.sendParticles(GROW_DUST, x, top, z, 60, r * 0.6, 1.5, r * 0.6, 0.0);
-        sl.sendParticles(ParticleTypes.END_ROD, x, top, z, 30, r * 0.5, 1.2, r * 0.5, 0.05);
+        sl.sendParticles(Vfx.endRod(), x, top, z, 30, r * 0.5, 1.2, r * 0.5, 0.05);
         if (builtStage >= 6) sl.sendParticles(GOLD_DUST, x, top + 1, z, 40, r * 0.5, 1.0, r * 0.5, 0.0);
         sl.playSound(null, worldPosition, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1.5F, 1.2F);
         sl.playSound(null, worldPosition, SoundEvents.FLOWERING_AZALEA_PLACE, SoundSource.BLOCKS, 1.2F, 0.9F);
@@ -323,7 +324,7 @@ public class HeartTreeCoreBlockEntity extends BlockEntity {
     private void ambient(ServerLevel sl) {
         double x = worldPosition.getX() + 0.5, y = worldPosition.getY() + 1.0, z = worldPosition.getZ() + 0.5;
         sl.sendParticles(GROW_DUST, x, y, z, 2 + builtStage / 2, 0.4, 0.3, 0.4, 0.0);
-        if (builtStage >= 5) sl.sendParticles(ParticleTypes.END_ROD, x, y + 0.5, z, 1, 0.3, 0.3, 0.3, 0.02);
+        if (builtStage >= 5) sl.sendParticles(Vfx.endRod(), x, y + 0.5, z, 1, 0.3, 0.3, 0.3, 0.02);
     }
 
     private static boolean isTreeBlock(BlockState s) {

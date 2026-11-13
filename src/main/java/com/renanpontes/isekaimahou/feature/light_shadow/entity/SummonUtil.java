@@ -15,6 +15,21 @@ import net.minecraft.world.phys.Vec3;
 
 /** Ajuda para invocações: achar um lugar livre e limitar quantas cada dono pode ter. */
 public final class SummonUtil {
+    /** Chave do persistentData onde a Forja de Invocações (módulo forms_b) guarda a ordem da criatura. Lida por texto. */
+    private static final String FORGE_KEY = "isekai_mahou_forge";
+
+    /**
+     * Posto da criatura quando a ordem da Forja de Invocações é Guardar (1) ou Ficar (3); null = sem posto (seguir,
+     * caçar ou invocação comum, que acompanha o dono como sempre).
+     */
+    public static Vec3 forgePost(net.minecraft.world.entity.Entity e) {
+        net.minecraft.nbt.CompoundTag pd = e.getPersistentData();
+        if (!pd.contains(FORGE_KEY, net.minecraft.nbt.Tag.TAG_COMPOUND)) return null;
+        net.minecraft.nbt.CompoundTag t = pd.getCompound(FORGE_KEY);
+        int order = t.getInt("order");
+        if ((order != 1 && order != 3) || !t.contains("gx")) return null;
+        return new Vec3(t.getDouble("gx"), t.getDouble("gy"), t.getDouble("gz"));
+    }
 
     /** Um ponto perto de {@code near} onde a entidade cabe (tenta subir e espalhar um pouco). */
     public static Vec3 freeSpot(ServerLevel level, EntityType<?> type, Vec3 near) {

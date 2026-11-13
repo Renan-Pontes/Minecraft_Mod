@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.core.api.Reputation;
 import com.renanpontes.isekaimahou.feature.cities.CityLines;
+import com.renanpontes.isekaimahou.feature.cities.CityRoutine;
 import com.renanpontes.isekaimahou.feature.cities.trade.CityTrades;
 
 import net.minecraft.core.particles.ParticleTypes;
@@ -145,7 +146,8 @@ public class CityMerchant extends CityNpc implements Merchant {
         Set<String> s = new HashSet<>(p.bones);
         if (female()) {
             s.add("hair_long");
-            if (p != Profession.BLACKSMITH && p != Profession.FENCE) s.add("skirt");
+            // onda 10: a Mecânica usa o macacão (sem saia)
+            if (p != Profession.BLACKSMITH && p != Profession.FENCE && p != Profession.MECHANIC) s.add("skirt");
         } else if (p == Profession.BLACKSMITH || p == Profession.INNKEEPER || p == Profession.JEWELER) {
             s.add("beard");
         }
@@ -163,15 +165,23 @@ public class CityMerchant extends CityNpc implements Merchant {
     }
 
     @Override
+    protected int currentRadius() {
+        // Loja fechada de madrugada: fica quieto no seu canto.
+        return CityRoutine.shopClosed(this) ? 1 : wanderRadius();
+    }
+
+    @Override
     protected RawAnimation idleAnimation() {
         Profession p = profession();
         // Ferreiro martela; alquimista mexe nos frascos (a mesma animação de "trabalho").
-        return (p == Profession.BLACKSMITH || p == Profession.ALCHEMIST) && tradingPlayer == null ? WORK : super.idleAnimation();
+        return (p == Profession.BLACKSMITH || p == Profession.ALCHEMIST) && tradingPlayer == null && !CityRoutine.shopClosed(this)
+                ? WORK : super.idleAnimation();
     }
 
     @Override
     @Nullable
     protected Component ambientLine(Player near) {
+        if (CityRoutine.shopClosed(this)) return random.nextInt(3) == 0 ? CityRoutine.closedLine(random) : null;
         return Component.translatable(CityLines.PREFIX + "merchant." + profession().id + ".ambient."
                 + random.nextInt(CityLines.PROFESSION_AMBIENT));
     }
@@ -181,6 +191,7 @@ public class CityMerchant extends CityNpc implements Merchant {
     // =====================================================================================
     /** Abre as trocas para o jogador (o diálogo já checou {@link Reputation#canTrade}). */
     public boolean openTrades(ServerPlayer player) {
+        if (CityRoutine.shopClosed(this)) return false;
         if (tradingPlayer != null && tradingPlayer != player && tradingPlayer.isAlive()) return false;
         refreshStockDay();
         List<CityTrades.Trade> trades = CityTrades.build(this, player);
@@ -198,6 +209,10 @@ public class CityMerchant extends CityNpc implements Merchant {
         offerKeys = keys;
         setTradingPlayer(player);
         openTradingScreen(player, getDisplayName(), 1);
+        // onda 10: primeira vez num Mecânico — o que ele vende e o botão de Serviços
+        if (profession() == Profession.MECHANIC) {
+            com.renanpontes.isekaimahou.feature.ui_hud.Hints.show(player, "vehicles.mechanic.world");
+        }
         return true;
     }
 

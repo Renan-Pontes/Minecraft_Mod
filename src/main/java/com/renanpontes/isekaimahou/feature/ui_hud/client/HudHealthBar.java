@@ -47,20 +47,21 @@ final class HudHealthBar {
         Player p = mc.player;
         if (p == null || mc.gameMode == null || !mc.gameMode.canHurtPlayer()) return;
         Font font = mc.font;
-        int gw = g.guiWidth(), gh = g.guiHeight();
+        int gw = HudScale.w(g), gh = HudScale.h(g);
         int center = gw / 2;
 
         // Borda direita: à esquerda da hotbar e do que o vanilla desenha do lado esquerdo dela
         HumanoidArm off = p.getMainArm().getOpposite();
-        int limit = center - 91 - 4;
-        if (off == HumanoidArm.LEFT && !p.getOffhandItem().isEmpty()) limit = center - 91 - 29 - 4;
-        else if (off == HumanoidArm.RIGHT && mc.options.attackIndicator().get() == AttackIndicatorStatus.HOTBAR) limit = center - 91 - 22 - 4;
+        // (HudScale.v: a barra de itens é do vanilla, em pixels reais; aqui as contas são na tela virtual do HUD)
+        int limit = center - HudScale.v(91) - 4;
+        if (off == HumanoidArm.LEFT && !p.getOffhandItem().isEmpty()) limit = center - HudScale.v(91 + 29) - 4;
+        else if (off == HumanoidArm.RIGHT && mc.options.attackIndicator().get() == AttackIndicatorStatus.HOTBAR) limit = center - HudScale.v(91 + 22) - 4;
         int x = 4;
         int w = Math.min(MAX_W, limit - x);
         if (w < 34) return;
         int y = gh - H - 2;
         // Minimapa no canto de baixo à esquerda: a barra sobe para cima dele
-        HudLayout.Rect m = HudLayout.minimap();
+        HudLayout.Rect m = HudScale.minimap();
         if (m.intersects(x, y, w, H)) y = m.y() - HudLayout.MARGIN - H;
 
         float max = Math.max(1F, p.getMaxHealth());

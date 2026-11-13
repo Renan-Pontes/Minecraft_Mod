@@ -1,0 +1,180 @@
+{
+ "format_version": "1.12.0",
+ "minecraft:geometry": [
+  {
+   "description": {
+    "identifier": "geometry.world_events_alien_spitter",
+    "texture_width": 64,
+    "texture_height": 64,
+    "visible_bounds_width": 3,
+    "visible_bounds_height": 3,
+    "visible_bounds_offset": [
+     0,
+     1,
+     0
+    ]
+   },
+   "bones": [
+    {
+     "name": "root",
+     "pivot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "name": "body",
+     "pivot": [
+      0,
+      12,
+      0
+     ],
+     "parent": "root",
+     "cubes": [
+      {
+       "origin": [
+        -4,
+        10,
+        -4
+       ],
+       "size": [
+        8,
+        8,
+        8
+       ],
+       "uv": [
+        0,
+        0
+       ]
+      },
+      {
+       "origin": [
+        -1.5,
+        12,
+        -9
+       ],
+       "size": [
+        3,
+        3,
+        5
+       ],
+       "uv": [
+        24,
+        16
+       ]
+      }
+     ]
+    },
+    {
+     "name": "sac",
+     "pivot": [
+      0,
+      18,
+      1
+     ],
+     "parent": "body",
+     "cubes": [
+      {
+       "origin": [
+        -3,
+        18,
+        -2
+       ],
+       "size": [
+        6,
+        5,
+        6
+       ],
+       "uv": [
+        0,
+        16
+       ]
+      }
+     ]
+    },
+    {
+     "name": "leg_front",
+     "pivot": [
+      0,
+      11,
+      -3
+     ],
+     "parent": "root",
+     "cubes": [
+      {
+       "origin": [
+        -1,
+        0,
+        -6
+       ],
+       "size": [
+        2,
+        11,
+        2
+       ],
+       "uv": [
+        32,
+        0
+       ]
+      }
+     ]
+    },
+    {
+     "name": "leg_left",
+     "pivot": [
+      3,
+      11,
+      3
+     ],
+     "parent": "root",
+     "cubes": [
+      {
+       "origin": [
+        3.5,
+        0,
+        3.5
+       ],
+       "size": [
+        2,
+        11,
+        2
+       ],
+       "uv": [
+        40,
+        0
+       ]
+      }
+     ]
+    },
+    {
+     "name": "leg_right",
+     "pivot": [
+      -3,
+      11,
+      3
+     ],
+     "parent": "root",
+     "cubes": [
+      {
+       "origin": [
+        -5.5,
+        0,
+        3.5
+       ],
+       "size": [
+        2,
+        11,
+        2
+       ],
+       "uv": [
+        48,
+        0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,5 +1,7 @@
 package com.renanpontes.isekaimahou.feature.class_steelball.entity;
 
+import com.renanpontes.isekaimahou.core.anim.MahouAnims;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -10,6 +12,7 @@ import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.classes.ClassResources;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbFx;
+import com.renanpontes.isekaimahou.feature.class_steelball.SbFxNet;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbProgress;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbRegistry;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbSpin;
@@ -105,6 +108,8 @@ public class SteelBallEntity extends ThrowableProjectile implements GeoEntity {
         e.setPos(player.getX(), player.getEyeY() - 0.15, player.getZ());
         e.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.2F + 0.6F * charge, 0.6F);
         e.addTag(ClassResources.FOCUS_SHOT_TAG);
+        SbFxNet.at(level, SbFxNet.BALL_THROW, e.position(), player.getLookAngle(), tier >= 3 ? 2F : 1F, tier >= 3 ? SbFx.GOLD : SbFx.STEEL, player.getId());
+        MahouAnims.play(player, "throw_overhand");
         return e;
     }
 
@@ -126,6 +131,8 @@ public class SteelBallEntity extends ThrowableProjectile implements GeoEntity {
         e.entityData.set(DATA_COLOR, golden ? SbFx.GOLD : ctx.color() & 0xFFFFFF);
         if (ctx.previousTarget() != null) e.hit.add(ctx.previousTarget());
         e.addTag(ClassResources.FOCUS_SHOT_TAG);
+        SbFxNet.at(ctx.level(), SbFxNet.BALL_THROW, from, dir, golden ? 2F : 1F, golden ? SbFx.GOLD : ctx.color() & 0xFFFFFF,
+                ctx.caster() == null ? -1 : ctx.caster().getId());
         return e;
     }
 
@@ -204,6 +211,7 @@ public class SteelBallEntity extends ThrowableProjectile implements GeoEntity {
             return;
         }
         super.tick();
+        SbFxNet.trail(this);
         if (!(level() instanceof ServerLevel sl)) return;
         if (tickCount > OUT_LIFE) {
             if (mode() == Mode.SPELL) {
@@ -214,10 +222,7 @@ public class SteelBallEntity extends ThrowableProjectile implements GeoEntity {
             return;
         }
         if (homing && tickCount > 3) steer();
-        if (tickCount % 2 == 0) {
-            sl.sendParticles(SbFx.dust(color(), 0.8F), getX(), getY(), getZ(), 1, 0.02, 0.02, 0.02, 0);
-        }
-        if (golden() && tickCount % 6 == 0) SbFx.goldenSpiral(sl, position(), getDeltaMovement(), 0.6);
+        // o rastro (hélice/anéis) é desenhado no cliente: SbFxNet.trail
         if (tickCount % 5 == 0) SbFx.sound(sl, position(), SoundEvents.CHAIN_STEP, 0.25F, 1.8F);
     }
 
@@ -351,8 +356,8 @@ public class SteelBallEntity extends ThrowableProjectile implements GeoEntity {
                 }
             }
         }
-        SbFx.impact(sl, at, golden());
-        SbFx.sound(sl, at, SoundEvents.ANVIL_LAND, 0.35F, 1.9F);
+        SbFxNet.at(sl, SbFxNet.BALL_HIT, at, getDeltaMovement(), mode() == Mode.ITEM ? 1F + charge : (golden() ? 2F : 1.5F),
+                golden() ? SbFx.GOLD : SbFx.STEEL, -1);
         if (mode() == Mode.SPELL && pierce > 0) {
             pierce--;
             return;
@@ -381,7 +386,7 @@ public class SteelBallEntity extends ThrowableProjectile implements GeoEntity {
                 c.resolveOnBlock(result, this);
             }
         }
-        SbFx.impact(sl, at, golden());
+        SbFxNet.at(sl, SbFxNet.BALL_HIT, at, getDeltaMovement(), 1F, golden() ? SbFx.GOLD : SbFx.STEEL, -1);
         SbFx.sound(sl, at, SoundEvents.CHAIN_PLACE, 0.6F, 1.5F);
         startReturn();
     }

@@ -35,6 +35,7 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.common.Tags;
 
 /**
  * Barrinhas de vida flutuantes: criaturas feridas há pouco (a até 24 blocos) mostram uma barra virada para a câmera
@@ -48,6 +49,11 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
  * <p>
  * v0.9: a altura da âncora (cabeça + nome + passageiros) é SUAVIZADA por criatura: agachar, mudar de pose, nadar,
  * montar/desmontar ou o nome aparecer não fazem a barra pular de uma vez.
+ * <p>
+ * v1.0 RELEASE: <b>chefes nunca têm barrinha flutuante</b> — a vida deles é só a barra do topo (antes apareciam as
+ * duas). Vale para todo tipo marcado como chefe ({@code c:bosses}) e para quem for dono de uma barra de chefe que
+ * está na tela. Os ícones de condição continuam. E a busca de criaturas no mundo roda a cada {@link #SCAN_EVERY}
+ * ticks (lista em cache); nos outros ticks só a vida de quem já está na lista é relida.
  */
 final class WorldHealthBars {
     private static final double RANGE = 24.0;
@@ -59,6 +65,8 @@ final class WorldHealthBars {
     private static final float ICON = 9F;
     private static final float ICON_GAP = 2F;
     private static final int LIGHT = LightTexture.FULL_BRIGHT;
+    /** De quantos em quantos ticks a busca de criaturas no mundo é refeita. */
+    private static final int SCAN_EVERY = 5;
 
     private static final class Track {
         float lastHealth;
@@ -90,6 +98,11 @@ final class WorldHealthBars {
 
     /** Criaturas (e outros jogadores) no alcance com alguma condição de status neste tick. */
     private static final Set<Integer> STATUS_IDS = new HashSet<>();
+    /** Criaturas no alcance na última busca (cache entre as buscas). */
+    private static final List<LivingEntity> NEARBY = new ArrayList<>();
+    /** Chefes com a vida na barra do topo (decidido na busca): sem barrinha flutuante. */
+    private static final Set<Integer> TOP_BAR_BOSSES = new HashSet<>();
+    private static long nextScan;
     private static ClientLevel trackedLevel;
     private static long ticks;
     private static MultiBufferSource.BufferSource buffers;
@@ -97,10 +110,22 @@ final class WorldHealthBars {
     private WorldHealthBars() {}
 
     static void clear() {
+        forgetAll();
+        trackedLevel = null;
+    }
+
+    private static void forgetAll() {
         TRACKS.clear();
         STATUS_IDS.clear();
         ANCHORS.clear();
-        trackedLevel = null;
+        NEARBY.clear();
+        TOP_BAR_BOSSES.clear();
+        nextScan = 0;
+    }
+
+    /** Chefe com barra no topo: tipo marcado como chefe, ou dono de uma barra de chefe que está na tela. */
+    private static boolean topBarBoss(LivingEntity e) {
+        return e.getType().is(Tags.EntityTypes.BOSSES) || BossBarTracker.ownsTopBar(e);
     }
 
     private static boolean enabled() {
@@ -124,26 +149,35 @@ final class WorldHealthBars {
     static void tick(Minecraft mc) {
         ticks++;
         if (mc.level != trackedLevel) {
-            TRACKS.clear();
-            STATUS_IDS.clear();
-            ANCHORS.clear();
+            forgetAll();
             trackedLevel = mc.level;
         }
         boolean on = enabled();
         // Com as barras ligadas, os ícones de condição sobre os mobs são nossos; desligadas, o núcleo desenha os dele
         ClientStatuses.setWorldIconsHandledExternally(on);
         if (mc.player == null || mc.level == null || !on) {
-            TRACKS.clear();
-            STATUS_IDS.clear();
-            ANCHORS.clear();
+            forgetAll();
             return;
         }
         Player self = mc.player;
         boolean icons = iconsEnabled();
         STATUS_IDS.clear();
-        for (LivingEntity e : mc.level.getEntitiesOfClass(LivingEntity.class, self.getBoundingBox().inflate(RANGE), x -> visible(x, self))) {
+        // A busca no mundo (caixa de 48 blocos) só a cada SCAN_EVERY ticks; entre uma e outra vale a lista guardada
+        if (ticks >= nextScan) {
+            nextScan = ticks + SCAN_EVERY;
+            NEARBY.clear();
+            NEARBY.addAll(mc.level.getEntitiesOfClass(LivingEntity.class, self.getBoundingBox().inflate(RANGE), x -> visible(x, self)));
+            TOP_BAR_BOSSES.clear();
+            for (LivingEntity e : NEARBY) {
+                if (!(e instanceof Player) && topBarBoss(e)) TOP_BAR_BOSSES.add(e.getId());
+            }
+        }
+        for (LivingEntity e : NEARBY) {
+            if (e.isRemoved()) continue;
             if (icons && !StatusView.visible(e).isEmpty()) STATUS_IDS.add(e.getId());
             if (e instanceof Player) continue;
+            // Chefe: a vida fica SÓ na barra do topo (sem acompanhar aqui, a barrinha nunca nasce)
+            if (TOP_BAR_BOSSES.contains(e.getId())) continue;
             float hp = e.getHealth();
             Track t = TRACKS.get(e.getId());
             if (t == null) {

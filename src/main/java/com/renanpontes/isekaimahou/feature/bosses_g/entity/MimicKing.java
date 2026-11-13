@@ -14,10 +14,12 @@ import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
 import com.renanpontes.isekaimahou.feature.bosses_g.BgRegistries;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -39,6 +41,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -71,6 +74,9 @@ public class MimicKing extends GBossEntity {
     private static final int TONGUE = 0xD8507A;
     private static final int HOLD_TICKS = 70;
     private static final int MAX_MIMICS = 5;
+    /** v1.3 — Tag (dados persistentes do item) do "Tesouro Falso": guarda o UUID do Rei. */
+    public static final String FAKE_LOOT_TAG = "isekai_mahou_fake_loot";
+    private static final int BAIT_LIFE = 220;
 
     private int biteCd = 20;
     private int biteTimer;
@@ -85,6 +91,9 @@ public class MimicKing extends GBossEntity {
     private int rainCd = 200;
     private int vacuumCd = 160;
     private int vacuumTimer;
+    private int baitCd = 240;
+    /** Iscas no chão (some tudo no reset/morte). */
+    private final List<UUID> baits = new ArrayList<>();
     private int stunTicks;
     private float attackYaw;
     @Nullable
@@ -208,7 +217,9 @@ public class MimicKing extends GBossEntity {
         if (leapCd > 0) leapCd--;
         if (rainCd > 0) rainCd--;
         if (vacuumCd > 0) vacuumCd--;
+        if (baitCd > 0) baitCd--;
         if (heldId != null) tickHold(level);
+        if (!baits.isEmpty() && tickCount % 10 == 0) tickBaits(level);
         if (stunTicks > 0) {
             stunTicks--;
             getNavigation().stop();
@@ -250,6 +261,8 @@ public class MimicKing extends GBossEntity {
             startCoins(level, target);
         } else if (phase() >= 1 && rainCd <= 0) {
             startGoldRain(level);
+        } else if (baitCd <= 0 && heldId == null) {
+            startBait(level);
         } else if (heldId == null && leapCd <= 0 && d > 7 && d < 20 && onGround()) {
             startLeap(level, target);
         } else {
@@ -334,8 +347,8 @@ public class MimicKing extends GBossEntity {
         sp.hurt(damageSources().mobAttack(this), scaled(5F));
         playSound(SoundEvents.PLAYER_BURP, 2.0F, 0.4F);
         playSound(SoundEvents.CHEST_CLOSE, 2.0F, 0.4F);
-        sp.displayClientMessage(net.minecraft.network.chat.Component.translatable(langKey("message", "inside"))
-                .withStyle(net.minecraft.ChatFormatting.GOLD), true);
+        sp.displayClientMessage(Component.translatable(langKey("message", "inside"))
+                .withStyle(ChatFormatting.GOLD), true);
         holdInside(sp);
     }
 
@@ -418,6 +431,84 @@ public class MimicKing extends GBossEntity {
         heldTicks = 0;
         heldDamage = 0;
         entityData.set(DATA_HOLDING, false);
+    }
+
+    // ------------------------------------------------------------------ Tesouro Falso (v1.3)
+
+    /**
+     * Cospe "tesouro" brilhante pela sala (diamantes, esmeraldas, maçãs douradas, livros encantados). É ISCA: quem tenta
+     * pegar leva uma mordida de dentes que brotam do item (o item some). Dica para o atento: o tesouro falso solta
+     * fumacinha e às vezes "pisca" um olho. Some sozinho em 11 s.
+     */
+    private void startBait(ServerLevel level) {
+        baitCd = (phase() >= 1 ? 300 : 380) + random.nextInt(60);
+        coinTimer = 18;
+        attackYaw = getYRot();
+        action("spit");
+        announce("bait");
+        hintOnce(level, "bait");
+        playSound(SoundEvents.CHEST_OPEN, 2.0F, 1.2F);
+        playSound(SoundEvents.ARMOR_EQUIP_GOLD.value(), 2.0F, 1.0F);
+        int n = 3 + phase() + Math.min(2, BossKit.partyAround(this, 32).size() - 1);
+        ItemStack[] shiny = {new ItemStack(Items.DIAMOND, 3), new ItemStack(Items.EMERALD, 5), new ItemStack(Items.GOLDEN_APPLE),
+                new ItemStack(Items.ENCHANTED_BOOK), new ItemStack(Items.GOLD_INGOT, 8), new ItemStack(Items.DIAMOND_SWORD),
+                new ItemStack(Items.NETHERITE_SCRAP)};
+        Vec3 m = mouth();
+        for (int i = 0; i < n; i++) {
+            ItemStack st = shiny[random.nextInt(shiny.length)].copy();
+            ItemEntity it = new ItemEntity(level, m.x, m.y, m.z, st);
+            double a = random.nextDouble() * Math.PI * 2;
+            double v = 0.25 + random.nextDouble() * 0.3;
+            it.setDeltaMovement(Math.cos(a) * v, 0.45 + random.nextDouble() * 0.2, Math.sin(a) * v);
+            it.setPickUpDelay(12);
+            it.lifespan = BAIT_LIFE;
+            it.getPersistentData().putUUID(FAKE_LOOT_TAG, getUUID());
+            if (level.addFreshEntity(it)) baits.add(it.getUUID());
+        }
+        level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.GOLD_NUGGET)), m.x, m.y, m.z, 30, 0.6, 0.4, 0.6, 0.25);
+    }
+
+    /** Iscas: a dica visual (fumaça/olho) e a limpeza das que sumiram. */
+    private void tickBaits(ServerLevel level) {
+        baits.removeIf(id -> {
+            Entity e = level.getEntity(id);
+            if (!(e instanceof ItemEntity it) || !it.isAlive()) return true;
+            if (random.nextInt(3) == 0) level.sendParticles(ParticleTypes.SMOKE, it.getX(), it.getY() + 0.3, it.getZ(), 2, 0.1, 0.1, 0.1, 0.01);
+            if (random.nextInt(6) == 0) level.sendParticles(BgFx.dust(0xFF2030, 0.8F), it.getX(), it.getY() + 0.35, it.getZ(), 1, 0, 0, 0, 0);
+            return false;
+        });
+    }
+
+    /** Alguém tentou pegar uma isca: dentes! (chamado pelo evento de pegar item do módulo). */
+    public void baitSprung(ServerLevel level, ItemEntity it, Player p) {
+        Vec3 c = it.position();
+        baits.remove(it.getUUID());
+        it.discard();
+        level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.BONE)), c.x, c.y + 0.4, c.z, 16, 0.3, 0.3, 0.3, 0.15);
+        level.sendParticles(ParticleTypes.CRIT, c.x, c.y + 0.6, c.z, 12, 0.3, 0.3, 0.3, 0.3);
+        level.playSound(null, c.x, c.y, c.z, SoundEvents.CHEST_CLOSE, SoundSource.HOSTILE, 1.6F, 1.6F);
+        level.playSound(null, c.x, c.y, c.z, SoundEvents.EVOKER_FANGS_ATTACK, SoundSource.HOSTILE, 1.6F, 0.9F);
+        if (!isAlive() || !isFoe(p)) return;
+        if (p.hurt(damageSources().mobAttack(this), scaled(6F))) {
+            p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 50, 2), this);
+            p.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 80, 0), this);
+        }
+        if (p instanceof ServerPlayer sp) {
+            sp.displayClientMessage(Component.translatable(langKey("message", "bait_bite"))
+                    .withStyle(ChatFormatting.GOLD), true);
+        }
+        if (random.nextInt(3) == 0) announce("bait_laugh");
+    }
+
+    private void clearBaits(ServerLevel level) {
+        for (UUID id : baits) {
+            Entity e = level.getEntity(id);
+            if (e != null) {
+                level.sendParticles(ParticleTypes.POOF, e.getX(), e.getY() + 0.2, e.getZ(), 4, 0.1, 0.1, 0.1, 0.02);
+                e.discard();
+            }
+        }
+        baits.clear();
     }
 
     // ------------------------------------------------------------------ Moedas e ouro
@@ -695,6 +786,8 @@ public class MimicKing extends GBossEntity {
     @Override
     protected void onReset(ServerLevel level) {
         release();
+        clearBaits(level);
+        baitCd = 240;
         biteTimer = tongueTimer = coinTimer = awakenTimer = vacuumTimer = stunTicks = 0;
         biteCd = 20;
         tongueCd = 80;
@@ -710,6 +803,7 @@ public class MimicKing extends GBossEntity {
     protected void onDefeated(ServerLevel sl) {
         ServerPlayer sp = heldPlayer();
         release();
+        clearBaits(sl);
         if (sp != null) sp.removeEffect(MobEffects.BLINDNESS);
         entityData.set(DATA_MAW, false);
         super.onDefeated(sl);
@@ -780,5 +874,11 @@ public class MimicKing extends GBossEntity {
     @Override
     protected void doPush(Entity entity) {
         if (heldId == null || !entity.getUUID().equals(heldId)) super.doPush(entity);
+    }
+
+    /** Tema próprio do Rei Mímico. */
+    @Override
+    public String musicTheme() {
+        return "mimic_king";
     }
 }

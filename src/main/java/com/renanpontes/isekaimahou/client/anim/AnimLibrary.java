@@ -27,7 +27,14 @@ import dev.kosmx.playerAnim.core.util.Ease;
  * </ul>
  */
 final class AnimLibrary {
-    enum Kind { MELEE, SPELL, DODGE, GUARD }
+    /**
+     * Tipo (decide qual opção da config liga/desliga): MELEE/DODGE/GUARD = combate; SPELL = gestos (inclui técnicas e
+     * transformações); FEEL = tranco, queda, aterrissagem, investida, vitória; DRAW = saque da arma; EMOTE = emotes.
+     */
+    enum Kind { MELEE, SPELL, DODGE, GUARD, FEEL, DRAW, EMOTE }
+
+    /** Efeito de impacto tocado no cliente num tick da animação ({@link AnimCues}). */
+    enum Cue { NONE, SLAM, LANDING, THUD, ROLL, DRAW, DRAW_HEAVY, VICTORY }
 
     /**
      * @param rank     prioridade (uma animação só interrompe outra de rank menor ou igual)
@@ -36,11 +43,15 @@ final class AnimLibrary {
      * @param hold     pose contínua (canalização/carga/guarda) — só sai com "parar"
      * @param faceLook o corpo vira para onde o jogador olha enquanto toca
      * @param mirror   espelha para canhotos
+     * @param fpArms   pode aparecer em 1ª pessoa (opção "braços animados"); falso = corpo inteiro se mexe demais
+     *                 (rolar, cair, girar) e a 1ª pessoa fica com a mão do Minecraft para nada atravessar a câmera
+     * @param maxTicks pose contínua que se solta sozinha depois desse tempo (0 = só com "parar")
+     * @param cue      efeito de impacto (poeira/som) no tick {@code cueTick}
      */
     record Def(String id, KeyframeAnimation anim, Kind kind, int rank, int fadeIn, boolean aim, boolean hold, boolean faceLook,
-               boolean mirror) {}
+               boolean mirror, boolean fpArms, int maxTicks, Cue cue, int cueTick) {}
 
-    private static final String RA = "rightArm", LA = "leftArm", RL = "rightLeg", LL = "leftLeg", T = "torso", B = "body";
+    static final String RA = "rightArm", LA = "leftArm", RL = "rightLeg", LL = "leftLeg", T = "torso", B = "body";
     private static final Map<String, Def> DEFS = new HashMap<>();
 
     @Nullable
@@ -50,6 +61,11 @@ final class AnimLibrary {
 
     static boolean isGuard(@Nullable Def d) {
         return d != null && d.kind == Kind.GUARD;
+    }
+
+    /** Guarda do ESCUDO (braço livre em prontidão) — a do bloqueio com arma (v1.0) é controlada pelo {@link GuardInput}. */
+    static boolean isShieldGuard(@Nullable Def d) {
+        return d != null && (MahouAnims.GUARD_R.equals(d.id) || MahouAnims.GUARD_L.equals(d.id));
     }
 
     static void init() {
@@ -62,6 +78,21 @@ final class AnimLibrary {
         } catch (RuntimeException e) {
             // Uma animação malformada não pode derrubar o jogo: as que já entraram continuam valendo
             IsekaiMahou.LOGGER.error("[anim] falha ao construir animações de combate", e);
+        }
+        try {
+            AnimMoves.build();
+        } catch (RuntimeException e) {
+            IsekaiMahou.LOGGER.error("[anim] falha ao construir técnicas/transformações", e);
+        }
+        try {
+            AnimFeel.build();
+        } catch (RuntimeException e) {
+            IsekaiMahou.LOGGER.error("[anim] falha ao construir sensação/emotes", e);
+        }
+        try {
+            AnimGuard.build();
+        } catch (RuntimeException e) {
+            IsekaiMahou.LOGGER.error("[anim] falha ao construir bloqueio/aparo", e);
         }
     }
 
@@ -370,15 +401,55 @@ final class AnimLibrary {
 
     private static void add(String id, Kind kind, int rank, int fadeIn, boolean aim, boolean hold, boolean faceLook, boolean mirror,
                             A a) {
+        put(id, a, new Def(id, null, kind, rank, fadeIn, aim, hold, faceLook, mirror, true, 0, Cue.NONE, 0));
+    }
+
+    private static void put(String id, A a, Def d) {
         try {
-            DEFS.put(id, new Def(id, a.build(id), kind, rank, fadeIn, aim, hold, faceLook, mirror));
+            DEFS.put(id, new Def(id, a.build(id), d.kind, d.rank, d.fadeIn, d.aim, d.hold, d.faceLook, d.mirror, d.fpArms,
+                    d.maxTicks, d.cue, d.cueTick));
         } catch (RuntimeException e) {
             IsekaiMahou.LOGGER.error("[anim] animação inválida: {}", id, e);
         }
     }
 
+    /** Começa a descrição de uma animação nova (v1.3): {@code def(id, kind, rank).fade(3).aim().body().cue(...).add(a)}. */
+    static D def(String id, Kind kind, int rank) {
+        return new D(id, kind, rank);
+    }
+
+    /** Descrição fluente de uma animação (padrões: entra em 2 ticks, vira para a mira, espelha para canhotos). */
+    static final class D {
+        private final String id;
+        private final Kind kind;
+        private final int rank;
+        private int fadeIn = 2, maxTicks, cueTick;
+        private boolean aim, hold, faceLook = true, mirror = true, fpArms = true;
+        private Cue cue = Cue.NONE;
+
+        private D(String id, Kind kind, int rank) {
+            this.id = id;
+            this.kind = kind;
+            this.rank = rank;
+        }
+
+        D fade(int ticks) { fadeIn = ticks; return this; }
+        D aim() { aim = true; return this; }
+        /** Pose contínua; {@code maxTicks} > 0 solta sozinha (segurança para quem esquecer de parar). */
+        D hold(int maxTicks) { hold = true; this.maxTicks = maxTicks; return this; }
+        D free() { faceLook = false; return this; }
+        D noMirror() { mirror = false; return this; }
+        /** O corpo inteiro se mexe: em 1ª pessoa fica a mão do Minecraft. */
+        D body() { fpArms = false; return this; }
+        D cue(Cue c, int tick) { cue = c; cueTick = tick; return this; }
+
+        void add(A a) {
+            put(id, a, new Def(id, null, kind, rank, fadeIn, aim, hold, faceLook, mirror, fpArms, maxTicks, cue, cueTick));
+        }
+    }
+
     /** Construtor enxuto de keyframes (valores em graus; posição do corpo em blocos). */
-    private static final class A {
+    static final class A {
         private final KeyframeAnimation.AnimationBuilder b = new KeyframeAnimation.AnimationBuilder(AnimationFormat.JSON_EMOTECRAFT);
 
         A(int end, int stop) {
@@ -420,6 +491,20 @@ final class AnimLibrary {
         /** Jogador inteiro: pitch (− = para a frente) e roll (+ = para a esquerda). */
         A b(int t, float pitch, float roll, Ease e) {
             return r(B, t, pitch, 0, roll, e);
+        }
+
+        /** Jogador inteiro com giro (yaw + = vira para a esquerda). */
+        A spin(int t, float pitch, float yaw, float roll, Ease e) {
+            return r(B, t, pitch, yaw, roll, e);
+        }
+
+        /** Partes de volta à pose neutra (rotação e dobra zeradas) no tick {@code t}. */
+        A rest(int t, Ease e, String... parts) {
+            for (String part : parts) {
+                r(part, t, 0, 0, 0, e);
+                if (!T.equals(part) && !B.equals(part)) bend(part, t, 0, e);
+            }
+            return this;
         }
 
         /** Jogador inteiro: altura (blocos). */

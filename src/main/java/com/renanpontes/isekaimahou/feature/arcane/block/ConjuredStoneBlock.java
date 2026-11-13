@@ -2,8 +2,8 @@ package com.renanpontes.isekaimahou.feature.arcane.block;
 
 import com.mojang.serialization.MapCodec;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -44,13 +44,13 @@ public class ConjuredStoneBlock extends Block {
         // Desmorona com as partículas/som de quebra normais e um brilho arcano
         level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
         level.removeBlock(pos, false);
-        level.sendParticles(ParticleTypes.WITCH, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 6, 0.3, 0.3, 0.3, 0.0);
+        level.sendParticles(Vfx.witch(), pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 6, 0.3, 0.3, 0.3, 0.0);
     }
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (random.nextInt(4) != 0) return;
-        level.addParticle(ParticleTypes.ENCHANT, pos.getX() + random.nextDouble(), pos.getY() + 1.05,
+        level.addParticle(Vfx.enchant(), pos.getX() + random.nextDouble(), pos.getY() + 1.05,
                 pos.getZ() + random.nextDouble(), 0, 0.05, 0);
     }
 }

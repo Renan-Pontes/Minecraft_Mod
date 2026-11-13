@@ -17,6 +17,7 @@ import com.renanpontes.isekaimahou.feature.legends_b.LegendsBRegistry;
 import com.renanpontes.isekaimahou.glyph.ParsedSpell;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -276,7 +277,7 @@ public class ConvergeSphereEntity extends LegendSpellEntity {
         }
 
         // Rastro: pó do vazio sendo "sugado" pela esfera
-        LbFx.send(sl, ParticleTypes.REVERSE_PORTAL, to, 8, r * 0.7, 0.05);
+        LbFx.send(sl, Vfx.reversePortal(), to, 8, r * 0.7, 0.05);
         LbFx.send(sl, LbFx.dust(core, 2.2F), to.subtract(d.scale(r)), 4, r * 0.5, 0);
         LbFx.send(sl, LbFx.fade(LbFx.lighten(core, 0.6F), 0x1A0024, 1.4F), to, 5, r * 0.8, 0);
         if (t % 9 == 0) {
@@ -291,7 +292,7 @@ public class ConvergeSphereEntity extends LegendSpellEntity {
             entityData.set(DATA_PHASE_START, age);
             syncAge();
             LbFx.send(sl, LbFx.fade(core, 0x000000, 2.0F), to, 40, r * 0.6, 0.02);
-            LbFx.send(sl, ParticleTypes.REVERSE_PORTAL, to, 30, r * 0.5, 0.3);
+            LbFx.send(sl, Vfx.reversePortal(), to, 30, r * 0.5, 0.3);
             LbFx.sound(sl, to, SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.4F, 0.5F);
         }
     }
@@ -336,7 +337,7 @@ public class ConvergeSphereEntity extends LegendSpellEntity {
             Vec3 off = new Vec3(random.nextDouble() - 0.5, random.nextDouble() - 0.5, random.nextDouble() - 0.5).normalize().scale(r * 0.9);
             Vec3 v = front.add(off);
             LbFx.send(sl, LbFx.fade(core, 0x000000, 1.2F), v, 3, 0.35, 0.01);
-            LbFx.send(sl, ParticleTypes.REVERSE_PORTAL, v, 2, 0.3, 0.05);
+            LbFx.send(sl, Vfx.reversePortal(), v, 2, 0.3, 0.05);
         }
         if (t % 4 == 0) LbFx.sound(sl, front, SoundEvents.RESPAWN_ANCHOR_DEPLETE, 0.9F, 0.5F);
         if (t % 10 == 0) BossKit.shake(sl, to, 20 + r * 4, 0.5F, 8);
@@ -355,7 +356,7 @@ public class ConvergeSphereEntity extends LegendSpellEntity {
         Vec3 p = position();
         LbFx.send(sl, LbFx.dust(colorA(), 1.0F), p, 12, 0.5, 0);
         LbFx.send(sl, LbFx.dust(colorB(), 1.0F), p, 12, 0.5, 0);
-        LbFx.send(sl, ParticleTypes.SMOKE, p, 10, 0.3, 0.02);
+        LbFx.send(sl, Vfx.smoke(), p, 10, 0.3, 0.02);
         LbFx.sound(sl, p, SoundEvents.FIRE_EXTINGUISH, 0.6F, 1.2F);
         discard();
     }

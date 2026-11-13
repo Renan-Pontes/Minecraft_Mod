@@ -1,5 +1,7 @@
 package com.renanpontes.isekaimahou.feature.class_smith.entity;
 
+import com.renanpontes.isekaimahou.core.anim.MahouAnims;
+
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -9,6 +11,7 @@ import org.joml.Vector3f;
 import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.feature.class_smith.SmithFx;
+import com.renanpontes.isekaimahou.feature.class_smith.SmithFxNet;
 import com.renanpontes.isekaimahou.feature.class_smith.SmithRegistries;
 import com.renanpontes.isekaimahou.feature.class_smith.forge.BladeFamily;
 import com.renanpontes.isekaimahou.feature.class_smith.forge.BladeMaterial;
@@ -117,13 +120,14 @@ public class BladeWorldEntity extends Entity {
                 Announce.send(caster, Component.translatable(line), color(), Announce.STYLE_SYSTEM);
                 SmithFx.sound(sl, c, SoundEvents.ANVIL_USE, 0.7F, 0.5F + 0.1F * (age / 12));
             }
-            if (age % 2 == 0) {
-                double rr = r * (age + 1) / (double) OPENING;
-                SmithFx.ring(sl, c.add(0, 0.15, 0), rr, ParticleTypes.FLAME, Math.max(12, (int) (rr * 5)));
-            }
+            // o anel de fogo correndo até a borda é animado no cliente durante todo o cântico
+            if (age == 0) SmithFxNet.at(sl, SmithFxNet.WORLD_ARIA, c, Vec3.ZERO, r, color(), getId(), OPENING);
             return;
         }
-        if (age == OPENING) openWorld(sl, caster, c, r);
+        if (age == OPENING) {
+            openWorld(sl, caster, c, r);
+            MahouAnims.play(caster, MahouAnims.CAST_ULT_RELEASE);
+        }
         int active = age - OPENING;
         if (active > duration) {
             close(sl);
@@ -141,8 +145,7 @@ public class BladeWorldEntity extends Entity {
         SmithFx.sound(sl, c, SoundEvents.END_PORTAL_SPAWN, 1.2F, 0.8F);
         SmithFx.sound(sl, c, SoundEvents.ANVIL_LAND, 1.5F, 0.4F);
         BossKit.shake(sl, c, (int) r + 12, 0.7F, 16);
-        sl.sendParticles(ParticleTypes.FLASH, c.x, c.y + 1, c.z, 3, 1, 1, 1, 0);
-        sl.sendParticles(ParticleTypes.LAVA, c.x, c.y + 0.5, c.z, 40, r * 0.5, 0.2, r * 0.5, 0);
+        SmithFxNet.at(sl, SmithFxNet.WORLD_OPEN, c, Vec3.ZERO, r, color(), getId());
         int room = Math.max(0, SmithBladeEntity.MAX_PER_OWNER - SmithBladeEntity.countFor(sl, ctx.casterId()) - 12);
         int n = Math.min(PLANTED, room);
         RandomSource rnd = sl.random;
@@ -194,8 +197,7 @@ public class BladeWorldEntity extends Entity {
 
     /** A borda de fogo (anel) e brasas subindo. */
     private void border(ServerLevel sl, Vec3 c, float r) {
-        SmithFx.ring(sl, c.add(0, 0.15, 0), r, ParticleTypes.FLAME, Math.max(24, (int) (r * 4)));
-        SmithFx.ring(sl, c.add(0, 1.0, 0), r, SmithFx.dust(color(), 1.3F), Math.max(16, (int) (r * 2)));
+        SmithFxNet.at(sl, SmithFxNet.WORLD_BORDER, c, Vec3.ZERO, r, color(), getId());
     }
 
     /** Quem tenta sair pela borda é empurrado de volta (aliados e o conjurador saem à vontade). */
@@ -216,7 +218,7 @@ public class BladeWorldEntity extends Entity {
         Vec3 c = position();
         if (ctx != null) ctx.end(c, new Vec3(0, 1, 0));
         float r = radius();
-        SmithFx.ring(sl, c.add(0, 0.2, 0), r, ParticleTypes.CAMPFIRE_COSY_SMOKE, Math.max(16, (int) (r * 3)));
+        SmithFxNet.at(sl, SmithFxNet.WORLD_CLOSE, c, Vec3.ZERO, r, color(), getId());
         SmithFx.sound(sl, c, SoundEvents.FIRE_EXTINGUISH, 1.2F, 0.6F);
         SmithFx.sound(sl, c, SoundEvents.BEACON_DEACTIVATE, 1.0F, 0.6F);
         discard();

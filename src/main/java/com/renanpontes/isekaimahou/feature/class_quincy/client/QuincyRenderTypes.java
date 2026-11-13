@@ -31,6 +31,10 @@ public final class QuincyRenderTypes {
     public static final ResourceLocation STREAK = tex("quincy_fx_streak");
     public static final ResourceLocation EYE = tex("quincy_fx_eye");
     public static final ResourceLocation BEAM = tex("quincy_fx_beam");
+    /** w10 — mancha de tinta BRANCA (tingida de preto na mistura normal): sombras, poças e tentáculos do Todo-Poderoso. */
+    public static final ResourceLocation INK = tex("quincy_fx_ink");
+    /** w10 — olho de muitas pupilas dentro de uma mancha de tinta (já colorido). Gerado por tools/gen/fx_almighty.py. */
+    public static final ResourceLocation SHADOW_EYE = tex("quincy_fx_shadow_eye");
 
     private static final Map<ResourceLocation, RenderType> ADD = new HashMap<>();
     private static final Map<ResourceLocation, RenderType> TRANS = new HashMap<>();

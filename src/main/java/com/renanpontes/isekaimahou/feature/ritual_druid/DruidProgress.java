@@ -11,10 +11,10 @@ import com.renanpontes.isekaimahou.feature.ritual_druid.entity.AnimalSpiritEntit
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -131,9 +131,9 @@ public final class DruidProgress {
 
         // Efeito: explosão de vida em volta do núcleo
         double x = pos.getX() + 0.5, y = pos.getY() + 1.0, z = pos.getZ() + 0.5;
-        level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, x, y + 1, z, 80, 0.6, 1.2, 0.6, 0.4);
-        level.sendParticles(ParticleTypes.HAPPY_VILLAGER, x, y, z, 50, 3.0, 1.0, 3.0, 0.0);
-        level.sendParticles(ParticleTypes.END_ROD, x, y + 1, z, 40, 0.5, 2.0, 0.5, 0.06);
+        level.sendParticles(Vfx.totem(), x, y + 1, z, 80, 0.6, 1.2, 0.6, 0.4);
+        level.sendParticles(Vfx.happy(), x, y, z, 50, 3.0, 1.0, 3.0, 0.0);
+        level.sendParticles(Vfx.endRod(), x, y + 1, z, 40, 0.5, 2.0, 0.5, 0.06);
         level.playSound(null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0F, 0.7F);
         level.playSound(null, pos, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1.0F, 1.2F);
         level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.BLOCKS, 1.5F, 0.5F + n * 0.05F);

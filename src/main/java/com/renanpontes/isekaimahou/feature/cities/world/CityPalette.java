@@ -1,6 +1,7 @@
 package com.renanpontes.isekaimahou.feature.cities.world;
 
 import java.util.Locale;
+import java.util.Map;
 
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
@@ -92,6 +93,28 @@ public enum CityPalette {
         if (t < 0.3F) return SNOWY;
         if (t >= 1.5F && !biome.value().hasPrecipitation()) return DESERT;
         return PLAINS;
+    }
+
+    /** Laje (metade de baixo) do mesmo material do calçamento: as ruas inclinadas sobem de meio em meio bloco. */
+    private static final Map<Block, Block> SLABS = Map.ofEntries(
+            Map.entry(Blocks.STONE_BRICKS, Blocks.STONE_BRICK_SLAB),
+            Map.entry(Blocks.MOSSY_STONE_BRICKS, Blocks.MOSSY_STONE_BRICK_SLAB),
+            Map.entry(Blocks.CRACKED_STONE_BRICKS, Blocks.STONE_BRICK_SLAB),
+            Map.entry(Blocks.COBBLESTONE, Blocks.COBBLESTONE_SLAB),
+            Map.entry(Blocks.MOSSY_COBBLESTONE, Blocks.MOSSY_COBBLESTONE_SLAB),
+            Map.entry(Blocks.ANDESITE, Blocks.ANDESITE_SLAB),
+            Map.entry(Blocks.POLISHED_ANDESITE, Blocks.POLISHED_ANDESITE_SLAB),
+            Map.entry(Blocks.SANDSTONE, Blocks.SANDSTONE_SLAB),
+            Map.entry(Blocks.CHISELED_SANDSTONE, Blocks.SANDSTONE_SLAB),
+            Map.entry(Blocks.CUT_SANDSTONE, Blocks.CUT_SANDSTONE_SLAB),
+            Map.entry(Blocks.SMOOTH_SANDSTONE, Blocks.SMOOTH_SANDSTONE_SLAB),
+            Map.entry(Blocks.SMOOTH_RED_SANDSTONE, Blocks.SMOOTH_RED_SANDSTONE_SLAB));
+
+    /** Laje de baixo que combina com o bloco de calçamento (sem par conhecido: laje padrão da paleta). */
+    BlockState slabOf(BlockState full) {
+        Block slab = SLABS.get(full.getBlock());
+        if (slab == null) slab = this == DESERT ? Blocks.SMOOTH_SANDSTONE_SLAB : Blocks.STONE_BRICK_SLAB;
+        return slab.defaultBlockState();
     }
 
     public static CityPalette byId(String id) {

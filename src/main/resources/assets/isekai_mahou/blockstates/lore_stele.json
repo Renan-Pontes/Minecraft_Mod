@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,inscribed=true": {
+      "model": "isekai_mahou:block/lore_stele"
+    },
+    "facing=north,inscribed=false": {
+      "model": "isekai_mahou:block/lore_stele_blank"
+    },
+    "facing=east,inscribed=true": {
+      "model": "isekai_mahou:block/lore_stele",
+      "y": 90
+    },
+    "facing=east,inscribed=false": {
+      "model": "isekai_mahou:block/lore_stele_blank",
+      "y": 90
+    },
+    "facing=south,inscribed=true": {
+      "model": "isekai_mahou:block/lore_stele",
+      "y": 180
+    },
+    "facing=south,inscribed=false": {
+      "model": "isekai_mahou:block/lore_stele_blank",
+      "y": 180
+    },
+    "facing=west,inscribed=true": {
+      "model": "isekai_mahou:block/lore_stele",
+      "y": 270
+    },
+    "facing=west,inscribed=false": {
+      "model": "isekai_mahou:block/lore_stele_blank",
+      "y": 270
+    }
+  }
+}

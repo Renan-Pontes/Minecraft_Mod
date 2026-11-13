@@ -41,6 +41,11 @@ public class GuardNpc extends SettlementNpc {
     private static final Set<String> KINGDOM = Set.of("helmet", "plume", "spear", "shield", "cape", "pauldron_r", "pauldron_l");
     private static final Set<String> DESERT = Set.of("helmet", "spear", "shield", "cape", "hood");
     private static final Set<String> NORDIC = Set.of("helmet", "horns", "axe", "shield", "cape", "beard");
+    // onda 5: texturas recoloridas do Reino (Oriental, Élfico, Sombrio) e do Nórdico (Anão) — só peças que a origem pinta
+    private static final Set<String> ORIENTAL = Set.of("helmet", "spear", "cape", "pauldron_r", "pauldron_l");
+    private static final Set<String> ELVEN = Set.of("spear", "cape", "pauldron_r", "pauldron_l");
+    private static final Set<String> GOTHIC = Set.of("helmet", "spear", "shield", "cape", "pauldron_r", "pauldron_l");
+    private static final Set<String> DWARVEN = Set.of("helmet", "axe", "shield", "beard");
 
     private int powerCheck;
 
@@ -69,13 +74,19 @@ public class GuardNpc extends SettlementNpc {
         return switch (style()) {
             case DESERT -> DESERT;
             case NORDIC -> NORDIC;
+            case ORIENTAL -> ORIENTAL;
+            case ELVEN -> ELVEN;
+            case GOTHIC -> GOTHIC;
+            case DWARVEN -> DWARVEN;
             default -> KINGDOM;
         };
     }
 
     @Override
     protected int wanderRadius() {
-        return CityLayout.WALL;
+        Settlement s = settlement();
+        if (s == null) return CityLayout.WALL;
+        return s.outerWall() > 0 ? CityLayout.wallDist(s, s.outerWall()) : CityLayout.half(s) - 4;
     }
 
     @Override
@@ -103,7 +114,9 @@ public class GuardNpc extends SettlementNpc {
     private boolean isThreat(LivingEntity e) {
         if (!(e instanceof Enemy) || e instanceof SettlementNpc) return false;
         if (home == null) return false;
-        return e.distanceToSqr(home.getX(), e.getY(), home.getZ()) < (double) CityLayout.TERRITORY * CityLayout.TERRITORY;
+        Settlement s = settlement();
+        double r = s == null ? CityLayout.TERRITORY : CityLayout.half(s);
+        return e.distanceToSqr(home.getX(), e.getY(), home.getZ()) < r * r;
     }
 
     @Override

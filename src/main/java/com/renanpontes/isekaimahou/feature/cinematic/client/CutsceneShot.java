@@ -37,6 +37,9 @@ record CutsceneShot(float startOffset, float sweep, float radiusStart, float rad
             case "patron" -> new CutsceneShot(0, 90, 1.3F, 1.0F, -0.1F, 0.1F, 0.7F, 4, 2, 0.95F, 0.85F, 0.6F, 0.8F, 30, false);
             // Espiral subindo em volta de quem ascende
             case "ascension" -> new CutsceneShot(0, 300, 0.9F, 1.2F, 0.0F, 1.4F, 0.6F, 0, 0, 1.0F, 0.9F, 1.0F, 0.5F, 25, false);
+            // Marco da campanha (v1.0): giro lento e aberto em volta do jogador, sem tremor e com clarão suave —
+            // é uma pausa para ler uma frase, não um golpe
+            case "story" -> new CutsceneShot(20, 75, 1.25F, 1.6F, 0.35F, 0.8F, 0.8F, 0, 0, 1.0F, 0.92F, 0.3F, 0F, 0, false);
             // Aproximação lenta do portal
             case "portal" -> new CutsceneShot(20, 50, 1.6F, 0.9F, 0.3F, 0.2F, 0.6F, 0, 0, 1.05F, 0.85F, 0.7F, 0.7F, 20, false);
             default -> new CutsceneShot(25, 120, 1.0F, 0.9F, 0.3F, 0.2F, 0.7F, 0, 0, 1.0F, 0.85F, 0.7F, 1.0F, 12, kind.startsWith("boss"));
@@ -69,6 +72,10 @@ record CutsceneShot(float startOffset, float sweep, float radiusStart, float rad
             case "ascension" -> {
                 ui(sounds, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 0.6F);
                 ui(sounds, SoundEvents.BEACON_POWER_SELECT, 1.5F, 0.6F);
+            }
+            case "story" -> {
+                ui(sounds, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.7F, 0.8F);
+                ui(sounds, SoundEvents.BOOK_PAGE_TURN, 0.8F, 0.7F);
             }
             case "portal" -> {
                 ui(sounds, SoundEvents.PORTAL_TRIGGER, 1.4F, 0.3F);

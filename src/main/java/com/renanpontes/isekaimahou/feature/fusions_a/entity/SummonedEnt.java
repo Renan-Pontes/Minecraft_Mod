@@ -13,6 +13,7 @@ import com.renanpontes.isekaimahou.feature.fusions_a.FaRegistries;
 import com.renanpontes.isekaimahou.feature.fusions_a.FaUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -111,18 +112,32 @@ public class SummonedEnt extends PathfinderMob implements OwnableEntity, GeoEnti
     //  Invocação
     // =====================================================================================
 
+    /** Quantos Ents um dono pode ter ao mesmo tempo (v1.0: Dividir no glifo chama mais de um). */
+    public static final int MAX_PER_OWNER = 2;
+
     /** Invoca (ou renova) o Ent do conjurador perto de {@code near}. */
     @Nullable
     public static SummonedEnt summon(SpellContext ctx, Vec3 near, int life, float power) {
+        return summon(ctx, near, life, power, 1);
+    }
+
+    /**
+     * Igual ao outro, com até {@code max} Ents para o mesmo dono (no máximo {@link #MAX_PER_OWNER}). No limite, o Ent
+     * com menos tempo de vida é RENOVADO em vez de nascer outro; os que passam do limite voltam para a terra.
+     */
+    @Nullable
+    public static SummonedEnt summon(SpellContext ctx, Vec3 near, int life, float power, int max) {
         ServerLevel level = ctx.level();
         LivingEntity owner = ctx.caster();
         if (owner == null) return null;
         UUID id = owner.getUUID();
+        int limit = Math.max(1, Math.min(MAX_PER_OWNER, max));
         List<SummonedEnt> mine = new ArrayList<>(level.getEntities(FaRegistries.SUMMONED_ENT.get(),
                 e -> e.isAlive() && id.equals(e.ownerId)));
-        if (!mine.isEmpty()) {
+        while (mine.size() > limit) mine.remove(mine.size() - 1).vanish();
+        if (mine.size() >= limit) {
             SummonedEnt keep = mine.get(0);
-            for (int i = 1; i < mine.size(); i++) mine.get(i).vanish();
+            for (SummonedEnt e : mine) if (e.life < keep.life) keep = e;
             keep.renew(near, life);
             return keep;
         }
@@ -155,7 +170,7 @@ public class SummonedEnt extends PathfinderMob implements OwnableEntity, GeoEnti
         setHealth(getMaxHealth());
         if (!(level() instanceof ServerLevel sl)) return;
         if (distanceToSqr(near) > 10 * 10) relocate(sl, near);
-        sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, getX(), getY() + 1.5, getZ(), 20, 0.6, 1.0, 0.6, 0);
+        sl.sendParticles(Vfx.happy(), getX(), getY() + 1.5, getZ(), 20, 0.6, 1.0, 0.6, 0);
         FaUtil.sound(sl, position(), SoundEvents.AZALEA_LEAVES_PLACE, 1.0F, 0.6F);
     }
 
@@ -308,7 +323,7 @@ public class SummonedEnt extends PathfinderMob implements OwnableEntity, GeoEnti
         // Regenera sob o sol
         if (tickCount % 40 == 0 && sl.isDay() && sl.canSeeSky(blockPosition().above(2)) && getHealth() < getMaxHealth()) {
             heal(2.0F);
-            sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, getX(), getY() + 2.6, getZ(), 4, 0.6, 0.3, 0.6, 0);
+            sl.sendParticles(Vfx.happy(), getX(), getY() + 2.6, getZ(), 4, 0.6, 0.3, 0.6, 0);
         }
         LivingEntity t = getTarget();
         if (t != null && (!t.isAlive() || isAlliedTo(t))) {
@@ -364,7 +379,7 @@ public class SummonedEnt extends PathfinderMob implements OwnableEntity, GeoEnti
         Vec3 c = position();
         sl.sendParticles(new BlockParticleOption(ParticleTypes.DUST_PILLAR, Blocks.ROOTED_DIRT.defaultBlockState()),
                 c.x, c.y + 0.1, c.z, 50, 1.0, 0.1, 1.0, 0.25);
-        sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, c.x, c.y + 1.5, c.z, 25, 0.8, 1.2, 0.8, 0);
+        sl.sendParticles(Vfx.happy(), c.x, c.y + 1.5, c.z, 25, 0.8, 1.2, 0.8, 0);
         FaUtil.sound(sl, c, SoundEvents.ROOTED_DIRT_BREAK, 1.5F, 0.6F);
         FaUtil.sound(sl, c, SoundEvents.AZALEA_LEAVES_PLACE, 1.2F, 0.5F);
     }

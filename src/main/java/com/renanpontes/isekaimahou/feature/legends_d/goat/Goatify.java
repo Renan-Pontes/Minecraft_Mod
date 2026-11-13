@@ -17,6 +17,7 @@ import com.renanpontes.isekaimahou.feature.legends_d.LdNet;
 import com.renanpontes.isekaimahou.feature.legends_d.LdRegistry;
 import com.renanpontes.isekaimahou.feature.legends_d.LdUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -109,9 +110,9 @@ public final class Goatify {
 
     /** "Puf": fumaça, brilho de feitiço e lã voando. */
     public static void puff(ServerLevel level, Vec3 c, float size) {
-        LdUtil.send(level, ParticleTypes.POOF, c, (int) (28 * size), 0.45 * size, 0.06);
+        LdUtil.send(level, Vfx.poof(), c, (int) (28 * size), 0.45 * size, 0.06);
         LdUtil.send(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, c, (int) (6 * size), 0.35 * size, 0.02);
-        LdUtil.send(level, ParticleTypes.WITCH, c, (int) (18 * size), 0.5 * size, 0.1);
+        LdUtil.send(level, Vfx.witch(), c, (int) (18 * size), 0.5 * size, 0.1);
         LdUtil.send(level, LdUtil.dust(0xF2EBDD, 1.4F), c, (int) (14 * size), 0.5 * size, 0);
     }
 
@@ -254,7 +255,7 @@ public final class Goatify {
             if (level.getGameTime() >= until) {
                 reverts.add(() -> revert(level, goat, null));
             } else if (server.getTickCount() % 20 == 0) {
-                level.sendParticles(ParticleTypes.WITCH, goat.getX(), goat.getY() + 1.0, goat.getZ(), 2, 0.25, 0.25, 0.25, 0.0);
+                level.sendParticles(Vfx.witch(), goat.getX(), goat.getY() + 1.0, goat.getZ(), 2, 0.25, 0.25, 0.25, 0.0);
             }
         }
         reverts.forEach(Runnable::run);

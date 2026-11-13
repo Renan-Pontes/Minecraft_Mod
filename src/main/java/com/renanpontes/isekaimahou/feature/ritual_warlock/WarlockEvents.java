@@ -7,8 +7,8 @@ import com.renanpontes.isekaimahou.feature.ritual_warlock.ritual.PactRitual;
 import com.renanpontes.isekaimahou.feature.ritual_warlock.ritual.PactState;
 import com.renanpontes.isekaimahou.feature.ritual_warlock.ritual.PatronDemand;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,7 +56,7 @@ public final class WarlockEvents {
         Vec3 to = player.position().add(0, 1.0, 0);
         for (int i = 0; i <= 8; i++) {
             Vec3 p = from.lerp(to, i / 8.0);
-            level.sendParticles(ParticleTypes.SOUL, p.x, p.y, p.z, 1, 0.05, 0.05, 0.05, 0.0);
+            level.sendParticles(Vfx.soul(), p.x, p.y, p.z, 1, 0.05, 0.05, 0.05, 0.0);
         }
         level.playSound(null, victim.getX(), victim.getY(), victim.getZ(), SoundEvents.SOUL_ESCAPE.value(), SoundSource.PLAYERS, 1.0F, 0.8F);
         player.displayClientMessage(Component.translatable("message.isekai_mahou.warlock.soul_harvested",

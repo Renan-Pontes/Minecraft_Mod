@@ -14,14 +14,13 @@
   "glyph.isekai_mahou.turret": "Turret",
   "glyph.isekai_mahou.turret.desc": "Creates a floating crystal at the targeted point that fires the spell as a projectile at the nearest enemy. Persistent spell. Programmable: appears at the hit point and every volley that hits triggers On Hit.",
   "glyph.isekai_mahou.conjure": "Conjuration",
-  "glyph.isekai_mahou.conjure.desc": "Calls a spirit that follows you and casts the effects on the nearest enemy every 2 seconds.",
+  "glyph.isekai_mahou.conjure.desc": "Calls a spirit that follows you and casts the effects on the nearest enemy every 2 seconds. Summon Forge: put a summoning glyph right after it (Summon Golem, Salamander, Undine, Sylph, Guardian Fairy, Living Shadow, Ent) and that creature appears instead of the spirit — the effects that follow are delivered by its attacks, every 2 seconds. Split = how many (up to the creature's limit), Expand = size, Extend = duration, Amplify = strength.",
   "glyph.isekai_mahou.illusion": "Illusion",
   "glyph.isekai_mahou.illusion.desc": "Creates a shadowy clone of you that lures nearby monsters. When it fades or is destroyed, it explodes, applying the effects. Programmable: the clones appear at the hit point.",
   "glyph.isekai_mahou.seal": "Seal",
   "glyph.isekai_mahou.seal.desc": "Engraves the spell on the weapon in your main hand. Each strong hit applies the effects to the target and uses a charge.",
   "glyph.isekai_mahou.portal": "Portal",
   "glyph.isekai_mahou.portal.desc": "Opens two linked portals: one where you stand and one at the targeted block (up to 64 blocks). Anyone passing through receives the effects.",
-
   "entity.isekai_mahou.spell_zone": "Magic Zone",
   "entity.isekai_mahou.spell_wall": "Magic Wall",
   "entity.isekai_mahou.spell_rune": "Magic Rune",
@@ -30,9 +29,7 @@
   "entity.isekai_mahou.spell_conjurer": "Conjured Spirit",
   "entity.isekai_mahou.spell_illusion": "Illusion",
   "entity.isekai_mahou.spell_portal": "Magic Portal",
-
   "block.isekai_mahou.spell_barrier": "Magic Barrier",
-
   "message.isekai_mahou.forms_b.persistent_limit": "Persistent spell limit (%s): the oldest one faded.",
   "message.isekai_mahou.forms_b.wall_no_space": "There's no room to raise the wall there.",
   "message.isekai_mahou.forms_b.portal_no_target": "Aim at a block (up to 64 blocks away) to open the portal exit.",
@@ -44,8 +41,25 @@
   "message.isekai_mahou.forms_b.seal_done": "Seal engraved on %s: %s charges.",
   "message.isekai_mahou.forms_b.seal_charges": "Seal: %s/%s charges",
   "message.isekai_mahou.forms_b.seal_depleted": "The weapon's seal is spent.",
-
   "tooltip.isekai_mahou.forms_b.seal": "Seal: %s (%s)",
   "tooltip.isekai_mahou.forms_b.seal_charges": "Charges: %s/%s",
-  "tooltip.isekai_mahou.forms_b.seal_unnamed": "Unnamed spell"
+  "tooltip.isekai_mahou.forms_b.seal_unnamed": "Unnamed spell",
+  "glyph.isekai_mahou.summon_guard": "Order: Guard",
+  "glyph.isekai_mahou.summon_guard.desc": "After Conjuration (or the creature's glyph): the summon guards the spot where it appeared and attacks whoever comes close, instead of following you.",
+  "glyph.isekai_mahou.summon_hunt": "Order: Hunt",
+  "glyph.isekai_mahou.summon_hunt.desc": "After Conjuration (or the creature's glyph): the summon chases only the target you were aiming at when casting. With no target in sight, it hunts the next enemy you hit.",
+  "glyph.isekai_mahou.summon_hold": "Order: Stay",
+  "glyph.isekai_mahou.summon_hold.desc": "After Conjuration (or the creature's glyph): the summon stays where it appeared and only attacks what is within reach.",
+  "summon_order.isekai_mahou.follow": "Follow",
+  "summon_order.isekai_mahou.guard": "Guard this spot",
+  "summon_order.isekai_mahou.hunt": "Hunt",
+  "summon_order.isekai_mahou.stay": "Stay put",
+  "key.isekai_mahou.summon_order": "Summon order",
+  "message.isekai_mahou.forms_b.order": "Summons: %s",
+  "message.isekai_mahou.forms_b.order_one": "%s: %s",
+  "message.isekai_mahou.forms_b.order_hunt_target": "Summons: hunt %s",
+  "message.isekai_mahou.forms_b.order_hunt_wait": "Summons: hunt — hit an enemy to mark the target",
+  "message.isekai_mahou.forms_b.order_none": "You have no summons nearby.",
+  "hint.isekai_mahou.summon_forge": "Your summon obeys the recipe. Press %s to change its order: follow, guard, hunt or stay.",
+  "hint.isekai_mahou.summon_forge_tip": "Tip: in a spell, put Conjuration and right after it a creature glyph (e.g. Summon Golem). The effects that follow are delivered by its attacks."
 }

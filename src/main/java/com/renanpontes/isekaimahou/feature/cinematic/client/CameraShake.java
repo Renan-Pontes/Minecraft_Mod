@@ -60,7 +60,7 @@ public final class CameraShake {
     static void offsets(float partialTick, float[] out) {
         out[0] = out[1] = out[2] = 0F;
         if (SHAKES.isEmpty()) return;
-        float scale = Minecraft.getInstance().options.screenEffectScale().get().floatValue();
+        float scale = Minecraft.getInstance().options.screenEffectScale().get().floatValue() * com.renanpontes.isekaimahou.core.MahouConfig.shakeScale();
         if (scale <= 0F) return;
         float total = 0F;
         for (Shake s : SHAKES) {

@@ -638,8 +638,12 @@ def build_abyss():
     # Fogos-fatuos de sombra girando em volta
     m.bone("wisps", [0, 30, 0], "root")
     wisp = orb_paint("#9a55f0", "#e0b8ff", "#6a2fc0")
-    for pos in ((12, 30, -1), (-9, 35, 9), (-6, 26, -12)):
+    for pos in ((12, 30, -1), (-9, 35, 9), (-6, 26, -12), (8, 40, 8), (-13, 22, 2)):
         m.cube("wisps", list(pos), [2, 2, 2], wisp)
+    # v1.3: núcleo do vazio pulsando no peito e espinhos extras na coroa (a silhueta fica mais ameaçadora)
+    m.cube("body", [-1.5, 35, -5.2], [3, 3, 1], orb_paint("#b56cff", "#f2d8ff", "#7a2fd0"))
+    for x in (-4.5, 3.5):
+        m.cube("crown", [x, 54, -4], [1, 4, 1], spike)
     m.layout()
     m.paint()
     m.save_geo((7, 7, 2.5))
@@ -977,9 +981,18 @@ def build_seraph():
     m.cube("halo", [-6, 55.5, 5], [12, 1, 1], halo)
     m.cube("halo", [-6, 55.5, -5], [1, 1, 10], halo)
     m.cube("halo", [5, 55.5, -5], [1, 1, 10], halo)
+    # v1.3: gema solar no peito e uma segunda auréola em pé, atrás da cabeça (o "olho" do Julgamento)
+    m.cube("body", [-1, 33, -4.6], [2, 2, 1], orb_paint("#fff1a8", "#ffffff", "#ffd75a"))
+    m.cube("halo", [-4, 46, 5.5], [8, 1, 1], halo)
+    m.cube("halo", [-4, 55, 5.5], [8, 1, 1], halo)
+    m.cube("halo", [-5, 47, 5.5], [1, 8, 1], halo)
+    m.cube("halo", [4, 47, 5.5], [1, 8, 1], halo)
     for side, sx in (("r", -1), ("l", 1)):
         arm = m.bone("arm_" + side, [sx * 8, 37, 0], "body")
         m.cube(arm, [-11 if sx < 0 else 6, 35, -3], [5, 4, 6], plate(SE_GOLD, 240 + sx, trim=SE_GOLD_HI))
+        for k in range(3):
+            fx = (-10.5 + k * 1.5) if sx < 0 else (6.5 + k * 1.5)
+            m.cube(arm, [fx, 39, -1], [1, 3 + k % 2, 2], vgrad_glow(SE_GOLD_HI, SE_GOLD, glow_from=0.7))
         m.cube(arm, [-10.5 if sx < 0 else 6.5, 24, -2], [4, 12, 4], se_sleeve)
         m.cube(arm, [-11 if sx < 0 else 6, 21, -2.5], [5, 4, 5], plate(SE_GOLD, 243 + sx, trim=SE_GOLD_HI))
     # Lanca de luz na mao direita
@@ -1371,6 +1384,12 @@ def build_herald():
                       ([-7, 41, 6.5], [1, 13, 1]), ([-5, 52, 6.5], [2, 2, 1]), ([3, 52, 6.5], [2, 2, 1]),
                       ([-5, 41, 6.5], [2, 2, 1]), ([3, 41, 6.5], [2, 2, 1])):
         m.cube("halo", pos, size, he_halo_bar)
+    # v1.3: a auréola quadrada vira um RELÓGIO — ponteiros de luz no centro
+    m.cube("halo", [-0.5, 47, 6.5], [1, 5, 1], he_halo_bar)
+    m.cube("halo", [0.5, 47, 6.5], [3, 1, 1], he_halo_bar)
+    m.cube("halo", [-1, 46.5, 6.2], [2, 2, 1], he_orb(True))
+    m.cube("body", [-1, 34, -4.6], [1, 2, 1], he_orb(False))
+    m.cube("body", [0, 34, -4.6], [1, 2, 1], he_orb(True))
     # Braco da sombra (direito) com garras; braco da luz (esquerdo) dourado
     m.bone("arm_r", [-8.5, 38, 0], "body")
     m.cube("arm_r", [-12, 36, -3.5], [6, 5, 7], he_arm_dark)

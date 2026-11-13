@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MMM",
+    " A ",
+    "PBP"
+  ],
+  "key": {
+    "M": {
+      "item": "isekai_mahou:mithril_ingot"
+    },
+    "A": {
+      "item": "minecraft:anvil"
+    },
+    "P": {
+      "item": "minecraft:polished_deepslate"
+    },
+    "B": {
+      "item": "minecraft:blast_furnace"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:dwarf_rune_forge",
+    "count": 1
+  }
+}

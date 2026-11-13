@@ -16,6 +16,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -55,8 +56,8 @@ public final class TwilightGlyphs {
             sl.sendParticles(FbFx.dust(FbFx.TWILIGHT_GOLD, 1.0F), e.getX() + Math.cos(a) * r, y, e.getZ() + Math.sin(a) * r, 1, 0, 0, 0, 0);
             sl.sendParticles(FbFx.dust(FbFx.TWILIGHT_SHADOW, 1.0F), e.getX() - Math.cos(a) * r, y, e.getZ() - Math.sin(a) * r, 1, 0, 0, 0, 0);
         }
-        sl.sendParticles(ParticleTypes.END_ROD, e.getX(), e.getY() + e.getBbHeight(), e.getZ(), 4, 0.2, 0.1, 0.2, 0.02);
-        sl.sendParticles(ParticleTypes.WITCH, e.getX(), e.getY() + 0.2, e.getZ(), 4, 0.2, 0.1, 0.2, 0.02);
+        sl.sendParticles(Vfx.endRod(), e.getX(), e.getY() + e.getBbHeight(), e.getZ(), 4, 0.2, 0.1, 0.2, 0.02);
+        sl.sendParticles(Vfx.witch(), e.getX(), e.getY() + 0.2, e.getZ(), 4, 0.2, 0.1, 0.2, 0.02);
     }
 
     /**
@@ -251,14 +252,14 @@ public final class TwilightGlyphs {
                     // Raio de luz descendo e raio de sombra subindo em pontos aleatórios
                     Vec3 l = randomInside();
                     for (int i = 0; i < 14; i++) {
-                        level.sendParticles(ParticleTypes.END_ROD, l.x, l.y + 12 - i * 0.85, l.z, 1, 0.03, 0.1, 0.03, 0);
+                        level.sendParticles(Vfx.endRod(), l.x, l.y + 12 - i * 0.85, l.z, 1, 0.03, 0.1, 0.03, 0);
                     }
                     level.sendParticles(ParticleTypes.FLASH, l.x, l.y + 0.3, l.z, 1, 0, 0, 0, 0);
                     Vec3 s = randomInside();
                     for (int i = 0; i < 14; i++) {
                         level.sendParticles(FbFx.dust(FbFx.VOID_BLACK, 1.8F), s.x, s.y + i * 0.6, s.z, 1, 0.05, 0.1, 0.05, 0);
                     }
-                    level.sendParticles(ParticleTypes.SQUID_INK, s.x, s.y + 0.3, s.z, 6, 0.2, 0.1, 0.2, 0.05);
+                    level.sendParticles(Vfx.ink(), s.x, s.y + 0.3, s.z, 6, 0.2, 0.1, 0.2, 0.05);
                 }
                 if (age % 10 == 0) {
                     for (LivingEntity e : enemies()) {
@@ -278,7 +279,7 @@ public final class TwilightGlyphs {
                 for (LivingEntity e : targets) {
                     n++;
                     if (n <= 5) bolt(e.position());
-                    else FbFx.column(level, e.position(), ParticleTypes.END_ROD, 10, 20);
+                    else FbFx.column(level, e.position(), Vfx.endRod(), 10, 20);
                     FbUtil.hurt(ctx, e, 18.0F, stats, null);
                     if (!e.isAlive()) continue;
                     // Metade "julgada pela sombra": murcha
@@ -288,7 +289,7 @@ public final class TwilightGlyphs {
                 for (int i = 0; i < 2; i++) bolt(randomInside());
                 level.sendParticles(ParticleTypes.FLASH, at.x, at.y + 1, at.z, 3, 1, 0.5, 1, 0);
                 level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y + 0.5, at.z, 1, 0, 0, 0, 0);
-                FbFx.shockwave(level, at.add(0, 0.3, 0), ParticleTypes.END_ROD, 48, 0.6);
+                FbFx.shockwave(level, at.add(0, 0.3, 0), Vfx.endRod(), 48, 0.6);
                 FbFx.shockwave(level, at.add(0, 0.4, 0), FbFx.dust(FbFx.TWILIGHT_SHADOW, 2.0F), 48, 0.8);
                 FbFx.sound(level, at, SoundEvents.LIGHTNING_BOLT_THUNDER, 3.0F, 0.8F);
                 FbFx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), 2.0F, 0.7F);

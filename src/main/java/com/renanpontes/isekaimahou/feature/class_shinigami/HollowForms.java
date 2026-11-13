@@ -113,7 +113,11 @@ public final class HollowForms {
         LivingEntity caster = ctx.caster();
         if (caster == null) return false;
         if (kind(caster) == VASTO) {
-            if (caster instanceof ServerPlayer sp) sp.displayClientMessage(Shinigami.msg("vasto_busy").withStyle(ChatFormatting.GRAY), true);
+            if (caster instanceof ServerPlayer sp) {
+                sp.displayClientMessage(Shinigami.msg("vasto_busy").withStyle(ChatFormatting.GRAY), true);
+                // onda 5: a máscara não entrou — a receita moldada dela (que entra depois da conjuração) é desfeita logo
+                sp.server.tell(new net.minecraft.server.TickTask(sp.server.getTickCount(), () -> ReleaseForge.end(sp, "shinigami_visored")));
+            }
             return false;
         }
         ServerLevel level = ctx.level();
@@ -157,6 +161,8 @@ public final class HollowForms {
         ServerLevel level = ctx.level();
         // os pulsos e o Cero gigante saem com o poder do Vasto Lorde (troca o da máscara, se havia)
         ctx.setPowerMult(ctx.powerMult() * VASTO_POWER / castPower(caster));
+        // onda 5: a máscara dá lugar ao Vasto Lorde — a receita moldada da máscara sai junto
+        if (kind(caster) == VISORED && caster instanceof ServerPlayer vp) ReleaseForge.end(vp, "shinigami_visored");
         ACTIVE.remove(caster.getUUID());
         ACTIVE.put(caster.getUUID(), new State(VASTO, ctx, level, level.getGameTime() + ticks, radius));
         caster.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, ticks, 2, false, false, true));
@@ -254,6 +260,8 @@ public final class HollowForms {
 
     /** Fim natural (o tempo acabou) ou forçado (morte/saída). */
     private static void finish(State s, LivingEntity e, boolean natural) {
+        // onda 5: a receita moldada para a Máscara / o Vasto Lorde (aba Votos) acaba junto com a forma
+        if (e instanceof ServerPlayer fp) ReleaseForge.end(fp, s.kind == VASTO ? "shinigami_vasto_lorde" : "shinigami_visored");
         sync(e, NONE, 0);
         ServerLevel l = s.level;
         Vec3 face = e.getEyePosition();
@@ -352,6 +360,15 @@ public final class HollowForms {
 
     static void clear() {
         ACTIVE.clear();
+    }
+
+    /**
+     * Gancho da v1.3 (classe Hollow): o Shinigami foi tomado pelo Vazio Interior — sela a zanpakutō (sem preço) e tira a
+     * Máscara/Vasto Lorde ativos sem cobrar, para a hollowificação começar limpa.
+     */
+    public static void purgeForHollowfication(ServerPlayer sp) {
+        Release.seal(sp, false);
+        cancel(sp);
     }
 
     private HollowForms() {}

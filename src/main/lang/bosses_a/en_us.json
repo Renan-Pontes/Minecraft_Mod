@@ -13,18 +13,15 @@
   "entity.isekai_mahou.golem_pillar": "Golem Pillar",
   "entity.isekai_mahou.golem_slab": "Earth Slab",
   "entity.isekai_mahou.zephyr_curtain": "Wind Curtain",
-
   "item.isekai_mahou.ignis_spawn_egg": "Ignis Spawn Egg",
   "item.isekai_mahou.tide_guardian_spawn_egg": "Tide Spawn Egg",
   "item.isekai_mahou.primordial_golem_spawn_egg": "Primordial Golem Spawn Egg",
   "item.isekai_mahou.zephyr_spawn_egg": "Zephyr Spawn Egg",
-
   "boss.isekai_mahou.guardian_defeated": "%s has been defeated! The Guardian Core resonates with your power.",
   "boss.isekai_mahou.guardian_out_of_arena": "The Guardian can only be harmed from inside its arena!",
   "boss.isekai_mahou.guardian_no_hiding": "There is no hiding from a Guardian!",
   "command.isekai_mahou.spawnboss.guardian_done": "%s has appeared!",
   "command.isekai_mahou.spawnboss.guardian_fail": "The boss could not be summoned here.",
-
   "boss.isekai_mahou.ignis.epithet": "Titan of the Eternal Flames",
   "boss.isekai_mahou.ignis.intro": "Who dares tread upon the embers of my temple? Burn!",
   "boss.isekai_mahou.ignis.phase2": "Blue Flames",
@@ -41,7 +38,6 @@
   "boss.isekai_mahou.ignis.move.flame_charge": "Blazing Charge!",
   "boss.isekai_mahou.ignis.hint.slam": "Tip: the wave of flames runs along the ground — JUMP as it passes!",
   "boss.isekai_mahou.ignis.hint.supernova": "Tip: run out of the red circle or hide behind a pillar!",
-
   "boss.isekai_mahou.tide_guardian.epithet": "Serpent of the Depths",
   "boss.isekai_mahou.tide_guardian.intro": "The tides obey me. Drown in silence.",
   "boss.isekai_mahou.tide_guardian.phase2": "High Tide",
@@ -54,8 +50,7 @@
   "boss.isekai_mahou.tide_guardian.move.storm_call": "Storm of Tides!",
   "boss.isekai_mahou.tide_guardian.move.bubble_prison": "Bubble Prison!",
   "boss.isekai_mahou.tide_guardian.hint.bubble_prison": "A circle of water is chasing you — step out once it stops!",
-  "boss.isekai_mahou.tide_guardian.hint.bubble_trapped": "Trapped in a bubble! Hit the bubble (or ask for help) to pop it!",
-
+  "boss.isekai_mahou.tide_guardian.hint.bubble_trapped": "Trapped in the bubble with NO AIR! Hit the bubble (or ask for help) to pop it!",
   "boss.isekai_mahou.primordial_golem.epithet": "Colossus of the Ancient Earth",
   "boss.isekai_mahou.primordial_golem.intro": "...The mountain... has awoken. Intruders... will be... buried.",
   "boss.isekai_mahou.primordial_golem.phase2": "Stone Shield",
@@ -72,7 +67,6 @@
   "boss.isekai_mahou.primordial_golem.shield_up": "The Golem encases itself in stone! Only magic can crack the shield!",
   "boss.isekai_mahou.primordial_golem.shield_broken": "The Stone Shield shattered! The Golem is vulnerable!",
   "boss.isekai_mahou.primordial_golem.shield_immune": "Physical attacks can't crack the stone — use magic!",
-
   "boss.isekai_mahou.zephyr.epithet": "Djinn of the Eternal Winds",
   "boss.isekai_mahou.zephyr.intro": "Hahaha! Another one come to challenge the sky? Fly, if you can!",
   "boss.isekai_mahou.zephyr.phase2": "Gale",
@@ -86,5 +80,22 @@
   "boss.isekai_mahou.zephyr.move.vacuum": "Eye of the Storm!",
   "boss.isekai_mahou.zephyr.move.wind_curtain": "Wind Curtain!",
   "boss.isekai_mahou.zephyr.hint.wind_curtain": "Tip: the walls of wind rotate — walk along with the gap between them!",
-  "boss.isekai_mahou.zephyr.hint.vacuum": "Tip: run against the wind out of the red circle, then jump the wave!"
+  "boss.isekai_mahou.zephyr.hint.vacuum": "Tip: run against the wind out of the red circle, then jump the wave!",
+  "boss.isekai_mahou.ignis.hint.heat": "Ignis's heat MELTS your armor! Keep your distance (Fire Resistance helps).",
+  "boss.isekai_mahou.zephyr.move.updraft": "Updraft!",
+  "boss.isekai_mahou.zephyr.hint.updraft": "Tip: the wind circle chases you and LOCKS — leave it or you'll be thrown into the sky!",
+  "boss.isekai_mahou.primordial_golem.move.shatter": "Sundered Earth!",
+  "boss.isekai_mahou.primordial_golem.hint.shatter": "Tip: the faults run in straight lines from the Golem — stand BETWEEN the red lines!",
+  "boss.isekai_mahou.fallen": "Defeated",
+  "boss.isekai_mahou.ignis.taunt": "Ashes. That is all you are.",
+  "boss.isekai_mahou.ignis.last_stand": "The furnace... has not... gone out yet!",
+  "boss.isekai_mahou.tide_guardian.taunt": "One more for the bottom of the sea.",
+  "boss.isekai_mahou.tide_guardian.last_stand": "The tide... recedes... but it always returns!",
+  "boss.isekai_mahou.primordial_golem.taunt": "...Dust... returns... to dust.",
+  "boss.isekai_mahou.primordial_golem.last_stand": "...Cracked... but... standing.",
+  "boss.isekai_mahou.zephyr.taunt": "Hahaha! Fell like a dry leaf!",
+  "boss.isekai_mahou.zephyr.last_stand": "Tch... the wind still blows, little one!",
+  "command.isekai_mahou.bosspolish.none": "No boss within 48 blocks.",
+  "command.isekai_mahou.bosspolish.survival": "Use it in survival mode: the boss has to really take you down.",
+  "command.isekai_mahou.bosspolish.done": "Done on %s."
 }

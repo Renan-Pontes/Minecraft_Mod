@@ -31,6 +31,8 @@ public class LivingShadowRenderer extends GeoEntityRenderer<LivingShadowEntity> 
         // Opacidade oscilando: a sombra "respira"
         float t = animatable.tickCount + partialTick;
         int alpha = Mth.clamp((int) (215 + 30 * Mth.sin(t * 0.15F)), 0, 255);
-        return new Color((alpha << 24) | 0xFFFFFF);
+        // Forja de Invocações (forms_b): cor do elemento da receita, gravada no cliente por texto (0 = natural)
+        int tint = animatable.getPersistentData().getInt("isekai_mahou_forge_color");
+        return new Color((alpha << 24) | (tint == 0 ? 0xFFFFFF : tint & 0xFFFFFF));
     }
 }

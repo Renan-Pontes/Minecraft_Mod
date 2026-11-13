@@ -1,0 +1,189 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "isekai_mahou:mana_crystal",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:mana_crystal_cluster",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:depths_pure_mana_shard",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:elemental_shard",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:living_crystal",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:radiant_crystal",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:void_crystal",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:hollow_crystal",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:reishi_crystal",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:star_fragment",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:abyss_shard",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:shadow_fragment",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:fairy_dust",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:fey_dust",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:moonpetal",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:abyssal_moss",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:slime_gel",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:fire_slime_gel",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:water_slime_gel",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:stone_slime_gel",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:wind_slime_gel",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:poison_jelly_gel",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:goblin_ear",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:orc_tusk",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:harpy_feather",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:angel_feather",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:phoenix_feather",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:basilisk_scale",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:desert_basilisk_scale",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:lizard_scale",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:storm_scale",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:gargoyle_fragment",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:werewolf_fang",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:swamp_hydra_fang",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:swamp_hydra_venom_glob",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:manticore_stinger",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:witch_grave_dust",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:witch_mandrake_root",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:witch_moonpetal",
+      "required": false
+    },
+    "minecraft:nether_wart",
+    "minecraft:glowstone_dust",
+    "minecraft:redstone",
+    "minecraft:gunpowder",
+    "minecraft:blaze_powder",
+    "minecraft:blaze_rod",
+    "minecraft:spider_eye",
+    "minecraft:fermented_spider_eye",
+    "minecraft:ghast_tear",
+    "minecraft:magma_cream",
+    "minecraft:sugar",
+    "minecraft:rabbit_foot",
+    "minecraft:glistering_melon_slice",
+    "minecraft:golden_carrot",
+    "minecraft:phantom_membrane",
+    "minecraft:pufferfish",
+    "minecraft:dragon_breath",
+    "minecraft:amethyst_shard",
+    "minecraft:echo_shard",
+    "minecraft:lapis_lazuli",
+    "minecraft:bone_meal",
+    "minecraft:ender_pearl",
+    "minecraft:glass_bottle",
+    "minecraft:honey_bottle",
+    "minecraft:turtle_scute",
+    "minecraft:breeze_rod",
+    "minecraft:prismarine_crystals",
+    "minecraft:quartz"
+  ]
+}

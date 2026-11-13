@@ -1,5 +1,6 @@
 package com.renanpontes.isekaimahou.feature.fusions_a.block;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -48,6 +49,6 @@ public class MoltenPoolBlock extends FaTempBlock {
 
     @Override
     public void onExpire(ServerLevel level, BlockPos pos) {
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, pos.getX() + 0.5, pos.getY() + 0.2, pos.getZ() + 0.5, 2, 0.3, 0.05, 0.3, 0.01);
+        level.sendParticles(Vfx.largeSmoke(), pos.getX() + 0.5, pos.getY() + 0.2, pos.getZ() + 0.5, 2, 0.3, 0.05, 0.3, 0.01);
     }
 }

@@ -18,9 +18,9 @@ import com.renanpontes.isekaimahou.feature.ritual_mage.network.MagePayloads;
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -166,9 +166,9 @@ public final class ThesisService {
     /** Coluna de runas subindo da mesa, anéis nos elementos da tese e o som de conquista. */
     private static void effects(ServerPlayer player, ServerLevel level, BlockPos pos, Thesis thesis) {
         Vec3 c = Vec3.atCenterOf(pos).add(0, 0.6, 0);
-        level.sendParticles(ParticleTypes.ENCHANT, c.x, c.y + 0.5, c.z, 120, 0.9, 0.8, 0.9, 1.2);
-        level.sendParticles(ParticleTypes.END_ROD, c.x, c.y + 0.4, c.z, 30, 0.2, 1.2, 0.2, 0.06);
-        level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, c.x, c.y + 0.8, c.z, 40, 0.5, 0.6, 0.5, 0.25);
+        level.sendParticles(Vfx.enchant(), c.x, c.y + 0.5, c.z, 120, 0.9, 0.8, 0.9, 1.2);
+        level.sendParticles(Vfx.endRod(), c.x, c.y + 0.4, c.z, 30, 0.2, 1.2, 0.2, 0.06);
+        level.sendParticles(Vfx.totem(), c.x, c.y + 0.8, c.z, 40, 0.5, 0.6, 0.5, 0.25);
         Set<Element> rings = new LinkedHashSet<>();
         rings.add(thesis.entry());
         rings.add(thesis.exit());

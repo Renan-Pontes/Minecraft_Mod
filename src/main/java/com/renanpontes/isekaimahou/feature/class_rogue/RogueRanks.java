@@ -1,5 +1,7 @@
 package com.renanpontes.isekaimahou.feature.class_rogue;
 
+import com.renanpontes.isekaimahou.feature.class_rogue.RogueFxNet;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -182,12 +184,8 @@ public final class RogueRanks {
                 .withStyle(ChatFormatting.LIGHT_PURPLE));
         sp.sendSystemMessage(Component.translatable(RogueKeys.k("message.isekai_mahou.class_rogue.rank.flavor.", next))
                 .withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.ITALIC));
-        // sombras em espiral subindo, moedas caindo
-        for (int i = 0; i < 40; i++) {
-            double a = i * Math.PI / 7;
-            level.sendParticles(RogueFx.dust(RogueFx.PURPLE, 1.2F), sp.getX() + Math.cos(a) * 1.1, sp.getY() + i * 0.05,
-                    sp.getZ() + Math.sin(a) * 1.1, 1, 0, 0, 0, 0);
-        }
+        // sombras em espiral subindo (cliente), moedas caindo
+        RogueFxNet.at(level, RogueFxNet.LEARN, sp.position(), net.minecraft.world.phys.Vec3.ZERO, 1F, RogueFx.PURPLE, sp.getId());
         level.sendParticles(ParticleTypes.WAX_OFF, sp.getX(), sp.getY() + 2.2, sp.getZ(), 30, 0.6, 0.2, 0.6, 0.05);
         level.sendParticles(ParticleTypes.LARGE_SMOKE, sp.getX(), sp.getY() + 0.3, sp.getZ(), 20, 0.6, 0.1, 0.6, 0.02);
         RogueFx.sound(level, sp.position(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 0.8F, 1.1F);

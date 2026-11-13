@@ -9,6 +9,7 @@ import com.renanpontes.isekaimahou.feature.fusions_c.FcUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -75,7 +76,7 @@ public class LavaBombEntity extends FcSpellEntity {
         Destruction.surface(sl, c, blastRadius * 0.6F, owner(), Destruction.Mode.SCORCH);
         sl.sendParticles(ParticleTypes.LAVA, c.x, c.y + 0.3, c.z, 14, 0.6, 0.3, 0.6, 0.25);
         sl.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y + 0.5, c.z, 1, 0, 0, 0, 0);
-        sl.sendParticles(ParticleTypes.FLAME, c.x, c.y + 0.3, c.z, 24, 0.4, 0.2, 0.4, 0.18);
+        sl.sendParticles(Vfx.flame(), c.x, c.y + 0.3, c.z, 24, 0.4, 0.2, 0.4, 0.18);
         FcFx.shockwave(sl, c.add(0, 0.2, 0), FcFx.fade(FcFx.MAGMA_HOT, FcFx.MAGMA_DARK, 1.4F), 18, 0.3);
         FcFx.sound(sl, c, SoundEvents.GENERIC_EXPLODE.value(), 0.9F, 1.2F);
         FcFx.sound(sl, c, SoundEvents.LAVA_POP, 1.4F, 0.6F);
@@ -83,7 +84,7 @@ public class LavaBombEntity extends FcSpellEntity {
 
     @Override
     protected void clientTick() {
-        level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), 0, 0.02, 0);
+        level().addParticle(Vfx.flame(), getX(), getY(), getZ(), 0, 0.02, 0);
         if (random.nextInt(2) == 0) level().addParticle(ParticleTypes.LAVA, getX(), getY(), getZ(), 0, 0, 0);
     }
 }

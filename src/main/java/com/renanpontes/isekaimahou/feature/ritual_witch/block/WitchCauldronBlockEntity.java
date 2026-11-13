@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.feature.ritual_witch.WitchProgress;
 import com.renanpontes.isekaimahou.feature.ritual_witch.WitchRecipe;
 import com.renanpontes.isekaimahou.feature.ritual_witch.WitchRecipes;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -148,7 +149,7 @@ public class WitchCauldronBlockEntity extends BlockEntity {
     public Phase drain(ServerLevel level) {
         Phase old = phase;
         if (old == Phase.RUINED || old == Phase.BREWING) {
-            puff(level, ParticleTypes.LARGE_SMOKE, 10, 0.25);
+            puff(level, Vfx.largeSmoke(), 10, 0.25);
             level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.6F, 1.4F);
         }
         phase = Phase.EMPTY;
@@ -182,7 +183,7 @@ public class WitchCauldronBlockEntity extends BlockEntity {
         color = mix(color, ingredientColor(item), ingredients.size() == 1 ? 0.6F : 0.45F);
 
         double y = worldPosition.getY() + liquidHeight();
-        level.sendParticles(ParticleTypes.SPLASH, worldPosition.getX() + 0.5, y, worldPosition.getZ() + 0.5, 12, 0.2, 0.05, 0.2, 0.1);
+        level.sendParticles(Vfx.splash(), worldPosition.getX() + 0.5, y, worldPosition.getZ() + 0.5, 12, 0.2, 0.05, 0.2, 0.1);
         level.sendParticles(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0xFF000000 | color),
                 worldPosition.getX() + 0.5, y + 0.1, worldPosition.getZ() + 0.5, 10, 0.2, 0.1, 0.2, 0.5);
         level.playSound(null, worldPosition, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.5F, 1.2F + level.random.nextFloat() * 0.3F);
@@ -303,8 +304,8 @@ public class WitchCauldronBlockEntity extends BlockEntity {
 
         double cx = worldPosition.getX() + 0.5, cy = worldPosition.getY() + liquidHeight() + 0.1, cz = worldPosition.getZ() + 0.5;
         level.sendParticles(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0xFF000000 | color), cx, cy + 0.3, cz, 40, 0.3, 0.5, 0.3, 1.0);
-        level.sendParticles(ParticleTypes.WITCH, cx, cy + 0.2, cz, 20, 0.35, 0.3, 0.35, 0.05);
-        level.sendParticles(ParticleTypes.ENCHANT, cx, cy + 0.8, cz, 30, 0.4, 0.4, 0.4, 0.8);
+        level.sendParticles(Vfx.witch(), cx, cy + 0.2, cz, 20, 0.35, 0.3, 0.35, 0.05);
+        level.sendParticles(Vfx.enchant(), cx, cy + 0.8, cz, 30, 0.4, 0.4, 0.4, 0.8);
         level.playSound(null, worldPosition, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 1.0F, 0.8F);
         level.playSound(null, worldPosition, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1.2F, 0.9F);
         level.playSound(null, worldPosition, SoundEvents.WITCH_CELEBRATE, SoundSource.BLOCKS, 0.5F, 1.3F);
@@ -312,9 +313,9 @@ public class WitchCauldronBlockEntity extends BlockEntity {
         if (tier > 0) {
             for (int i = 0; i < 24; i++) {
                 double a = i * Math.PI * 2 / 24;
-                level.sendParticles(ParticleTypes.END_ROD, cx + Math.cos(a) * 0.9, cy + 0.2, cz + Math.sin(a) * 0.9, 1, 0, 0.05, 0, 0.02);
+                level.sendParticles(Vfx.endRod(), cx + Math.cos(a) * 0.9, cy + 0.2, cz + Math.sin(a) * 0.9, 1, 0, 0.05, 0, 0.02);
             }
-            level.sendParticles(ParticleTypes.SOUL, cx, cy + 0.4, cz, 10, 0.3, 0.3, 0.3, 0.03);
+            level.sendParticles(Vfx.soul(), cx, cy + 0.4, cz, 10, 0.3, 0.3, 0.3, 0.03);
             level.playSound(null, worldPosition, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 0.8F, 1.5F);
         }
 
@@ -339,8 +340,8 @@ public class WitchCauldronBlockEntity extends BlockEntity {
         resetBrew();
         clearResult();
         changed();
-        puff(level, ParticleTypes.LARGE_SMOKE, 25, 0.3);
-        puff(level, ParticleTypes.SQUID_INK, 10, 0.25);
+        puff(level, Vfx.largeSmoke(), 25, 0.3);
+        puff(level, Vfx.ink(), 10, 0.25);
         level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 0.6F);
         level.playSound(null, worldPosition, SoundEvents.WITCH_AMBIENT, SoundSource.BLOCKS, 0.6F, 0.6F);
         notifyNear(level, Component.translatable("message.isekai_mahou.witch.ruined",

@@ -24,11 +24,16 @@ public class BuilderNpc extends SettlementNpc {
     private static final Set<String> KINGDOM = Set.of("hammer", "cap", "apron", "satchel");
     private static final Set<String> DESERT = Set.of("hammer", "hood", "apron", "satchel");
     private static final Set<String> NORDIC = Set.of("hammer", "cap", "apron", "beard");
+    // onda 5: texturas recoloridas do Reino (Oriental, Élfico, Sombrio) e do Nórdico (Anão) — só peças que a origem pinta
+    private static final Set<String> ORIENTAL = Set.of("hammer", "apron", "satchel");
+    private static final Set<String> ELVEN = Set.of("hammer", "satchel");
 
     /** Obra atual (centro do canteiro) e o bloco sendo colocado. */
     @Nullable private BlockPos site;
     @Nullable private BlockPos focus;
     private int siteAge;
+    /** Ações seguidas longe do bloco da vez (o canteiro traz quem empaca) — só em memória, usado pelo ConstructionEngine. */
+    public int lag;
 
     public BuilderNpc(EntityType<? extends BuilderNpc> type, Level level) {
         super(type, level);
@@ -48,7 +53,13 @@ public class BuilderNpc extends SettlementNpc {
 
     @Override
     public Set<String> visibleBones() {
-        return style() == SettlementStyle.DESERT ? DESERT : style() == SettlementStyle.NORDIC ? NORDIC : KINGDOM;
+        return switch (style()) {
+            case DESERT -> DESERT;
+            case NORDIC, DWARVEN -> NORDIC;
+            case ORIENTAL -> ORIENTAL;
+            case ELVEN -> ELVEN;
+            default -> KINGDOM;
+        };
     }
 
     @Override

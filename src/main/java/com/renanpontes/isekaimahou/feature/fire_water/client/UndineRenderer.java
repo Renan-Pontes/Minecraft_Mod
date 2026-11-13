@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
+import software.bernie.geckolib.util.Color;
 
 /** Ondina: corpo de água translúcido; olhos e coroa brilham no escuro. */
 public class UndineRenderer extends GeoEntityRenderer<SummonedUndine> {
@@ -23,5 +24,15 @@ public class UndineRenderer extends GeoEntityRenderer<SummonedUndine> {
     public RenderType getRenderType(SummonedUndine animatable, ResourceLocation texture, MultiBufferSource bufferSource,
                                     float partialTick) {
         return RenderType.entityTranslucent(texture);
+    }
+
+    /**
+     * Forja de Invocações (forms_b): corpo tingido com a cor do elemento da receita. O forms_b grava a cor no
+     * persistentData da criatura no cliente; lemos por texto (sem depender das classes de lá). 0 = cor natural.
+     */
+    @Override
+    public Color getRenderColor(SummonedUndine animatable, float partialTick, int packedLight) {
+        int tint = animatable.getPersistentData().getInt("isekai_mahou_forge_color");
+        return tint == 0 ? super.getRenderColor(animatable, partialTick, packedLight) : new Color(0xFF000000 | tint);
     }
 }

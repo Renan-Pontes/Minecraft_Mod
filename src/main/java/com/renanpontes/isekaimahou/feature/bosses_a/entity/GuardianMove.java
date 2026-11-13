@@ -17,6 +17,8 @@ public final class GuardianMove {
     private boolean rooted = true;
     private boolean forced;
     private int aimUntil = Integer.MAX_VALUE;
+    /** Animação do golpe (padrão: a de mesmo id). v1.3: golpes novos reaproveitam animações existentes. */
+    private String anim;
 
     private GuardianMove(String id, int duration) {
         this.id = id;
@@ -42,6 +44,8 @@ public final class GuardianMove {
      * chão é exatamente onde o golpe acerta — quem sai dela desvia).
      */
     public GuardianMove aimUntil(int tick) { this.aimUntil = tick; return this; }
+    /** Usa a animação {@code animation.<chefe>.<name>} em vez da de mesmo id. */
+    public GuardianMove anim(String name) { this.anim = name; return this; }
 
     public int cooldown() { return cooldown; }
     public double minRange() { return minRange; }
@@ -51,6 +55,7 @@ public final class GuardianMove {
     public boolean rooted() { return rooted; }
     public boolean isForced() { return forced; }
     public int aimUntil() { return aimUntil; }
+    public String animId() { return anim != null ? anim : id; }
 
     public boolean allowedIn(int phase) {
         return !forced && phase >= minPhase && phase <= maxPhase;

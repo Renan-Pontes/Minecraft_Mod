@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.feature.fusions_b.FbFx;
 import com.renanpontes.isekaimahou.feature.fusions_b.FbRegistries;
 import com.renanpontes.isekaimahou.feature.fusions_b.FbUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -121,9 +122,9 @@ public class HellfireImpEntity extends FbSummon {
         if (ok) {
             target.igniteForSeconds(3F);
             if (level() instanceof ServerLevel sl) {
-                sl.sendParticles(ParticleTypes.FLAME, target.getX(), target.getY() + target.getBbHeight() * 0.6, target.getZ(),
+                sl.sendParticles(Vfx.flame(), target.getX(), target.getY() + target.getBbHeight() * 0.6, target.getZ(),
                         8, 0.25, 0.25, 0.25, 0.04);
-                sl.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, target.getX(), target.getY() + target.getBbHeight() * 0.6,
+                sl.sendParticles(Vfx.soulFlame(), target.getX(), target.getY() + target.getBbHeight() * 0.6,
                         target.getZ(), 3, 0.2, 0.2, 0.2, 0.02);
             }
             playSound(SoundEvents.BLAZE_HURT, 0.5F, 1.8F);
@@ -137,22 +138,22 @@ public class HellfireImpEntity extends FbSummon {
 
     @Override
     protected void spawnFx(ServerLevel level) {
-        level.sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.4, getZ(), 16, 0.25, 0.3, 0.25, 0.06);
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + 0.4, getZ(), 6, 0.2, 0.2, 0.2, 0.02);
+        level.sendParticles(Vfx.flame(), getX(), getY() + 0.4, getZ(), 16, 0.25, 0.3, 0.25, 0.06);
+        level.sendParticles(Vfx.largeSmoke(), getX(), getY() + 0.4, getZ(), 6, 0.2, 0.2, 0.2, 0.02);
         level.sendParticles(FbFx.dust(FbFx.HELLFIRE, 1.2F), getX(), getY() + 0.4, getZ(), 10, 0.3, 0.3, 0.3, 0);
     }
 
     @Override
     protected void vanishFx(ServerLevel level) {
-        level.sendParticles(ParticleTypes.ASH, getX(), getY() + 0.4, getZ(), 20, 0.3, 0.3, 0.3, 0.02);
-        level.sendParticles(ParticleTypes.SMOKE, getX(), getY() + 0.4, getZ(), 10, 0.2, 0.3, 0.2, 0.02);
+        level.sendParticles(Vfx.ash(), getX(), getY() + 0.4, getZ(), 20, 0.3, 0.3, 0.3, 0.02);
+        level.sendParticles(Vfx.smoke(), getX(), getY() + 0.4, getZ(), 10, 0.2, 0.3, 0.2, 0.02);
         FbFx.sound(level, position(), SoundEvents.FIRE_EXTINGUISH, 0.6F, 1.4F);
     }
 
     @Override
     protected void clientFx() {
         if (random.nextInt(3) == 0) {
-            level().addParticle(ParticleTypes.SMALL_FLAME, getX() + (random.nextDouble() - 0.5) * 0.4,
+            level().addParticle(Vfx.smallFlame(), getX() + (random.nextDouble() - 0.5) * 0.4,
                     getY() + 0.2 + random.nextDouble() * 0.5, getZ() + (random.nextDouble() - 0.5) * 0.4, 0, 0.01, 0);
         }
         if (random.nextInt(8) == 0) level().addParticle(ParticleTypes.SMOKE, getX(), getY() + 0.8, getZ(), 0, 0.02, 0);

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "isekai_mahou:block/tower_floor_core_top_cleared",
+    "bottom": "isekai_mahou:block/tower_floor_core_bottom",
+    "side": "isekai_mahou:block/tower_floor_core_side"
+  }
+}

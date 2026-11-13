@@ -2,6 +2,7 @@ package com.renanpontes.isekaimahou.feature.creatures_e;
 
 import org.joml.Vector3f;
 
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 
 import net.minecraft.core.particles.BlockParticleOption;
@@ -79,11 +80,7 @@ public final class CeFx {
 
     /** Config de cliente "particulas reduzidas" (falso se a config ainda nao carregou, ex.: servidor). */
     public static boolean reducedParticles() {
-        try {
-            return MahouConfig.REDUCED_PARTICLES.get();
-        } catch (RuntimeException e) {
-            return false;
-        }
+        return !FxQuality.atLeast(MahouConfig.Graphics.HIGH);
     }
 
     public static void sound(Level level, Vec3 pos, SoundEvent sound, float volume, float pitch) {

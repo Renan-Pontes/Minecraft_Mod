@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbFx;
+import com.renanpontes.isekaimahou.feature.class_steelball.SbFxNet;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbRegistry;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbSpin;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
@@ -78,7 +79,7 @@ public class InfiniteSpinEntity extends Entity implements GeoEntity {
         e.entityData.set(DATA_LIFE, Math.max(40, ticks));
         e.entityData.set(DATA_SIZE, Math.max(0.8F, Math.max(target.getBbWidth(), target.getBbHeight() * 0.6F)));
         sl.addFreshEntity(e);
-        SbFx.sound(sl, target.position(), SoundEvents.BEACON_ACTIVATE, 1.0F, 1.6F);
+        SbFxNet.at(sl, SbFxNet.INFINITE, target.position(), Vec3.ZERO, e.size(), SbFx.GOLD, target.getId());
         SbFx.sound(sl, target.position(), SoundEvents.TRIDENT_THUNDER.value(), 0.6F, 1.8F);
     }
 

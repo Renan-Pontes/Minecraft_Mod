@@ -538,8 +538,9 @@ def build_king():
             m.bone(name, (px, 38, 0), "body")
             m.cube(name, (x0, 26, -2.5), (5, 13, 5), P(robe_c, deco=chain(folds(ROBE_D, 3), band([12, 11], GOLD)), noise=0.04))
             m.cube(name, (x0 + 0.5, 22, -2), (4, 4, 4), P(BONE, deco=speckle(BONE_D, 0.2, 18 + px)))
-        m.bone("axe", (-8.5, 24, 0), "arm_r")
-        m.cube("axe", (-9.5, 2, -1), (2, 34, 2), P("#2A2018", deco=band([10, 20, 30], GOLD_D)))
+        # v1.3.2: pegada a 8 px do pe do cabo, na mao; o osso aponta o machado para a frente (antes o cabo atravessava o braco)
+        m.bone("axe", (-8.5, 24, 0), "arm_r", rotation=[110, 0, 0])
+        m.cube("axe", (-9.5, 16, -1), (2, 34, 2), P("#2A2018", deco=band([10, 20, 30], GOLD_D)))
 
         def blade(fs):
             for n in ("front", "back"):
@@ -549,8 +550,8 @@ def build_king():
                 f.rect(f.w - 2, 0, f.w - 1, f.h - 1, H(GOLD_D))
             fs["left"].fill(H(GOLD))
             fs["right"].fill(H(GOLD))
-        m.cube("axe", (-10, 26, -10), (3, 12, 9), P(BLK, deco=chain(blade, cracks(GOLD_L, 21, 2, faces=("left", "right"), g=p2))))
-        m.cube("axe", (-10, 36, -1.5), (3, 3, 3), P(GOLD, deco=lambda fs: fs["top"].fill(H(GOLD_L))))
+        m.cube("axe", (-10, 40, -10), (3, 12, 9), P(BLK, deco=chain(blade, cracks(GOLD_L, 21, 2, faces=("left", "right"), g=p2))))
+        m.cube("axe", (-10, 50, -1.5), (3, 3, 3), P(GOLD, deco=lambda fs: fs["top"].fill(H(GOLD_L))))
         m.save(bounds=(4, 4), seed=9, tex_name="hollow_king" + ("_p2" if p2 else ""), geo=not p2)
 
     a = {}

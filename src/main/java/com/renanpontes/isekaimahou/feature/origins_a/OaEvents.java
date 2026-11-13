@@ -5,7 +5,7 @@ import com.renanpontes.isekaimahou.feature.origins_a.curse.VoodooLinks;
 import com.renanpontes.isekaimahou.feature.origins_a.rune.CircleTravel;
 import com.renanpontes.isekaimahou.feature.origins_a.rune.TempEnchant;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -74,7 +74,7 @@ public final class OaEvents {
                 && attacker.hasEffect(OaRegistries.EVIL_EYE) && attacker.getRandom().nextFloat() < 0.3F) {
             event.setCanceled(true);
             ServerLevel level = (ServerLevel) victim.level();
-            level.sendParticles(ParticleTypes.SMOKE, victim.getX(), victim.getY() + victim.getBbHeight() * 0.6, victim.getZ(),
+            level.sendParticles(Vfx.smoke(), victim.getX(), victim.getY() + victim.getBbHeight() * 0.6, victim.getZ(),
                     8, 0.25, 0.25, 0.25, 0.02);
             level.playSound(null, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_NODAMAGE,
                     SoundSource.HOSTILE, 0.8F, 0.8F);
@@ -99,7 +99,7 @@ public final class OaEvents {
         int before = event.getDrops().size();
         event.getDrops().removeIf(it -> p.getRandom().nextFloat() < 0.4F);
         if (event.getDrops().size() < before) {
-            event.getLevel().sendParticles(ParticleTypes.SMOKE, event.getPos().getX() + 0.5, event.getPos().getY() + 0.5,
+            event.getLevel().sendParticles(Vfx.smoke(), event.getPos().getX() + 0.5, event.getPos().getY() + 0.5,
                     event.getPos().getZ() + 0.5, 6, 0.2, 0.2, 0.2, 0.01);
         }
     }

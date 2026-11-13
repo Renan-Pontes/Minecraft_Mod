@@ -15,6 +15,7 @@ import com.renanpontes.isekaimahou.feature.fusions_c.FcUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
@@ -103,7 +104,7 @@ public class PollenCloudEntity extends FcSpellEntity {
             }
         }
         if (age % 4 == 0) {
-            sl.sendParticles(ParticleTypes.SPORE_BLOSSOM_AIR, c.x, c.y, c.z, 4, r * 0.6, 1.0, r * 0.6, 0.0);
+            sl.sendParticles(Vfx.sporeAir(), c.x, c.y, c.z, 4, r * 0.6, 1.0, r * 0.6, 0.0);
             sl.sendParticles(FcFx.dust(age % 8 == 0 ? FcFx.POLLEN : FcFx.POLLEN_PINK, 1.3F), c.x, c.y, c.z, 3, r * 0.6, 1.0, r * 0.6, 0.0);
         }
         if (age % 40 == 0) FcFx.sound(sl, c, SoundEvents.BEEHIVE_WORK, 0.6F, 0.6F);
@@ -121,7 +122,7 @@ public class PollenCloudEntity extends FcSpellEntity {
             if (sleep != null) le.addEffect(new MobEffectInstance(sleep, 100, 0), owner());
             else Statuses.apply(le, Statuses.Kind.STUNNED, 1, 60, owner(), power);
             if (level() instanceof ServerLevel sl) {
-                sl.sendParticles(ParticleTypes.FALLING_SPORE_BLOSSOM, le.getX(), le.getY() + le.getBbHeight() + 0.4, le.getZ(), 8, 0.3, 0.1, 0.3, 0);
+                sl.sendParticles(Vfx.sporeFall(), le.getX(), le.getY() + le.getBbHeight() + 0.4, le.getZ(), 8, 0.3, 0.1, 0.3, 0);
                 FcFx.sound(sl, le.position(), SoundEvents.FOX_SLEEP, 1F, 0.8F);
             }
         }
@@ -140,7 +141,7 @@ public class PollenCloudEntity extends FcSpellEntity {
         }
         sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, c.x, c.y, c.z, 1, 0, 0, 0, 0);
         int n = Mth.clamp((int) (r * r * 3), 30, 140);
-        sl.sendParticles(ParticleTypes.FLAME, c.x, c.y, c.z, n, r * 0.5, 1.0, r * 0.5, 0.12);
+        sl.sendParticles(Vfx.flame(), c.x, c.y, c.z, n, r * 0.5, 1.0, r * 0.5, 0.12);
         sl.sendParticles(FcFx.fade(FcFx.POLLEN, 0xFF6020, 2F), c.x, c.y, c.z, n / 2, r * 0.5, 1.0, r * 0.5, 0);
         FusionShockwaveEntity.visual(sl, position().add(0, 0.2, 0), FusionShockwaveEntity.Kind.POLLEN, r + 2, 14);
         FcFx.sound(sl, c, SoundEvents.GENERIC_EXPLODE.value(), 2F, 0.9F);

@@ -21,6 +21,11 @@ public final class Blueprints {
     private static final int[] LEVEL_POINTS = {0, 8, 22, 45, 75};
 
     private static final Map<SettlementStyle, List<Blueprint>> CATALOG = new EnumMap<>(SettlementStyle.class);
+    /** Templos elementais (v1.4): um por elemento base + arcano. */
+    public static final List<String> ELEMENT_TEMPLES = List.of("temple_fire", "temple_water", "temple_earth", "temple_wind",
+            "temple_light", "temple_shadow", "temple_arcane");
+    /** Plantas que usam os lotes pequenos (11×11) das cidades de reino, na paleta que combina com o estilo. */
+    public static final List<String> CITY_LOTS = List.of("smithy", "stable", "well", "garden");
 
     static {
         for (SettlementStyle s : SettlementStyle.values()) {
@@ -49,6 +54,35 @@ public final class Blueprints {
                 }
                 case NORDIC -> { }
             }
+            // v1.4: prédios novos (moldes procedurais ProcBuildings e lotes pequenos das cidades de reino)
+            l.add(bp("granary", s, 1, 3, 3, fx(0, 0, 0, 0, 0, 0, 0, 0)));
+            l.add(bp("well", s, 1, 2, 4, fx(0, 0, 0, 0, 0, 0, 0, 0)));
+            l.add(bp("garden", s, 1, 2, 4, fx(0, 0, 0, 0, 0, 0, 0, 0)));
+            l.add(bp("port", s, 1, 3, 2, fx(1, 0, 0, 0, 0, 0, 0, 0)));
+            l.add(bp("smithy", s, 2, 4, 1, fx(0, 0, 1, 0, 0, 0, 0, 0)));
+            l.add(bp("stable", s, 2, 3, 2, fx(1, 0, 0, 0, 0, 0, 0, 1)));
+            l.add(bp("hospital", s, 2, 5, 1, fx(0, 0, 0, 0, 0, 0, 0, 0)));
+            l.add(bp("sawmill", s, 2, 4, 2, fx(0, 0, 0, 0, 20, 0, 0, 0)));
+            l.add(bp("workshop", s, 2, 4, 1, fx(0, 0, 0, 1, 15, 0, 0, 0)));
+            l.add(bp("mine", s, 2, 4, 2, fx(0, 0, 0, 0, 0, 0, 5, 0)));
+            l.add(bp("statue", s, 2, 3, 3, fx(0, 0, 0, 0, 0, 0, 0, 0)));
+            l.add(bp("arch", s, 2, 2, 2, fx(0, 0, 0, 0, 0, 0, 0, 0)));
+            l.add(bp("library", s, 3, 6, 1, fx(0, 0, 0, 0, 0, 0, 0, 0)));
+            l.add(bp("guild", s, 3, 7, 1, fx(0, 1, 1, 0, 0, 0, 5, 0)));
+            l.add(bp("arena", s, 3, 6, 1, fx(0, 1, 0, 0, 0, 0, 0, 1)));
+            for (String el : ELEMENT_TEMPLES) l.add(bp(el, s, 3, 6, 1, fx(0, 0, 0, 0, 0, 0, 0, 0)));
+            l.add(bp("magic_tower", s, 4, 10, 1, fx(0, 1, 0, 0, 0, 0, 0, 0)));
+            // v1.5 (city_arcana): prédios mágicos — efeitos em feature/city_arcana (CityArcana), necessidades no CityEconomy
+            l.add(bp("arcane_beacon", s, 2, 4, 2, fx(0, 0, 0, 0, 0, 0, 0, 0)));
+            l.add(bp("mana_spire", s, 3, 6, 2, fx(0, 0, 0, 0, 0, 1, 0, 0)));
+            l.add(bp("arcane_ward", s, 3, 8, 1, fx(0, 0, 0, 0, 0, 0, 0, 0)));
+            l.add(bp("null_obelisk", s, 4, 10, 1, fx(0, 0, 0, 0, 0, 0, 0, 0)));
+            // v1.0 (city_life): defesa de cerco — efeitos em CityDefense, segurança no CityEconomy
+            l.add(bp("trap_field", s, 2, 3, 2, fx(0, 0, 0, 0, 0, 0, 0, 0)));
+            // onda 10 (vehicles_mechanic): Oficina Mecânica — traz o Mecânico (veículos, peças, consertos, resgate)
+            l.add(bp("garage", s, 1, 4, 1, fx(0, 0, 0, 0, 0, 0, 0, 0)));
+            // onda 6 (city_monuments): monumentos novos e a maravilha de cada estilo — bônus em CityMonuments
+            l.addAll(MonumentBuildings.blueprints(s));
             CATALOG.put(s, List.copyOf(l));
         }
     }

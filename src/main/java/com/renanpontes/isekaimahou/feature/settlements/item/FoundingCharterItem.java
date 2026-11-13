@@ -16,6 +16,9 @@ import net.minecraft.world.item.context.UseOnContext;
 /**
  * Carta de Fundação: usada no chão, abre a escolha do estilo (Reino / Desértico / Nórdico) e do nome. Ao confirmar,
  * o Coração da Cidade nasce no lugar e o primeiro construtor chega (a carta é consumida).
+ * <p>v1.0 (onda 4): com a Carta na mão principal o cliente mostra a PRÉVIA da cidade ({@code client/CityPlacer}) e é
+ * ele quem trata o clique (fixar, mover, girar, confirmar). O {@link #useOn} daqui continua valendo para a Carta na
+ * outra mão: abre a fundação direto no bloco clicado, como sempre foi.
  */
 public class FoundingCharterItem extends Item {
     public FoundingCharterItem(Properties props) {

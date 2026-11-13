@@ -16,6 +16,7 @@ import com.renanpontes.isekaimahou.feature.fusions_d.FdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -221,7 +222,7 @@ public class PlanetCoreEntity extends FdSpellEntity implements RubbleEntity.Anch
         if (released()) return;
         for (int i = 0; i < 2; i++) {
             double a = random.nextDouble() * Math.PI * 2, d = 2 + random.nextDouble() * 4;
-            level().addParticle(ParticleTypes.REVERSE_PORTAL, getX() + Math.cos(a) * d, getY() + 0.5 + (random.nextDouble() - 0.5) * 3,
+            level().addParticle(Vfx.reversePortal(), getX() + Math.cos(a) * d, getY() + 0.5 + (random.nextDouble() - 0.5) * 3,
                     getZ() + Math.sin(a) * d, -Math.cos(a) * 0.15, 0, -Math.sin(a) * 0.15);
         }
     }

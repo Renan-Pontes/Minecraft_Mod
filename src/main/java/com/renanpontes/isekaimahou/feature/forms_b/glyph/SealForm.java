@@ -8,7 +8,7 @@ import com.renanpontes.isekaimahou.glyph.FormGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -52,7 +52,7 @@ public class SealForm extends FormGlyph {
 
         double x = caster.getX(), y = caster.getY() + caster.getBbHeight() * 0.55, z = caster.getZ();
         ElementFx.burst(level, caster.position().add(0, 1.0, 0), ctx.element(), 20, 0.5);
-        level.sendParticles(ParticleTypes.ENCHANT, x, y + 0.5, z, 40, 0.6, 0.6, 0.6, 0.8);
+        level.sendParticles(Vfx.enchant(), x, y + 0.5, z, 40, 0.6, 0.6, 0.6, 0.8);
         level.sendParticles(FormsBUtil.dust(ctx.color() & 0xFFFFFF, 1.0F), x, y, z, 16, 0.4, 0.4, 0.4, 0);
         level.playSound(null, x, y, z, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 1.0F, 1.2F);
         level.playSound(null, x, y, z, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 0.7F, 1.6F);

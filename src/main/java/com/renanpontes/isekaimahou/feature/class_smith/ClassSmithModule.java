@@ -47,6 +47,7 @@ public class ClassSmithModule implements Module {
         SmithGlyphs.register();
         SmithLegends.register();
         modBus.addListener(SmithNet::register);
+        modBus.addListener(SmithFxNet::register);
         modBus.addListener(this::creativeTabs);
         modBus.addListener((FMLCommonSetupEvent e) -> e.enqueueWork(ClassSmithModule::validate));
         SmithEvents.init();

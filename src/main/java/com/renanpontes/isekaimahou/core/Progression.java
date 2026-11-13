@@ -11,7 +11,8 @@ import java.util.List;
  * <ul>
  *   <li>Nível máximo {@link #MAX_LEVEL} = 150; {@link #HIDDEN_MAX_LEVEL} = 200 só depois de matar o Dragão Primordial
  *       (contador {@link #HIDDEN_CAP_COUNTER}) — use {@link #levelCap(MagicData)}; nada mostra 200 antes disso.</li>
- *   <li>Curva de XP bem mais difícil até o 100 ({@link #xpToNext}); Círculo 10 no nível 100
+ *   <li>Curva de XP bem mais difícil até o 100 e, na release 1.0, ainda mais íngreme depois do 50 e MUITO mais depois
+ *       do 100 ({@link #xpToNext}, tabela no jogo com {@code /mahou balance}); Círculo 10 no nível 100
  *       ({@link #levelCap(int)}); os níveis 100–200 dão poder ({@link #highLevelPower}), glifos por magia
  *       ({@link #maxGlyphs(int, int)}) e limite de mana ({@link #levelManaLimitBonus}).</li>
  *   <li>Inflação de números: vida base {@link #BASE_PLAYER_HEALTH}, {@link #DAMAGE_SCALE}, {@link #MOB_HEALTH_SCALE},
@@ -62,15 +63,30 @@ public final class Progression {
     public static final float MEDITATION_REGEN_MULT = 5.0F;
     public static final int MEDITATION_XP_INTERVAL = 60;
 
+    /** Nível em que a curva de XP fica mais íngreme (release 1.0: "difícil de upar, ainda mais após lvl 50 e 100"). */
+    public static final int STEEP_LEVEL = 50;
+
     /**
-     * XP necessário para passar do nível informado ao próximo. v1.0: bem mais difícil até o 100
-     * ({@code 40 + 18·L + 0,35·L²}: 1→10 ≈ 1,3 mil, 1→100 ≈ 208 mil — ~4× a v0.8) e depois cresce devagar
-     * ({@code 5300 + 30·(L−100)}: 100→150 ≈ 302 mil).
+     * XP necessário para passar do nível informado ao próximo. Três trechos, sempre crescentes e sem degrau para baixo:
+     * <ul>
+     *   <li>1–49: {@code 40 + 18·L + 0,35·L²} (igual à v1.0 interna: 1→50 ≈ 38 mil);</li>
+     *   <li>50–99: a mesma base + {@code 60·k + 1,4·k²} com {@code k = L−50} (nível 99 ≈ 11,5 mil; 50→100 ≈ 300 mil,
+     *       ~1,8× o que era);</li>
+     *   <li>100+: {@code 12000 + 400·k + 4·k²} com {@code k = L−100} (nível 150 = 42 mil, 199 ≈ 91 mil; 100→150 ≈ 1,25
+     *       milhão — ~4× o que era — e 150→200 ≈ 3,2 milhões).</li>
+     * </ul>
+     * Mundos salvos: o nível já alcançado NÃO muda (só o XP que falta para o próximo). Tabela: {@code /mahou balance}.
      */
     public static int xpToNext(int level) {
         int l = Math.max(1, level);
-        if (l < CIRCLE_TEN_LEVEL) return Math.round(40F + 18F * l + 0.35F * l * l);
-        return 5300 + 30 * (l - CIRCLE_TEN_LEVEL);
+        float base = 40F + 18F * l + 0.35F * l * l;
+        if (l < STEEP_LEVEL) return Math.round(base);
+        if (l < CIRCLE_TEN_LEVEL) {
+            int k = l - STEEP_LEVEL;
+            return Math.round(base + 60F * k + 1.4F * k * k);
+        }
+        int k = l - CIRCLE_TEN_LEVEL;
+        return 12000 + 400 * k + 4 * k * k;
     }
 
     /** XP somado necessário para subir {@code levels} níveis a partir de {@code fromLevel}. */
@@ -78,6 +94,13 @@ public final class Progression {
         long sum = 0;
         for (int l = Math.max(1, fromLevel); l < Math.min(HIDDEN_MAX_LEVEL, fromLevel + levels); l++) sum += xpToNext(l);
         return (int) Math.min(Integer.MAX_VALUE, sum);
+    }
+
+    /** XP total acumulado para chegar do nível 1 ao nível informado (para tabelas de balanço; cabe em {@code long}). */
+    public static long totalXpTo(int level) {
+        long sum = 0;
+        for (int l = 1; l < Math.min(HIDDEN_MAX_LEVEL, level); l++) sum += xpToNext(l);
+        return sum;
     }
 
     /** Teto do Círculo (C1..C8 = 10..80, C9 = 100: o Círculo 10 chega no nível 100). */

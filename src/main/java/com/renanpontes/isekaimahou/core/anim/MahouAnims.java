@@ -1,9 +1,13 @@
 package com.renanpontes.isekaimahou.core.anim;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MagicData;
@@ -36,6 +40,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
  *   <li>Combos corpo a corpo: o cliente toca na hora e avisa o servidor ({@link AnimPayloads.Melee}), que repassa.</li>
  *   <li>Gestos de magia: escolhidos aqui pela FORMA da magia ({@link SpellGestures}) ao conjurar e ao canalizar.</li>
  *   <li>Esquiva: {@link DodgeService} (validação, invulnerabilidade, cansaço).</li>
+ *   <li>v1.0 — Bloqueio com aparo: {@link GuardService} (tecla segurada com arma/cajado; aparo no tempo certo).</li>
  * </ul>
  */
 public final class MahouAnims {
@@ -62,12 +67,59 @@ public final class MahouAnims {
     // ---- esquiva / guarda ----
     public static final String DODGE_F = "dodge_f", DODGE_B = "dodge_b", DODGE_L = "dodge_l", DODGE_R = "dodge_r";
     public static final String GUARD_R = "guard_r", GUARD_L = "guard_l";
+    /** v1.0: guarda com arma/cajado (pose mantida enquanto bloqueia) e o gesto curto do aparo — ver {@link GuardService}. */
+    public static final String GUARD_WEAPON = "guard_weapon", PARRY = "parry";
+
+    // ---- v1.3: transformações, Hollow/Arrancar e técnicas (outros módulos chamam por texto: play(e, "cero_charge"))
+    public static final String TRANSFORM_ROAR = "transform_roar";
+    public static final String TRANSFORM_RISE = "transform_rise";
+    public static final String TRANSFORM_BURST = "transform_burst";
+    public static final String HOLLOW_MASK_TEAR = "hollow_mask_tear";
+    /** Pose mantida (até 5 s) — solte com {@link #stopHold} ou toque {@link #CERO_FIRE}. */
+    public static final String CERO_CHARGE = "cero_charge";
+    public static final String CERO_FIRE = "cero_fire";
+    public static final String SONIDO_STEP = "sonido_step";
+    public static final String RESURRECCION = "resurreccion";
+    public static final String BOW_CHARGE_BIG = "bow_charge_big";
+    public static final String THROW_OVERHAND = "throw_overhand";
+    public static final String SPIN_SLASH = "spin_slash";
+    public static final String GROUND_SLAM = "ground_slam";
+    /** Ajoelha ~3 s com as mãos juntas e levanta sozinho (não precisa parar). */
+    public static final String KNEEL_CHANNEL = "kneel_channel";
+    public static final String TAUNT = "taunt";
+    /** Espada erguida com as duas mãos e corte vertical (Excalibur, Balmung, Caliburn). */
+    public static final String HOLY_CLEAVE = "holy_cleave";
+    /** Palma aberta à frente, firme (escudos: Rho Aias, Égide). */
+    public static final String PALM_WARD = "palm_ward";
+    // ---- v1.3: sensação de movimento (servidor detecta golpe pesado, empurrão, queda e chefe morto)
+    public static final String FLINCH_F = "flinch_f", FLINCH_B = "flinch_b";
+    public static final String KNOCKDOWN = "knockdown";
+    public static final String LAND_ROLL = "land_roll", LAND_HERO = "land_hero";
+    public static final String SPRINT_LUNGE = "sprint_lunge";
+    public static final String DRAW_BLADE = "draw_blade", DRAW_HEAVY = "draw_heavy";
+    public static final String VICTORY = "victory";
+    // ---- v1.3: emotes (roda "Emotes")
+    public static final String EMOTE_WAVE = "emote_wave", EMOTE_BOW = "emote_bow", EMOTE_SIT = "emote_sit",
+            EMOTE_CHEER = "emote_cheer", EMOTE_POINT = "emote_point", EMOTE_CROSS = "emote_cross_arms", EMOTE_DANCE = "emote_dance";
+    /** Ordem da roda: acenar, reverência, provocar, sentar, comemorar, apontar, cruzar braços, dançar. */
+    public static final List<String> EMOTES = List.of(EMOTE_WAVE, EMOTE_BOW, TAUNT, EMOTE_SIT, EMOTE_CHEER, EMOTE_POINT,
+            EMOTE_CROSS, EMOTE_DANCE);
 
     public static final byte DIR_FORWARD = 0, DIR_BACK = 1, DIR_LEFT = 2, DIR_RIGHT = 3;
 
     /** Golpes que o cliente pode pedir para repassar (o resto é recusado). */
     public static final Set<String> MELEE = Set.of(SWORD_1, SWORD_2, SWORD_3, HEAVY_1, HEAVY_2, DAGGER_1, DAGGER_2,
             SPEAR_1, SPEAR_2, FIST_1, FIST_2, FIST_3);
+    /** Tudo o que o cliente toca sozinho e pede para o servidor repassar: combos, investida, saque da arma e emotes. */
+    public static final Set<String> RELAY;
+    static {
+        Set<String> r = new HashSet<>(MELEE);
+        r.add(SPRINT_LUNGE);
+        r.add(DRAW_BLADE);
+        r.add(DRAW_HEAVY);
+        r.addAll(EMOTES);
+        RELAY = Set.copyOf(r);
+    }
 
     /** Último golpe repassado por jogador (limite de pacotes). */
     private static final Map<UUID, Long> LAST_MELEE = new ConcurrentHashMap<>();
@@ -88,10 +140,14 @@ public final class MahouAnims {
         bus.addListener(PlayerEvent.PlayerRespawnEvent.class, MahouAnims::onRespawn);
         // Alta prioridade: o golpe esquivado some antes de aparar/escudos/efeitos de outros módulos reagirem
         bus.addListener(EventPriority.HIGH, false, LivingIncomingDamageEvent.class, DodgeService::onIncomingDamage);
+        GuardService.init(bus);
+        FeelService.init(bus);
         bus.addListener(ServerStoppedEvent.class, e -> {
             LAST_MELEE.clear();
             HOLD.clear();
             DodgeService.clear();
+            GuardService.clear();
+            FeelService.clear();
         });
     }
 
@@ -102,35 +158,61 @@ public final class MahouAnims {
         r.playToClient(AnimPayloads.Rules.TYPE, AnimPayloads.Rules.STREAM_CODEC,
                 (p, c) -> c.enqueueWork(() -> com.renanpontes.isekaimahou.client.anim.MahouAnimsClient.rules(p)));
         r.playToServer(AnimPayloads.Melee.TYPE, AnimPayloads.Melee.STREAM_CODEC, (p, c) -> c.enqueueWork(() -> {
-            if (c.player() instanceof ServerPlayer sp) relayMelee(sp, p.anim());
+            if (c.player() instanceof ServerPlayer sp) relay(sp, p.anim());
         }));
         r.playToServer(AnimPayloads.Dodge.TYPE, AnimPayloads.Dodge.STREAM_CODEC, (p, c) -> c.enqueueWork(() -> {
             if (c.player() instanceof ServerPlayer sp) DodgeService.dodge(sp, p.dir());
         }));
+        r.playToServer(AnimPayloads.Guard.TYPE, AnimPayloads.Guard.STREAM_CODEC, (p, c) -> c.enqueueWork(() -> {
+            if (c.player() instanceof ServerPlayer sp) GuardService.request(sp, p.down());
+        }));
+        r.playToClient(AnimPayloads.GuardFx.TYPE, AnimPayloads.GuardFx.STREAM_CODEC,
+                (p, c) -> c.enqueueWork(() -> com.renanpontes.isekaimahou.client.anim.MahouAnimsClient.guardFx(p)));
     }
 
     // =====================================================================================
     //  API
     // =====================================================================================
 
-    /** Toca a animação {@code anim} na entidade para quem a vê (e para ela mesma, se for jogador). */
-    public static void play(LivingEntity entity, String anim) {
+    /**
+     * Toca a animação {@code anim} na entidade para quem a vê (e para ela mesma, se for jogador). Id desconhecido, vazio
+     * ou nulo não faz nada (o cliente ignora o que não conhece; ids longos demais nem saem do servidor).
+     */
+    public static void play(@Nullable LivingEntity entity, @Nullable String anim) {
+        if (entity == null || !valid(anim)) return;
         send(entity, new AnimPayloads.Play(entity.getId(), anim, false), true);
     }
 
     /** Igual a {@link #play(LivingEntity, String)}, mas só para os OUTROS (o próprio jogador já tocou localmente). */
-    public static void playOthers(LivingEntity entity, String anim) {
+    public static void playOthers(@Nullable LivingEntity entity, @Nullable String anim) {
+        if (entity == null || !valid(anim)) return;
         send(entity, new AnimPayloads.Play(entity.getId(), anim, false), false);
     }
 
     /** Toca só para o próprio jogador (ex.: magia silenciosa). */
-    public static void playSelf(ServerPlayer player, String anim) {
+    public static void playSelf(@Nullable ServerPlayer player, @Nullable String anim) {
+        if (player == null || !valid(anim)) return;
         PacketDistributor.sendToPlayer(player, new AnimPayloads.Play(player.getId(), anim, false));
     }
 
+    /** Id que cabe no pacote (o codec recusaria — e derrubaria a conexão — um texto maior que {@link AnimPayloads#MAX_ID}). */
+    private static boolean valid(@Nullable String anim) {
+        return anim != null && !anim.isEmpty() && anim.length() <= AnimPayloads.MAX_ID;
+    }
+
     /** Solta a pose contínua (canalização/carga) da entidade, se for isso que estiver tocando. */
-    public static void stopHold(LivingEntity entity) {
+    public static void stopHold(@Nullable LivingEntity entity) {
+        if (entity == null) return;
         send(entity, new AnimPayloads.Play(entity.getId(), "", true), true);
+    }
+
+    /**
+     * Para os OUTROS: solta a animação {@code anim} da entidade só se for ela que estiver tocando (o próprio jogador já
+     * soltou localmente). Diferente de {@link #stopHold}, não corta outra pose contínua que tenha começado depois.
+     */
+    public static void stopOthers(@Nullable LivingEntity entity, @Nullable String anim) {
+        if (entity == null || !valid(anim)) return;
+        send(entity, new AnimPayloads.Play(entity.getId(), anim, true), false);
     }
 
     private static void send(LivingEntity entity, AnimPayloads.Play payload, boolean self) {
@@ -139,8 +221,8 @@ public final class MahouAnims {
         else PacketDistributor.sendToPlayersTrackingEntity(entity, payload);
     }
 
-    private static void relayMelee(ServerPlayer player, String anim) {
-        if (!MELEE.contains(anim) || player.isSpectator()) return;
+    private static void relay(ServerPlayer player, String anim) {
+        if (!RELAY.contains(anim) || player.isSpectator() || player.isDeadOrDying()) return;
         long now = player.serverLevel().getGameTime();
         Long last = LAST_MELEE.get(player.getUUID());
         if (last != null && now - last < 2) return;
@@ -167,6 +249,8 @@ public final class MahouAnims {
     /** Detecta início/fim da conjuração segurando a tecla (pose de carga/raio mantida). */
     private static void onPlayerTick(PlayerTickEvent.Post event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        FeelService.tick(player);
+        GuardService.tick(player);
         MagicData data = MagicApi.get(player);
         boolean channeling = data.channelSlot >= 0 && data.channelRecipe != null && !player.isSpectator();
         UUID id = player.getUUID();
@@ -210,10 +294,19 @@ public final class MahouAnims {
         LAST_MELEE.remove(id);
         HOLD.remove(id);
         DodgeService.forget(id);
+        GuardService.forget(id);
+        FeelService.forget(id);
     }
 
     private static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
         HOLD.remove(event.getEntity().getUUID());
+        GuardService.forget(event.getEntity().getUUID());
+        FeelService.forget(event.getEntity().getUUID());
+    }
+
+    /** O jogador está segurando uma conjuração (pose de carga/raio) — o tranco de golpe não corta a pose. */
+    static boolean isHolding(ServerPlayer player) {
+        return HOLD.containsKey(player.getUUID());
     }
 
     private MahouAnims() {}

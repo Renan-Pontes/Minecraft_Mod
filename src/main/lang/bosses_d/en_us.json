@@ -133,5 +133,7 @@
 
   "command.isekai_mahou.bosses_d.bad_element": "Unknown element: %s",
   "command.isekai_mahou.bosses_d.spawn_failed": "Could not summon the boss here.",
-  "command.isekai_mahou.bosses_d.spawned": "%s of %s (rank %s) summoned."
+  "command.isekai_mahou.bosses_d.spawned": "%s of %s (rank %s) summoned.",
+  "announce.isekai_mahou.trial_avatar.taunt": "Not worthy yet. Stand up and try again.",
+  "announce.isekai_mahou.trial_avatar.last_stand": "Almost... show me the final blow!"
 }

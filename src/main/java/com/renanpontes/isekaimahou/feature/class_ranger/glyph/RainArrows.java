@@ -1,5 +1,7 @@
 package com.renanpontes.isekaimahou.feature.class_ranger.glyph;
 
+import com.renanpontes.isekaimahou.feature.class_ranger.RangerFxNet;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -120,7 +122,7 @@ public final class RainArrows {
                 v.onBlock.accept(bhr, arrow);
             }
             Vec3 at = bhr.getLocation();
-            level.sendParticles(WeaponFx.dust(v.rgb, 1.0F), at.x, at.y + 0.1, at.z, 3, 0.15, 0.05, 0.15, 0);
+            RangerFxNet.at(level, RangerFxNet.RAIN_LAND, at, Vec3.ZERO, 1F, v.rgb, -1);
             // a flecha conjurada se desfaz (não enche o chão de flechas)
             SpellScheduler.schedule(2, arrow::discard);
         }
@@ -141,10 +143,7 @@ public final class RainArrows {
                 a.discard();
                 continue;
             }
-            if (a.tickCount % 2 == 0) {
-                Vec3 p = a.position();
-                level.sendParticles(WeaponFx.dust(t.volley().rgb, 0.9F), p.x, p.y, p.z, 1, 0.02, 0.02, 0.02, 0);
-            }
+            // o rastro é desenhado no cliente (RangerArrowFx manda o id da flecha ao nascer)
         }
     }
 

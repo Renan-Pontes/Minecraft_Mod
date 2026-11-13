@@ -8,8 +8,8 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -43,8 +43,8 @@ public class GoatifyEffect extends EffectGlyph {
         }
         // Resistiu (chefe ou criatura que não pode virar cabra)
         Statuses.apply(le, Statuses.Kind.STUNNED, 1, 20, ctx.caster(), ctx.powerMult());
-        LdUtil.send(ctx.level(), ParticleTypes.SMOKE, LdUtil.center(le), 14, le.getBbWidth() * 0.4, 0.02);
-        LdUtil.send(ctx.level(), ParticleTypes.WITCH, LdUtil.center(le), 10, le.getBbWidth() * 0.4, 0.05);
+        LdUtil.send(ctx.level(), Vfx.smoke(), LdUtil.center(le), 14, le.getBbWidth() * 0.4, 0.02);
+        LdUtil.send(ctx.level(), Vfx.witch(), LdUtil.center(le), 10, le.getBbWidth() * 0.4, 0.05);
         LdUtil.sound(ctx.level(), le.position(), SoundEvents.GOAT_HORN_BREAK, 1.0F, 0.8F);
         LdUtil.actionbar(ctx.caster(), Component.translatable("message.isekai_mahou.legends_d.goat_resist", le.getDisplayName())
                 .withStyle(ChatFormatting.GRAY));

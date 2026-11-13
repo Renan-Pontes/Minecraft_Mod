@@ -31,6 +31,7 @@ public class ClassSteelballClient implements ClientModule {
     @Override
     public void initClient(IEventBus modBus) {
         SbOutfitItem.renderFactory = SbOutfitRenderer.Provider::new;
+        SbFxClient.init();
         modBus.addListener(ClassSteelballClient::renderers);
         NeoForge.EVENT_BUS.addListener(ClassSteelballClient::onClientTick);
     }

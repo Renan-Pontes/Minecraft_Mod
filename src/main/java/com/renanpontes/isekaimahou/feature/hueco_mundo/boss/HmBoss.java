@@ -191,6 +191,11 @@ public abstract class HmBoss extends Monster implements GeoEntity {
         return entityData.get(DATA_PHASE);
     }
 
+    /** É o chefe fixo de um lugar (palácio/corte)? */
+    public boolean isSiteBoss() {
+        return siteBoss;
+    }
+
     /** Chefe do palácio/corte: arena fixa e volta um dia depois de vencido. */
     public void markSiteBoss(Vec3 home, double arenaRadius) {
         siteBoss = true;

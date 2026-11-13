@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_ranger.RangerFx;
+import com.renanpontes.isekaimahou.feature.class_ranger.RangerFxNet;
 import com.renanpontes.isekaimahou.feature.class_ranger.RangerGlyphIds;
 import com.renanpontes.isekaimahou.feature.class_ranger.RangerUtil;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
@@ -119,8 +120,7 @@ public final class ArrowEffects {
             }
             level.sendParticles(r > 3.2F ? ParticleTypes.EXPLOSION_EMITTER : ParticleTypes.EXPLOSION, at.x, at.y, at.z, 1, 0, 0, 0, 0);
             ElementFx.burst(level, at, ctx.element(), (int) (14 + r * 6), r * 0.45);
-            level.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y + 0.3, at.z, 8, r * 0.3, 0.3, r * 0.3, 0.02);
-            RangerFx.ring(level, at.add(0, 0.1, 0), r, 18, WeaponFx.dust(ctx.color() & 0xFFFFFF, 1.2F), 0);
+            RangerFxNet.at(level, RangerFxNet.EXPLOSIVE, at, Vec3.ZERO, r, ctx.color() & 0xFFFFFF, -1);
             RangerFx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), 0.9F, 1.25F + level.random.nextFloat() * 0.2F);
         }
 
@@ -250,13 +250,7 @@ public final class ArrowEffects {
                         e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 10, e.getBbWidth() * 0.4, e.getBbHeight() * 0.3,
                         e.getBbWidth() * 0.4, 0.05);
             }
-            RangerFx.ring(level, at, r, 20, WeaponFx.dust(0xE8E4D8, 1.0F), 0);
-            RangerFx.ring(level, at, r * 0.55, 12, WeaponFx.dust(ctx.color() & 0xFFFFFF, 0.9F), 0);
-            for (int i = 0; i < 4; i++) {
-                double a = i * Math.PI / 4;
-                Vec3 off = new Vec3(Math.cos(a) * r, 0, Math.sin(a) * r);
-                RangerFx.line(level, at.add(off), at.subtract(off), 0.5, WeaponFx.dust(0xD8D2C0, 0.7F));
-            }
+            RangerFxNet.at(level, RangerFxNet.NET, at, Vec3.ZERO, r, ctx.color() & 0xFFFFFF, -1);
             RangerFx.sound(level, at, SoundEvents.CROSSBOW_LOADING_END.value(), 0.9F, 0.8F);
             RangerFx.sound(level, at, SoundEvents.WOOL_BREAK, 1.0F, 0.7F);
         }
@@ -364,7 +358,7 @@ public final class ArrowEffects {
             int arrows = 10 + 3 * Math.max(0, stats.amplify);
             double sky = RangerUtil.skyY(level, ground, 14);
             int rgb = ctx.color() & 0xFFFFFF;
-            RangerFx.ring(level, ground.add(0, 0.1, 0), r, 20, WeaponFx.dust(rgb, 1.0F), 0);
+            RangerFxNet.at(level, RangerFxNet.RAIN_MARK, ground, Vec3.ZERO, r, rgb, -1);
             RangerFx.sound(level, ground, SoundEvents.ARROW_SHOOT, 1.0F, 0.6F);
             RainArrows.Volley v = new RainArrows.Volley(ctx, 3, 0, (t, arrow) -> {
                 ctx.damage(t, DAMAGE, stats, arrow);

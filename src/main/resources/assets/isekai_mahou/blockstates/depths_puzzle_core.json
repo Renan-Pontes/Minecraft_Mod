@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,solved=false": {
+      "model": "isekai_mahou:block/depths_puzzle_core"
+    },
+    "facing=north,solved=true": {
+      "model": "isekai_mahou:block/depths_puzzle_core_solved"
+    },
+    "facing=east,solved=false": {
+      "model": "isekai_mahou:block/depths_puzzle_core",
+      "y": 90
+    },
+    "facing=east,solved=true": {
+      "model": "isekai_mahou:block/depths_puzzle_core_solved",
+      "y": 90
+    },
+    "facing=south,solved=false": {
+      "model": "isekai_mahou:block/depths_puzzle_core",
+      "y": 180
+    },
+    "facing=south,solved=true": {
+      "model": "isekai_mahou:block/depths_puzzle_core_solved",
+      "y": 180
+    },
+    "facing=west,solved=false": {
+      "model": "isekai_mahou:block/depths_puzzle_core",
+      "y": 270
+    },
+    "facing=west,solved=true": {
+      "model": "isekai_mahou:block/depths_puzzle_core_solved",
+      "y": 270
+    }
+  }
+}

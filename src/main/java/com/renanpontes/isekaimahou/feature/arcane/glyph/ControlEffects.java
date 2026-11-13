@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.glyph.SpellCaster;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
@@ -59,7 +60,7 @@ public final class ControlEffects {
                 boolean any = le.removeEffect(CoreRegistries.STUNNED) | le.removeEffect(CoreRegistries.ROOTED)
                         | le.removeEffect(CoreRegistries.FROZEN) | le.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
                 if (any) {
-                    level.sendParticles(ParticleTypes.HAPPY_VILLAGER, top.x, top.y - 0.4, top.z, 10, 0.3, 0.3, 0.3, 0);
+                    level.sendParticles(Vfx.happy(), top.x, top.y - 0.4, top.z, 10, 0.3, 0.3, 0.3, 0);
                     ArcaneUtil.sound(level, top, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.8F);
                 }
                 return;
@@ -71,7 +72,7 @@ public final class ControlEffects {
             if (le instanceof ServerPlayer p) SpellCaster.interrupt(p);
             StatusAuras.track(le, StatusAuras.Kind.STUN, ticks + 20);
             level.sendParticles(ArcaneUtil.dust(0xFFF27A, 1.2F), top.x, top.y, top.z, 14, 0.35, 0.15, 0.35, 0);
-            level.sendParticles(ParticleTypes.CRIT, top.x, top.y - 0.3, top.z, 10, 0.3, 0.2, 0.3, 0.1);
+            level.sendParticles(Vfx.crit(), top.x, top.y - 0.3, top.z, 10, 0.3, 0.2, 0.3, 0.1);
             ArcaneUtil.sound(level, top, SoundEvents.ANVIL_LAND, 0.35F, 1.8F);
         }
     }
@@ -95,7 +96,7 @@ public final class ControlEffects {
             if (stats.inverted) {
                 if (le.removeEffect(CoreRegistries.EXPOSED)) {
                     le.removeEffect(MobEffects.GLOWING);
-                    level.sendParticles(ParticleTypes.SMOKE, c.x, c.y, c.z, 8, 0.3, 0.3, 0.3, 0.01);
+                    level.sendParticles(Vfx.smoke(), c.x, c.y, c.z, 8, 0.3, 0.3, 0.3, 0.01);
                 }
                 return;
             }
@@ -144,7 +145,7 @@ public final class ControlEffects {
             if (le instanceof ServerPlayer p) SpellCaster.interrupt(p);
             StatusAuras.track(le, StatusAuras.Kind.SILENCE, ticks + 20);
             level.sendParticles(ArcaneUtil.dust(0x9A9AB0, 1.3F), top.x, top.y, top.z, 12, 0.3, 0.1, 0.3, 0);
-            level.sendParticles(ParticleTypes.SMOKE, le.getX(), le.getEyeY(), le.getZ(), 8, 0.2, 0.1, 0.2, 0.02);
+            level.sendParticles(Vfx.smoke(), le.getX(), le.getEyeY(), le.getZ(), 8, 0.2, 0.1, 0.2, 0.02);
             ArcaneUtil.sound(level, top, SoundEvents.AMETHYST_BLOCK_BREAK, 1.0F, 0.5F);
         }
     }
@@ -213,7 +214,7 @@ public final class ControlEffects {
         }
 
         private static void fx(SpellContext ctx, ServerLevel level, Vec3 at) {
-            level.sendParticles(ParticleTypes.CRIT, at.x, at.y, at.z, 12, 0.2, 0.2, 0.2, 0.25);
+            level.sendParticles(Vfx.crit(), at.x, at.y, at.z, 12, 0.2, 0.2, 0.2, 0.25);
             level.sendParticles(ArcaneUtil.dust(ctx, 1.0F), at.x, at.y, at.z, 8, 0.25, 0.25, 0.25, 0);
             ArcaneUtil.sound(level, at, SoundEvents.SHIELD_BREAK, 0.8F, 1.3F);
         }
@@ -230,7 +231,7 @@ public final class ControlEffects {
         Holder<MobEffect> opposite = grow ? ArcaneRegistries.SHRINK : ArcaneRegistries.GROWTH;
         Vec3 c = ArcaneUtil.center(le);
         if (le.removeEffect(opposite)) {
-            level.sendParticles(ParticleTypes.POOF, c.x, c.y, c.z, 10, 0.3, 0.3, 0.3, 0.02);
+            level.sendParticles(Vfx.poof(), c.x, c.y, c.z, 10, 0.3, 0.3, 0.3, 0.02);
             ArcaneUtil.sound(level, c, SoundEvents.PUFFER_FISH_BLOW_OUT, 1.0F, 1.0F);
             return;
         }
@@ -238,7 +239,7 @@ public final class ControlEffects {
         if (!grow && ArcaneUtil.isBoss(le)) ticks /= 3;
         ctx.status(le, effect, ticks, Mth.clamp(stats.amplify, 0, 1), stats);
         ArcaneUtil.sphere(level, c, le.getBbWidth() * 0.6 + 0.6, ArcaneUtil.dust(ctx, 1.0F), 26);
-        level.sendParticles(ParticleTypes.POOF, c.x, c.y, c.z, 6, 0.3, 0.3, 0.3, 0.02);
+        level.sendParticles(Vfx.poof(), c.x, c.y, c.z, 6, 0.3, 0.3, 0.3, 0.02);
         ArcaneUtil.sound(level, c, grow ? SoundEvents.PUFFER_FISH_BLOW_UP : SoundEvents.PUFFER_FISH_BLOW_OUT, 1.0F, grow ? 0.7F : 1.5F);
     }
 
@@ -293,7 +294,7 @@ public final class ControlEffects {
             for (int i = 0; i < 12; i++) {
                 double a = i * Math.PI / 6;
                 double y = le.getY() + i * le.getBbHeight() / 12.0;
-                level.sendParticles(ParticleTypes.END_ROD, le.getX() + Math.cos(a) * 0.7, y, le.getZ() + Math.sin(a) * 0.7, 1, 0, 0.02, 0, 0.01);
+                level.sendParticles(Vfx.endRod(), le.getX() + Math.cos(a) * 0.7, y, le.getZ() + Math.sin(a) * 0.7, 1, 0, 0.02, 0, 0.01);
             }
             ArcaneUtil.ring(level, le.position().add(0, 0.1, 0), 0.9, ArcaneUtil.dust(0xFFE27A, 1.0F), 16);
             ArcaneUtil.sound(level, c, SoundEvents.BEACON_POWER_SELECT, 0.8F, 1.9F);
@@ -310,7 +311,7 @@ public final class ControlEffects {
                 p.setDeltaMovement(p.getDeltaMovement().scale(0.25));
                 p.hasImpulse = true;
             }
-            level.sendParticles(ParticleTypes.REVERSE_PORTAL, c.x, c.y, c.z, 30, 0.5, 0.6, 0.5, 0.01);
+            level.sendParticles(Vfx.reversePortal(), c.x, c.y, c.z, 30, 0.5, 0.6, 0.5, 0.01);
             ArcaneUtil.ring(level, le.position().add(0, 0.1, 0), 1.0, ArcaneUtil.dust(0x5A6BC8, 1.2F), 18);
             ArcaneUtil.sound(level, c, SoundEvents.BEACON_DEACTIVATE, 0.8F, 0.6F);
         }
@@ -351,7 +352,7 @@ public final class ControlEffects {
                     if (!now.isRandomlyTicking()) break;
                     now.randomTick(level, ip, level.random);
                 }
-                level.sendParticles(ParticleTypes.HAPPY_VILLAGER, ip.getX() + 0.5, ip.getY() + 0.7, ip.getZ() + 0.5, 3, 0.3, 0.2, 0.3, 0);
+                level.sendParticles(Vfx.happy(), ip.getX() + 0.5, ip.getY() + 0.7, ip.getZ() + 0.5, 3, 0.3, 0.2, 0.3, 0);
                 n++;
             }
             if (n > 0) ArcaneUtil.sound(level, hit.getLocation(), SoundEvents.BEACON_POWER_SELECT, 0.6F, 2.0F);
@@ -382,7 +383,7 @@ public final class ControlEffects {
                 p.setDeltaMovement(p.getDeltaMovement().scale(0.25));
                 p.hasImpulse = true;
             }
-            level.sendParticles(ParticleTypes.REVERSE_PORTAL, at.x, at.y + 0.5, at.z, 30, r * 0.5, 0.5, r * 0.5, 0.01);
+            level.sendParticles(Vfx.reversePortal(), at.x, at.y + 0.5, at.z, 30, r * 0.5, 0.5, r * 0.5, 0.01);
             ArcaneUtil.sound(level, at, SoundEvents.BEACON_DEACTIVATE, 0.7F, 0.6F);
         }
     }

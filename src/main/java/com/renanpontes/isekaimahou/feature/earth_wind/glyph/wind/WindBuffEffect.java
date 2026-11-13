@@ -9,6 +9,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -64,7 +65,7 @@ public class WindBuffEffect extends EffectGlyph {
             onInverted(ctx, le, stats);
             ServerLevel level = ctx.level();
             level.sendParticles(ParticleTypes.SMALL_GUST, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 3, 0.3, 0.3, 0.3, 0);
-            level.sendParticles(ParticleTypes.CLOUD, le.getX(), le.getY() + le.getBbHeight() + 0.2, le.getZ(), 8, 0.3, 0.1, 0.3, 0.02);
+            level.sendParticles(Vfx.cloud(), le.getX(), le.getY() + le.getBbHeight() + 0.2, le.getZ(), 8, 0.3, 0.1, 0.3, 0.02);
             EwFx.sound(level, le.position(), SoundEvents.BREEZE_DEFLECT, 0.8F, 0.6F);
             return;
         }

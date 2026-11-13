@@ -42,6 +42,7 @@ public class ClassSteelballModule implements Module {
     @Override
     public void init(IEventBus modBus) {
         SbRegistry.register(modBus);
+        modBus.addListener(SbFxNet::register);
         SbGlyphs.register();
         SbLegends.register();
         modBus.addListener(SbLegends::validate);

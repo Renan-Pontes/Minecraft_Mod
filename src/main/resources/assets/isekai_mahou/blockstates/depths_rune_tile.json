@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "isekai_mahou:block/depths_rune_tile"
+    },
+    "lit=true": {
+      "model": "isekai_mahou:block/depths_rune_tile_on"
+    }
+  }
+}

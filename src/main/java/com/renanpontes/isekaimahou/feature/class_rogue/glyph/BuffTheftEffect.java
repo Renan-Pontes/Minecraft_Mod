@@ -6,6 +6,7 @@ import java.util.List;
 import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueFx;
+import com.renanpontes.isekaimahou.feature.class_rogue.RogueFxNet;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
@@ -67,7 +68,7 @@ public class BuffTheftEffect extends EffectGlyph {
             n++;
         }
         Vec3 b = RogueFx.center(caster);
-        RogueFx.line(level, a, b, RogueFx.dust(RogueFx.GOLD, 1.0F), 0.45);
+        RogueFxNet.at(level, RogueFxNet.DRAIN, a, Vec3.ZERO, 1F, RogueFx.GOLD, caster.getId(), 2);
         level.sendParticles(ParticleTypes.HAPPY_VILLAGER, b.x, b.y + 0.4, b.z, 10, 0.4, 0.5, 0.4, 0.02);
         level.sendParticles(ParticleTypes.WAX_OFF, a.x, a.y, a.z, 10, 0.3, 0.4, 0.3, 0.1);
         RogueFx.sound(level, b, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.3F);

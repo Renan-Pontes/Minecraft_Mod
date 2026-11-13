@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.core.api.Destruction;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -107,8 +108,8 @@ public final class MeteorImpact {
         UltFx.far(level, ParticleTypes.FLASH, at.x, at.y, at.z, 1, 0, 0, 0, 0);
         UltFx.far(level, ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 1, 0.2, 0.2, 0.2, 0);
         UltFx.far(level, ParticleTypes.LAVA, at.x, at.y, at.z, (int) ((10 + 8 * size) * v), 0.6 * size, 0.6 * size, 0.6 * size, 0);
-        UltFx.far(level, ParticleTypes.FLAME, at.x, at.y, at.z, (int) ((30 + 15 * size) * v), 0.8 * size, 0.8 * size, 0.8 * size, 0.15);
-        UltFx.far(level, ParticleTypes.LARGE_SMOKE, at.x, at.y, at.z, (int) ((20 + 10 * size) * v), 1.0 * size, 1.0 * size, 1.0 * size, 0.05);
+        UltFx.far(level, Vfx.flame(), at.x, at.y, at.z, (int) ((30 + 15 * size) * v), 0.8 * size, 0.8 * size, 0.8 * size, 0.15);
+        UltFx.far(level, Vfx.largeSmoke(), at.x, at.y, at.z, (int) ((20 + 10 * size) * v), 1.0 * size, 1.0 * size, 1.0 * size, 0.05);
         UltFx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), (2.5F + size) * volume, 0.6F);
         UltFx.sound(level, at, SoundEvents.GLASS_BREAK, 2.5F * volume, 0.5F);
         BossKit.shake(level, at, 16 + size * 6, Math.min(1.6F, (0.4F + 0.35F * size) * v), 12);
@@ -127,20 +128,23 @@ public final class MeteorImpact {
         UltFx.far(level, ParticleTypes.EXPLOSION_EMITTER, core.x, core.y, core.z, 1 + (int) (size / 1.5F), radius * 0.2, 0.3,
                 radius * 0.2, 0);
         UltFx.far(level, ParticleTypes.LAVA, core.x, core.y, core.z, (int) ((12 + 10 * size) * k), radius * 0.3, 0.4, radius * 0.3, 0);
-        UltFx.far(level, ParticleTypes.FLAME, core.x, core.y + 0.4, core.z, (int) ((30 + 20 * size) * k), radius * 0.45, 0.6,
+        UltFx.far(level, Vfx.flame(), core.x, core.y + 0.4, core.z, (int) ((14 + 10 * size) * k), radius * 0.45, 0.6,
                 radius * 0.45, 0.12);
         UltFx.far(level, new BlockParticleOption(ParticleTypes.BLOCK, ground), core.x, core.y, core.z, (int) ((40 + 30 * size) * k),
                 radius * 0.4, 0.5, radius * 0.4, 0.4);
-        UltFx.far(level, ElementFx.dust(element, 2.4F), core.x, core.y + 1, core.z, (int) ((40 + 20 * size) * k), radius * 0.4,
-                radius * 0.25, radius * 0.4, 0);
-        UltFx.far(level, ElementFx.signature(element), core.x, core.y + 1, core.z, (int) ((20 + 10 * size) * k), radius * 0.35, 0.8,
+        // v1.3: a parte "do elemento" é montada no cliente pelo preset gráfico — nova inteira numa rocha só (Meteoro),
+        // impacto forte em cada rocha da Chuva (k < 1); o tremor já vem de quem chamou
+        if (k >= 0.9F) ElementFx.nova(level, at, element, rgb, Math.min(32F, radius * 1.2F), 5, false);
+        else com.renanpontes.isekaimahou.glyph.fx.FxBurst.send(level, com.renanpontes.isekaimahou.glyph.fx.FxBurst.IMPACT, element, rgb,
+                core, new Vec3(0, 1, 0), Math.min(4F, 0.8F + size * 0.5F), 4, -1, 0);
+        UltFx.far(level, ElementFx.signature(element), core.x, core.y + 1, core.z, (int) ((8 + 4 * size) * k), radius * 0.35, 0.8,
                 radius * 0.35, 0.1);
         // Cogumelo: coluna que sobe (fumaça de fogueira dura bastante) + chapéu de fumaça grossa
         for (int i = 0; i < 4 + (int) (size * 2); i++) {
             UltFx.far(level, ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, core.x, core.y + i * 0.8, core.z, 2, 0.6 + size * 0.2, 0.3,
                     0.6 + size * 0.2, 0.02);
         }
-        UltFx.far(level, ParticleTypes.LARGE_SMOKE, core.x, core.y + 4 + size * 2, core.z, (int) ((30 + 15 * size) * k),
+        UltFx.far(level, Vfx.largeSmoke(), core.x, core.y + 4 + size * 2, core.z, (int) ((30 + 15 * size) * k),
                 1.5 + size, 0.6, 1.5 + size, 0.03);
     }
 

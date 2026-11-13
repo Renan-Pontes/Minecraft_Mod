@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.renanpontes.isekaimahou.glyph.CircleStyle;
 import com.renanpontes.isekaimahou.glyph.fx.FxOptions;
 import com.renanpontes.isekaimahou.glyph.fx.SpellFxParticles;
 
@@ -27,6 +28,10 @@ import net.minecraft.world.phys.Vec3;
  * choque (anel que cresce). Cada uma é desenhada duas vezes: uma camada translúcida (aparece de dia) e um "gêmeo"
  * aditivo (brilha). Círculos com {@link SpellFxParticles#FLAG_KEEPALIVE} não se duplicam: um novo pacote igual só
  * estende a vida do que já existe (a conjuração manda um a cada poucos ticks).
+ * <p>
+ * release 1.0: o círculo principal pode vir com forma e símbolo escolhidos na receita ({@link CircleStyle}, nos bits
+ * altos das flags) — a forma troca a arte, o símbolo é um segundo quadro no centro que NÃO gira (fica de pé para
+ * quem conjura). O círculo aos pés também avisa a {@link ChannelAura} enquanto a conjuração é segurada.
  */
 public class FlatFxParticle extends Particle {
     private static final Map<Long, FlatFxParticle> LIVE = new HashMap<>();
@@ -43,6 +48,9 @@ public class FlatFxParticle extends Particle {
     private final boolean reverse;
     private final Vec3 normal;
     private final TextureAtlasSprite sprite;
+    /** Símbolo do centro (círculo por magia), ou null. */
+    @Nullable
+    private final TextureAtlasSprite symbol;
     private final float baseAlpha;
     private final float spinSpeed;
     private final float angle0;
@@ -52,8 +60,9 @@ public class FlatFxParticle extends Particle {
     private boolean lost;
 
     FlatFxParticle(ClientLevel level, double x, double y, double z, double vx, double vy, double vz, FxOptions o,
-                   TextureAtlasSprite sprite, boolean shock, boolean additive) {
+                   TextureAtlasSprite sprite, @Nullable TextureAtlasSprite symbol, boolean shock, boolean additive) {
         super(level, x, y, z);
+        this.symbol = symbol;
         this.shock = shock;
         this.additive = additive;
         this.rgb = o.rgb();
@@ -97,9 +106,23 @@ public class FlatFxParticle extends Particle {
                 return null;
             }
         }
-        TextureAtlasSprite sprite = shock ? sprites.get(level.random) : sprites.get(SpellFxParticles.layerOf(o.flags()), 3);
-        FlatFxParticle main = new FlatFxParticle(level, x, y, z, vx, vy, vz, o, sprite, shock, false);
-        FlatFxParticle glow = new FlatFxParticle(level, x, y, z, vx, vy, vz, o, sprite, shock, true);
+        int layer = SpellFxParticles.layerOf(o.flags());
+        TextureAtlasSprite sprite = shock ? sprites.get(level.random) : sprites.get(layer, 3);
+        TextureAtlasSprite symbol = null;
+        if (!shock && (layer == 0 || layer == 3)) {
+            // Círculo por magia: forma e símbolo da receita (só na camada principal; selos e camadas extras não mudam)
+            int shape = CircleStyle.shapeOf(o.flags());
+            int sym = CircleStyle.symbolOf(o.flags());
+            if (sym > 0) symbol = SpellFxClient.styleSprite(CircleStyle.SHAPES + sym - 1);
+            // com símbolo e forma padrão usa a forma 1 (igual ao círculo padrão, com o centro livre)
+            if (shape == 0 && symbol != null) shape = 1;
+            if (shape > 0) {
+                TextureAtlasSprite s = SpellFxClient.styleSprite(shape - 1);
+                if (s != null) sprite = s;
+            }
+        }
+        FlatFxParticle main = new FlatFxParticle(level, x, y, z, vx, vy, vz, o, sprite, symbol, shock, false);
+        FlatFxParticle glow = new FlatFxParticle(level, x, y, z, vx, vy, vz, o, sprite, symbol, shock, true);
         // os dois giram juntos
         glow.syncAngle(main);
         main.twin = glow;
@@ -135,6 +158,12 @@ public class FlatFxParticle extends Particle {
         }
         updateCenter(1.0F);
         setPos(center.x, center.y, center.z);
+        // Conjuração segurada por bastante tempo: aura discreta em volta de quem conjura (opção do cliente)
+        if (!shock && !additive && !release && !lost && follow >= 0 && mode == SpellFxParticles.MODE_GROUND
+                && (layer == 0 || layer == 3) && age >= ChannelAura.LONG_HOLD) {
+            Entity caster = level.getEntity(follow);
+            if (caster != null) ChannelAura.castTick(level, caster, rgb, tier, age);
+        }
         // Círculo de conjuração ativo: runas e brilho subindo da borda
         if (!shock && !additive && !release && follow >= 0 && tier >= 1 && mode == SpellFxParticles.MODE_GROUND
                 && random.nextFloat() < 0.18F + 0.08F * tier && SpellFxParticles.RUNE.isBound()) {
@@ -225,6 +254,23 @@ public class FlatFxParticle extends Particle {
         Vec3[] ax = FxDraw.spin(uv[0], uv[1], shock ? 0F : ang, r);
         int col = additive ? FxDraw.lighten(rgb, 0.2F) : rgb;
         FxDraw.quad(vc, cx, cy, cz, ax[0], ax[1], sprite, FxDraw.r(col), FxDraw.g(col), FxDraw.b(col), a, FxRenderTypes.FULL_BRIGHT);
+
+        if (symbol != null) {
+            // Símbolo no centro: não gira. No chão fica "de pé" para quem conjura (topo para onde ele olha);
+            // na frente da mão fica de pé no plano do círculo.
+            Vec3 right = uv[0], up = uv[1];
+            if (mode == SpellFxParticles.MODE_GROUND || mode == SpellFxParticles.MODE_SKY) {
+                Vec3 f = e != null ? e.getViewVector(pt).multiply(1, 0, 1) : Vec3.ZERO;
+                f = f.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : f.normalize();
+                up = f;
+                right = new Vec3(-f.z, 0, f.x);
+            }
+            float sr = r * 0.34F;
+            int sc = FxDraw.lighten(col, 0.25F);
+            float lift = mode == SpellFxParticles.MODE_GROUND ? 0.004F : 0F;
+            FxDraw.quad(vc, cx, cy + lift, cz, right.scale(sr), up.scale(sr), symbol, FxDraw.r(sc), FxDraw.g(sc), FxDraw.b(sc),
+                    Math.min(1F, a * 1.15F), FxRenderTypes.FULL_BRIGHT);
+        }
     }
 
     @Override

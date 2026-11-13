@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.core.classes.ResourceTraining;
 import com.renanpontes.isekaimahou.feature.automation.AutoFx;
 import com.renanpontes.isekaimahou.feature.automation.AutoRegistries;
 import com.renanpontes.isekaimahou.feature.automation.ManaNet;
+import com.renanpontes.isekaimahou.feature.automation.WirelessMana;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -62,6 +63,8 @@ public class ManaCondenserBlockEntity extends BaseContainerBlockEntity implement
     private int burnLeft;
     private int burnTotal;
     private int batteries;
+    /** v1.5: Núcleo de Mana ligado pelo Condutor: a reserva vai para ele primeiro (sem a chave = sem núcleo). */
+    @Nullable private BlockPos corePos;
     private int stored;
     private int litHold;
 
@@ -191,12 +194,43 @@ public class ManaCondenserBlockEntity extends BaseContainerBlockEntity implement
         return false;
     }
 
-    /** Manda a reserva para as baterias (as mais vazias primeiro). */
+    @Nullable public BlockPos corePos() { return corePos; }
+
+    /** v1.5: liga a um Núcleo de Mana (null = desfaz). Quem chama confere alcance e mundo. */
+    public void setCorePos(@Nullable BlockPos pos) {
+        corePos = pos == null ? null : pos.immutable();
+        setChanged();
+    }
+
+    /** v1.5: manda a reserva para o Núcleo ligado (sem perda: o condensador "empurra" o mana). */
+    private boolean sendToCore(ServerLevel level, boolean showFlow) {
+        if (corePos == null || buffer <= 0 || !WirelessMana.inRange(worldPosition, corePos)) return false;
+        WirelessMana core = WirelessMana.at(level, corePos);
+        if (core == null) return false;
+        int put = core.insert(Math.min(buffer, SEND_PER_PULSE));
+        if (put <= 0) return false;
+        buffer -= put;
+        if (showFlow) {
+            AutoFx.line(level, Vec3.atCenterOf(worldPosition).add(0, 0.55, 0), Vec3.atCenterOf(corePos).add(0, 0.4, 0),
+                    AutoFx.dust(AutoFx.MANA_RGB, 0.8F), 1.0);
+        }
+        return true;
+    }
+
+    /** Manda a reserva para as baterias (as mais vazias primeiro). v1.5: o Núcleo ligado recebe antes. */
     private boolean sendToBatteries(ServerLevel level, boolean showFlow) {
+        boolean sentToCore = sendToCore(level, showFlow);
         List<ManaBatteryBlockEntity> list = ManaNet.batteries(level, worldPosition);
         batteries = list.size();
         stored = ManaNet.total(list);
-        if (buffer <= 0 || list.isEmpty()) return false;
+        // O Núcleo ligado conta na tela como mais uma "bateria" (com o mana dele no total)
+        WirelessMana core = corePos != null && WirelessMana.inRange(worldPosition, corePos) ? WirelessMana.at(level, corePos) : null;
+        int coreMana = core != null ? core.mana() : 0;
+        if (core != null) {
+            batteries++;
+            stored = (int) Math.min(Integer.MAX_VALUE, (long) stored + coreMana);
+        }
+        if (buffer <= 0 || list.isEmpty()) return sentToCore;
         list.sort(Comparator.comparingInt(ManaBatteryBlockEntity::mana));
         int budget = Math.min(buffer, SEND_PER_PULSE);
         ManaBatteryBlockEntity firstTarget = null;
@@ -207,8 +241,8 @@ public class ManaCondenserBlockEntity extends BaseContainerBlockEntity implement
             buffer -= put;
             if (budget <= 0) break;
         }
-        if (firstTarget == null) return false;
-        stored = ManaNet.total(list);
+        if (firstTarget == null) return sentToCore;
+        stored = (int) Math.min(Integer.MAX_VALUE, (long) ManaNet.total(list) + coreMana);
         if (showFlow) {
             Vec3 from = Vec3.atCenterOf(worldPosition).add(0, 0.55, 0);
             Vec3 to = Vec3.atCenterOf(firstTarget.getBlockPos());
@@ -273,6 +307,7 @@ public class ManaCondenserBlockEntity extends BaseContainerBlockEntity implement
         tag.putInt("BurnMana", burnMana);
         tag.putInt("BurnLeft", burnLeft);
         tag.putInt("BurnTotal", burnTotal);
+        if (corePos != null) tag.putLong("CorePos", corePos.asLong());
     }
 
     @Override
@@ -284,5 +319,6 @@ public class ManaCondenserBlockEntity extends BaseContainerBlockEntity implement
         burnMana = Math.max(0, tag.getInt("BurnMana"));
         burnLeft = Math.max(0, tag.getInt("BurnLeft"));
         burnTotal = Math.max(0, tag.getInt("BurnTotal"));
+        corePos = tag.contains("CorePos") ? BlockPos.of(tag.getLong("CorePos")) : null;
     }
 }

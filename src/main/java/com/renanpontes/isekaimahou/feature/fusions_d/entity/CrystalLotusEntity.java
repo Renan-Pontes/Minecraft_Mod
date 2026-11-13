@@ -6,6 +6,7 @@ import com.renanpontes.isekaimahou.feature.fusions_d.FdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -100,7 +101,7 @@ public class CrystalLotusEntity extends FdSpellEntity {
     protected void clientTick() {
         if (random.nextInt(2) == 0) {
             double a = random.nextDouble() * Math.PI * 2, r = 0.4 + random.nextDouble() * 1.4;
-            level().addParticle(ParticleTypes.END_ROD, getX() + Math.cos(a) * r, getY() + 0.3 + random.nextDouble(), getZ() + Math.sin(a) * r,
+            level().addParticle(Vfx.endRod(), getX() + Math.cos(a) * r, getY() + 0.3 + random.nextDouble(), getZ() + Math.sin(a) * r,
                     0, 0.02, 0);
         }
     }

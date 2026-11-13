@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.feature.fusions_a.effect.FaEffects;
 import com.renanpontes.isekaimahou.feature.fusions_a.entity.FusionZoneEntity;
 import com.renanpontes.isekaimahou.feature.fusions_a.entity.SummonedEnt;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -58,7 +59,7 @@ public final class FaRegistries {
                     .pushReaction(PushReaction.BLOCK).isValidSpawn((s, l, p, t) -> false)
                     .isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false)
                     .isViewBlocking((s, l, p) -> false),
-                    Blocks.AIR::defaultBlockState, () -> ParticleTypes.SNOWFLAKE));
+                    Blocks.AIR::defaultBlockState, () -> Vfx.snowflake()));
 
     /** Gelo liso que substitui o chão (Chão Escorregadio). */
     public static final DeferredBlock<FaTempBlock> SLICK_ICE = BLOCKS.register("slick_ice",

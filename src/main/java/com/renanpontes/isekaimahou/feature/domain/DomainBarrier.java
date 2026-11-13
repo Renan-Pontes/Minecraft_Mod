@@ -13,6 +13,7 @@ import com.renanpontes.isekaimahou.core.event.SpellDamageEvent;
 import com.renanpontes.isekaimahou.feature.domain.entity.DomainDomeEntity;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -180,22 +181,22 @@ public final class DomainBarrier implements Domains.BarrierHandler {
     public static void crackFx(ServerLevel sl, DomainDomeEntity dome, Vec3 at, float fraction, boolean fromInside) {
         BlockParticleOption glass = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.GLASS.defaultBlockState());
         DomainFx.far(sl, glass, at.x, at.y, at.z, 14, 0.5, 0.5, 0.5, 0.12);
-        DomainFx.far(sl, ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, 12, 0.4, 0.4, 0.4, 0.25);
-        DomainFx.far(sl, dome.isInverted() ? ParticleTypes.REVERSE_PORTAL : ElementFx.dust(dome.element(), 1.8F),
+        DomainFx.far(sl, Vfx.electric(), at.x, at.y, at.z, 12, 0.4, 0.4, 0.4, 0.25);
+        DomainFx.far(sl, dome.isInverted() ? Vfx.reversePortal() : ElementFx.dust(dome.element(), 1.8F),
                 at.x, at.y, at.z, 10, 0.6, 0.6, 0.6, 0.02);
         float pitch = 0.45F + 0.6F * fraction;
         sl.playSound(null, at.x, at.y, at.z, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.PLAYERS, 1.6F, pitch);
         sl.playSound(null, at.x, at.y, at.z, SoundEvents.GLASS_HIT, SoundSource.PLAYERS, 1.4F, pitch * 0.8F);
         if (fraction < 0.3F) {
             sl.playSound(null, at.x, at.y, at.z, SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 1.0F, 0.5F + fraction);
-            DomainFx.far(sl, ParticleTypes.CRIT, at.x, at.y, at.z, 10, 0.8, 0.8, 0.8, 0.3);
+            DomainFx.far(sl, Vfx.crit(), at.x, at.y, at.z, 10, 0.8, 0.8, 0.8, 0.3);
         }
     }
 
     /** A barreira aguentou (lado que não quebra, ou invertida contra o domínio de fora). */
     public static void holdFx(ServerLevel sl, DomainDomeEntity dome, Vec3 at) {
-        sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, 10, 0.3, 0.3, 0.3, 0.15);
-        sl.sendParticles(dome.isInverted() ? ParticleTypes.REVERSE_PORTAL : ParticleTypes.SMOKE, at.x, at.y, at.z, 6, 0.3, 0.3, 0.3, 0.02);
+        sl.sendParticles(Vfx.electric(), at.x, at.y, at.z, 10, 0.3, 0.3, 0.3, 0.15);
+        sl.sendParticles(dome.isInverted() ? Vfx.reversePortal() : Vfx.smoke(), at.x, at.y, at.z, 6, 0.3, 0.3, 0.3, 0.02);
         sl.playSound(null, at.x, at.y, at.z, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 0.8F, 0.5F);
     }
 

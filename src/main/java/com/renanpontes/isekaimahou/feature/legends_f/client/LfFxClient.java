@@ -12,9 +12,11 @@ import org.joml.Vector3f;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.feature.legends_f.LfNet;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -63,11 +65,7 @@ public final class LfFxClient {
     }
 
     private static boolean reduced() {
-        try {
-            return MahouConfig.REDUCED_PARTICLES.get();
-        } catch (RuntimeException e) {
-            return false;
-        }
+        return !FxQuality.atLeast(MahouConfig.Graphics.HIGH);
     }
 
     private static void checkLevel() {
@@ -135,10 +133,10 @@ public final class LfFxClient {
             Entity ent = level.getEntity(en.getKey());
             if (ent == null) continue;
             if (has(en.getKey(), LfNet.S_CHAINSAW) && level.random.nextInt(3) == 0) {
-                level.addParticle(ParticleTypes.SMOKE, ent.getX(), ent.getY() + ent.getBbHeight() + 0.2, ent.getZ(), 0, 0.03, 0);
+                level.addParticle(Vfx.smoke(), ent.getX(), ent.getY() + ent.getBbHeight() + 0.2, ent.getZ(), 0, 0.03, 0);
             }
             if (has(en.getKey(), LfNet.S_SAGE) && level.random.nextInt(2) == 0) {
-                level.addParticle(ParticleTypes.WAX_ON, ent.getX() + level.random.nextGaussian() * 0.3, ent.getY() + level.random.nextDouble() * ent.getBbHeight(),
+                level.addParticle(Vfx.waxOn(), ent.getX() + level.random.nextGaussian() * 0.3, ent.getY() + level.random.nextDouble() * ent.getBbHeight(),
                         ent.getZ() + level.random.nextGaussian() * 0.3, 0, 0.02, 0);
             }
             if (has(en.getKey(), LfNet.S_CONCEAL) && level.random.nextInt(4) == 0) {

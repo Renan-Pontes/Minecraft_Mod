@@ -4,6 +4,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightFx;
+import com.renanpontes.isekaimahou.feature.class_knight.KnightFxNet;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightPower;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightSkyfall;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
@@ -61,9 +62,7 @@ public class JudgmentEffect extends EffectGlyph {
         ctx.damage(le, base, stats, null);
         if (le.isAlive()) Statuses.apply(le, Statuses.Kind.STUNNED, 1, stats.duration(20), ctx.caster(), ctx.powerMult());
         Vec3 p = le.position();
-        KnightFx.runeCircle(level, p, 2.2, KnightFx.GOLD, 36, 0F);
-        level.sendParticles(ParticleTypes.FLASH, p.x, p.y + 1, p.z, 1, 0, 0, 0, 0);
-        level.sendParticles(KnightFx.dust(0xFFFFFF, 2.0F), p.x, p.y + 1, p.z, 24, 0.5, 1.0, 0.5, 0);
+        KnightFxNet.at(level, KnightFxNet.JUDGMENT, p, Vec3.ZERO, 1F, KnightFx.GOLD, le.getId());
         KnightFx.sound(level, p, SoundEvents.ANVIL_LAND, 1.0F, 0.5F);
         KnightFx.sound(level, p, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.8F, 1.3F);
     }

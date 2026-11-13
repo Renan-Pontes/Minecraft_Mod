@@ -1262,6 +1262,14 @@ def build_lich():
     for x0, rz in ((-6, 12), (3, -12)):
         m.cube("body", (x0, 24, -3), (3, 3, 6), P(bone_c, deco=chain(rim(bone_d), speckle(bone_d, 0.1, 5))), rotation=[0, 0, rz],
                pivot=[x0 + 1.5, 25, 0], inflate=0.1)
+    # v1.3: cristais de gelo da cripta nas ombreiras e almas presas orbitando o peito (a Alma Drenada)
+    ice = "#BFEFFF"
+    for x0, rz in ((-5.5, 20), (4.5, -20)):
+        for k, (dz, h) in enumerate(((-2, 3), (0.5, 4), (2.5, 2))):
+            m.cube("body", (x0, 27, dz), (1, h, 1), P(ice, deco=glow_faces(ice, core=soul_l)), rotation=[0, 0, rz],
+                   pivot=[x0 + 0.5, 27, dz + 0.5])
+    for pos in ((-6.5, 20, -3.5), (5.5, 22, -3), (-1, 14, -4.5)):
+        m.cube("body", pos, (1, 1, 1), P(soul, deco=glow_faces(soul, core=soul_l)), inflate=0.1)
     # gola alta
     m.cube("body", (-4.5, 25, 1.5), (9, 7, 2), P(robe_d, deco=chain(rim(gold, bottom=False), folds(darken(H(robe_d), 0.2), step=2))),
            rotation=[-12, 0, 0], pivot=[0, 26, 2])

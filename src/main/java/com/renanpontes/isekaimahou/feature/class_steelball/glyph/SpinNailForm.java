@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.feature.class_steelball.glyph;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbFx;
+import com.renanpontes.isekaimahou.feature.class_steelball.SbFxNet;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbProgress;
 import com.renanpontes.isekaimahou.feature.class_steelball.entity.SpinNailEntity;
 import com.renanpontes.isekaimahou.glyph.CoreGlyphs;
@@ -82,7 +83,7 @@ public class SpinNailForm extends FormGlyph {
                 if (s.spread) yaw = (ctx.random().nextFloat() - 0.5F) * 30F;
                 Vec3 d = CoreGlyphs.rotate(look, yaw, pitch);
                 level.addFreshEntity(SpinNailEntity.spell(nailCtx, from, d, speed, act, golden));
-                SbFx.sound(level, from, SoundEvents.ARROW_SHOOT, 0.45F, 1.8F + idx * 0.03F);
+                SbFxNet.at(level, SbFxNet.NAIL_FIRE, from, d, act, golden ? SbFx.GOLD : SbFx.NAIL, caster.getId());
                 if (idx == 0 && !staged) caster.swing(InteractionHand.MAIN_HAND, true);
             };
             if (i == 0) shot.run();

@@ -25,9 +25,12 @@ public final class OnboardCore {
         bus.addListener(TravelService::onDimension);
         bus.addListener(TravelService::onLogout);
         bus.addListener(OnboardService::onLogout);
+        // v1.0: quem ainda está criando o personagem fica protegido e a tela certa reabre sozinha
+        EntryGuard.init(bus);
         // Estado estático limpo ao parar o servidor (mundo novo no mesmo jogo começa do zero)
         bus.addListener((ServerStoppedEvent e) -> {
             OnboardTasks.clear();
+            EntryGuard.clear();
             DialogueService.clear();
             TravelService.clear();
         });

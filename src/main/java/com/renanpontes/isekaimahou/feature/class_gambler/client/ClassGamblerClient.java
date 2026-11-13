@@ -27,6 +27,7 @@ public class ClassGamblerClient implements ClientModule {
     public void initClient(IEventBus modBus) {
         modBus.addListener(ClassGamblerClient::renderers);
         modBus.addListener(ClassGamblerClient::layers);
+        GbFxClient.init();
         GbNet.onRoll = GbClientState::onRoll;
         GbNet.onJackpot = GbClientState::onJackpot;
         GbNet.onChallenge = GbClientState::onChallenge;

@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.feature.class_knight.glyph;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightFx;
+import com.renanpontes.isekaimahou.feature.class_knight.KnightFxNet;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightMarks;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightPower;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
@@ -41,8 +42,7 @@ public class RuneMarkEffect extends EffectGlyph {
         if (!(target instanceof LivingEntity le)) return;
         ctx.damage(le, 3F * KnightPower.mult(ctx), stats, null);
         Vec3 c = KnightFx.center(le);
-        ctx.level().sendParticles(KnightFx.dust(KnightFx.RUNE_BLUE, 1.0F), c.x, c.y, c.z, 10, 0.3, 0.4, 0.3, 0);
-        ctx.level().sendParticles(ParticleTypes.ENCHANT, c.x, c.y + 0.5, c.z, 12, 0.3, 0.3, 0.3, 0.5);
+        KnightFxNet.at(ctx.level(), KnightFxNet.RUNE_MARK, c, Vec3.ZERO, 1F, KnightFx.RUNE_BLUE, le.getId());
         if (!le.isAlive()) return;
         KnightMarks.add(le, ctx, stats, stats.amplify > 0 ? 2 : 1, stats.duration(200));
     }

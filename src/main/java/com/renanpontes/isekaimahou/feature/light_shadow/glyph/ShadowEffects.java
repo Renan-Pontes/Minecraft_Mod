@@ -17,6 +17,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -88,7 +89,7 @@ public final class ShadowEffects {
             if (amp > 0) ctx.status(le, MobEffects.DIG_SLOWDOWN, 200, 0, stats);
             ctx.damage(le, 1.5F, stats, null);
             ctx.level().sendParticles(LsFx.dust(LsFx.DEEP_VIOLET, 1.2F), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 14, 0.3, 0.4, 0.3, 0);
-            ctx.level().sendParticles(ParticleTypes.SQUID_INK, le.getX(), le.getY() + le.getBbHeight() * 0.7, le.getZ(), 4, 0.2, 0.2, 0.2, 0.02);
+            ctx.level().sendParticles(Vfx.ink(), le.getX(), le.getY() + le.getBbHeight() * 0.7, le.getZ(), 4, 0.2, 0.2, 0.2, 0.02);
             LsFx.sound(ctx.level(), le.position(), SoundEvents.WITCH_CELEBRATE, 0.4F, 0.6F);
         }
     }
@@ -131,7 +132,7 @@ public final class ShadowEffects {
             if (e instanceof Mob mob) LsAi.clearTarget(mob);
             // Foge já, sem esperar o próximo tick do efeito (o alvo nunca é o próprio conjurador)
             if (e instanceof PathfinderMob pm && e.hasEffect(LsRegistries.SHADOW_FEAR)) LsAi.ensureFlee(pm);
-            ctx.level().sendParticles(ParticleTypes.SCULK_SOUL, e.getX(), e.getEyeY() + 0.3, e.getZ(), 5, 0.2, 0.2, 0.2, 0.03);
+            ctx.level().sendParticles(Vfx.sculkSoul(), e.getX(), e.getEyeY() + 0.3, e.getZ(), 5, 0.2, 0.2, 0.2, 0.03);
         }
     }
 
@@ -150,8 +151,8 @@ public final class ShadowEffects {
             ctx.status(le, MobEffects.DARKNESS, 160, 0, stats);
             ctx.status(le, MobEffects.BLINDNESS, 80, 0, stats);
             if (!(le instanceof Player)) ctx.status(le, LsRegistries.HOLY_DAZZLE, LsUtil.isBoss(le) ? 15 : 80, 0, stats);
-            level.sendParticles(ParticleTypes.SQUID_INK, le.getX(), le.getEyeY(), le.getZ(), 30, 0.4, 0.4, 0.4, 0.05);
-            level.sendParticles(ParticleTypes.LARGE_SMOKE, le.getX(), le.getEyeY(), le.getZ(), 12, 0.4, 0.3, 0.4, 0.01);
+            level.sendParticles(Vfx.ink(), le.getX(), le.getEyeY(), le.getZ(), 30, 0.4, 0.4, 0.4, 0.05);
+            level.sendParticles(Vfx.largeSmoke(), le.getX(), le.getEyeY(), le.getZ(), 12, 0.4, 0.3, 0.4, 0.01);
             LsFx.sound(level, le.position(), SoundEvents.WARDEN_NEARBY_CLOSE, 0.8F, 1.0F);
         }
     }
@@ -285,7 +286,7 @@ public final class ShadowEffects {
             int amp = p >= 1.8F ? 2 : p >= 1.35F ? 1 : 0;
             ctx.status(le, CoreRegistries.CORRUPTED, 200, amp, stats);
             ctx.status(le, MobEffects.UNLUCK, 400, 0, stats);
-            ctx.level().sendParticles(ParticleTypes.WITCH, le.getX(), le.getY() + le.getBbHeight() * 0.6, le.getZ(), 16, 0.3, 0.4, 0.3, 0.05);
+            ctx.level().sendParticles(Vfx.witch(), le.getX(), le.getY() + le.getBbHeight() * 0.6, le.getZ(), 16, 0.3, 0.4, 0.3, 0.05);
             LsFx.spiral(ctx.level(), le, LsFx.dust(0x5A1E7A, 1.1F), 20, le.getBbWidth() * 0.6 + 0.3);
             LsFx.sound(ctx.level(), le.position(), SoundEvents.ELDER_GUARDIAN_CURSE, 0.35F, 1.3F);
         }
@@ -368,7 +369,7 @@ public final class ShadowEffects {
                 level.addFreshEntity(shadow);
                 if (foe != null && !ctx.isAlly(foe)) shadow.setTarget(foe);
                 LsFx.shadowPuff(level, p, 1.8);
-                level.sendParticles(ParticleTypes.SCULK_SOUL, p.x, p.y + 0.2, p.z, 10, 0.4, 0.1, 0.4, 0.04);
+                level.sendParticles(Vfx.sculkSoul(), p.x, p.y + 0.2, p.z, 10, 0.4, 0.1, 0.4, 0.04);
             }
             LsFx.sound(level, at, SoundEvents.ILLUSIONER_PREPARE_MIRROR, 1.0F, 0.6F);
             LsFx.sound(level, at, SoundEvents.SCULK_CATALYST_BLOOM, 1.0F, 0.6F);
@@ -403,10 +404,10 @@ public final class ShadowEffects {
             for (int i = 0; i < 16; i++) {
                 double a = Math.PI * 2 * i / 16;
                 double r = le.getBbWidth() + 0.8;
-                level.sendParticles(ParticleTypes.SQUID_INK, c.x + Math.cos(a) * r, c.y + Math.sin(a * 2) * 0.3, c.z + Math.sin(a) * r,
+                level.sendParticles(Vfx.ink(), c.x + Math.cos(a) * r, c.y + Math.sin(a * 2) * 0.3, c.z + Math.sin(a) * r,
                         0, -Math.cos(a), 0, -Math.sin(a), 0.25);
             }
-            level.sendParticles(ParticleTypes.SCULK_SOUL, c.x, c.y, c.z, 10, 0.3, 0.3, 0.3, 0.05);
+            level.sendParticles(Vfx.sculkSoul(), c.x, c.y, c.z, 10, 0.3, 0.3, 0.3, 0.05);
             LsFx.sound(level, le.position(), SoundEvents.WARDEN_ATTACK_IMPACT, 1.0F, 0.7F);
             LsFx.sound(level, le.position(), SoundEvents.GENERIC_EAT, 1.0F, 0.5F);
         }
@@ -486,7 +487,7 @@ public final class ShadowEffects {
                 if (!stolen.isEmpty()) LsFx.line(level, LsFx.mid(le), LsFx.mid(caster), LsFx.fade(LsFx.GOLD, LsFx.VIOLET, 1.0F), 5);
             }
             ctx.damage(le, 2.0F, stats, null);
-            level.sendParticles(ParticleTypes.WITCH, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 10 + 6 * stolen.size(), 0.3, 0.4, 0.3, 0.05);
+            level.sendParticles(Vfx.witch(), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 10 + 6 * stolen.size(), 0.3, 0.4, 0.3, 0.05);
             LsFx.sound(level, le.position(), stolen.isEmpty() ? SoundEvents.VEX_AMBIENT : SoundEvents.ILLUSIONER_CAST_SPELL, 1.0F, 0.7F);
         }
     }
@@ -510,8 +511,8 @@ public final class ShadowEffects {
             ctx.status(le, MobEffects.MOVEMENT_SLOWDOWN, 160, 1, stats);
             // O pavor dura o pesadelo inteiro
             Fear.frighten(ctx, le, ctx.caster() != null ? ctx.caster().position() : le.position(), stats, 200);
-            level.sendParticles(ParticleTypes.SCULK_SOUL, le.getX(), le.getEyeY() + 0.3, le.getZ(), 12, 0.4, 0.3, 0.4, 0.05);
-            level.sendParticles(ParticleTypes.SQUID_INK, le.getX(), le.getEyeY(), le.getZ(), 16, 0.4, 0.4, 0.4, 0.03);
+            level.sendParticles(Vfx.sculkSoul(), le.getX(), le.getEyeY() + 0.3, le.getZ(), 12, 0.4, 0.3, 0.4, 0.05);
+            level.sendParticles(Vfx.ink(), le.getX(), le.getEyeY(), le.getZ(), 16, 0.4, 0.4, 0.4, 0.03);
             if (le instanceof ServerPlayer sp) sp.playNotifySound(SoundEvents.WARDEN_NEARBY_CLOSEST, net.minecraft.sounds.SoundSource.HOSTILE, 1.0F, 0.6F);
             LsFx.sound(level, le.position(), SoundEvents.WARDEN_HEARTBEAT, 1.5F, 0.6F);
         }
@@ -555,7 +556,10 @@ public final class ShadowEffects {
             LsAi.ensurePossessed(mob);
             LsFx.line(level, LsFx.mid(caster), LsFx.mid(mob), LsFx.fade(LsFx.VIOLET, LsFx.DEEP_VIOLET, 1.2F), 5);
             LsFx.spiral(level, mob, LsFx.dust(LsFx.VIOLET, 1.3F), 30, mob.getBbWidth() * 0.6 + 0.4);
-            level.sendParticles(ParticleTypes.SOUL, mob.getX(), mob.getY() + mob.getBbHeight(), mob.getZ(), 12, 0.3, 0.3, 0.3, 0.05);
+            // v1.3: a sombra do alvo vira um portal sob os pés e uma aura violeta marca o novo servo
+            com.renanpontes.isekaimahou.core.ElementFx.portal(level, mob.position().add(0, 0.06, 0), null, Element.SHADOW, LsFx.VIOLET, Math.max(1.2F, mob.getBbWidth() * 1.2F), 4, 30);
+            com.renanpontes.isekaimahou.core.ElementFx.aura(level, mob, Element.SHADOW, LsFx.VIOLET, 1.0F, 3, 100);
+            level.sendParticles(Vfx.soul(), mob.getX(), mob.getY() + mob.getBbHeight(), mob.getZ(), 12, 0.3, 0.3, 0.3, 0.05);
             LsFx.sound(level, mob.position(), SoundEvents.EVOKER_PREPARE_WOLOLO, 1.0F, 0.6F);
             LsFx.sound(level, mob.position(), SoundEvents.WITHER_AMBIENT, 0.4F, 1.5F);
             if (sp != null) {

@@ -7,8 +7,8 @@ import java.util.UUID;
 import com.renanpontes.isekaimahou.feature.origins_a.OaData;
 import com.renanpontes.isekaimahou.feature.origins_a.OaUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -79,7 +79,7 @@ public class TeleportCircleEntity extends OriginRuneEntity {
             double a = age * 0.15;
             for (int i = 0; i < 4; i++) {
                 double ang = a + i * Math.PI / 2;
-                level.sendParticles(linked() ? ParticleTypes.PORTAL : ParticleTypes.ENCHANT,
+                level.sendParticles(linked() ? Vfx.portal() : Vfx.enchant(),
                         getX() + Math.cos(ang) * RADIUS * 0.9, getY() + 0.1, getZ() + Math.sin(ang) * RADIUS * 0.9,
                         2, 0.02, 0.05, 0.02, 0.1);
             }
@@ -101,7 +101,7 @@ public class TeleportCircleEntity extends OriginRuneEntity {
 
     /** Some com efeito (substituído ou desfeito). */
     public void vanish(ServerLevel level) {
-        level.sendParticles(ParticleTypes.REVERSE_PORTAL, getX(), getY() + 0.2, getZ(), 40, 0.6, 0.1, 0.6, 0.05);
+        level.sendParticles(Vfx.reversePortal(), getX(), getY() + 0.2, getZ(), 40, 0.6, 0.1, 0.6, 0.05);
         level.playSound(null, getX(), getY(), getZ(), SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 0.7F, 1.5F);
         discard();
     }
@@ -120,7 +120,7 @@ public class TeleportCircleEntity extends OriginRuneEntity {
         if (random.nextInt(linked() ? 3 : 8) != 0) return;
         double a = random.nextDouble() * Math.PI * 2;
         double d = random.nextDouble() * RADIUS;
-        level().addParticle(linked() ? ParticleTypes.REVERSE_PORTAL : ParticleTypes.ENCHANT,
+        level().addParticle(linked() ? Vfx.reversePortal() : Vfx.enchant(),
                 getX() + Math.cos(a) * d, getY() + 0.05, getZ() + Math.sin(a) * d, 0, 0.04, 0);
     }
 

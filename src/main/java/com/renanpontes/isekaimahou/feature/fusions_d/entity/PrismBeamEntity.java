@@ -12,7 +12,7 @@ import com.renanpontes.isekaimahou.feature.fusions_d.FdRegistries;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -135,7 +135,7 @@ public class PrismBeamEntity extends FdSpellEntity {
             hit(le, dmg, el);
             if (color == 3) le.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 0), owner());
             if (color == 6) Statuses.apply(le, Statuses.Kind.EXPOSED, 1, 60, owner(), 1F);
-            sl.sendParticles(color < 0 ? ParticleTypes.END_ROD : FdFx.dust(COLORS[color], 1.2F), c.x, c.y, c.z, 3, 0.2, 0.2, 0.2, 0.02);
+            sl.sendParticles(color < 0 ? Vfx.endRod() : FdFx.dust(COLORS[color], 1.2F), c.x, c.y, c.z, 3, 0.2, 0.2, 0.2, 0.02);
         }
     }
 }

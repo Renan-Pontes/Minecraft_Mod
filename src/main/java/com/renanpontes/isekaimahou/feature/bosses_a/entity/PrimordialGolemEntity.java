@@ -68,7 +68,13 @@ public class PrimordialGolemEntity extends ElementalGuardian {
             GuardianMove.of("rising_pillars", 44).range(3, 26).cooldown(150).weight(11).announce().aimUntil(6),
             GuardianMove.of("slab_throw", 40).range(6, 30).cooldown(130).weight(10).announce().aimUntil(14),
             GuardianMove.of("charge", 50).range(6, 24).cooldown(200).weight(11).phases(3, 3).announce().selfMoving(),
+            // v1.3 ASSINATURA — Terra Partida: fendas rasgam o chão da arena em raios a partir do Golem
+            GuardianMove.of("shatter", 64).anim("quake").range(0, 20).cooldown(320).weight(12).announce(),
             leapMove());
+
+    /** Comprimento das fendas da Terra Partida. */
+    private static final float FAULT_LENGTH = 17F;
+    private static final float FAULT_WIDTH = 2.4F;
 
     /** Velocidade da placa arremessada (blocos/tick). */
     private static final float SLAB_SPEED = 1.5F;
@@ -299,6 +305,7 @@ public class PrimordialGolemEntity extends ElementalGuardian {
             case "rising_pillars" -> risingPillars(level, t);
             case "slab_throw" -> slabThrow(level, t);
             case "charge" -> charge(level, t, target);
+            case "shatter" -> shatter(level, t, target);
             default -> {}
         }
     }
@@ -356,6 +363,7 @@ public class PrimordialGolemEntity extends ElementalGuardian {
         if (t != 22 && !second) return;
         Vec3 c = position();
         groundBurst(level, c, 120, 3.0);
+        BossKit.crackFloor(level, c, second ? 9 : 7, 6, 80);
         level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, c.x, c.y + 0.5, c.z, 1, 0, 0, 0, 0);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 3.0F, 0.4F);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.ANVIL_LAND, SoundSource.HOSTILE, 2.0F, 0.3F);
@@ -370,6 +378,96 @@ public class PrimordialGolemEntity extends ElementalGuardian {
                 .knock(0.5, 0.55);
         if (second) wave.spareStunned();
         wave.launch();
+    }
+
+    /**
+     * Terra Partida (assinatura do Golem): ele ergue os punhos (o chão em volta já racha), salta e esmurra o chão —
+     * FENDAS (linhas marcadas) correm em raios até 17 blocos: quem estiver numa é lançado e fica com o "chão partido"
+     * (lento) enquanto a fenda fumega. Na fase 3 uma segunda leva de fendas, girada, sai logo depois. A arena não
+     * quebra de verdade: as rachaduras são visuais.
+     */
+    private void shatter(ServerLevel level, int t, @Nullable LivingEntity target) {
+        int faults = 4 + phase();
+        if (t == 0) {
+            float base = target != null ? BossSpells.yawOf(target.position().subtract(position())) : bodyYaw();
+            shatterYaw = base;
+            showFaults(level, base, faults, 26);
+            hint("shatter", 32);
+            level.playSound(null, getX(), getY(), getZ(), SoundEvents.WARDEN_ROAR, SoundSource.HOSTILE, 2.5F, 0.5F);
+        }
+        // Antecipação: o chão em volta trinca cada vez mais enquanto ele junta força
+        if (t == 6 || t == 14 || t == 20) {
+            BossKit.crackFloor(level, position(), getBbWidth() * 0.5 + 1 + t * 0.12, 2 + t / 4, 40);
+            groundBurst(level, position(), 20, getBbWidth() * 0.4);
+            level.playSound(null, getX(), getY(), getZ(), SoundEvents.DEEPSLATE_BREAK, SoundSource.HOSTILE, 2.0F, 0.5F);
+        }
+        if (t == 14 && onGround()) setDeltaMovement(getDeltaMovement().add(0, 0.55, 0));
+        if (t == 26) faultImpact(level, shatterYaw, faults, false);
+        if (phase() >= 3) {
+            if (t == 34) showFaults(level, shatterYaw + 180F / faults, faults, 14);
+            if (t == 48) faultImpact(level, shatterYaw + 180F / faults, faults, true);
+        }
+    }
+
+    private float shatterYaw;
+
+    private void showFaults(ServerLevel level, float baseYaw, int n, int warmup) {
+        Vec3 c = position();
+        for (int i = 0; i < n; i++) {
+            Vec3 dir = BossSpells.dirOf(baseYaw + i * 360F / n);
+            Vec3 from = c.add(dir.scale(getBbWidth() * 0.5));
+            Telegraph.show(level, Telegraph.Shape.line(from, c.add(dir.scale(FAULT_LENGTH)), FAULT_WIDTH).warmup(warmup).hold(6)
+                    .vertical(0.5, 2.0).color(Telegraph.DANGER).owner(this));
+        }
+    }
+
+    private void faultImpact(ServerLevel level, float baseYaw, int n, boolean second) {
+        Vec3 c = position();
+        float dmg = (second ? 8F : 11F) * mult();
+        BossKit.shake(level, c, 40, second ? 1.6F : 2.4F, 26);
+        BossKit.flashNear(level, c, 28, 0xC8B28A, 0.35F, 10);
+        level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, c.x, c.y + 0.4, c.z, 1, 0, 0, 0, 0);
+        level.playSound(null, c.x, c.y, c.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 3.5F, 0.35F);
+        level.playSound(null, c.x, c.y, c.z, SoundEvents.DEEPSLATE_BREAK, SoundSource.HOSTILE, 3.0F, 0.4F);
+        Set<UUID> hit = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            Vec3 dir = BossSpells.dirOf(baseYaw + i * 360F / n);
+            Vec3 from = c.add(dir.scale(getBbWidth() * 0.5));
+            Vec3 to = c.add(dir.scale(FAULT_LENGTH));
+            Telegraph.Shape fault = Telegraph.Shape.line(from, to, FAULT_WIDTH).vertical(0.5, 2.0);
+            for (LivingEntity e : foesIn(level, fault)) {
+                if (!hit.add(e.getUUID())) continue;
+                BossSpells.hit(this, e, Element.EARTH, dmg);
+                e.setDeltaMovement(e.getDeltaMovement().multiply(0.3, 0, 0.3).add(0, 0.85, 0));
+                e.hurtMarked = true;
+                e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1), this);
+            }
+            // A fenda "corre" do Golem para fora: escombros e rachaduras em sequência (aftermath: fumaça por 6 s)
+            for (int k = 0; k < 6; k++) {
+                Vec3 p = groundAt(from.lerp(to, (k + 0.5) / 6.0));
+                int delay = k * 2;
+                BossKit.schedule(level, Math.max(1, delay), () -> {
+                    if (!isAlive()) return;
+                    BossKit.debris(level, p, 1.2, 8);
+                    BossKit.crackFloor(level, p, 1.6, 8, 120);
+                    if (delay % 4 == 0) level.playSound(null, p.x, p.y, p.z, SoundEvents.STONE_BREAK, SoundSource.HOSTILE, 1.6F, 0.5F);
+                });
+            }
+            Vec3 a = from, b = to;
+            for (int k = 1; k <= 6; k++) {
+                BossKit.schedule(level, 10 + k * 20, () -> {
+                    if (!isAlive()) return;
+                    for (int j = 0; j <= 5; j++) {
+                        Vec3 p = a.lerp(b, j / 5.0);
+                        level.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, p.x, p.y + 0.1, p.z, 1, 0.4, 0.05, 0.4, 0.01);
+                    }
+                    for (LivingEntity e : foesIn(level, fault)) {
+                        e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 1), this);
+                    }
+                });
+            }
+        }
+        groundBurst(level, c, 80, 2.5);
     }
 
     /** Arremesso de Rocha: a rocha voa em arco e o ponto de queda é marcado no chão durante o voo. */

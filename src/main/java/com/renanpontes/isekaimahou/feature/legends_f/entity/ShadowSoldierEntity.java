@@ -12,8 +12,8 @@ import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.api.Party;
 import com.renanpontes.isekaimahou.feature.legends_f.necro.ShadowArmy;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -320,7 +320,7 @@ public class ShadowSoldierEntity extends PathfinderMob implements OwnableEntity 
             ariseSmoke(sl);
         }
         if (tickCount % 10 == 0 && monarch()) {
-            sl.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, getX(), getY() + 0.1, getZ(), 1, getBbWidth() * 0.3, 0, getBbWidth() * 0.3, 0.01);
+            sl.sendParticles(Vfx.soulFlame(), getX(), getY() + 0.1, getZ(), 1, getBbWidth() * 0.3, 0, getBbWidth() * 0.3, 0.01);
         }
     }
 
@@ -332,15 +332,15 @@ public class ShadowSoldierEntity extends PathfinderMob implements OwnableEntity 
         level().addParticle(dust, getX() + (random.nextDouble() - 0.5) * w * 2, getY() + random.nextDouble() * h * rise,
                 getZ() + (random.nextDouble() - 0.5) * w * 2, 0, 0.02, 0);
         if (rise < 1F || random.nextInt(4) == 0) {
-            level().addParticle(ParticleTypes.SMOKE, getX() + (random.nextDouble() - 0.5) * w * 2, getY() + 0.1,
+            level().addParticle(Vfx.smoke(), getX() + (random.nextDouble() - 0.5) * w * 2, getY() + 0.1,
                     getZ() + (random.nextDouble() - 0.5) * w * 2, 0, 0.03, 0);
         }
     }
 
     private void ariseSmoke(ServerLevel sl) {
-        sl.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + getBbHeight() * 0.5, getZ(), 10,
+        sl.sendParticles(Vfx.largeSmoke(), getX(), getY() + getBbHeight() * 0.5, getZ(), 10,
                 getBbWidth() * 0.4, getBbHeight() * 0.3, getBbWidth() * 0.4, 0.02);
-        sl.sendParticles(ParticleTypes.SOUL, getX(), getY() + 0.2, getZ(), 3, getBbWidth() * 0.4, 0.1, getBbWidth() * 0.4, 0.02);
+        sl.sendParticles(Vfx.soul(), getX(), getY() + 0.2, getZ(), 3, getBbWidth() * 0.4, 0.1, getBbWidth() * 0.4, 0.02);
     }
 
     // =====================================================================================

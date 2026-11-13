@@ -16,9 +16,12 @@ import com.renanpontes.isekaimahou.core.classes.ResourceTraining;
 import com.renanpontes.isekaimahou.feature.automation.AutoFx;
 import com.renanpontes.isekaimahou.feature.automation.AutoRegistries;
 import com.renanpontes.isekaimahou.feature.automation.ManaNet;
+import com.renanpontes.isekaimahou.feature.automation.PedestalCondition;
 import com.renanpontes.isekaimahou.feature.automation.Pedestals;
+import com.renanpontes.isekaimahou.feature.automation.WirelessMana;
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
+import com.renanpontes.isekaimahou.glyph.GlyphKind;
 import com.renanpontes.isekaimahou.glyph.ParsedSpell;
 import com.renanpontes.isekaimahou.glyph.SpellCaster;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
@@ -52,6 +55,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
 
@@ -59,24 +63,31 @@ import net.neoforged.neoforge.common.util.FakePlayer;
  * Pedestal Rúnico: guarda um Pergaminho de Magia e conjura a receita sozinho a cada N segundos, a partir do topo
  * (mais o deslocamento escolhido), na direção escolhida. Quem conjura é um FakePlayer do dono (abates contam como
  * de jogador → drops e XP como numa fazenda). Paga o custo da magia com Baterias de Mana a até 8 blocos.
+ * <p>v1.5: botão LIGA/DESLIGA, espaço de FILTRO (lido pelos glifos via {@link Pedestals#currentFilter()}), ligação sem fio
+ * com um Núcleo de Mana ({@link WirelessMana}, paga dele primeiro; sem núcleo/sem mana nele, usa as baterias) e
+ * gatilhos de pedestal ({@link PedestalCondition}: conferidos antes de gastar mana).
  */
 public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer {
     public static final int MIN_INTERVAL = 1, MAX_INTERVAL = 60, MAX_OFFSET = 8;
     /** Altura (a partir da base do bloco) de onde a magia nasce: um pouco acima do tampo. */
     public static final double CAST_HEIGHT = 1.25;
     private static final int[] NO_SLOTS = new int[0];
+    /** Espaços: 0 = Pergaminho de Magia, 1 = filtro (v1.5). */
+    public static final int SLOT_SCROLL = 0, SLOT_FILTER = 1, SLOTS = 2;
+    /** Estado da ligação com o Núcleo (D_CORE). */
+    public static final int CORE_NONE = 0, CORE_OK = 1, CORE_UNLOADED = 2, CORE_MISSING = 3, CORE_FAR = 4;
 
     // Índices do ContainerData (tela)
     public static final int D_INTERVAL = 0, D_DIRECTION = 1, D_DX = 2, D_DY = 3, D_DZ = 4, D_REDSTONE = 5, D_STATUS = 6, D_COST = 7,
             D_MANA_LO = 8, D_MANA_HI = 9, D_BATTERIES = 10, D_TIMER = 11, D_ELEMENT = 12, D_CASTS_LO = 13, D_CASTS_HI = 14,
-            D_POWERED = 15, D_COUNT = 16;
+            D_POWERED = 15, D_ENABLED = 16, D_CORE = 17, D_CORE_LOSS = 18, D_CORE_DIST = 19, D_COUNT = 20;
 
     // Botões do menu (ServerboundContainerButtonClickPacket)
     public static final int B_INTERVAL_DOWN = 0, B_INTERVAL_UP = 1, B_INTERVAL_DOWN10 = 2, B_INTERVAL_UP10 = 3, B_DIRECTION_NEXT = 4,
             B_DIRECTION_PREV = 5, B_DX_DOWN = 6, B_DX_UP = 7, B_DY_DOWN = 8, B_DY_UP = 9, B_DZ_DOWN = 10, B_DZ_UP = 11,
-            B_REDSTONE_NEXT = 12, B_REDSTONE_PREV = 13, B_RESET_OFFSET = 14, B_TEST = 15;
+            B_REDSTONE_NEXT = 12, B_REDSTONE_PREV = 13, B_RESET_OFFSET = 14, B_TEST = 15, B_TOGGLE = 16;
 
-    private NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+    private NonNullList<ItemStack> items = NonNullList.withSize(SLOTS, ItemStack.EMPTY);
     @Nullable private UUID owner;
     private String ownerName = "";
     private int interval = 5;
@@ -87,12 +98,20 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
     private boolean powered;
     private boolean pulsePending;
     private int totalCasts;
+    /** v1.5: ligado/desligado (saves antigos: ligado). */
+    private boolean enabled = true;
+    /** v1.5: Núcleo de Mana ligado pelo Condutor (mesmo mundo). */
+    @Nullable private BlockPos corePos;
 
     // Estado calculado (não salvo)
     private PedestalStatus status = PedestalStatus.NO_SCROLL;
     private int cost;
     private int mana;
     private int batteries;
+    private int coreState = CORE_NONE;
+    private int coreLoss;
+    /** O gatilho de pedestal disse "ainda não" na última tentativa (zera ao conjurar ou ao mexer). */
+    private boolean waitingCondition;
     private Element element = Element.ARCANE;
     @Nullable private SpellRecipe cachedRecipe;
     @Nullable private SpellParser.Result cachedParse;
@@ -122,6 +141,10 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
                 case D_CASTS_LO -> totalCasts & 0xFFFF;
                 case D_CASTS_HI -> (totalCasts >>> 16) & 0xFFFF;
                 case D_POWERED -> powered ? 1 : 0;
+                case D_ENABLED -> enabled ? 1 : 0;
+                case D_CORE -> coreState;
+                case D_CORE_LOSS -> coreLoss;
+                case D_CORE_DIST -> corePos == null ? 0 : (int) Math.sqrt(corePos.distSqr(worldPosition));
                 default -> 0;
             };
         }
@@ -143,8 +166,12 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
 
     public ContainerData data() { return data; }
     @Nullable public UUID owner() { return owner; }
+    /** v1.5: item do espaço de filtro (semente escolhida, bloco a guardar...). Vazio = sem filtro. */
+    public ItemStack filter() { return items.get(SLOT_FILTER); }
+    public boolean enabled() { return enabled; }
+    @Nullable public BlockPos corePos() { return corePos; }
     public String ownerName() { return ownerName; }
-    public ItemStack scroll() { return items.get(0); }
+    public ItemStack scroll() { return items.get(SLOT_SCROLL); }
     public Element element() { return element; }
     public PedestalStatus status() { return status; }
 
@@ -157,6 +184,23 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
     /** Pode mexer: o dono, quem está no criativo, operadores, ou qualquer um se o pedestal não tem dono. */
     public boolean mayConfigure(Player player) {
         return owner == null || owner.equals(player.getUUID()) || player.getAbilities().instabuild || player.hasPermissions(2);
+    }
+
+    /** v1.5: liga/desliga (botão da tela ou Condutor de Mana agachado). */
+    public void setEnabled(boolean on) {
+        if (enabled == on) return;
+        enabled = on;
+        waitingCondition = false;
+        if (on && timer > 20) timer = 20; // ligou: volta a trabalhar logo
+        if (level instanceof ServerLevel server) evaluate(server);
+        setChanged();
+    }
+
+    /** v1.5: liga a um Núcleo de Mana (null = desfaz a ligação). Quem chama confere alcance e mundo. */
+    public void setCorePos(@Nullable BlockPos pos) {
+        corePos = pos == null ? null : pos.immutable();
+        if (level instanceof ServerLevel server) evaluate(server);
+        setChanged();
     }
 
     /** Ponto de onde a magia nasce (topo + deslocamento). */
@@ -176,8 +220,15 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
         boolean wantCast = timer <= 0 && redstoneAllows();
         if (wantCast || (level.getGameTime() + worldPosition.asLong()) % 10 == 0) evaluate(level);
         if (wantCast) {
-            if (status == PedestalStatus.ACTIVE) {
-                cast(level);
+            if (status == PedestalStatus.ACTIVE || status == PedestalStatus.WAITING_CONDITION) {
+                // v1.5: gatilho de pedestal ("Ao Amadurecer"...) conferido ANTES de gastar mana
+                if (conditionReady(level)) {
+                    waitingCondition = false;
+                    cast(level);
+                } else if (status != PedestalStatus.ERROR) {
+                    waitingCondition = true;
+                    status = PedestalStatus.WAITING_CONDITION;
+                }
                 timer = redstone == RedstoneMode.PULSE ? 10 : interval * 20;
             } else {
                 timer = 20; // tenta de novo daqui a 1 s
@@ -208,10 +259,12 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
     }
 
     private PedestalStatus computeStatus(ServerLevel level) {
-        // Baterias sempre atualizadas (a tela mostra o mana mesmo sem pergaminho)
+        // Baterias e núcleo sempre atualizados (a tela mostra o mana mesmo sem pergaminho)
         List<ManaBatteryBlockEntity> list = ManaNet.batteries(level, worldPosition);
         batteries = list.size();
-        mana = ManaNet.total(list);
+        int batteryMana = ManaNet.total(list);
+        WirelessMana core = linkedCore(level);
+        mana = (int) Math.min(Integer.MAX_VALUE, (long) batteryMana + (core != null ? core.mana() : 0));
         ItemStack scroll = scroll();
         if (scroll.isEmpty()) { cost = 0; return PedestalStatus.NO_SCROLL; }
         SpellRecipe recipe = scroll.get(CoreRegistries.SPELL.get());
@@ -224,16 +277,70 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
         cost = Math.max(1, Math.round(spell.baseCost() * ResourceTraining.MANA_SCALE));
         if (spell.isUltimate() || spell.form().acceptsLaws() || hasLegendary(recipe)) return PedestalStatus.ULTIMATE;
         if (recipe.equals(brokenRecipe)) return PedestalStatus.ERROR;
+        if (!enabled) return PedestalStatus.SWITCHED_OFF;
         int max = maxPerChunk();
         if (max <= 0) return PedestalStatus.DISABLED;
         if (ManaNet.pedestalsInChunk(level, worldPosition).indexOf(this) >= max) return PedestalStatus.CHUNK_LIMIT;
         if (owner == null) return PedestalStatus.NO_OWNER;
         if (redstone == RedstoneMode.WITH_SIGNAL && !powered) return PedestalStatus.PAUSED;
         if (redstone == RedstoneMode.WITHOUT_SIGNAL && powered) return PedestalStatus.PAUSED;
-        if (list.isEmpty()) return PedestalStatus.NO_BATTERY;
-        if (mana < cost) return PedestalStatus.NO_MANA;
+        if (list.isEmpty() && core == null) return PedestalStatus.NO_BATTERY;
+        if (!canPay(core, batteryMana)) return PedestalStatus.NO_MANA;
         if (redstone == RedstoneMode.PULSE && !pulsePending) return PedestalStatus.WAITING_PULSE;
+        if (waitingCondition) return PedestalStatus.WAITING_CONDITION;
         return PedestalStatus.ACTIVE;
+    }
+
+    /** Dá para pagar uma conjuração: o núcleo inteiro (com a perda da distância) ou as baterias inteiras. */
+    private boolean canPay(@Nullable WirelessMana core, int batteryMana) {
+        return (core != null && core.mana() >= WirelessMana.withLoss(cost, coreLoss)) || batteryMana >= cost;
+    }
+
+    /**
+     * v1.5: o Núcleo de Mana ligado, se der para usar agora (chunk carregado, dentro do alcance). Atualiza
+     * {@link #coreState} e {@link #coreLoss} para a tela.
+     */
+    @Nullable
+    private WirelessMana linkedCore(ServerLevel level) {
+        coreLoss = 0;
+        if (corePos == null) { coreState = CORE_NONE; return null; }
+        if (!WirelessMana.inRange(worldPosition, corePos)) { coreState = CORE_FAR; return null; }
+        coreLoss = WirelessMana.lossPercent(worldPosition, corePos);
+        WirelessMana core = WirelessMana.at(level, corePos);
+        if (core == null) {
+            LevelChunk chunk = level.getChunkSource().getChunkNow(corePos.getX() >> 4, corePos.getZ() >> 4);
+            coreState = chunk == null ? CORE_UNLOADED : CORE_MISSING;
+            return null;
+        }
+        coreState = CORE_OK;
+        return core;
+    }
+
+    /**
+     * v1.5: confere TODOS os gatilhos do começo da receita (os glifos de gatilho antes da forma) que são gatilhos de
+     * pedestal ({@link PedestalCondition}) — todos precisam dizer "pode" (E). Sem gatilho de pedestal = sempre pode.
+     * Um gatilho com defeito para o pedestal (como uma magia com erro), sem derrubar o mundo.
+     */
+    private boolean conditionReady(ServerLevel level) {
+        SpellRecipe recipe = cachedRecipe;
+        if (recipe == null || recipe.glyphs().isEmpty() || cachedParse == null || !cachedParse.ok()) return true;
+        ParsedSpell spell = cachedParse.spell();
+        Vec3 origin = castPoint();
+        for (ResourceLocation id : recipe.glyphs()) {
+            Glyph g = GlyphRegistry.get(id);
+            if (g == null || g.kind() != GlyphKind.TRIGGER) break; // acabaram os gatilhos do começo
+            if (!(g instanceof PedestalCondition condition)) continue;
+            try {
+                if (!condition.ready(level, worldPosition, origin, spell)) return false;
+            } catch (RuntimeException ex) {
+                IsekaiMahou.LOGGER.error("Runic Pedestal at {}: condition {} failed; pausing it until the scroll changes",
+                        worldPosition, id, ex);
+                brokenRecipe = recipe;
+                status = PedestalStatus.ERROR;
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -300,7 +407,14 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
         SpellRecipe recipe = cachedRecipe;
         if (recipe == null || owner == null) return;
         List<ManaBatteryBlockEntity> list = ManaNet.batteries(level, worldPosition);
-        if (!ManaNet.drain(list, cost)) {
+        // v1.5: paga do Núcleo ligado (com a perda da distância); sem núcleo ou sem mana nele, das baterias
+        WirelessMana core = linkedCore(level);
+        int coreCost = WirelessMana.withLoss(cost, coreLoss);
+        boolean fromCore = false;
+        if (core != null && core.mana() >= coreCost) {
+            core.extract(coreCost);
+            fromCore = true;
+        } else if (!ManaNet.drain(list, cost)) {
             status = PedestalStatus.NO_MANA;
             return;
         }
@@ -317,7 +431,7 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
         } catch (RuntimeException ex) {
             // Um glifo com defeito não pode travar o mundo (o pedestal tica sozinho, até sem ninguém por perto)
             IsekaiMahou.LOGGER.error("Runic Pedestal at {} failed casting {}; pausing it until the scroll changes", worldPosition, recipe, ex);
-            ManaNet.refund(list, cost);
+            refund(core, fromCore, coreCost, list);
             brokenRecipe = recipe;
             status = PedestalStatus.ERROR;
             return;
@@ -325,17 +439,28 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
             Pedestals.end();
         }
         if (ctx == null) {
-            ManaNet.refund(list, cost);
+            refund(core, fromCore, coreCost, list);
             status = PedestalStatus.INVALID;
             return;
         }
         pulsePending = false;
         totalCasts++;
-        mana = ManaNet.total(list);
+        mana = (int) Math.min(Integer.MAX_VALUE, (long) ManaNet.total(list) + (core != null ? core.mana() : 0));
         saveQuietly();
         castFx(level, origin);
+        if (fromCore && corePos != null) {
+            core.noteUse(worldPosition, coreCost);
+            // O mana "voa" do núcleo até o tampo (a ligação sem fio fica visível)
+            AutoFx.line(level, Vec3.atCenterOf(corePos).add(0, 0.6, 0), Vec3.atBottomCenterOf(worldPosition).add(0, 1.0, 0),
+                    AutoFx.dust(AutoFx.MANA_RGB, 0.9F), 1.2);
+        }
         ServerPlayer ownerPlayer = level.getServer().getPlayerList().getPlayer(owner);
         if (ownerPlayer != null) MagicApi.addCounter(ownerPlayer, "pedestal.cast", 1);
+    }
+
+    private void refund(@Nullable WirelessMana core, boolean fromCore, int coreCost, List<ManaBatteryBlockEntity> list) {
+        if (fromCore && core != null) core.insert(coreCost);
+        else ManaNet.refund(list, cost);
     }
 
     private void castFx(ServerLevel level, Vec3 origin) {
@@ -376,9 +501,15 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
             case B_REDSTONE_PREV -> { redstone = redstone.cycle(-1); pulsePending = false; }
             case B_RESET_OFFSET -> { dx = 0; dy = 0; dz = 0; }
             case B_TEST -> testCast(player);
+            case B_TOGGLE -> {
+                setEnabled(!enabled);
+                level.playSound(null, worldPosition, enabled ? SoundEvents.BEACON_ACTIVATE : SoundEvents.BEACON_DEACTIVATE,
+                        SoundSource.BLOCKS, 0.5F, 1.4F);
+            }
             default -> { return; }
         }
         if (timer > interval * 20) timer = interval * 20;
+        waitingCondition = false;
         if (level instanceof ServerLevel server) evaluate(server);
         showAim(player);
         setChanged();
@@ -388,9 +519,13 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
     private void testCast(ServerPlayer player) {
         if (!(level instanceof ServerLevel server)) return;
         evaluate(server);
+        // "Testar" ignora o liga/desliga e o gatilho de pedestal (serve para mirar), mas paga mana normalmente
         boolean ok = status == PedestalStatus.ACTIVE || (status == PedestalStatus.WAITING_PULSE)
-                || (status == PedestalStatus.PAUSED && redstone != RedstoneMode.ALWAYS);
-        if (ok && owner != null && cachedRecipe != null && mana >= cost) {
+                || (status == PedestalStatus.PAUSED && redstone != RedstoneMode.ALWAYS)
+                || status == PedestalStatus.SWITCHED_OFF || status == PedestalStatus.WAITING_CONDITION;
+        WirelessMana core = linkedCore(server);
+        int batteryMana = ManaNet.total(ManaNet.batteries(server, worldPosition));
+        if (ok && owner != null && cachedRecipe != null && canPay(core, batteryMana)) {
             cast(server);
             timer = redstone == RedstoneMode.PULSE ? 10 : interval * 20;
         } else {
@@ -433,7 +568,7 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
     }
 
     // =====================================================================================
-    //  Container (1 espaço, só Pergaminho de Magia; funis não mexem)
+    //  Container (0 = Pergaminho de Magia, 1 = filtro; funis não mexem)
     // =====================================================================================
     @Override
     protected NonNullList<ItemStack> getItems() {
@@ -447,7 +582,7 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
 
     @Override
     public int getContainerSize() {
-        return 1;
+        return SLOTS;
     }
 
     @Override
@@ -457,7 +592,8 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        return stack.is(CoreRegistries.SPELL_SCROLL.get());
+        boolean scroll = stack.is(CoreRegistries.SPELL_SCROLL.get());
+        return slot == SLOT_SCROLL ? scroll : !scroll;
     }
 
     @Override
@@ -499,6 +635,7 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
             SpellRecipe r = scroll().get(CoreRegistries.SPELL.get());
             if (r != null) element = primaryElement(r);
             if (scroll().isEmpty()) brokenRecipe = null; // tirou o pergaminho: ao voltar, tenta de novo
+            waitingCondition = false;
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
     }
@@ -522,12 +659,14 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
         tag.putBoolean("Powered", powered);
         tag.putBoolean("Pulse", pulsePending);
         tag.putInt("Casts", totalCasts);
+        tag.putBoolean("Enabled", enabled);
+        if (corePos != null) tag.putLong("CorePos", corePos.asLong());
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        items = NonNullList.withSize(1, ItemStack.EMPTY);
+        items = NonNullList.withSize(SLOTS, ItemStack.EMPTY); // saves antigos só têm o espaço 0
         ContainerHelper.loadAllItems(tag, items, registries);
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
         ownerName = tag.getString("OwnerName");
@@ -543,6 +682,10 @@ public class RunicPedestalBlockEntity extends BaseContainerBlockEntity implement
         powered = tag.getBoolean("Powered");
         pulsePending = tag.getBoolean("Pulse");
         totalCasts = tag.getInt("Casts");
+        // v1.5 (opcionais): sem a chave = ligado e sem núcleo
+        enabled = !tag.contains("Enabled") || tag.getBoolean("Enabled");
+        corePos = tag.contains("CorePos") ? BlockPos.of(tag.getLong("CorePos")) : null;
+        waitingCondition = false;
         // No cliente o pacote de atualização traz o elemento para colorir o anel
         if (tag.contains("Element")) {
             Element e = Element.byId(tag.getString("Element"));

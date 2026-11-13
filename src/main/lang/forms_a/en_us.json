@@ -18,5 +18,8 @@
   "entity.isekai_mahou.spell_wave": "Magic Wave",
   "entity.isekai_mahou.spell_falling": "Magic Meteor",
   "entity.isekai_mahou.spell_beam": "Magic Beam",
-  "message.isekai_mahou.forms_a.mark_no_target": "Nothing in your sights to mark."
+  "message.isekai_mahou.forms_a.mark_no_target": "Nothing in your sights to mark.",
+  "command.isekai_mahou.fx.stats": "Batched effects: %s items in %s packets (used to be %s packets — %sx fewer). Dropped: %s.",
+  "command.isekai_mahou.fx.stress": "Load test: %s effects every 2 ticks for %s s. The result shows up at the end.",
+  "command.isekai_mahou.fx.reactions": "%s reactions in the same tick: %s full, %s light, %s mechanics only."
 }

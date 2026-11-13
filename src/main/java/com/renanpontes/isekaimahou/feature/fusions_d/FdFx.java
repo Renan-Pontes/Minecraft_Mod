@@ -27,8 +27,9 @@ public final class FdFx {
     public static final int TWILIGHT_GOLD = 0xFFD27A;
     public static final int TWILIGHT_SHADOW = 0x4A1E6E;
 
-    public static DustParticleOptions dust(int rgb, float size) {
-        return new DustParticleOptions(vec(rgb), Math.min(4F, size));
+    public static ParticleOptions dust(int rgb, float size) {
+        // v1.3: brilho fx aditivo (mesmo tamanho do pó do vanilla; respeita o preset gráfico no cliente)
+        return com.renanpontes.isekaimahou.core.ElementFx.glow(rgb, size);
     }
 
     public static DustColorTransitionOptions fade(int from, int to, float size) {

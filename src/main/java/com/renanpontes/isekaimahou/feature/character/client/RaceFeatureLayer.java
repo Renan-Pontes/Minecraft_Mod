@@ -2,6 +2,9 @@ package com.renanpontes.isekaimahou.feature.character.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
+import com.renanpontes.isekaimahou.core.MahouConfig.Graphics;
 import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.feature.character.Race;
 
@@ -31,10 +34,21 @@ import net.minecraft.util.Mth;
  * <p>
  * <b>Transformações</b> ({@link ClientCharacter#form}): asas de luz enormes + auréola maior (Anjo), asas de sombra
  * (Demônio), asas dracônicas na cor da ancestralidade (Dracônico), corpo fantasma translúcido mesmo invisível
- * (Fantasma), 8 patas de aranha andando (Aracnídeo), geleia densa + coroa (Rei Slime), aura na cor da raça (Elfo com
+ * (Fantasma), 8 patas de aranha andando (Aracnídeo), geleia densa (Slime), aura na cor da raça (Elfo com
  * coroa de folhas, Anão de pedra, Meio-Orc rubra, Bestial, Humano dourada). O tamanho vem do atributo de escala.
  * <p>
  * As <b>Asas Sombrias</b> (skill racial do Demônio) continuam: membrana translúcida abrindo em 8 ticks e batendo.
+ * <p>
+ * <b>v1.3 — formas "grandes e temíveis"</b> (peças de {@link #model3()}, desenhadas com a textura branca tingida):
+ * olhos brilhando em todas; Demônio com chifres enormes em brasa e asas maiores; Dracônico com escamas brilhando
+ * (pulsando na cor da ancestralidade) e chifres maiores; Anjo com SEIS asas de luz, auréola maior e uma segunda
+ * auréola atrás da cabeça; Elfo espírito da lua (aura prateada, runas orbitando, flutuando — {@link FormFx}); Anão
+ * golem de pedra (pele de rocha, rachaduras de magma pulsando, ombreiras de pedra); Meio-Orc berserker (pele rubra,
+ * presas maiores); Bestial lobisomem (pelagem, garras, orelhas maiores); Aracnídeo com abdômen de aranha e patas
+ * maiores; Fantasma com correntes espectrais; v1.7: Lorde Demônio (Rimuru) humanoide de olhos dourados; Humano "Herói Desperto"
+ * com o estandarte de luz nas costas. Na carga da Transformação o corpo brilha cada vez mais.
+ * <p>
+ * Os traços de base crescem um pouco com o nível de raça (I–V): chifres e caudas maiores, olhos que brilham no IV+.
  */
 public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
     private static final ResourceLocation TEXTURE = IsekaiMahou.id("textures/entity/character/race_features.png");
@@ -43,6 +57,9 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
     private static final ResourceLocation ANGEL_WINGS = IsekaiMahou.id("textures/entity/character/angel_wings.png");
     private static final ResourceLocation DRAGON_WINGS = IsekaiMahou.id("textures/entity/character/dragon_wings.png");
     private static final ResourceLocation AURA = IsekaiMahou.id("textures/entity/character/aura.png");
+    private static final ResourceLocation GOLEM = IsekaiMahou.id("textures/entity/character/golem_skin.png");
+    private static final ResourceLocation MOLTEN = IsekaiMahou.id("textures/entity/character/molten_cracks.png");
+    private static final ResourceLocation FUR_SHELL = IsekaiMahou.id("textures/entity/character/fur_shell.png");
     private static final int[] BEARD = {0xFF6B4226, 0xFFB5532A, 0xFF2B2420, 0xFF9A9AA0};
     private static final int[] FUR = {0xFFD9782F, 0xFF8E949E, 0xFF3B3442, 0xFFE8E0D6};
     private static final int[] FUR_TIP = {0xFFF4EEE6, 0xFFDADDE2, 0xFF57506A, 0xFFFFFFFF};
@@ -50,6 +67,9 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
     private static ModelPart root;
     private static ModelPart root2;
     private static ModelPart wings;
+    private static ModelPart root3;
+    /** Partial tick do quadro em desenho (as asas leem para a batida e a abertura do planar). */
+    private float pt;
 
     public RaceFeatureLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent) {
         super(parent);
@@ -194,14 +214,18 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
     public void render(PoseStack ps, MultiBufferSource buffers, int light, AbstractClientPlayer p, float limbSwing, float limbSwingAmount,
                        float partialTick, float age, float netHeadYaw, float headPitch) {
         int overlay = LivingEntityRenderer.getOverlayCoords(p, 0F);
+        this.pt = partialTick;
         ClientCharacter.Look look = ClientCharacter.look(p.getId());
         Race race = look == null ? null : look.race();
         ClientCharacter.Fx form = race == null ? null : ClientCharacter.form(p.getId());
         if (p.isInvisible()) {
             // Forma Espectral: o corpo fica invisível para as criaturas, mas os jogadores veem o fantasma translúcido
             if (race == Race.PHANTOM && form != null) {
-                skinShell(ps, buffers, light, overlay, p, 0x66E8F8FF, 1.0F);
-                auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, 0x509FD8E8, 1.06F);
+                float open = formOpen(p, form, partialTick);
+                skinShell(ps, buffers, light, overlay, p, ((int) (0x66 * open) << 24) | 0xE8F8FF, 1.0F);
+                auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, ((int) (0x50 * open) << 24) | 0x9FD8E8, 1.06F);
+                glowEyes(ps, buffers, overlay, 0x9FF4FF, open);
+                chains(ps, buffers, overlay, p.tickCount + partialTick, open);
             }
             return;
         }
@@ -209,9 +233,33 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
         if (wingFx != null) renderShadowWings(ps, buffers, light, overlay, p, wingFx, partialTick);
         if (race == null) return;
         float formOpen = form == null ? 0F : formOpen(p, form, partialTick);
-        if (form != null) renderForm(ps, buffers, light, overlay, p, race, look.ancestryRgb(), formOpen, partialTick, limbSwing, limbSwingAmount);
-        if (race == Race.HUMAN) return;
         int variant = Math.floorMod(p.getUUID().hashCode(), 4);
+        if (form != null) renderForm(ps, buffers, light, overlay, p, race, look.ancestryRgb(), formOpen, partialTick, limbSwing, limbSwingAmount, variant);
+        // Carga da Transformação: o corpo brilha cada vez mais forte (e os olhos acendem)
+        float charge = FormFx.chargeProgress(p, partialTick);
+        if (charge >= 0F) {
+            int rgb = FormFx.color(p, race);
+            float beat = 0.5F + 0.5F * Mth.sin(age * (0.3F + charge * 0.9F));
+            auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, ((int) ((0x20 + 0x60 * charge) * (0.6F + 0.4F * beat)) << 24) | rgb,
+                    1.04F + 0.06F * charge);
+            glowEyes(ps, buffers, overlay, FormFx.mix(rgb, 0xFFFFFF, 0.3F), charge);
+        }
+        if (race == Race.HUMAN) return;
+        // Traços de base crescem com o nível de raça (I = 90%, V = 110%)
+        int lv = look.level();
+        float grow = lv <= 0 ? 1F : 0.85F + 0.05F * lv;
+        if (form != null) grow = Math.max(grow, 1F);
+        // Nível IV+: olhos com um brilho discreto (as formas já acendem os olhos)
+        if (form == null && charge < 0F && lv >= 4) {
+            int eye = switch (race) {
+                case DEMON -> 0xFF5040;
+                case DRAGONBORN -> look.ancestryRgb() & 0xFFFFFF;
+                case BEASTFOLK -> 0xFFC840;
+                case PHANTOM -> 0x9FF4FF;
+                default -> -1;
+            };
+            if (eye >= 0) glowEyes(ps, buffers, overlay, eye, lv >= 5 ? 0.55F : 0.35F);
+        }
 
         skinTint(ps, buffers, light, overlay, p, race, look.ancestryRgb());
 
@@ -231,46 +279,66 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
             }
             case DWARF -> m.getChild("dwarf_beard").render(ps, vc, light, overlay, BEARD[variant]);
             case HALF_ORC -> {
-                m.getChild("orc_tusk_l").render(ps, vc, light, overlay);
-                m.getChild("orc_tusk_r").render(ps, vc, light, overlay);
+                float big = form != null ? 1F + 0.5F * formOpen : 1F;
+                scaledPart(ps, m.getChild("orc_tusk_l"), vc, light, overlay, 0xFFFFFFFF, big);
+                scaledPart(ps, m.getChild("orc_tusk_r"), vc, light, overlay, 0xFFFFFFFF, big);
             }
             case DEMON -> {
-                m.getChild("demon_horn_l").render(ps, vc, light, overlay);
-                m.getChild("demon_horn_r").render(ps, vc, light, overlay);
+                // Na Forma Demoníaca os chifres ficam enormes e em brasa
+                float big = form != null ? grow + 0.8F * formOpen : grow;
+                int tint = form != null ? 0xFF000000 | mix(0xFFFFFF, 0xFF6040, 0.45F * formOpen) : 0xFFFFFFFF;
+                int hornLight = form != null ? LightTexture.FULL_BRIGHT : light;
+                scaledPart(ps, m.getChild("demon_horn_l"), vc, hornLight, overlay, tint, big);
+                scaledPart(ps, m.getChild("demon_horn_r"), vc, hornLight, overlay, tint, big);
             }
             case DRAGONBORN -> {
-                int horn = 0xFF000000 | mix(0xE8DCC0, look.ancestryRgb(), 0.25F);
-                m.getChild("dragon_horn_l").render(ps, vc, light, overlay, horn);
-                m.getChild("dragon_horn_r").render(ps, vc, light, overlay, horn);
+                int horn = 0xFF000000 | mix(0xE8DCC0, look.ancestryRgb(), form != null ? 0.45F : 0.25F);
+                float big = form != null ? grow + 0.5F * formOpen : grow;
+                scaledPart(ps, m.getChild("dragon_horn_l"), vc, light, overlay, horn, big);
+                scaledPart(ps, m.getChild("dragon_horn_r"), vc, light, overlay, horn, big);
             }
             case BEASTFOLK -> {
                 String ear = variant == 3 ? "rabbit_ear_" : "beast_ear_";
                 float twitch = (p.tickCount + p.getId() * 7) % 90 < 4 ? 0.25F : 0F;
+                float big = form != null ? 1F + 0.35F * formOpen : 1F;
                 for (String side : new String[]{"l", "r"}) {
                     ModelPart e = m.getChild(ear + side);
                     float base = e.zRot;
-                    e.zRot = base + (side.equals("l") ? twitch : -twitch);
-                    e.render(ps, vc, light, overlay, FUR[variant]);
+                    e.zRot = base + (side.equals("l") ? twitch : -twitch) + (form != null ? (side.equals("l") ? 0.15F : -0.15F) : 0F);
+                    scaledPart(ps, e, vc, light, overlay, FUR[variant], big);
                     e.zRot = base;
                 }
             }
-            case ARACHNID -> m2.getChild("spider_eyes").render(ps, buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE2)),
-                    LightTexture.FULL_BRIGHT, overlay);
+            case ARACHNID -> m2.getChild("spider_eyes").render(ps, buffers.getBuffer(form != null
+                    ? RenderType.entityTranslucentEmissive(TEXTURE2) : RenderType.entityCutoutNoCull(TEXTURE2)), LightTexture.FULL_BRIGHT, overlay);
             case ANGEL -> {
                 // Auréola dourada flutuando (brilha no escuro); na Forma Seráfica fica maior e gira
                 float bob = Mth.sin(age * 0.08F) * 0.35F;
-                float big = form != null ? 1.0F + 0.35F * formOpen : 1.0F;
+                float big = form != null ? 1.0F + 0.6F * formOpen : 1.0F;
                 ps.pushPose();
                 ps.translate(0, (-10.2F + bob - (big - 1F) * 2F) / 16F, 0);
                 ps.scale(big, 1F, big);
                 ModelPart halo = m2.getChild("halo");
                 halo.yRot = form != null ? age * 0.06F : 0F;
-                halo.render(ps, buffers.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE2)), LightTexture.FULL_BRIGHT, overlay, 0xF0FFFFFF);
+                // A auréola fica mais viva com o nível de raça
+                int haloA = lv <= 0 ? 0xF0 : 0xA0 + 0x14 * lv;
+                halo.render(ps, buffers.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE2)), LightTexture.FULL_BRIGHT, overlay,
+                        (Math.min(0xFF, haloA) << 24) | 0xFFFFFF);
                 ps.popPose();
+                if (form != null && FxQuality.atLeast(Graphics.MEDIUM)) {
+                    // Segunda auréola, grande e em pé atrás da cabeça
+                    ps.pushPose();
+                    ps.translate(0, -4F / 16F, 5.5F / 16F);
+                    ps.mulPose(Axis.XP.rotationDegrees(90));
+                    float s2 = 1.9F * formOpen;
+                    ps.scale(s2, s2, s2);
+                    halo.yRot = -age * 0.04F;
+                    halo.render(ps, buffers.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE2)), LightTexture.FULL_BRIGHT, overlay,
+                            ((int) (0xC0 * formOpen) << 24) | 0xFFF2C0);
+                    ps.popPose();
+                }
             }
-            case SLIME -> {
-                if (form != null) m2.getChild("crown").render(ps, buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE2)), light, overlay);
-            }
+            // v1.7: o Despertar do Lorde Demônio (Rimuru) é humanoide e sem coroa — o brilho fica nos olhos (renderForm)
             default -> { }
         }
         ps.popPose();
@@ -282,6 +350,11 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
             case DEMON -> {
                 ModelPart t = m.getChild("demon_tail");
                 curl(t, -0.9F, 0.45F, sway * 1.4F);
+                ps.pushPose();
+                ps.translate(0, 10.5F / 16F, 1.6F / 16F);
+                float tg = form != null ? grow + 0.5F * formOpen : grow;
+                ps.scale(tg, tg, tg);
+                ps.translate(0, -10.5F / 16F, -1.6F / 16F);
                 t.render(ps, vc, light, overlay, 0xFF2A1A22);
                 // ponta de lança no fim da cauda
                 ps.pushPose();
@@ -291,21 +364,34 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
                 ModelPart s3 = s2.getChild("seg3");
                 s3.translateAndRotate(ps);
                 ps.translate(0, 0, 3.6F / 16F);
-                m.getChild("spade").render(ps, vc, light, overlay, 0xFFB0303C);
+                m.getChild("spade").render(ps, vc, form != null ? LightTexture.FULL_BRIGHT : light, overlay, 0xFFB0303C);
+                ps.popPose();
                 ps.popPose();
             }
             case DRAGONBORN -> {
                 ModelPart t = m.getChild("dragon_tail");
                 curl(t, -0.75F, 0.25F, sway * 0.7F);
+                ps.pushPose();
+                ps.translate(0, 10.5F / 16F, 1.6F / 16F);
+                float tg = form != null ? grow + 0.4F * formOpen : grow;
+                ps.scale(tg, tg, tg);
+                ps.translate(0, -10.5F / 16F, -1.6F / 16F);
                 t.render(ps, vc, light, overlay, 0xFF000000 | look.ancestryRgb());
+                ps.popPose();
             }
             case BEASTFOLK -> {
                 if (variant == 3) {
                     m.getChild("rabbit_puff").render(ps, vc, light, overlay, FUR_TIP[variant]);
                 } else {
                     ModelPart t = m.getChild("beast_tail");
-                    curl(t, -0.55F, 0.35F, sway);
+                    curl(t, -0.55F, 0.35F, sway * (form != null ? 1.6F : 1F));
                     ps.pushPose();
+                    if (form != null) {
+                        float tg = 1F + 0.4F * formOpen;
+                        ps.translate(0, 10.5F / 16F, 1.6F / 16F);
+                        ps.scale(tg, tg, tg);
+                        ps.translate(0, -10.5F / 16F, -1.6F / 16F);
+                    }
                     if (variant == 2) ps.scale(0.7F, 0.7F, 1.05F); // gato: cauda fina
                     t.render(ps, vc, light, overlay, FUR[variant]);
                     // ponta clara (raposa/lobo)
@@ -319,7 +405,13 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
                     ps.popPose();
                 }
             }
-            case ARACHNID -> spiderLegs(ps, buffers, light, overlay, form != null, age, limbSwing, limbSwingAmount);
+            case ARACHNID -> {
+                // v1.7 (Kumoko): o corpo evolui com o nível de raça — Pequena Taratect (1 par de patinhas) → Zana Horowa
+                // (3 pares e um abdômen pequeno) → Arachne (a forma: 4 pares e o abdômen inteiro)
+                spiderLegs(ps, buffers, light, overlay, form != null, lv, age, limbSwing, limbSwingAmount, formOpen);
+                if (form != null) abdomen(ps, buffers, light, overlay, formOpen);
+                else if (lv >= 4) abdomen(ps, buffers, light, overlay, 0.42F);
+            }
             default -> { }
         }
         ps.popPose();
@@ -331,66 +423,114 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
         // ---------- corpo inteiro: fantasma e geleia ----------
         if (race == Race.PHANTOM && form == null) {
             auraShell(ps, buffers, light, overlay, 0x48BFE8F4, 1.05F);
-        } else if (race == Race.SLIME) {
+        } else if (race == Race.SLIME && form == null) {
+            // Geleia que balança (na forma humanoide do Lorde Demônio, só a aura azul do renderForm)
             float wob = 1.06F + Mth.sin(age * 0.15F) * 0.012F;
-            auraShell(ps, buffers, light, overlay, form != null ? 0x908FE05A : 0x588FE05A, form != null ? wob + 0.04F : wob);
+            auraShell(ps, buffers, light, overlay, 0x588FE05A, wob);
         }
     }
 
-    /** Quanto a forma está "aberta" (0..1): abre em 10 ticks e fecha nos 10 últimos. */
+    /** Quanto a forma está "aberta" (0..1): abre em 10 ticks e se dissipa nos últimos {@link ClientCharacter#FADE}. */
     private static float formOpen(AbstractClientPlayer p, ClientCharacter.Fx fx, float partialTick) {
         long now = p.level().getGameTime();
         float open = Mth.clamp((now - fx.start() + partialTick) / 10F, 0F, 1F);
         long left = fx.until() - now;
-        if (left < 10) open = Math.min(open, Math.max(0F, (left - partialTick) / 10F));
+        float fade = ClientCharacter.FADE - 2;
+        if (left < fade) open = Math.min(open, Math.max(0F, (left - partialTick) / fade));
         return open;
     }
 
-    /** Visual das Transformações (asas, auras). */
+    /** Visual das Transformações (asas, auras, corpo da forma). */
     private void renderForm(PoseStack ps, MultiBufferSource buffers, int light, int overlay, AbstractClientPlayer p, Race race,
-                            int ancestry, float open, float partialTick, float limbSwing, float limbSwingAmount) {
+                            int ancestry, float open, float partialTick, float limbSwing, float limbSwingAmount, int variant) {
         if (open <= 0.01F) return;
         float age = p.tickCount + partialTick;
         float pulse = 0.5F + 0.5F * Mth.sin(age * 0.2F);
         int a = (int) (open * (0x28 + 0x18 * pulse));
+        boolean rich = FxQuality.atLeast(Graphics.HIGH);
         switch (race) {
             case ANGEL -> {
-                drawWings(ps, buffers, LightTexture.FULL_BRIGHT, overlay, p, ANGEL_WINGS, open, 1.45F, 0xF8FFFFFF, age, true);
+                // Seis asas de luz: o par de cima erguido, o do meio aberto, o de baixo caído
+                drawWings(ps, buffers, LightTexture.FULL_BRIGHT, overlay, p, ANGEL_WINGS, open, 1.55F, 0xF8FFFFFF, age, true, 0.55F, -1.5F);
+                drawWings(ps, buffers, LightTexture.FULL_BRIGHT, overlay, p, ANGEL_WINGS, open, 1.45F, 0xF0FFFFFF, age + 3F, true, 0F, 0F);
+                drawWings(ps, buffers, LightTexture.FULL_BRIGHT, overlay, p, ANGEL_WINGS, open, 1.15F, 0xE0FFF4D0, age + 6F, true, -0.55F, 2.5F);
                 auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, (a << 24) | 0xFFE08A, 1.07F);
+                glowEyes(ps, buffers, overlay, 0xFFF6D0, open);
             }
             case DEMON -> {
-                drawWings(ps, buffers, light, overlay, p, WINGS_TEXTURE, open, 1.35F, 0xF0FFFFFF, age, true);
-                auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, (a << 24) | 0xD8455B, 1.06F);
+                drawWings(ps, buffers, light, overlay, p, WINGS_TEXTURE, open, 1.75F, 0xF8FFFFFF, age, true, 0.1F, 0F);
+                auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, ((int) (open * (0x30 + 0x30 * pulse)) << 24) | 0xD02A20, 1.06F);
+                if (rich) auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, ((int) (open * 0x22) << 24) | 0xFF7A20, 1.12F + 0.02F * pulse);
+                glowEyes(ps, buffers, overlay, 0xFF3020, open);
             }
             case DRAGONBORN -> {
                 int tint = 0xF0000000 | mix(0xFFFFFF, ancestry, 0.75F);
-                drawWings(ps, buffers, light, overlay, p, DRAGON_WINGS, open, 1.45F, tint, age, true);
+                drawWings(ps, buffers, light, overlay, p, DRAGON_WINGS, open, 1.75F, tint, age, true, 0.05F, 0F);
                 auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, (a << 24) | (ancestry & 0xFFFFFF), 1.05F);
+                // Escamas brilhando: a pele pulsa na cor da ancestralidade
+                skinGlow(ps, buffers, overlay, p, ((int) (open * (0x40 + 0x50 * pulse)) << 24) | mix(ancestry, 0xFFFFFF, 0.2F));
+                glowEyes(ps, buffers, overlay, mix(ancestry, 0xFFFFFF, 0.4F), open);
             }
             case ELF -> {
-                auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, (a << 24) | 0x7BD88F, 1.07F);
+                // Espírito da lua: aura prateada, coroa, runas orbitando (o corpo flutua — FormFx)
+                auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, (a << 24) | 0xBFF0FF, 1.07F);
+                if (rich) auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, ((int) (open * 0x18) << 24) | 0x7BD88F, 1.13F);
                 ps.pushPose();
                 getParentModel().head.translateAndRotate(ps);
                 model2().getChild("crown").render(ps, buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE2)), light, overlay, 0xFF6FCB5A);
                 ps.popPose();
+                runes(ps, buffers, overlay, age, open);
+                glowEyes(ps, buffers, overlay, 0xBFF6FF, open);
             }
-            case DWARF -> auraShell(ps, buffers, light, overlay, ((int) (open * 0x90) << 24) | 0x9A8F80, 1.05F);
-            case HALF_ORC -> auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, ((int) (open * (0x30 + 0x30 * pulse)) << 24) | 0xC02020, 1.07F);
-            case BEASTFOLK -> auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, (a << 24) | 0xD08A3A, 1.06F);
-            case HUMAN -> auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, ((int) (open * (0x30 + 0x20 * pulse)) << 24) | 0xFFD86B, 1.07F);
+            case DWARF -> {
+                // Golem de pedra: pele de rocha, magma pulsando nas rachaduras, ombreiras
+                textureShell(ps, buffers, RenderType.entityCutoutNoCull(GOLEM), light, overlay, ((int) (open * 0xFF) << 24) | 0xFFFFFF, 1.035F);
+                textureShell(ps, buffers, RenderType.entityTranslucentEmissive(MOLTEN), LightTexture.FULL_BRIGHT, overlay,
+                        ((int) (open * (0x90 + 0x6F * pulse)) << 24) | 0xFFFFFF, 1.04F);
+                pauldrons(ps, buffers, light, overlay, open);
+                glowEyes(ps, buffers, overlay, 0xFF9A30, open);
+            }
+            case HALF_ORC -> {
+                auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, ((int) (open * (0x30 + 0x30 * pulse)) << 24) | 0xC02020, 1.07F);
+                skinGlow(ps, buffers, overlay, p, ((int) (open * 0x50) << 24) | 0x8A1010);
+                glowEyes(ps, buffers, overlay, 0xFF2020, open);
+            }
+            case BEASTFOLK -> {
+                // Lobisomem: pelagem por cima do corpo, garras, olhos de fera
+                int fur = FUR[variant] & 0xFFFFFF;
+                textureShell(ps, buffers, RenderType.entityTranslucent(FUR_SHELL), light, overlay, ((int) (open * 0xE0) << 24) | fur, 1.06F);
+                if (rich) textureShell(ps, buffers, RenderType.entityTranslucent(FUR_SHELL), light, overlay, ((int) (open * 0x80) << 24) | fur, 1.1F);
+                claws(ps, buffers, light, overlay, open);
+                auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, ((int) (a * 0.6F) << 24) | 0xD08A3A, 1.12F);
+                glowEyes(ps, buffers, overlay, 0xFFD040, open);
+            }
+            case HUMAN -> {
+                auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, ((int) (open * (0x30 + 0x20 * pulse)) << 24) | 0xFFD86B, 1.07F);
+                if (rich) auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, ((int) (open * 0x18) << 24) | 0xFFF2C0, 1.14F + 0.02F * pulse);
+                banner(ps, buffers, overlay, age, open);
+                glowEyes(ps, buffers, overlay, 0xFFE89A, open);
+            }
             case ARACHNID -> auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, (a << 24) | 0x9A6AD8, 1.05F);
+            case SLIME -> {
+                // v1.7 Despertar do Lorde Demônio (Rimuru): forma humanoide — aura azul-prateada, um véu escuro de Lorde
+                // Demônio por fora e os olhos dourados (o corpo gigante de geleia do antigo Rei Slime saiu)
+                auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, ((int) (open * (0x30 + 0x20 * pulse)) << 24) | 0x7FD4FF, 1.05F);
+                if (rich) auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, ((int) (open * 0x22) << 24) | 0x3A2A6A, 1.12F + 0.02F * pulse);
+                glowEyes(ps, buffers, overlay, 0xFFD040, open);
+            }
             default -> { }
         }
     }
 
     /** Patas de aranha nas costas: 2 pares pequenos (base) ou 4 pares grandes que andam (Forma Aracne). */
-    private void spiderLegs(PoseStack ps, MultiBufferSource buffers, int light, int overlay, boolean form, float age, float limbSwing,
-                            float limbSwingAmount) {
+    private void spiderLegs(PoseStack ps, MultiBufferSource buffers, int light, int overlay, boolean form, int lv, float age,
+                            float limbSwing, float limbSwingAmount, float open) {
         ModelPart leg = model2().getChild("spider_leg");
         ModelPart lower = leg.getChild("lower");
         VertexConsumer vc = buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE2));
-        int pairs = form ? 4 : 2;
-        float scale = form ? 1.25F : 0.6F;
+        // Evolução (v1.7): I = 1 par miúdo, II–III = 2 pares crescendo, IV+ = 3 pares; a forma Arachne = 4 pares
+        int pairs = form ? 4 : lv <= 1 ? 1 : lv >= 4 ? 3 : 2;
+        float scale = form ? 0.6F + 1.0F * open : lv <= 1 ? 0.45F : lv == 2 ? 0.52F : lv == 3 ? 0.6F : 0.66F;
         for (int i = 0; i < pairs; i++) {
             float y = form ? 1.5F + i * 2.6F : 3F + i * 3F;
             for (int s : new int[]{1, -1}) {
@@ -425,17 +565,31 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
 
     /**
      * Par de asas nas costas. {@code open} 0 = dobradas para trás e caídas, 1 = abertas para os lados batendo (rápido no
-     * ar, devagar no chão); {@code scale} cresce a partir da raiz da asa.
+     * ar, devagar no chão); {@code scale} cresce a partir da raiz da asa. v1.3.1: planando (pose de élitro), as asas
+     * ficam abertas e retas como as de uma ave planando, tremendo com o vento; cada batida de asas
+     * ({@link ClientCharacter#beatPhase}) ergue e desce as asas num golpe grande.
      */
     private void drawWings(PoseStack ps, MultiBufferSource buffers, int light, int overlay, AbstractClientPlayer p, ResourceLocation tex,
                            float open, float scale, int color, float t, boolean flap) {
+        drawWings(ps, buffers, light, overlay, p, tex, open, scale, color, t, flap, 0F, 0F);
+    }
+
+    /** Igual, com {@code lift} (rad: ergue/baixa o par) e {@code yOff} (pixels: sobe/desce a raiz) — as 6 asas do Anjo. */
+    private void drawWings(PoseStack ps, MultiBufferSource buffers, int light, int overlay, AbstractClientPlayer p, ResourceLocation tex,
+                           float open, float scale, int color, float t, boolean flap, float lift, float yOff) {
         boolean air = !p.onGround();
         float f = !flap ? Mth.sin(t * 0.08F) * 0.06F : air ? Mth.sin(t * 0.55F) * 0.45F : Mth.sin(t * 0.12F) * 0.12F;
+        // Planar: entra em ~6 ticks (junto com a pose de élitro do vanilla) e respeita a forma abrindo/fechando
+        float glide = p.isFallFlying() ? Mth.clamp((p.getFallFlyingTicks() + pt) / 6F, 0F, 1F) * open : 0F;
+        // Batida: primeiro ergue (−), depois desce com força (+); 0 fora da batida
+        float beat = flap ? ClientCharacter.beatPhase(p.getId(), p.level().getGameTime(), pt) : -1F;
+        float stroke = beat < 0F ? 0F : -(beat < 0.5F ? 0.75F : 0.95F) * Mth.sin(beat * (float) (Math.PI * 2));
+        float flutter = Mth.sin(t * 1.3F) * 0.025F;
         ModelPart m = wingModel();
         VertexConsumer vc = buffers.getBuffer(RenderType.entityTranslucent(tex));
         ps.pushPose();
         getParentModel().body.translateAndRotate(ps);
-        ps.translate(0, 2.5F / 16F, 2.2F / 16F);
+        ps.translate(0, (2.5F + yOff) / 16F, 2.2F / 16F);
         ps.scale(scale, scale, scale);
         ps.translate(0, -2.5F / 16F, -2.2F / 16F);
         for (String side : new String[]{"l", "r"}) {
@@ -443,12 +597,258 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
             ModelPart w = m.getChild("wing_" + side);
             // (rotationZYX: yRot positivo leva +x para a FRENTE, por isso o sinal −s varre as asas para trás; no modelo,
             //  y cresce para baixo, então zRot −s ergue a asa.)
-            w.yRot = -s * Mth.lerp(open, 1.25F, 0.45F + f);
-            w.zRot = s * Mth.lerp(open, 0.55F, -0.30F - f * 0.5F);
-            w.xRot = 0.12F;
+            float baseY = -s * Mth.lerp(open, 1.25F, 0.45F + f);
+            float baseZ = s * Mth.lerp(open, 0.55F, -0.30F - f * 0.5F - lift + stroke);
+            // Planando: quase retas para os lados (o corpo já está deitado pela pose de élitro), leve diedro para cima
+            float glideY = -s * (0.12F + flutter);
+            float glideZ = s * (-0.06F - lift * 0.4F + stroke + flutter);
+            w.yRot = Mth.lerp(glide, baseY, glideY);
+            w.zRot = Mth.lerp(glide, baseZ, glideZ);
+            w.xRot = Mth.lerp(glide, 0.12F, 0.04F);
             ModelPart tip = w.getChild("tip");
-            tip.yRot = -s * Mth.lerp(open, 1.2F, 0.30F + f * 0.6F);
+            // A ponta dobra para trás na subida da batida (menos arrasto) e abre na descida
+            float tipGlide = -s * (0.06F + Math.max(0F, -stroke) * 0.6F);
+            tip.yRot = Mth.lerp(glide, -s * Mth.lerp(open, 1.2F, 0.30F + f * 0.6F), tipGlide);
             w.render(ps, vc, light, overlay, color);
+        }
+        ps.popPose();
+    }
+
+    // =====================================================================================
+    //  v1.3: peças das formas
+    // =====================================================================================
+    /** Peças novas (textura branca {@code aura.png}, tingida na hora de desenhar). */
+    private static ModelPart model3() {
+        if (root3 != null) return root3;
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition r = mesh.getRoot();
+        // Olhos (na altura dos olhos da skin, um tiquinho à frente do rosto)
+        r.addOrReplaceChild("eyes", CubeListBuilder.create().texOffs(0, 0)
+                .addBox(-3.1F, -4.2F, -4.2F, 2.2F, 1.2F, 0.3F)
+                .addBox(0.9F, -4.2F, -4.2F, 2.2F, 1.2F, 0.3F), PartPose.ZERO);
+        // Garras: três por mão, saindo da ponta do braço
+        r.addOrReplaceChild("claws", CubeListBuilder.create().texOffs(0, 0)
+                .addBox(-1.6F, 0F, -0.3F, 0.6F, 3.2F, 0.6F)
+                .addBox(-0.3F, 0F, -0.3F, 0.6F, 3.6F, 0.6F)
+                .addBox(1.0F, 0F, -0.3F, 0.6F, 3.2F, 0.6F), PartPose.ZERO);
+        // Elo de corrente (Fantasma)
+        r.addOrReplaceChild("link", CubeListBuilder.create().texOffs(0, 0).addBox(-0.35F, -0.9F, -0.15F, 0.7F, 1.8F, 0.3F), PartPose.ZERO);
+        // Runa flutuante (Elfo): plaquinha fina
+        r.addOrReplaceChild("rune", CubeListBuilder.create().texOffs(0, 0).addBox(-1F, -1F, -0.05F, 2F, 2F, 0.1F), PartPose.ZERO);
+        // Estandarte do Herói: mastro, travessa e o pano (tiras que ondulam)
+        r.addOrReplaceChild("pole", CubeListBuilder.create().texOffs(0, 0).addBox(-0.4F, -22F, -0.4F, 0.8F, 32F, 0.8F)
+                .addBox(-4F, -21.6F, -0.3F, 8F, 0.6F, 0.6F), PartPose.ZERO);
+        r.addOrReplaceChild("cloth", CubeListBuilder.create().texOffs(0, 0).addBox(-0.8F, 0F, -0.05F, 1.6F, 12F, 0.1F), PartPose.ZERO);
+        // Ombreiras de pedra (Colosso)
+        r.addOrReplaceChild("pauldron", CubeListBuilder.create().texOffs(0, 0).addBox(-3F, -3.4F, -3F, 6F, 3F, 6F)
+                .addBox(-2.5F, -4.4F, -2.5F, 5F, 1F, 5F), PartPose.ZERO);
+        // Abdômen de aranha (Aracnídeo) e a marca vermelha
+        r.addOrReplaceChild("abdomen", CubeListBuilder.create().texOffs(0, 0).addBox(-4.5F, -3.5F, 0F, 9F, 7F, 10F)
+                .addBox(-3.5F, -2.5F, 10F, 7F, 5F, 2F), PartPose.ZERO);
+        r.addOrReplaceChild("mark", CubeListBuilder.create().texOffs(0, 0).addBox(-1F, -3.7F, 2.5F, 2F, 0.2F, 2F)
+                .addBox(-0.5F, -3.7F, 4.5F, 1F, 0.2F, 1F).addBox(-1F, -3.7F, 5.5F, 2F, 0.2F, 2F), PartPose.ZERO);
+        // Corpo de geleia do Rei Slime (do pé até acima da cabeça)
+        r.addOrReplaceChild("jelly", CubeListBuilder.create().texOffs(0, 0).addBox(-12F, -11F, -12F, 24F, 35F, 24F), PartPose.ZERO);
+        root3 = LayerDefinition.create(mesh, 64, 64).bakeRoot();
+        return root3;
+    }
+
+    /** Desenha a peça com escala a partir do pivô dela (chifres, presas e orelhas crescendo). */
+    private static void scaledPart(PoseStack ps, ModelPart part, VertexConsumer vc, int light, int overlay, int color, float scale) {
+        if (Math.abs(scale - 1F) < 0.005F) {
+            part.render(ps, vc, light, overlay, color);
+            return;
+        }
+        ps.pushPose();
+        ps.translate(part.x / 16F, part.y / 16F, part.z / 16F);
+        ps.scale(scale, scale, scale);
+        ps.translate(-part.x / 16F, -part.y / 16F, -part.z / 16F);
+        part.render(ps, vc, light, overlay, color);
+        ps.popPose();
+    }
+
+    /** Olhos brilhando (emissivos) na cor {@code rgb}, com intensidade {@code k} (0..1). */
+    private void glowEyes(PoseStack ps, MultiBufferSource buffers, int overlay, int rgb, float k) {
+        PlayerModel<AbstractClientPlayer> pm = getParentModel();
+        if (k <= 0.02F || !pm.head.visible) return;
+        ps.pushPose();
+        pm.head.translateAndRotate(ps);
+        model3().getChild("eyes").render(ps, buffers.getBuffer(RenderType.entityTranslucentEmissive(AURA)), LightTexture.FULL_BRIGHT, overlay,
+                ((int) (Mth.clamp(k, 0F, 1F) * 0xF0) << 24) | (rgb & 0xFFFFFF));
+        ps.popPose();
+    }
+
+    /** O modelo do jogador inteiro com outra textura (rocha, pelagem, rachaduras), um pouco maior que o corpo. */
+    private void textureShell(PoseStack ps, MultiBufferSource buffers, RenderType type, int light, int overlay, int argb, float grow) {
+        if ((argb >>> 24) < 4) return;
+        ps.pushPose();
+        ps.translate(0, 0.75F, 0);
+        ps.scale(grow, grow, grow);
+        ps.translate(0, -0.75F, 0);
+        getParentModel().renderToBuffer(ps, buffers.getBuffer(type), light, overlay, argb);
+        ps.popPose();
+    }
+
+    /** A pele do jogador acesa (escamas do Dracônico, sangue fervendo do Meio-Orc): cabeça, corpo e braços emissivos. */
+    private void skinGlow(PoseStack ps, MultiBufferSource buffers, int overlay, AbstractClientPlayer p, int argb) {
+        if ((argb >>> 24) < 4) return;
+        ResourceLocation skin;
+        try {
+            skin = getTextureLocation(p);
+        } catch (RuntimeException e) {
+            return;
+        }
+        if (skin == null) return;
+        VertexConsumer vc = buffers.getBuffer(RenderType.entityTranslucentEmissive(skin));
+        PlayerModel<AbstractClientPlayer> pm = getParentModel();
+        if (pm.head.visible) pm.head.render(ps, vc, LightTexture.FULL_BRIGHT, overlay, argb);
+        if (pm.body.visible) pm.body.render(ps, vc, LightTexture.FULL_BRIGHT, overlay, argb);
+        if (pm.leftArm.visible) pm.leftArm.render(ps, vc, LightTexture.FULL_BRIGHT, overlay, argb);
+        if (pm.rightArm.visible) pm.rightArm.render(ps, vc, LightTexture.FULL_BRIGHT, overlay, argb);
+    }
+
+    /** Garras de lobisomem nas duas mãos. */
+    private void claws(PoseStack ps, MultiBufferSource buffers, int light, int overlay, float open) {
+        PlayerModel<AbstractClientPlayer> pm = getParentModel();
+        ModelPart claws = model3().getChild("claws");
+        VertexConsumer vc = buffers.getBuffer(RenderType.entityCutoutNoCull(AURA));
+        float len = 0.3F + 0.7F * open;
+        for (int side : new int[]{1, -1}) {
+            ModelPart arm = side > 0 ? pm.leftArm : pm.rightArm;
+            if (!arm.visible) continue;
+            ps.pushPose();
+            arm.translateAndRotate(ps);
+            ps.translate(side * 1F / 16F, 9.6F / 16F, -1.2F / 16F);
+            ps.mulPose(Axis.XP.rotation(-0.35F));
+            ps.scale(1F, len, 1F);
+            claws.render(ps, vc, light, overlay, 0xFFEDE4D2);
+            ps.popPose();
+        }
+    }
+
+    /** Correntes espectrais: uma pendurada em cada mão balançando e um anel girando na cintura. */
+    private void chains(PoseStack ps, MultiBufferSource buffers, int overlay, float age, float open) {
+        if (open <= 0.02F) return;
+        PlayerModel<AbstractClientPlayer> pm = getParentModel();
+        ModelPart link = model3().getChild("link");
+        VertexConsumer vc = buffers.getBuffer(RenderType.entityTranslucentEmissive(AURA));
+        int color = ((int) (open * 0xC8) << 24) | 0xB8F0FF;
+        for (int side : new int[]{1, -1}) {
+            ModelPart arm = side > 0 ? pm.leftArm : pm.rightArm;
+            ps.pushPose();
+            arm.translateAndRotate(ps);
+            ps.translate(side * 1F / 16F, 10.2F / 16F, 0);
+            for (int i = 0; i < 7; i++) {
+                ps.mulPose(Axis.ZP.rotation(Mth.sin(age * 0.09F + i * 0.5F + side) * 0.12F));
+                ps.mulPose(Axis.YP.rotationDegrees(90));
+                link.render(ps, vc, LightTexture.FULL_BRIGHT, overlay, color);
+                ps.translate(0, 1.4F / 16F, 0);
+            }
+            ps.popPose();
+        }
+        if (!FxQuality.atLeast(Graphics.MEDIUM)) return;
+        ps.pushPose();
+        pm.body.translateAndRotate(ps);
+        int n = 18;
+        for (int i = 0; i < n; i++) {
+            double a = age * 0.04 + Math.PI * 2 * i / n;
+            ps.pushPose();
+            ps.translate(Math.cos(a) * 6.5F / 16F, (9F + Mth.sin((float) a * 2F) * 0.8F) / 16F, Math.sin(a) * 6.5F / 16F);
+            ps.mulPose(Axis.YP.rotation((float) -a));
+            ps.mulPose(Axis.ZP.rotationDegrees(90));
+            if (i % 2 == 1) ps.mulPose(Axis.YP.rotationDegrees(90));
+            link.render(ps, vc, LightTexture.FULL_BRIGHT, overlay, color);
+            ps.popPose();
+        }
+        ps.popPose();
+    }
+
+    /** Runas da lua orbitando o Elfo transformado. */
+    private void runes(PoseStack ps, MultiBufferSource buffers, int overlay, float age, float open) {
+        ModelPart rune = model3().getChild("rune");
+        VertexConsumer vc = buffers.getBuffer(RenderType.entityTranslucentEmissive(AURA));
+        int n = FxQuality.atLeast(Graphics.HIGH) ? 8 : 5;
+        for (int i = 0; i < n; i++) {
+            double a = age * 0.05 + Math.PI * 2 * i / n;
+            float y = 6F + Mth.sin(age * 0.08F + i * 1.3F) * 3F;
+            float r = 11F * open;
+            ps.pushPose();
+            ps.translate(Math.cos(a) * r / 16F, y / 16F, Math.sin(a) * r / 16F);
+            ps.mulPose(Axis.YP.rotation((float) (-a + Math.PI / 2)));
+            ps.mulPose(Axis.ZP.rotationDegrees(45));
+            rune.render(ps, vc, LightTexture.FULL_BRIGHT, overlay, ((int) (open * 0xD0) << 24) | (i % 2 == 0 ? 0xBFF6FF : 0x9FF0B8));
+            ps.popPose();
+        }
+    }
+
+    /** Estandarte de luz do Herói Desperto, preso nas costas (estilo sashimono), ondulando. */
+    private void banner(PoseStack ps, MultiBufferSource buffers, int overlay, float age, float open) {
+        ModelPart m3 = model3();
+        VertexConsumer vc = buffers.getBuffer(RenderType.entityTranslucentEmissive(AURA));
+        ps.pushPose();
+        getParentModel().body.translateAndRotate(ps);
+        ps.translate(0, 0, 3.2F / 16F);
+        // Sobe do chão das costas conforme a forma abre
+        ps.translate(0, (1F - open) * 12F / 16F, 0);
+        m3.getChild("pole").render(ps, vc, LightTexture.FULL_BRIGHT, overlay, ((int) (open * 0xF0) << 24) | 0xFFE7A0);
+        ModelPart cloth = m3.getChild("cloth");
+        for (int i = 0; i < 5; i++) {
+            float x = -3.2F + i * 1.6F;
+            float wave = Mth.sin(age * 0.18F - i * 0.7F) * (0.6F + i * 0.1F);
+            ps.pushPose();
+            ps.translate(x / 16F, -21F / 16F, (0.8F + wave) / 16F);
+            ps.mulPose(Axis.XP.rotation(0.12F + wave * 0.05F));
+            int glow = i % 2 == 0 ? 0xFFF4C8 : 0xFFD86B;
+            cloth.render(ps, vc, LightTexture.FULL_BRIGHT, overlay, ((int) (open * (0xB0 + 0x30 * Mth.sin(age * 0.2F + i))) << 24) | glow);
+            ps.popPose();
+        }
+        ps.popPose();
+    }
+
+    /** Ombreiras de pedra do Colosso. */
+    private void pauldrons(PoseStack ps, MultiBufferSource buffers, int light, int overlay, float open) {
+        PlayerModel<AbstractClientPlayer> pm = getParentModel();
+        ModelPart pd = model3().getChild("pauldron");
+        VertexConsumer vc = buffers.getBuffer(RenderType.entityCutoutNoCull(GOLEM));
+        for (int side : new int[]{1, -1}) {
+            ModelPart arm = side > 0 ? pm.leftArm : pm.rightArm;
+            if (!arm.visible) continue;
+            ps.pushPose();
+            arm.translateAndRotate(ps);
+            ps.translate(side * 1F / 16F, 0, 0);
+            ps.scale(open, open, open);
+            pd.render(ps, vc, light, overlay, 0xFFFFFFFF);
+            ps.popPose();
+        }
+    }
+
+    /** Abdômen de aranha nas costas (com a marca vermelha brilhando). */
+    private void abdomen(PoseStack ps, MultiBufferSource buffers, int light, int overlay, float open) {
+        ModelPart m3 = model3();
+        ps.pushPose();
+        ps.translate(0, 9.5F / 16F, 2F / 16F);
+        ps.mulPose(Axis.XP.rotation(-0.55F));
+        ps.scale(open, open, open);
+        m3.getChild("abdomen").render(ps, buffers.getBuffer(RenderType.entityCutoutNoCull(AURA)), light, overlay, 0xFF2E2238);
+        m3.getChild("mark").render(ps, buffers.getBuffer(RenderType.entityTranslucentEmissive(AURA)), LightTexture.FULL_BRIGHT, overlay, 0xF0E02030);
+        ps.popPose();
+    }
+
+    /** O Rei Slime dentro do corpo de geleia gigante, balançando. */
+    private void slimeBody(PoseStack ps, MultiBufferSource buffers, int overlay, float age, float open) {
+        ModelPart jelly = model3().getChild("jelly");
+        VertexConsumer vc = buffers.getBuffer(RenderType.entityTranslucent(AURA));
+        float wob = Mth.sin(age * 0.15F) * 0.04F;
+        ps.pushPose();
+        // Pivô no chão (y = 24 px): estica para os lados quando encolhe na altura
+        ps.translate(0, 24F / 16F, 0);
+        ps.scale(open * (1F + wob), open * (1F - wob), open * (1F + wob));
+        ps.translate(0, -24F / 16F, 0);
+        jelly.render(ps, vc, LightTexture.FULL_BRIGHT, overlay, 0x6A8FE05A);
+        if (FxQuality.atLeast(Graphics.HIGH)) {
+            ps.translate(0, 24F / 16F * 0.12F, 0);
+            ps.scale(0.88F, 0.88F, 0.88F);
+            jelly.render(ps, vc, LightTexture.FULL_BRIGHT, overlay, 0x3AB8FF80);
         }
         ps.popPose();
     }

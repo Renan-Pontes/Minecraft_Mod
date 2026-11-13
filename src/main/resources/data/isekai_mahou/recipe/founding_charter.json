@@ -2,19 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "PEP",
+    " P ",
     "GBG",
-    "PEP"
+    " P "
   ],
   "key": {
     "P": {
       "item": "minecraft:paper"
     },
-    "E": {
-      "item": "minecraft:emerald_block"
-    },
     "G": {
-      "item": "minecraft:gold_block"
+      "item": "minecraft:gold_ingot"
     },
     "B": {
       "item": "minecraft:writable_book"

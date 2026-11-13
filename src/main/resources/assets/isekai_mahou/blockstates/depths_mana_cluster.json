@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "isekai_mahou:block/depths_mana_cluster"
+    },
+    "facing=down": {
+      "model": "isekai_mahou:block/depths_mana_cluster",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "isekai_mahou:block/depths_mana_cluster",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "isekai_mahou:block/depths_mana_cluster",
+      "x": 90,
+      "y": 180
+    },
+    "facing=east": {
+      "model": "isekai_mahou:block/depths_mana_cluster",
+      "x": 90,
+      "y": 90
+    },
+    "facing=west": {
+      "model": "isekai_mahou:block/depths_mana_cluster",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

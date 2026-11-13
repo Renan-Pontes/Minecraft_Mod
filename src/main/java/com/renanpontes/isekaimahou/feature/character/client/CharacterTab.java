@@ -13,6 +13,7 @@ import com.renanpontes.isekaimahou.feature.character.CharacterNetwork;
 import com.renanpontes.isekaimahou.feature.character.Race;
 import com.renanpontes.isekaimahou.feature.character.RaceGlyphs;
 import com.renanpontes.isekaimahou.feature.character.RaceProgress;
+import com.renanpontes.isekaimahou.feature.character.SlimePredator;
 import com.renanpontes.isekaimahou.network.ClientMagic;
 
 import net.minecraft.client.Minecraft;
@@ -62,7 +63,7 @@ public class CharacterTab implements MenuTab {
             screen.addTabWidget(Button.builder(Component.translatable("screen.isekai_mahou.character.build"),
                     b -> Minecraft.getInstance().setScreen(new CreationScreen(CharacterNetwork.MODE_TAB, BlockPos.ZERO)))
                     .bounds(x + 4, y + h - 24, cardW - 8, 20).build());
-        } else if (d.created() && d.race().darkvision != Race.Darkvision.NONE) {
+        } else if (d.created() && (d.race().darkvision != Race.Darkvision.NONE || SlimePredator.has(d, SlimePredator.Mimic.BAT))) {
             screen.addTabWidget(Button.builder(Component.translatable(d.darkvision()
                             ? "screen.isekai_mahou.character.darkvision_on" : "screen.isekai_mahou.character.darkvision_off"), b -> {
                         PacketDistributor.sendToServer(new CharacterNetwork.Toggle(0, !ClientCharacter.data().darkvision()));
@@ -168,6 +169,27 @@ public class CharacterTab implements MenuTab {
                     d.ancestry().displayName()), cw - 6), cx + cw / 2, ey, 0xFFFFFFFF);
             ey += 11;
         }
+        // v1.7: estágio de evolução (Kumoko, Rimuru, Geld) e as habilidades do Predador (passe o mouse para a lista)
+        if (r.hasStages()) {
+            g.drawCenteredString(font, MahouUi.fit(font, Component.translatable("screen.isekai_mahou.character.stage",
+                    r.stageName(lv).withColor(r.rgb)).withColor(0xA89EC0), cw - 6), cx + cw / 2, ey, 0xFFFFFFFF);
+            ey += 11;
+        }
+        if (r == Race.SLIME) {
+            int cap = SlimePredator.capacity(lv);
+            Component pred = Component.translatable("screen.isekai_mahou.character.predator", d.mimics().size(), cap).withColor(0x7FD4FF);
+            g.drawCenteredString(font, MahouUi.fit(font, pred, cw - 6), cx + cw / 2, ey, 0xFFFFFFFF);
+            if (CharacterUi.in(mx, my, cx + 6, ey - 1, cw - 12, 11)) {
+                tip.clear();
+                tip.add(pred);
+                for (String id : d.mimics()) {
+                    SlimePredator.Mimic m = SlimePredator.Mimic.byId(id);
+                    if (m != null) tip.add(m.displayName().append(Component.literal(" — ").withColor(0x6C6480)).append(m.desc().withColor(0xE8E2F4)));
+                }
+                if (d.mimics().isEmpty()) tip.add(Component.translatable("screen.isekai_mahou.character.predator_none").withColor(0xA89EC0));
+            }
+            ey += 11;
+        }
         if (d.rebirths() > 0) {
             g.drawCenteredString(font, MahouUi.fit(font, Component.translatable("screen.isekai_mahou.character.rebirths", d.rebirths()),
                     cw - 6), cx + cw / 2, ey, MahouUi.TEXT_DIM);
@@ -180,7 +202,11 @@ public class CharacterTab implements MenuTab {
                         ? "screen.isekai_mahou.character.key_form" : r.darkvision != Race.Darkvision.NONE
                         ? "screen.isekai_mahou.character.key_vision" : "screen.isekai_mahou.character.key_none").withColor(r.rgb));
         ey = CharacterUi.paragraph(g, font, key, cx + 5, ey, cw - 10, 0xFFFFFFFF);
-        if (r.darkvision != Race.Darkvision.NONE && lv >= RaceProgress.MAX_LEVEL) {
+        if (r.hasShiftAction()) {
+            // v1.7: Shift + tecla racial = Fio de Aranha / Grande Sábio / Devorar Elemento
+            CharacterUi.paragraph(g, font, Component.translatable("screen.isekai_mahou.character.key_shift." + r.id).withColor(0xA89EC0),
+                    cx + 5, ey, cw - 10, 0xFFFFFFFF);
+        } else if (r.darkvision != Race.Darkvision.NONE && lv >= RaceProgress.MAX_LEVEL) {
             CharacterUi.paragraph(g, font, Component.translatable("screen.isekai_mahou.character.key_vision_shift").withColor(0xA89EC0),
                     cx + 5, ey, cw - 10, 0xFFFFFFFF);
         }

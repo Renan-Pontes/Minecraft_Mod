@@ -63,8 +63,8 @@ public class MagicData {
      * Novos campos opcionais entram AQUI, sempre com valor padrão (saves antigos continuam abrindo).
      */
     private record Extra(int xpBank, int activeLoadout, float ultCharge, List<SpellPreset> presets, int manaTrained,
-                         int trainings, long fatigueUntil) {
-        static final Extra DEFAULT = new Extra(0, 0, 0F, List.of(), 0, 0, 0L);
+                         int trainings, long fatigueUntil, Map<ResourceLocation, Integer> glyphMastery) {
+        static final Extra DEFAULT = new Extra(0, 0, 0F, List.of(), 0, 0, 0L, Map.of());
         static final Codec<Extra> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.INT.optionalFieldOf("xp_bank", 0).forGetter(Extra::xpBank),
                 Codec.INT.optionalFieldOf("active_loadout", 0).forGetter(Extra::activeLoadout),
@@ -72,7 +72,10 @@ public class MagicData {
                 SpellPreset.CODEC.listOf().optionalFieldOf("presets", List.of()).forGetter(Extra::presets),
                 Codec.INT.optionalFieldOf("mana_trained", 0).forGetter(Extra::manaTrained),
                 Codec.INT.optionalFieldOf("trainings", 0).forGetter(Extra::trainings),
-                Codec.LONG.optionalFieldOf("fatigue_until", 0L).forGetter(Extra::fatigueUntil)
+                Codec.LONG.optionalFieldOf("fatigue_until", 0L).forGetter(Extra::fatigueUntil),
+                // release 1.0 — Maestria por glifo: id do glifo -> XP de uso (ausente em saves antigos = vazio)
+                Codec.unboundedMap(ResourceLocation.CODEC, Codec.INT).optionalFieldOf("glyph_mastery", Map.of())
+                        .forGetter(Extra::glyphMastery)
         ).apply(i, Extra::new));
     }
 
@@ -97,7 +100,7 @@ public class MagicData {
             Codec.STRING.listOf().optionalFieldOf("flags", List.of()).forGetter(d -> new ArrayList<>(d.flags)),
             SpellRecipe.CODEC.listOf().optionalFieldOf("library", List.of()).forGetter(d -> d.library),
             Extra.CODEC.optionalFieldOf("extra", Extra.DEFAULT).forGetter(d -> new Extra(d.xpBank, d.activeLoadout, d.ultCharge,
-                    List.copyOf(d.presets), d.manaTrained, d.trainings, d.fatigueUntil))
+                    List.copyOf(d.presets), d.manaTrained, d.trainings, d.fatigueUntil, Map.copyOf(d.glyphMastery)))
     ).apply(i, MagicData::new));
 
     // ---------- Dados salvos ----------
@@ -130,6 +133,11 @@ public class MagicData {
     private int trainings;
     /** v1.0: até quando (tempo de jogo) a regeneração está reduzida por ter esvaziado o recurso. */
     private long fatigueUntil;
+    /**
+     * release 1.0 — Maestria por glifo: XP de USO de cada glifo (id -> XP). As regras (níveis I–X, bônus, limite contra
+     * spam) ficam em {@code glyph.GlyphMastery}; aqui só o número salvo.
+     */
+    private final Map<ResourceLocation, Integer> glyphMastery = new HashMap<>();
 
     // ---------- Temporários (não salvos) ----------
     public double lastX, lastY, lastZ;
@@ -190,6 +198,7 @@ public class MagicData {
         this.manaTrained = Math.max(0, extra.manaTrained());
         this.trainings = Math.max(0, extra.trainings());
         this.fatigueUntil = Math.max(0L, extra.fatigueUntil());
+        extra.glyphMastery().forEach((id, v) -> { if (id != null && v != null && v > 0) this.glyphMastery.put(id, v); });
         this.activeLoadout = Math.floorMod(extra.activeLoadout(), LOADOUTS);
         this.ultCharge = Math.max(0F, Math.min(Progression.MAX_CHARGE, extra.ultCharge()));
 
@@ -491,6 +500,27 @@ public class MagicData {
         boolean added = glyphs.add(id);
         if (added) dirty = true;
         return added;
+    }
+
+    // =====================================================================================
+    //  release 1.0 — Maestria por glifo (XP de uso; regras em glyph.GlyphMastery)
+    // =====================================================================================
+    /** XP de uso acumulado de um glifo (0 = nunca usado de verdade). */
+    public int glyphXp(ResourceLocation id) {
+        return id == null ? 0 : glyphMastery.getOrDefault(id, 0);
+    }
+
+    /** XP de uso de todos os glifos (somente leitura). */
+    public Map<ResourceLocation, Integer> glyphMastery() {
+        return Collections.unmodifiableMap(glyphMastery);
+    }
+
+    /** Define o XP de uso de um glifo (0 apaga). Use {@code GlyphMastery} — ele aplica o teto e avisa o jogador. */
+    public void setGlyphXp(ResourceLocation id, int xp) {
+        if (id == null) return;
+        int v = Math.max(0, xp);
+        Integer old = v == 0 ? glyphMastery.remove(id) : glyphMastery.put(id, v);
+        if ((old == null ? 0 : old) != v) dirty = true;
     }
 
     // =====================================================================================

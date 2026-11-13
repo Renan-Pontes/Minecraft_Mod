@@ -15,6 +15,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementReactions;
 import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.core.api.Cutscenes;
+import com.renanpontes.isekaimahou.core.boss.BossCurses;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
 import com.renanpontes.isekaimahou.feature.bosses_b.BbRegistries;
@@ -265,10 +266,116 @@ public class TwilightHerald extends BbBoss {
                 .freeFacing().when(t -> stance() == SHADOW && !domainActive()).onEnd(chainDirs::clear));
         l.add(BossAttack.of("echoes", 40, 480, this::echoes).anim("summon").weight(2).stationary()
                 .when(t -> stance() == SHADOW && !domainActive() && minionCount() < 1 + phase()));
+        // v1.3 ASSINATURA — Tempo Crepuscular: o relógio para para todos, menos para ele
+        l.add(BossAttack.of("time_stop", 44, 640, this::timeStop).anim("shift").phase(2).range(0, 40).weight(5).stationary()
+                .when(t -> !domainActive() && timeHaste <= 0));
         // Fase final
         l.add(BossAttack.of("domain", 70, 900, this::domain).anim("domain").phase(3).weight(10).stationary()
                 .when(t -> !domainActive()));
         return l;
+    }
+
+    @Override
+    protected int pauseBetweenAttacks() {
+        int p = super.pauseBetweenAttacks();
+        // Tempo Crepuscular: todos lentos, ele não — ataca no dobro do ritmo
+        return timeHaste > 0 ? p / 2 : p;
+    }
+
+    /** Ticks restantes em que o Arauto age "fora do tempo" (Tempo Crepuscular). */
+    private int timeHaste;
+    /** Já voltou no tempo nesta luta (só uma vez; fica salvo). */
+    private boolean rewound;
+    /** Vida registrada a cada segundo (últimos 12 s) para o Rebobinar. */
+    private final float[] healthHistory = new float[12];
+    private int historyIndex = -1;
+
+    /**
+     * Tempo Crepuscular (assinatura do Arauto): ele ergue a mão, um relógio de luz e sombra gira e acelera em volta;
+     * no estalo, TODOS a até 48 blocos ficam lentos (andar, golpes, pulo — até a queda fica lenta) e a tela fica sépia,
+     * enquanto ele age no dobro do ritmo.
+     */
+    private void timeStop(LivingEntity target, int t) {
+        ServerLevel sl = (ServerLevel) level();
+        Vec3 c = position().add(0, 1.6, 0);
+        if (t == 0) {
+            announce("time_stop", Announce.STYLE_ULTIMATE);
+            hint("time_stop");
+            for (LivingEntity e : enemiesNear(position(), 48)) {
+                if (e instanceof ServerPlayer sp) BossKit.vignette(sp, 0xC9A96E, 0.7F, 26);
+            }
+        }
+        if (t < 24) {
+            // Antecipação: as "horas" do relógio em volta e o ponteiro girando cada vez mais rápido
+            double r = 3.2;
+            for (int h = 0; h < 12; h += 2) {
+                double a = h * Math.PI / 6;
+                sl.sendParticles(BbFx.dust(h % 4 == 0 ? BbFx.LIGHT : BbFx.SHADOW, 1.4F), c.x + Math.cos(a) * r, c.y, c.z + Math.sin(a) * r,
+                        1, 0, 0, 0, 0);
+            }
+            double hand = t * t * 0.02;
+            for (int k = 1; k <= 4; k++) {
+                sl.sendParticles(ParticleTypes.END_ROD, c.x + Math.cos(hand) * k * 0.7, c.y, c.z + Math.sin(hand) * k * 0.7, 1, 0, 0, 0, 0);
+            }
+            if (t % Math.max(2, 8 - t / 4) == 0) {
+                BbFx.sound(sl, c, SoundEvents.NOTE_BLOCK_HAT.value(), 2.0F, 0.6F + t * 0.03F);
+            }
+            return;
+        }
+        if (t != 24) return;
+        int amp = phase() >= 3 ? 1 : 0;
+        int dur = 120 + 20 * phase();
+        timeHaste = dur;
+        BbFx.sound(sl, c, SoundEvents.BELL_RESONATE, 3.0F, 0.5F);
+        BbFx.sound(sl, c, SoundEvents.BEACON_DEACTIVATE, 2.5F, 0.6F);
+        BossKit.flashNear(sl, c, 48, 0xE8D8A8, 0.55F, 16);
+        BossKit.shake(sl, c, 40, 1.0F, 18);
+        sl.sendParticles(ParticleTypes.FLASH, c.x, c.y, c.z, 1, 0, 0, 0, 0);
+        BbFx.ring(sl, BbFx.dust(BbFx.LIGHT, 2.2F), position().add(0, 0.3, 0), 6.0, 40);
+        BbFx.ring(sl, BbFx.dust(BbFx.SHADOW, 2.2F), position().add(0, 0.3, 0), 9.0, 52);
+        for (LivingEntity e : enemiesNear(position(), 48)) BossCurses.apply(e, BossCurses.TIME_SLOW, dur, amp);
+    }
+
+    /**
+     * Rebobinar (assinatura, uma vez por luta): na primeira vez que cai abaixo de 30% de vida na fase 2+, o Arauto volta
+     * no tempo — a vida retorna ao valor de ~10 s atrás (no máx. +35% da vida máxima), com tudo "andando para trás".
+     */
+    private void tickRewind(ServerLevel sl) {
+        if (tickCount % 20 == 0) {
+            if (historyIndex < 0) java.util.Arrays.fill(healthHistory, getHealth());
+            historyIndex = (historyIndex + 1) % healthHistory.length;
+            healthHistory[historyIndex] = getHealth();
+        }
+        if (rewound || phase() < 2 || getHealth() > getMaxHealth() * 0.30F || historyIndex < 0) return;
+        rewound = true;
+        // ~10 s atrás = 2 posições à frente no anel de 12
+        float past = healthHistory[(historyIndex + 2) % healthHistory.length];
+        float to = Math.min(Math.max(past, getHealth()), getHealth() + getMaxHealth() * 0.35F);
+        cancelAttack();
+        triggerAnim("action", "shift");
+        announce("rewind", Announce.STYLE_ULTIMATE);
+        hint("rewind");
+        Vec3 c = position().add(0, 1.5, 0);
+        BossKit.flashNear(sl, c, 48, 0xB070FF, 0.6F, 20);
+        BossKit.shake(sl, c, 40, 1.2F, 24);
+        BbFx.sound(sl, c, SoundEvents.RESPAWN_ANCHOR_DEPLETE.value(), 2.5F, 0.6F);
+        BbFx.sound(sl, c, SoundEvents.PORTAL_TRIGGER, 1.2F, 2.0F);
+        // As partículas convergem (o "filme voltando") por 1 s enquanto a vida sobe
+        float from = getHealth();
+        for (int k = 1; k <= 10; k++) {
+            int step = k;
+            BossKit.schedule(sl, k * 2, () -> {
+                if (!isAlive()) return;
+                setHealth(Mth.lerp(step / 10F, from, to));
+                for (int i = 0; i < 8; i++) {
+                    double a = random.nextDouble() * Math.PI * 2, d = 4 + random.nextDouble() * 3;
+                    Vec3 p = c.add(Math.cos(a) * d, (random.nextDouble() - 0.5) * 3, Math.sin(a) * d);
+                    Vec3 v = c.subtract(p).scale(0.12);
+                    sl.sendParticles(step % 2 == 0 ? ParticleTypes.REVERSE_PORTAL : ParticleTypes.END_ROD, p.x, p.y, p.z, 0, v.x, v.y, v.z, 1.0);
+                }
+                BbFx.sound(sl, c, SoundEvents.NOTE_BLOCK_HAT.value(), 1.5F, 1.8F - step * 0.08F);
+            });
+        }
     }
 
     /** Foice crepuscular: o Arauto MERGULHA até o chão para cortar (cone marcado 9 ticks); efeito conforme a postura. */
@@ -775,6 +882,14 @@ public class TwilightHerald extends BbBoss {
     @Override
     protected void tickBoss(ServerLevel sl) {
         stanceTimer++;
+        if (timeHaste > 0) {
+            timeHaste--;
+            // Fora do tempo: rastro de "fantasmas" de luz e sombra quando se move
+            if (tickCount % 3 == 0 && getDeltaMovement().horizontalDistanceSqr() > 0.002) {
+                sl.sendParticles(stanceDust(1.6F), getX(), getY() + 1.4, getZ(), 6, 0.4, 0.9, 0.4, 0);
+            }
+        }
+        tickRewind(sl);
         int dur = switch (phase()) {
             case 1 -> 420;
             case 2 -> 320;
@@ -1024,6 +1139,17 @@ public class TwilightHerald extends BbBoss {
         return 140;
     }
 
+    /** O Arauto já tem a cena final "ascension" e diz as últimas palavras nela. */
+    @Override
+    protected boolean killCam() {
+        return false;
+    }
+
+    @Override
+    protected boolean hasLastWords() {
+        return false;
+    }
+
     @Override
     protected void deathFx(ServerLevel sl, int t) {
         setDeltaMovement(0, 0.02, 0);
@@ -1142,6 +1268,7 @@ public class TwilightHerald extends BbBoss {
         tag.putFloat("DomainRadius", domainRadius());
         tag.putInt("DomainPulse", domainPulse);
         tag.putFloat("DomainSpin", domainSpin);
+        tag.putBoolean("Rewound", rewound);
     }
 
     @Override
@@ -1165,5 +1292,6 @@ public class TwilightHerald extends BbBoss {
         entityData.set(DATA_DOMAIN_RADIUS, radius > 0 ? radius : glyph ? GLYPH_DOMAIN_RADIUS : DOMAIN_RADIUS);
         domainPulse = tag.getInt("DomainPulse");
         domainSpin = tag.getFloat("DomainSpin");
+        rewound = tag.getBoolean("Rewound");
     }
 }

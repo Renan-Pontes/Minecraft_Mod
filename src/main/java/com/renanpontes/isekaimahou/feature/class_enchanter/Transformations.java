@@ -1,5 +1,10 @@
 package com.renanpontes.isekaimahou.feature.class_enchanter;
 
+import com.renanpontes.isekaimahou.core.anim.MahouAnims;
+import com.renanpontes.isekaimahou.glyph.SpellScheduler;
+
+import com.renanpontes.isekaimahou.feature.class_enchanter.EnchFxNet;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -173,6 +178,8 @@ public final class Transformations {
                     next >= 7 ? Announce.STYLE_ULTIMATE : Announce.STYLE_SPELL);
         }
         gateBurst(level, self, next);
+        // o corpo explode de energia um tick depois do gesto de conjuração
+        SpellScheduler.schedule(1, () -> MahouAnims.play(self, next >= 8 ? "transform_roar" : "transform_burst"));
         if (next >= 8) deathGateShock(ctx, self, stats);
         if (self instanceof ServerPlayer sp && next >= 8) MagicApi.addCounter(sp, "enchanter.death_gate", 1);
     }
@@ -180,13 +187,12 @@ public final class Transformations {
     private static void gateBurst(ServerLevel level, LivingEntity e, int gate) {
         int rgb = GATE_COLOR[gate - 1];
         Vec3 feet = e.position().add(0, 0.1, 0);
-        for (int k = 0; k < 2 + gate / 3; k++) EnchFx.ring(level, feet, 0.8 + k * 0.9, k % 2 == 0 ? rgb : EnchFx.WHITE, 18 + 6 * k, 1.3F);
-        level.sendParticles(ParticleTypes.CLOUD, e.getX(), e.getY() + 0.3, e.getZ(), 10 + gate * 4, 0.6, 0.2, 0.6, 0.08 + gate * 0.01);
-        level.sendParticles(EnchFx.dust(rgb, 1.6F), e.getX(), e.getY() + 1.0, e.getZ(), 20 + gate * 5, 0.5, 0.9, 0.5, 0);
+        // ondas de pressão, aura subindo e vapor: coreografia do cliente
+        EnchFxNet.at(level, EnchFxNet.GATE, e.position(), Vec3.ZERO, 1F, rgb, e.getId(), gate);
+        level.sendParticles(ParticleTypes.CLOUD, e.getX(), e.getY() + 0.3, e.getZ(), 4 + gate, 0.6, 0.2, 0.6, 0.08 + gate * 0.01);
         EnchFx.sound(level, feet, SoundEvents.WARDEN_HEARTBEAT, 1.3F, 0.6F + gate * 0.08F);
         EnchFx.sound(level, feet, SoundEvents.PLAYER_ATTACK_STRONG, 1.0F, 0.5F + gate * 0.05F);
         if (gate >= 6) EnchFx.sound(level, feet, SoundEvents.LAVA_EXTINGUISH, 1.0F, 0.7F);
-        if (gate >= 7) level.sendParticles(ParticleTypes.FLASH, e.getX(), e.getY() + 1.0, e.getZ(), 1, 0, 0, 0, 0);
     }
 
     /** Ao abrir o 8º portão: a pressão do corpo empurra e fere todos os inimigos por perto (sem quebrar blocos). */
@@ -201,9 +207,8 @@ public final class Transformations {
             o.push(away.x * kb, 0.6, away.z * kb);
             o.hurtMarked = true;
         }
-        level.sendParticles(ParticleTypes.SONIC_BOOM, self.getX(), self.getY() + 1.0, self.getZ(), 1, 0, 0, 0, 0);
         level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, self.getX(), self.getY() + 0.5, self.getZ(), 1, 0, 0, 0, 0);
-        for (int k = 0; k < 4; k++) EnchFx.ring(level, self.position().add(0, 0.15, 0), 2.0 + k * 1.3, k % 2 == 0 ? EnchFx.RED : 0x3A0A0A, 40, 1.6F);
+        EnchFxNet.at(level, EnchFxNet.DEATH_GATE, self.position(), Vec3.ZERO, 1F, EnchFx.RED, self.getId());
         EnchFx.sound(level, self.position(), SoundEvents.WARDEN_SONIC_BOOM, 1.2F, 0.8F);
         EnchFx.sound(level, self.position(), SoundEvents.GENERIC_EXPLODE.value(), 0.9F, 0.6F);
     }
@@ -231,10 +236,8 @@ public final class Transformations {
                     step >= 2 ? Announce.STYLE_ULTIMATE : Announce.STYLE_SPELL);
         }
         Vec3 c = EnchFx.center(self);
-        for (int k = 0; k < 3; k++) EnchFx.ring(level, self.position().add(0, 0.1 + k * 0.6, 0), 1.0 + k * 0.2 + step * 0.4, 0xFF3B30, 26, 1.5F);
-        level.sendParticles(ParticleTypes.FLAME, c.x, c.y, c.z, 30 + step * 30, 0.5, 0.8, 0.5, 0.06);
-        level.sendParticles(EnchFx.dust(0xFF6A5A, 2.0F), c.x, c.y, c.z, 30 + step * 20, 0.6, 0.9, 0.6, 0);
-        if (step >= 2) level.sendParticles(ParticleTypes.FLASH, c.x, c.y, c.z, 1, 0, 0, 0, 0);
+        level.sendParticles(ParticleTypes.FLAME, c.x, c.y, c.z, 10 + step * 6, 0.5, 0.8, 0.5, 0.06);
+        EnchFxNet.at(level, EnchFxNet.KAIOKEN, self.position(), Vec3.ZERO, 1F, 0xFF3B30, self.getId(), step);
         EnchFx.sound(level, c, SoundEvents.BLAZE_SHOOT, 1.0F, 0.6F);
         EnchFx.sound(level, c, SoundEvents.FIRECHARGE_USE, 1.0F, 0.5F + step * 0.15F);
         EnchFx.sound(level, c, SoundEvents.RAVAGER_ROAR, 0.6F, 1.5F);

@@ -1,0 +1,16 @@
+{
+  "screen.isekai_mahou.release_forge.shape": "✦ Shape release",
+  "screen.isekai_mahou.release_forge.shape_shikai": "✦ Shikai",
+  "screen.isekai_mahou.release_forge.shape_bankai": "✦ Bankai",
+  "screen.isekai_mahou.release_forge.title": "Shape release: %s",
+  "screen.isekai_mahou.release_forge.tip": "Pick the effects, augments and laws you want: while the release lasts the effects join your strikes and aura, and the laws hold. The release's look, name and techniques do not change.",
+  "screen.isekai_mahou.release_forge.need_form": "Requires the Transformation form (Arcane path, Circle %s).",
+  "screen.isekai_mahou.release_forge.no_recipe": "No recipe: the release stays as it always was.",
+  "screen.isekai_mahou.release_forge.recipe": "Current recipe: %s",
+  "screen.isekai_mahou.release_forge.click": "Click to shape it in the Grimoire (Transformation glyph).",
+  "screen.isekai_mahou.release_forge.none": "none",
+  "message.isekai_mahou.release_forge.debug": "%s — can shape: %s · recipe: %s · active now: %s",
+  "hint.isekai_mahou.shinigami_shape_release": "Your release takes the effects you want: menu → Shinigami → Shape release.",
+  "hint.isekai_mahou.quincy_shape_release": "Your Vollständig takes the effects you want: menu → Quincy → Shape release.",
+  "hint.isekai_mahou.hollow_shape_release": "Your Resurrección takes the effects you want: menu → Hollow → Shape release."
+}

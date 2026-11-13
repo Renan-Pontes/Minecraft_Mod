@@ -1,5 +1,7 @@
 package com.renanpontes.isekaimahou.feature.class_ranger.item;
 
+import com.renanpontes.isekaimahou.feature.class_ranger.RangerFxNet;
+
 import java.util.List;
 
 import com.renanpontes.isekaimahou.core.CoreRegistries;
@@ -62,6 +64,12 @@ public class RangerBowItem extends BowItem {
         List<ItemStack> drawn = draw(stack, ammo, player);
         if (level instanceof ServerLevel sl && !drawn.isEmpty()) {
             shoot(sl, player, player.getUsedItemHand(), stack, drawn, power * 3.0F, 1.0F, power == 1.0F, null);
+            if (power >= 1.0F) {
+                // disparo no máximo: clarão e espiral de vento (cliente)
+                net.minecraft.world.phys.Vec3 look = player.getLookAngle();
+                RangerFxNet.at(sl, RangerFxNet.CHARGED_RELEASE, player.getEyePosition().add(look.scale(0.8)).subtract(0, 0.2, 0), look, 1F,
+                        0xFFD86B, player.getId());
+            }
         }
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F,
                 1.0F / (level.getRandom().nextFloat() * 0.4F + 1.2F) + power * 0.5F);

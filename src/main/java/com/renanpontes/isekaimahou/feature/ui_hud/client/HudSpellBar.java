@@ -73,25 +73,26 @@ final class HudSpellBar {
     static void render(GuiGraphics g, Minecraft mc, MagicData d) {
         Player p = mc.player;
         Font font = mc.font;
-        int gw = g.guiWidth(), gh = g.guiHeight();
+        int gw = HudScale.w(g), gh = HudScale.h(g);
         int center = gw / 2;
 
         // Começa depois do que o vanilla desenha à direita da hotbar (mão secundária / indicador de ataque)
         HumanoidArm off = p.getMainArm().getOpposite();
-        int base = center + 91 + 6;
-        if (off == HumanoidArm.RIGHT && !p.getOffhandItem().isEmpty()) base = center + 91 + 29 + 5;
-        else if (off == HumanoidArm.LEFT && mc.options.attackIndicator().get() == AttackIndicatorStatus.HOTBAR) base = center + 91 + 28;
+        // (HudScale.v: a barra de itens é do vanilla, em pixels reais; aqui as contas são na tela virtual do HUD)
+        int base = center + HudScale.v(91) + 6;
+        if (off == HumanoidArm.RIGHT && !p.getOffhandItem().isEmpty()) base = center + HudScale.v(91 + 29) + 5;
+        else if (off == HumanoidArm.LEFT && mc.options.attackIndicator().get() == AttackIndicatorStatus.HOTBAR) base = center + HudScale.v(91 + 28);
         boolean fits = base + WIDTH + 3 <= gw;
         // Telas estreitas: canto direito, acima das barras de fome/ar
         int x0 = fits ? base : gw - WIDTH - 4;
-        int ys = fits ? gh - 23 : gh - 76;
+        int ys = fits ? gh - 23 : gh - Math.max(SIZE + 4, HudScale.v(76));
         int blockTop = ys - 11 - HEADER_H - 3;
 
         // Minimapa no canto de baixo (o Xaero deixa escolher): o bloco desvia — para a esquerda dele, ou para cima
-        HudLayout.Rect m = HudLayout.minimap();
+        HudLayout.Rect m = HudScale.minimap();
         if (m.intersects(x0 - 3, blockTop, WIDTH + 6, ys + SIZE + 1 - blockTop)) {
             int left = m.x() - HudLayout.MARGIN - WIDTH - 3;
-            if (left >= center + 91 + 4 || (!fits && left >= 4)) {
+            if (left >= center + HudScale.v(91) + 4 || (!fits && left >= 4)) {
                 x0 = left;
             } else {
                 ys = m.y() - HudLayout.MARGIN - SIZE - 1;
@@ -192,7 +193,7 @@ final class HudSpellBar {
         int px = x0 - 3;
         int py = bottom - 4 - ph;
         // Nunca por cima do minimapa: vai para a esquerda dele
-        HudLayout.Rect m = HudLayout.minimap();
+        HudLayout.Rect m = HudScale.minimap();
         if (m.intersects(px, py, pw, ph)) px = Math.max(4, m.x() - HudLayout.MARGIN - pw);
         if (py < 4) py = 4;
 

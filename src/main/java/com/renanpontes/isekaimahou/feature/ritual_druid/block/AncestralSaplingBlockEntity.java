@@ -6,9 +6,9 @@ import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.feature.ritual_druid.DruidContent;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,12 +54,12 @@ public class AncestralSaplingBlockEntity extends BlockEntity {
             double a = be.age * 0.45;
             double r = 0.9 - be.age / (double) GERMINATION_TICKS * 0.6;
             double h = (be.age % 20) / 20.0 * 1.4;
-            sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, x + Math.cos(a) * r, y + h, z + Math.sin(a) * r, 1, 0, 0, 0, 0);
-            sl.sendParticles(ParticleTypes.END_ROD, x - Math.cos(a) * r, y + h, z - Math.sin(a) * r, 1, 0, 0, 0, 0);
+            sl.sendParticles(Vfx.happy(), x + Math.cos(a) * r, y + h, z + Math.sin(a) * r, 1, 0, 0, 0, 0);
+            sl.sendParticles(Vfx.endRod(), x - Math.cos(a) * r, y + h, z - Math.sin(a) * r, 1, 0, 0, 0, 0);
         }
         if (be.age % 20 == 0) {
             sl.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.8F, 0.6F + be.age / (float) GERMINATION_TICKS);
-            sl.sendParticles(ParticleTypes.COMPOSTER, x, y + 0.2, z, 8, 0.4, 0.1, 0.4, 0.0);
+            sl.sendParticles(Vfx.composter(), x, y + 0.2, z, 8, 0.4, 0.1, 0.4, 0.0);
         }
         if (be.age >= GERMINATION_TICKS) {
             HeartTreeCoreBlockEntity.germinate(sl, pos, be.owner, be.ownerName);

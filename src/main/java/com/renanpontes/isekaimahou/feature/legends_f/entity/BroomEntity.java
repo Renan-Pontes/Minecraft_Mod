@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -147,9 +148,9 @@ public class BroomEntity extends LivingEntity {
         if (v.lengthSqr() < 0.004) return;
         float yaw = getYRot() * Mth.DEG_TO_RAD;
         Vec3 tail = position().add(Mth.sin(yaw) * 0.7, 0.2, -Mth.cos(yaw) * 0.7);
-        level().addParticle(ParticleTypes.END_ROD, tail.x, tail.y, tail.z, -v.x * 0.1, -0.01, -v.z * 0.1);
+        level().addParticle(Vfx.endRod(), tail.x, tail.y, tail.z, -v.x * 0.1, -0.01, -v.z * 0.1);
         if (random.nextInt(2) == 0) {
-            level().addParticle(ParticleTypes.CHERRY_LEAVES, tail.x + random.nextGaussian() * 0.15, tail.y, tail.z + random.nextGaussian() * 0.15, 0, 0, 0);
+            level().addParticle(Vfx.cherry(), tail.x + random.nextGaussian() * 0.15, tail.y, tail.z + random.nextGaussian() * 0.15, 0, 0, 0);
         }
         if (random.nextInt(3) == 0) level().addParticle(ParticleTypes.WAX_OFF, tail.x, tail.y, tail.z, 0, 0, 0);
     }
@@ -159,8 +160,8 @@ public class BroomEntity extends LivingEntity {
             if (r instanceof LivingEntity le) le.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 100, 0, false, false, true));
         }
         ejectPassengers();
-        sl.sendParticles(ParticleTypes.CHERRY_LEAVES, getX(), getY() + 0.3, getZ(), 20, 0.5, 0.2, 0.5, 0.02);
-        sl.sendParticles(ParticleTypes.END_ROD, getX(), getY() + 0.3, getZ(), 10, 0.4, 0.2, 0.4, 0.04);
+        sl.sendParticles(Vfx.cherry(), getX(), getY() + 0.3, getZ(), 20, 0.5, 0.2, 0.5, 0.02);
+        sl.sendParticles(Vfx.endRod(), getX(), getY() + 0.3, getZ(), 10, 0.4, 0.2, 0.4, 0.04);
         sl.playSound(null, getX(), getY(), getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1F, 1.4F);
         discard();
     }

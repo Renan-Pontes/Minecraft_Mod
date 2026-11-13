@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_emerald_block": {
+    "has_paper": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": "minecraft:emerald_block"
+            "items": "minecraft:paper"
           }
         ]
       }
@@ -20,7 +20,7 @@
   },
   "requirements": [
     [
-      "has_emerald_block",
+      "has_paper",
       "has_the_recipe"
     ]
   ],

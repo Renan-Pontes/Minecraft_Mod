@@ -78,6 +78,8 @@ public final class AutoArea {
     /** Pode mexer neste bloco? Jogadores (inclusive o do pedestal): proteção de spawn/borda; mobs: mobGriefing. */
     public static boolean mayEdit(SpellContext ctx, BlockPos pos) {
         ServerLevel level = ctx.level();
+        // v1.0 r9: torre em escalada / masmorra são indestrutíveis (nem blocos temporários de magia)
+        if (com.renanpontes.isekaimahou.core.api.Destruction.wardedFor(level, pos, ctx.caster())) return false;
         ServerPlayer sp = ctx.casterPlayer();
         if (sp != null) return level.mayInteract(sp, pos) && sp.mayBuild();
         LivingEntity c = ctx.caster();

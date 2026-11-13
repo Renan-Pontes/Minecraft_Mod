@@ -19,7 +19,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -82,8 +82,8 @@ public final class FcSteamGlyphs {
                 Statuses.apply(le, Statuses.Kind.WET, 1, 160, ctx.caster(), ctx.powerMult());
             }
             FusionShockwaveEntity.visual(sl, c, FusionShockwaveEntity.Kind.STEAM, r, 10);
-            sl.sendParticles(ParticleTypes.CLOUD, c.x, c.y, c.z, 40, r * 0.4, r * 0.3, r * 0.4, 0.15);
-            sl.sendParticles(ParticleTypes.SPLASH, c.x, c.y, c.z, 30, r * 0.4, 0.4, r * 0.4, 0.2);
+            sl.sendParticles(Vfx.cloud(), c.x, c.y, c.z, 40, r * 0.4, r * 0.3, r * 0.4, 0.15);
+            sl.sendParticles(Vfx.splash(), c.x, c.y, c.z, 30, r * 0.4, 0.4, r * 0.4, 0.2);
             FcFx.sound(sl, c, SoundEvents.LAVA_EXTINGUISH, 2F, 0.5F);
             FcFx.sound(sl, c, SoundEvents.GENERIC_EXPLODE.value(), 0.8F, 1.4F);
 
@@ -127,8 +127,8 @@ public final class FcSteamGlyphs {
                 FcUtil.knock(other, new Vec3(out.x * 0.5, 0.3, out.z * 0.5));
             }
             FusionShockwaveEntity.visual(sl, le.position().add(0, 0.1, 0), FusionShockwaveEntity.Kind.STEAM, 3.2F, 9);
-            sl.sendParticles(ParticleTypes.CLOUD, c.x, c.y, c.z, 30, 0.5, 0.6, 0.5, 0.25);
-            sl.sendParticles(ParticleTypes.POOF, c.x, c.y, c.z, 16, 0.4, 0.4, 0.4, 0.15);
+            sl.sendParticles(Vfx.cloud(), c.x, c.y, c.z, 30, 0.5, 0.6, 0.5, 0.25);
+            sl.sendParticles(Vfx.poof(), c.x, c.y, c.z, 16, 0.4, 0.4, 0.4, 0.15);
             FcFx.sound(sl, c, SoundEvents.GENERIC_EXPLODE.value(), 1.0F, 1.5F);
             FcFx.sound(sl, c, SoundEvents.FIRE_EXTINGUISH, 1.6F, 0.6F);
             BossKit.shake(sl, c, 10, 0.4F, 6);

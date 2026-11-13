@@ -19,6 +19,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -99,7 +100,7 @@ public final class FcLightningGlyphs {
                 // Congelado/Petrificado no meio da carga: os trilhos se desfazem (a conjuração foi interrompida)
                 if (caster != null && Statuses.incapacitated(caster)) {
                     if (pending != null) SpellStack.cancel(pending);
-                    sl.sendParticles(ParticleTypes.SMOKE, origin[0].x, origin[0].y, origin[0].z, 12, 0.3, 0.3, 0.3, 0.02);
+                    sl.sendParticles(Vfx.smoke(), origin[0].x, origin[0].y, origin[0].z, 12, 0.3, 0.3, 0.3, 0.02);
                     FcFx.sound(sl, origin[0], SoundEvents.BEACON_DEACTIVATE, 1F, 1.4F);
                     return false;
                 }
@@ -132,8 +133,8 @@ public final class FcLightningGlyphs {
                 FcFx.line(sl, a, a.add(d.scale(len)), FcFx.dust(FcFx.VOLT, 0.8F), 2.5);
             }
             Vec3 tip = o.add(d.scale(0.8 + len));
-            sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, tip.x, tip.y, tip.z, 3, 0.15, 0.15, 0.15, 0.2);
-            if (age > CHARGE - 5) sl.sendParticles(ParticleTypes.END_ROD, tip.x, tip.y, tip.z, 2, 0.05, 0.05, 0.05, 0.02);
+            sl.sendParticles(Vfx.electric(), tip.x, tip.y, tip.z, 3, 0.15, 0.15, 0.15, 0.2);
+            if (age > CHARGE - 5) sl.sendParticles(Vfx.endRod(), tip.x, tip.y, tip.z, 2, 0.05, 0.05, 0.05, 0.02);
         }
 
         private static void fire(SpellContext ctx, SpellStats stats, ServerLevel sl, Vec3 from, Vec3 dir) {
@@ -157,12 +158,12 @@ public final class FcLightningGlyphs {
                 Statuses.applyUpTo(le, Statuses.Kind.SHOCKED, 2, 120, caster, ctx.powerMult(), 2);
                 FcUtil.knock(le, dir.scale(0.9).add(0, 0.2, 0));
                 Vec3 c = FcUtil.center(le);
-                sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, 20, 0.3, 0.4, 0.3, 0.6);
+                sl.sendParticles(Vfx.electric(), c.x, c.y, c.z, 20, 0.3, 0.4, 0.3, 0.6);
             }
             // Túnel no terreno (respeita a regra de destruição)
             Destruction.line(sl, from.add(dir.scale(1.5)), to, width, width, caster, Destruction.Mode.ERASE);
             FusionBeamEntity.visual(sl, from, to, FusionBeamEntity.Kind.RAILGUN, 0.55F, 18);
-            FcFx.line(sl, from, from.add(dir.scale(Math.min(range, 40))), ParticleTypes.ELECTRIC_SPARK, 0.8);
+            FcFx.line(sl, from, from.add(dir.scale(Math.min(range, 40))), Vfx.electric(), 0.8);
             sl.sendParticles(ParticleTypes.FLASH, from.x, from.y, from.z, 1, 0, 0, 0, 0);
             if (caster != null && !FcUtil.bossLike(caster) && !caster.isShiftKeyDown()) FcUtil.addMotion(caster, dir.scale(-0.45));
             FcFx.sound(sl, from, SoundEvents.WARDEN_SONIC_BOOM, 2.5F, 1.4F);

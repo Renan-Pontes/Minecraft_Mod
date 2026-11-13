@@ -106,9 +106,7 @@ public final class SbTechniques {
         Vec3 p = sp.position();
         SbFx.sound(sl, p, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.0F, 1.4F);
         SbFx.sound(sl, p, SoundEvents.BEACON_POWER_SELECT, 0.8F, 1.5F);
-        SbFx.spiral(sl, p, t.rgb(), 1.0, 2.4, 30, 0F);
-        SbFx.goldenSpiral(sl, p.add(0, 1.2, 0), sp.getLookAngle(), 1.4);
-        sl.sendParticles(ParticleTypes.END_ROD, p.x, p.y + 1, p.z, 16, 0.4, 0.7, 0.4, 0.04);
+        SbFxNet.at(sl, SbFxNet.LEARN, p, sp.getLookAngle(), 1F, t.rgb(), sp.getId());
     }
 
     // =====================================================================================

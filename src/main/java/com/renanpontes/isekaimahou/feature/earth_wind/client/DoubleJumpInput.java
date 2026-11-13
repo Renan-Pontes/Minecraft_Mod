@@ -3,9 +3,9 @@ package com.renanpontes.isekaimahou.feature.earth_wind.client;
 import com.renanpontes.isekaimahou.feature.earth_wind.EwNetwork;
 import com.renanpontes.isekaimahou.feature.earth_wind.EwRegistries;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.phys.Vec3;
@@ -63,7 +63,7 @@ public final class DoubleJumpInput {
         p.resetFallDistance();
         for (int i = 0; i < 10; i++) {
             double a = Math.PI * 2 * i / 10;
-            p.level().addParticle(ParticleTypes.CLOUD, p.getX() + Math.cos(a) * 0.4, p.getY(), p.getZ() + Math.sin(a) * 0.4,
+            p.level().addParticle(Vfx.cloud(), p.getX() + Math.cos(a) * 0.4, p.getY(), p.getZ() + Math.sin(a) * 0.4,
                     Math.cos(a) * 0.08, -0.05, Math.sin(a) * 0.08);
         }
     }

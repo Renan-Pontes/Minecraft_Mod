@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.core.Element;
+import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.MagicHover;
 import com.renanpontes.isekaimahou.core.api.Destruction;
 import com.renanpontes.isekaimahou.core.api.SpellStack;
@@ -21,6 +22,7 @@ import com.renanpontes.isekaimahou.feature.legends_d.atomic.AtomicBubble;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -226,6 +228,9 @@ public class AtomicNovaEntity extends LdSpellEntity {
         LdNet.near(sl, position(), 112, new LdNet.Fx(LdNet.ATOMIC_TEXT, position(), r, caster != null ? caster.getId() : getId(), CHARGE));
         LdUtil.sound(sl, position(), SoundEvents.BEACON_ACTIVATE, 3.0F, 0.6F);
         LdUtil.sound(sl, position(), SoundEvents.RESPAWN_ANCHOR_CHARGE, 2.0F, 0.6F);
+        // v1.3: selo gigante no chão durante a carga inteira + luz do mundo convergindo para o ponto (montado no cliente)
+        ElementFx.runeCircle(sl, ground.add(0, 0.05, 0), VIOLET, Math.min(40F, r), CHARGE + 10, 5);
+        ElementFx.gatherAt(sl, position(), Element.ARCANE, VIOLET, Math.min(12F, 4F + r * 0.2F), 5, CHARGE);
     }
 
     /**
@@ -284,7 +289,7 @@ public class AtomicNovaEntity extends LdSpellEntity {
         if (age % 2 == 0) {
             for (int i = 0; i < 3 + (int) (k * 6); i++) {
                 Vec3 off = randomDir().scale(4 + random.nextDouble() * (3 + 6 * k));
-                LdUtil.moving(sl, ParticleTypes.PORTAL, c, off, 1.0);
+                LdUtil.moving(sl, Vfx.portal(), c, off, 1.0);
             }
             LdUtil.send(sl, LdUtil.dust(random.nextBoolean() ? VIOLET : BLUE, 1.6F), c, 4, 0.6 + k, 0);
             // Poeira do chão subindo em espiral para o ponto
@@ -292,8 +297,8 @@ public class AtomicNovaEntity extends LdSpellEntity {
                 double ang = age * 0.6;
                 double rr = 3 + 5 * (1 - k);
                 Vec3 g = new Vec3(c.x + Math.cos(ang) * rr, groundY + 0.2, c.z + Math.sin(ang) * rr);
-                LdUtil.moving(sl, ParticleTypes.REVERSE_PORTAL, g, c.subtract(g).normalize(), 0.6);
-                LdUtil.send(sl, ParticleTypes.CLOUD, g, 1, 0.3, 0.02);
+                LdUtil.moving(sl, Vfx.reversePortal(), g, c.subtract(g).normalize(), 0.6);
+                LdUtil.send(sl, Vfx.cloud(), g, 1, 0.3, 0.02);
             }
         }
         if (age % 4 == 0) LdUtil.send(sl, ParticleTypes.ELECTRIC_SPARK, c, 6 + (int) (k * 6), 0.8 + k * 1.5, 0.15);
@@ -344,7 +349,10 @@ public class AtomicNovaEntity extends LdSpellEntity {
         LdUtil.send(sl, ParticleTypes.EXPLOSION_EMITTER, c, 4, 2.0, 0);
         LdUtil.send(sl, ParticleTypes.FLASH, c, 6, 1.5, 0);
         LdUtil.send(sl, ParticleTypes.SONIC_BOOM, c, 8, 2.5, 0);
-        LdUtil.send(sl, ParticleTypes.END_ROD, c, 60, 1.0, 1.2);
+        LdUtil.send(sl, Vfx.endRod(), c, 30, 1.0, 1.2);
+        // v1.3: nova arcana + pilar de luz violeta (clarões, ondas, detritos e rescaldo pelo preset gráfico)
+        ElementFx.nova(sl, c, Element.ARCANE, VIOLET, Math.min(40F, r * 0.7F), 5, false);
+        ElementFx.pillar(sl, c, BLUE, Math.max(1.5F, r * 0.12F), 64F, 40);
         BossKit.shake(sl, c, r * 3 + 32, 3.0F, 60);
         Destruction.crater(sl, c, Math.min(48F, r * 0.85F), caster);
     }
@@ -401,7 +409,7 @@ public class AtomicNovaEntity extends LdSpellEntity {
                 double a = (i + random.nextDouble() * 0.5) * Math.PI * 2 / pts;
                 Vec3 p = new Vec3(c.x + Math.cos(a) * ring, groundY + 0.3, c.z + Math.sin(a) * ring);
                 Vec3 out = new Vec3(Math.cos(a), 0.05, Math.sin(a));
-                LdUtil.moving(sl, ParticleTypes.CLOUD, p, out, 0.5);
+                LdUtil.moving(sl, Vfx.cloud(), p, out, 0.5);
                 if (i % 4 == 0) LdUtil.moving(sl, ParticleTypes.CAMPFIRE_COSY_SMOKE, p, out, 0.25);
             }
         }
@@ -437,8 +445,8 @@ public class AtomicNovaEntity extends LdSpellEntity {
         if (finished) return;
         finished = true;
         Vec3 c = position();
-        LdUtil.send(sl, ParticleTypes.REVERSE_PORTAL, c, 60, 1.2, 0.3);
-        LdUtil.send(sl, ParticleTypes.LARGE_SMOKE, c, 20, 0.8, 0.05);
+        LdUtil.send(sl, Vfx.reversePortal(), c, 60, 1.2, 0.3);
+        LdUtil.send(sl, Vfx.largeSmoke(), c, 20, 0.8, 0.05);
         LdUtil.sound(sl, c, SoundEvents.BEACON_DEACTIVATE, 2.5F, 1.4F);
         LdUtil.sound(sl, c, SoundEvents.GLASS_BREAK, 2.0F, 0.6F);
         LdNet.near(sl, c, 112, new LdNet.Fx(LdNet.ATOMIC_ABORT, c, 0, caster != null ? caster.getId() : getId(), 0));

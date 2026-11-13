@@ -7,6 +7,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.feature.light_shadow.LsFx;
 import com.renanpontes.isekaimahou.feature.light_shadow.LsUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -131,7 +132,8 @@ public class LivingShadowEntity extends PathfinderMob implements OwnableEntity, 
             dissolve(sl);
             return;
         }
-        if (o != null && getTarget() == null && distanceToSqr(o) > 24 * 24) {
+        // Forja de Invocações: guardando um posto (Guardar/Ficar), a sombra não volta sozinha para o dono
+        if (o != null && getTarget() == null && distanceToSqr(o) > 24 * 24 && SummonUtil.forgePost(this) == null) {
             LsFx.shadowPuff(sl, position(), getBbHeight());
             teleportTo(o.getX(), o.getY(), o.getZ());
             LsFx.shadowPuff(sl, position(), getBbHeight());
@@ -149,7 +151,7 @@ public class LivingShadowEntity extends PathfinderMob implements OwnableEntity, 
         if (ok) {
             triggerAnim("action", "attack");
             setLastHurtMob(target);
-            sl.sendParticles(ParticleTypes.SQUID_INK, target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 8, 0.25, 0.3, 0.25, 0.05);
+            sl.sendParticles(Vfx.ink(), target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 8, 0.25, 0.3, 0.25, 0.05);
             sl.sendParticles(LsFx.dust(LsFx.VIOLET, 1.1F), target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 8, 0.3, 0.3, 0.3, 0);
             LsFx.sound(sl, position(), SoundEvents.PHANTOM_BITE, 0.8F, 0.6F);
         }

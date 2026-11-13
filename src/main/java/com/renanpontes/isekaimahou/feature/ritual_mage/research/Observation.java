@@ -14,9 +14,9 @@ import com.renanpontes.isekaimahou.feature.ritual_mage.MageRegistries;
 import com.renanpontes.isekaimahou.feature.ritual_mage.item.ResearchNoteItem;
 import com.renanpontes.isekaimahou.feature.ritual_mage.network.MagePayloads;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -201,9 +201,9 @@ public final class Observation {
             ElementFx.line(level, lineStart, lens, e);
             ElementFx.burst(level, focus, e, first ? 24 : 10, 0.4);
         }
-        level.sendParticles(ParticleTypes.ENCHANT, lens.x, lens.y, lens.z, first ? 40 : 15, 0.3, 0.3, 0.3, 0.6);
+        level.sendParticles(Vfx.enchant(), lens.x, lens.y, lens.z, first ? 40 : 15, 0.3, 0.3, 0.3, 0.6);
         if (first) {
-            level.sendParticles(ParticleTypes.END_ROD, player.getX(), player.getY() + 1.2, player.getZ(), 12, 0.5, 0.6, 0.5, 0.05);
+            level.sendParticles(Vfx.endRod(), player.getX(), player.getY() + 1.2, player.getZ(), 12, 0.5, 0.6, 0.5, 0.05);
             player.playNotifySound(SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.0F, 1.2F);
             player.playNotifySound(SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 1.0F);
             if (p.rarity.ordinal() >= Phenomenon.Rarity.EPIC.ordinal()) {

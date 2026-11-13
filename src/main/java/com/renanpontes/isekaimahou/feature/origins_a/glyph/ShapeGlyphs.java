@@ -10,7 +10,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
@@ -49,7 +49,7 @@ public final class ShapeGlyphs {
                 case LEFT -> OaUtil.actionbar(sp, "shape_leave");
                 case NO_ROOM -> {
                     OaUtil.actionbar(sp, "shape_no_room", displayName());
-                    ctx.level().sendParticles(ParticleTypes.SMOKE, sp.getX(), sp.getY() + 1.0, sp.getZ(), 10, 0.3, 0.4, 0.3, 0.01);
+                    ctx.level().sendParticles(Vfx.smoke(), sp.getX(), sp.getY() + 1.0, sp.getZ(), 10, 0.3, 0.4, 0.3, 0.01);
                 }
             }
         }

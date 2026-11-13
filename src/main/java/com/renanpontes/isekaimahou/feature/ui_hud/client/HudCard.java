@@ -67,8 +67,8 @@ final class HudCard {
         int y = HudLayout.MARGIN;
         try {
             // O minimapa só empurra o card quando cobre a faixa dele (canto superior esquerdo)
-            y = HudLayout.belowMinimap(4, laneRight - 4, HudLayout.MARGIN);
-            if (y > HudLayout.height() / 3) y = HudLayout.MARGIN;
+            y = HudScale.belowMinimap(4, laneRight - 4, HudLayout.MARGIN);
+            if (y > HudScale.height() / 3) y = HudLayout.MARGIN;
         } catch (RuntimeException ignored) {
             // leitura do minimapa falhou: o card fica no lugar padrão
         }
@@ -108,7 +108,8 @@ final class HudCard {
         right = x + w;
         bottom = y + h;
         laneRight = x + maxWidth(font, name, d);
-        HudLayout.drawn(HudLayout.Region.CARD, new HudLayout.Rect(x, y, w, h));
+        // Em pixels reais da GUI (o cartão pode estar ampliado/reduzido pela opção de tamanho do HUD)
+        HudLayout.drawn(HudLayout.Region.CARD, HudScale.toReal(new HudLayout.Rect(x, y, w, h)));
 
         int accent = meditating ? HudDraw.lerp(pulse, HudDraw.GOLD, HudDraw.GOLD_LIGHT) : HudDraw.SYS_BORDER;
         if (meditating) HudDraw.glow(g, x, y, w, h, HudDraw.GOLD, 0.5F + 0.5F * pulse, 3);

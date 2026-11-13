@@ -1,0 +1,106 @@
+{
+  "chapters": [
+    {
+      "id": "nether_citadel",
+      "order": 45,
+      "color": "#D4242C",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:demon_lord_sigil",
+        "isekai_mahou:adamantite_ingot",
+        "isekai_mahou:demon_pact_altar"
+      ],
+      "steps": [
+        {
+          "id": "enter",
+          "condition": {
+            "type": "flag",
+            "flag": "nether_citadel.entered"
+          },
+          "xp": 250,
+          "icon": "minecraft:nether_bricks",
+          "locate": {
+            "structure": "isekai_mahou:nether_citadel",
+            "dimension": "minecraft:the_nether"
+          }
+        },
+        {
+          "id": "adamantite",
+          "condition": {
+            "type": "flag",
+            "flag": "nether_citadel.adamantite"
+          },
+          "optional": true,
+          "xp": 200,
+          "icon": "isekai_mahou:raw_adamantite"
+        },
+        {
+          "id": "forge",
+          "condition": {
+            "type": "flag",
+            "flag": "nether_citadel.forge"
+          },
+          "optional": true,
+          "xp": 200,
+          "icon": "isekai_mahou:demon_infernal_forge",
+          "locate": {
+            "structure": "isekai_mahou:nether_citadel",
+            "dimension": "minecraft:the_nether"
+          }
+        },
+        {
+          "id": "pact",
+          "condition": {
+            "type": "flag",
+            "flag": "nether_citadel.pact"
+          },
+          "optional": true,
+          "xp": 200,
+          "icon": "isekai_mahou:demon_pact_altar",
+          "locate": {
+            "structure": "isekai_mahou:nether_citadel",
+            "dimension": "minecraft:the_nether"
+          }
+        },
+        {
+          "id": "demon_lord",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "demon_lord"
+            ],
+            "min": 1
+          },
+          "xp": 700,
+          "icon": "isekai_mahou:demon_lord_sigil",
+          "locate": {
+            "structure": "isekai_mahou:nether_citadel",
+            "dimension": "minecraft:the_nether"
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 3
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:demon_lord"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 2700,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          }
+        ],
+        "glyph_scrolls": 1,
+        "glyph_tier": 4
+      }
+    }
+  ]
+}

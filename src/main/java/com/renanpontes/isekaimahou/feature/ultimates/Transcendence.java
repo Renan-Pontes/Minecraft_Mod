@@ -18,6 +18,7 @@ import com.renanpontes.isekaimahou.glyph.ParsedSpell;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.network.CorePayloads;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -152,11 +153,12 @@ public final class Transcendence {
         // Despertar: coluna de luz, explosão de partículas do elemento, sinos
         Vec3 c = e.position().add(0, e.getBbHeight() * 0.5, 0);
         UltFx.far(level, ParticleTypes.FLASH, c.x, c.y, c.z, 1, 0, 0, 0, 0);
-        UltFx.far(level, ElementFx.dust(element, 2.5F), c.x, c.y, c.z, 120, 1.2, 1.6, 1.2, 0);
-        UltFx.far(level, ElementFx.signature(element), c.x, c.y, c.z, 60, 0.8, 1.2, 0.8, 0.15);
-        for (int y = 0; y < 24; y++) {
-            UltFx.far(level, ParticleTypes.END_ROD, e.getX(), e.getY() + y, e.getZ(), 2, 0.25, 0.3, 0.25, 0.01);
-        }
+        UltFx.far(level, ElementFx.dust(element, 2.5F), c.x, c.y, c.z, 40, 1.2, 1.6, 1.2, 0);
+        UltFx.far(level, ElementFx.signature(element), c.x, c.y, c.z, 24, 0.8, 1.2, 0.8, 0.15);
+        // v1.3: pilar de luz de verdade + nova do elemento + aura que acompanha a Transcendência inteira
+        ElementFx.pillar(level, e.position(), rgb, 1.0F, 28F, 34);
+        ElementFx.nova(level, e.position().add(0, 0.1, 0), element, rgb, 6F, 5, false);
+        ElementFx.aura(level, e, element, rgb, 1.0F, 4, Math.min(ticks, 600));
         UltFx.sound(level, c, SoundEvents.TOTEM_USE, 1.6F, 1.2F);
         UltFx.sound(level, c, SoundEvents.BEACON_POWER_SELECT, 2.5F, 0.6F);
         UltFx.sound(level, c, SoundEvents.AMETHYST_BLOCK_RESONATE, 2.5F, 0.5F);
@@ -197,7 +199,7 @@ public final class Transcendence {
             if (e.level() instanceof ServerLevel sl) {
                 Vec3 c = e.position().add(0, e.getBbHeight() * 0.5, 0);
                 UltFx.far(sl, ElementFx.dust(st.element, 1.6F), c.x, c.y, c.z, 50, 0.8, 1.0, 0.8, 0);
-                UltFx.far(sl, ParticleTypes.CLOUD, c.x, c.y, c.z, 20, 0.6, 0.8, 0.6, 0.02);
+                UltFx.far(sl, Vfx.cloud(), c.x, c.y, c.z, 20, 0.6, 0.8, 0.6, 0.02);
                 UltFx.sound(sl, c, SoundEvents.BEACON_DEACTIVATE, 1.5F, 0.8F);
             }
             if (e instanceof ServerPlayer sp && exhaustion) {
@@ -289,7 +291,7 @@ public final class Transcendence {
             level.sendParticles(dust, e.getX() + Math.cos(a) * 0.6, e.getY() + y, e.getZ() + Math.sin(a) * 0.6, 1, 0, 0, 0, 0);
         }
         if (now % 6 == 0) {
-            level.sendParticles(ParticleTypes.END_ROD, e.getX(), e.getY() + h * 0.5, e.getZ(), 1, 0.35, h * 0.35, 0.35, 0.01);
+            level.sendParticles(Vfx.endRod(), e.getX(), e.getY() + h * 0.5, e.getZ(), 1, 0.35, h * 0.35, 0.35, 0.01);
             level.sendParticles(new DustParticleOptions(Vec3.fromRGB24(0xFFFFFF).toVector3f(), 0.8F),
                     e.getX(), e.getY() + 0.1, e.getZ(), 3, 0.4, 0.05, 0.4, 0);
         }

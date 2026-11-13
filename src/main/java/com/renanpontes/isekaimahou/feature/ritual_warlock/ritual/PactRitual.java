@@ -21,10 +21,10 @@ import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -133,7 +133,7 @@ public final class PactRitual {
             BlockState st = WarlockContent.RITUAL_CHALK.get().defaultBlockState().setValue(RitualChalkBlock.RUNE, RitualChalkBlock.runeFor(p));
             if (!st.canSurvive(level, p)) continue;
             level.setBlock(p, st, 3);
-            level.sendParticles(ParticleTypes.WHITE_ASH, p.getX() + 0.5, p.getY() + 0.1, p.getZ() + 0.5, 6, 0.3, 0.05, 0.3, 0.01);
+            level.sendParticles(Vfx.whiteAsh(), p.getX() + 0.5, p.getY() + 0.1, p.getZ() + 0.5, 6, 0.3, 0.05, 0.3, 0.01);
             placed++;
             if (!player.getAbilities().instabuild) chalk.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
         }
@@ -314,7 +314,7 @@ public final class PactRitual {
                     return;
                 }
                 if (!player.getAbilities().instabuild) player.giveExperienceLevels(-d.amount());
-                level.sendParticles(ParticleTypes.ENCHANT, player.getX(), player.getY() + 1.0, player.getZ(), 60, 0.5, 0.8, 0.5, 1.0);
+                level.sendParticles(Vfx.enchant(), player.getX(), player.getY() + 1.0, player.getZ(), 60, 0.5, 0.8, 0.5, 1.0);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.8F, 0.4F);
                 chat(player, "sacrifice_levels", ChatFormatting.DARK_RED, d.amount());
                 seal(player, patron);
@@ -405,7 +405,7 @@ public final class PactRitual {
 
         ServerLevel level = player.serverLevel();
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1.0F, 0.8F);
-        level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, player.getX(), player.getY() + 1.0, player.getZ(), 50, 0.5, 0.8, 0.5, 0.4);
+        level.sendParticles(Vfx.totem(), player.getX(), player.getY() + 1.0, player.getZ(), 50, 0.5, 0.8, 0.5, 0.4);
     }
 
     /** Ensina até 2 glifos de Origem WARLOCK (Pacto) do tier do pacto (ou de tiers anteriores que faltem). */

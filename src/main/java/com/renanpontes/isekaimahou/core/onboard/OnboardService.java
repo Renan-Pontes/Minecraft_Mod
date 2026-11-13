@@ -53,7 +53,7 @@ public final class OnboardService {
 
     private static final String TASK_CONGRATS = "congrats";
     private static final String TASK_RESUME = "resume";
-    private static final String TASK_STEP = "step";
+    static final String TASK_STEP = "step";
 
     /** Etapas de criação registradas pelos módulos (ordem de registro; dado de registro, nunca limpo). */
     private static final List<String> STEPS = new CopyOnWriteArrayList<>();
@@ -89,7 +89,9 @@ public final class OnboardService {
     }
 
     private static List<String> pending(MagicData d) {
-        if (STEPS.isEmpty() || d.hasFlag(Onboarding.FLAG_CONGRATS) || legacy(d)) return List.of();
+        // v1.0: sem classe não existe etapa pendente (a raça vem DEPOIS da classe). Antes, quem morria com a tela de
+        // classe aberta renascia com a tela de RAÇA aberta, ainda "Sem Classe".
+        if (STEPS.isEmpty() || d.path() == MagicPath.NONE || d.hasFlag(Onboarding.FLAG_CONGRATS) || legacy(d)) return List.of();
         List<String> out = new ArrayList<>();
         for (String s : EntryFlow.ordered(STEPS)) if (!d.hasFlag(STEP_PREFIX + s)) out.add(s);
         return out;
@@ -102,6 +104,21 @@ public final class OnboardService {
 
     public static List<String> pendingCreationSteps(Player p) {
         return p == null ? List.of() : pending(MagicApi.get(p));
+    }
+
+    /**
+     * v1.0: o jogador ainda está criando o personagem — sem classe, ou com a classe escolhida e etapa de criação
+     * (raça) por fazer. Enquanto isso o {@link EntryGuard} o protege e reabre a tela certa.
+     */
+    public static boolean inEntry(Player p) {
+        if (p == null || p instanceof FakePlayer) return false;
+        MagicData d = MagicApi.get(p);
+        return d.path() == MagicPath.NONE || creating(d);
+    }
+
+    /** Reabre a etapa de criação pendente (a tela dela foi fechada por algo). Sem etapa pendente: nada. */
+    static void resumeCreation(ServerPlayer sp) {
+        if (creating(MagicApi.get(sp))) continueCreation(sp);
     }
 
     public static void completeCreationStep(ServerPlayer sp, String id) {

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -70,8 +71,8 @@ public final class Frogify {
         mob.discard();
         level.addFreshEntity(frog);
         ACTIVE.put(frog.getUUID(), level.dimension());
-        level.sendParticles(ParticleTypes.POOF, c.x, c.y, c.z, 24, 0.4, 0.4, 0.4, 0.05);
-        level.sendParticles(ParticleTypes.WITCH, c.x, c.y, c.z, 20, 0.5, 0.5, 0.5, 0.1);
+        level.sendParticles(Vfx.poof(), c.x, c.y, c.z, 24, 0.4, 0.4, 0.4, 0.05);
+        level.sendParticles(Vfx.witch(), c.x, c.y, c.z, 20, 0.5, 0.5, 0.5, 0.1);
         level.sendParticles(ParticleTypes.ITEM_SLIME, c.x, c.y, c.z, 12, 0.4, 0.3, 0.4, 0.1);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.WITCH_CELEBRATE, SoundSource.PLAYERS, 0.9F, 1.2F);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.FROG_AMBIENT, SoundSource.NEUTRAL, 1.2F, 0.9F);
@@ -104,8 +105,8 @@ public final class Frogify {
         // Evita conflito de UUID com uma cópia que já esteja no mundo
         if (level.getEntity(original.getUUID()) != null) original.setUUID(UUID.randomUUID());
         level.addFreshEntity(original);
-        level.sendParticles(ParticleTypes.POOF, c.x, c.y, c.z, 20, 0.4, 0.4, 0.4, 0.05);
-        level.sendParticles(ParticleTypes.WITCH, c.x, c.y, c.z, 12, 0.4, 0.4, 0.4, 0.1);
+        level.sendParticles(Vfx.poof(), c.x, c.y, c.z, 20, 0.4, 0.4, 0.4, 0.05);
+        level.sendParticles(Vfx.witch(), c.x, c.y, c.z, 12, 0.4, 0.4, 0.4, 0.1);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.NEUTRAL, 1.0F, 1.0F);
         if (killedBy != null && original instanceof LivingEntity le) {
             if (killedBy.getEntity() instanceof Player p) le.setLastHurtByPlayer(p);
@@ -137,7 +138,7 @@ public final class Frogify {
             if (level.getGameTime() >= until) {
                 reverts.add(() -> revert(level, frog, null));
             } else if (server.getTickCount() % 20 == 0) {
-                level.sendParticles(ParticleTypes.WITCH, frog.getX(), frog.getY() + 0.6, frog.getZ(), 2, 0.2, 0.2, 0.2, 0.0);
+                level.sendParticles(Vfx.witch(), frog.getX(), frog.getY() + 0.6, frog.getZ(), 2, 0.2, 0.2, 0.2, 0.0);
             }
         }
         reverts.forEach(Runnable::run);

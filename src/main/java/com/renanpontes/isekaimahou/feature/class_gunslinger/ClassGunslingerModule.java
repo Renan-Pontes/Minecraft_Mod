@@ -36,6 +36,7 @@ public class ClassGunslingerModule implements Module {
     public void init(IEventBus modBus) {
         GsRegistries.register(modBus);
         GsNetwork.register(modBus);
+        modBus.addListener(GsFxNet::register);
         GunGlyphs.register();
         GsLegends.register();
         GsEvents.register();

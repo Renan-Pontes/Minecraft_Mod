@@ -29,8 +29,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * Altar da Reencarnação: clicar abre a tela de renascer (troca de raça entre as desbloqueadas e nova compra dos
- * pontos; os pontos de nível voltam para redistribuir). Custa Cristais de Mana. Brilha e solta chamas de alma.
+ * Altar da Reencarnação: clicar abre a tela de renascer — trocar de RAÇA ou de CLASSE (release 1.0). Custo MUITO alto:
+ * Cristais de Mana + 1 Núcleo de Guardião ({@link com.renanpontes.isekaimahou.feature.character.Reincarnation}). Brilha e
+ * solta chamas de alma. (Resetar talentos é no outro altar: o do Recomeço.)
  */
 public class ReincarnationAltarBlock extends Block {
     public static final MapCodec<ReincarnationAltarBlock> CODEC = simpleCodec(ReincarnationAltarBlock::new);
@@ -86,6 +87,8 @@ public class ReincarnationAltarBlock extends Block {
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext ctx, List<Component> lines, TooltipFlag flag) {
         lines.add(Component.translatable("block.isekai_mahou.reincarnation_altar.tooltip").withColor(0xB98CFF));
-        lines.add(Component.translatable("block.isekai_mahou.reincarnation_altar.tooltip2", CharacterService.ALTAR_COST).withColor(0xA89EC0));
+        lines.add(Component.translatable("block.isekai_mahou.reincarnation_altar.tooltip2",
+                com.renanpontes.isekaimahou.feature.character.Reincarnation.RACE.crystals(),
+                com.renanpontes.isekaimahou.feature.character.Reincarnation.CLASS.crystals()).withColor(0xA89EC0));
     }
 }

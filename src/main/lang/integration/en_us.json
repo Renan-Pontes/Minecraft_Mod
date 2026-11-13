@@ -1,0 +1,13 @@
+{
+  "command.isekai_mahou.cities.fixtures.at": "%1$s: at %2$s %3$s %4$s",
+  "command.isekai_mahou.cities.fixtures.capital_only": "%s: capitals only.",
+  "command.isekai_mahou.cities.fixtures.gone": "%1$s: was placed at %2$s %3$s %4$s, but someone removed it (it won't come back by itself; use \"retry\").",
+  "command.isekai_mahou.cities.fixtures.no_room": "%s: no free spot in the plaza (gave up; use \"retry\" to try again).",
+  "command.isekai_mahou.cities.fixtures.pending": "%s: not placed yet (the plaza must be loaded; or the block's module is missing).",
+  "command.isekai_mahou.cities.fixtures.retried": "Tried again: %s block(s) placed now.",
+  "hint.isekai_mahou.cities.capital_altars": "Capital plazas have two altars, one on each side: New Beginnings refunds your talents; Reincarnation changes class and race.",
+  "hint.isekai_mahou.cities.inn": "Resting at the inn leaves you Well Rested. Renting a room makes it your respawn point.",
+  "hint.isekai_mahou.cities.market_board": "The Market Board in the plaza opens the players' Market: buy and sell with Guild Coins.",
+  "hint.isekai_mahou.cities.request": "Request accepted! City residents give short requests: follow them under Objectives (J key).",
+  "screen.isekai_mahou.guild.go_market": "Market"
+}

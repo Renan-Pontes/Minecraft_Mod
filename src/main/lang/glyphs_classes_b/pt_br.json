@@ -1,0 +1,42 @@
+{
+  "glyph.isekai_mahou.enchanter_engraved_rune": "Runa Gravada",
+  "glyph.isekai_mahou.enchanter_engraved_rune.desc": "AUMENTO (Encantador). Todo inimigo que este glifo ferir ganha uma runa por 6 s (9 s se você é Encantador). O próximo golpe CORPO A CORPO nele — seu ou de um aliado — detona a runa: os efeitos da magia se repetem nele com 60% do poder (75% para o Encantador). Uma runa por alvo; a detonação não grava outra. Encantador: rank II. Outras classes: só por Lição.",
+  "glyph.isekai_mahou.enchanter_on_enchanted_strike": "Ao Golpear com Arma Encantada",
+  "glyph.isekai_mahou.enchanter_on_enchanted_strike.desc": "GATILHO (Encantador, no começo da receita). O slot sai SOZINHO, mirando quem você acertou, quando você golpeia corpo a corpo com a arma encantada: Arma Imbuída ou Equipamento Encantado ativos em você (mesmo postos por um aliado Encantador), ou uma arma com encantamento de verdade. No máximo 1× a cada 3 s; paga o recurso e respeita a recarga. Apertar a tecla não conjura. Encantador: rank III. Outras classes: só por Lição.",
+
+  "glyph.isekai_mahou.shinigami_shunpo_cast": "Shunpo: Conjuração Relâmpago",
+  "glyph.isekai_mahou.shinigami_shunpo_cast.desc": "AUMENTO (Shinigami). Um instante antes de a magia sair, você some num Shunpo e reaparece nas COSTAS do inimigo que está mirando (até 12 blocos; +4 por cópia extra), já virado para ele: a magia sai de lá, à queima-roupa — Kidō sem aviso. Sem ninguém na mira, o passo vai 6 blocos para a frente (para antes de paredes). No máximo um Shunpo por segundo. Shinigami: rank II. Outras classes: só por Lição.",
+  "glyph.isekai_mahou.shinigami_on_released_cut": "Ao Cortar com a Lâmina Liberada",
+  "glyph.isekai_mahou.shinigami_on_released_cut.desc": "GATILHO (Shinigami, no começo da receita). O slot sai SOZINHO quando você grita a Shikai em combate e, enquanto a zanpakutō estiver liberada (Shikai ou Bankai), a cada 4 cortes com ela — mirando quem você cortou. Paga o recurso e respeita a recarga. Apertar a tecla não conjura. Shinigami: rank III (junto da Shikai). Outras classes: só por Lição.",
+
+  "glyph.isekai_mahou.quincy_sklaverei": "Sklaverei",
+  "glyph.isekai_mahou.quincy_sklaverei.desc": "AUMENTO (Quincy). A escravidão do Reishi: cada inimigo que este glifo ferir tem o Reishi arrancado — fica Fraco por 3 s e um fio de luz voa até você: +1 de Reishi guardado (até 3 por conjuração). Se o golpe MATA, o corpo inteiro vira Reishi: +2 de Reishi e 3% do Foco. Quem não é Quincy recupera 1,5% do recurso por alvo. Quincy: rank IV. Outras classes: só por Lição.",
+  "glyph.isekai_mahou.quincy_on_reishi": "Ao Absorver Reishi",
+  "glyph.isekai_mahou.quincy_on_reishi.desc": "GATILHO (Quincy, no começo da receita). Sempre que você ABSORVE Reishi (Drenar Reishi, Absorção, Lâmina Espiritual, Sklaverei...) e fica com 3 ou mais guardados em combate (inimigo a até 20 blocos), o slot sai SOZINHO mirando o inimigo mais próximo — e GASTA 3 de Reishi guardado (a luz absorvida vira a flecha). No máximo 1× por segundo; paga o Foco e respeita a recarga. Apertar a tecla não conjura. Quincy: rank II. Outras classes: só por Lição.",
+
+  "glyph.isekai_mahou.gun_trick_ricochet": "Ricochete Calculado",
+  "glyph.isekai_mahou.gun_trick_ricochet.desc": "AUMENTO (Pistoleiro). Tiro de efeito de faroeste: quando este glifo fere um inimigo, a FORMA inteira quica dele para o inimigo mais próximo ainda não atingido (até 14 blocos) e sai de novo de lá, com +25% de poder a cada ricochete. 1 ricochete por cópia do glifo (máx. 3). Diferente do Ricochete comum (quica em paredes) e do Encadear (perde força). Só em formas que saem de um ponto (projétil, feixe, cone...); nunca na forma G. Pistoleiro: rank III. Outras classes: só por Lição.",
+  "glyph.isekai_mahou.gun_on_headshot": "Ao Acertar na Cabeça",
+  "glyph.isekai_mahou.gun_on_headshot.desc": "GATILHO (Pistoleiro, no começo da receita). O slot sai SOZINHO, mirando quem levou o tiro, sempre que você acerta um TIRO NA CABEÇA com a arma de mana ou com uma forma de arma. No máximo 1× por segundo; paga o Foco e respeita a recarga. Apertar a tecla não conjura. Pistoleiro: rank II. Outras classes: só por Lição.",
+
+  "glyph.isekai_mahou.ranger_coordinated_strike": "Ataque Coordenado",
+  "glyph.isekai_mahou.ranger_coordinated_strike.desc": "AUMENTO (Patrulheiro). Quando a magia sai, até 2 companheiros seus por perto (o Lobo e a Águia do Patrulheiro, ou qualquer bicho domesticado seu a até 24 blocos) repetem a MESMA forma, de onde estão, no seu alvo — cada cópia com 50% do poder, uma depois da outra. O alvo é quem você mira (até 32 blocos) ou o inimigo marcado mais próximo. Sem companheiro ou sem alvo, sai só a sua. Só em formas que saem de um ponto; nunca na forma G. Patrulheiro: rank III. Outras classes: só por Lição.",
+  "glyph.isekai_mahou.ranger_on_mark": "Ao Marcar um Alvo",
+  "glyph.isekai_mahou.ranger_on_mark.desc": "GATILHO (Patrulheiro, no começo da receita). O slot sai SOZINHO, mirando a presa, sempre que você (ou a sua Águia) põe uma MARCA DO CAÇADOR nova num alvo. Renovar a marca no mesmo alvo não dispara de novo por 5 s. Paga o Foco e respeita a recarga. Apertar a tecla não conjura. Patrulheiro: rank II. Outras classes: só por Lição.",
+
+  "glyph.isekai_mahou.gambler_russian_roulette": "Roleta Russa",
+  "glyph.isekai_mahou.gambler_russian_roulette.desc": "AUMENTO (Apostador). Um tambor de 6 câmaras com UMA bala. Cada conjuração puxa o gatilho: clique (vazio) = poder ×1,20, subindo +0,15 a cada clique seguido (até ×1,80 — quanto mais perto da bala, maior o prêmio). BANG = a bala é SUA: perde 35% da vida máxima (nunca morre disso), a magia sai com metade do poder e o tambor gira de novo (Apostador: +20 de Tensão). A Sorte não compra esta aposta. Apostador: rank II. Outras classes: só por Lição.",
+  "glyph.isekai_mahou.gambler_on_big_win": "Ao Tirar Sorte Grande",
+  "glyph.isekai_mahou.gambler_on_big_win.desc": "GATILHO (Apostador, no começo da receita). Em combate (inimigo a até 20 blocos), o slot sai SOZINHO, mirando o inimigo mais próximo, logo depois de uma rolagem de sorte sair ÓTIMO, SORTE GRANDE ou JACKPOT — aproveite a maré. No máximo 1× a cada 1,5 s e nunca por uma rolagem de outra magia de gatilho. Paga o recurso e respeita a recarga. Apertar a tecla não conjura. Apostador: rank III. Outras classes: só por Lição (e precisam rolar a sorte com um glifo do Apostador na magia).",
+
+  "glyph.isekai_mahou.steelball_golden_spin": "Rotação Dourada",
+  "glyph.isekai_mahou.steelball_golden_spin.desc": "AUMENTO (Steel Ball). O giro na proporção áurea entra no corpo do alvo e CRESCE: depois do golpe, o alvo fica Girado e sofre 4 pulsos de rotação (um a cada 0,5 s), cada um 1,618× mais forte que o anterior — 6% → 10% → 16% → 26% do dano do golpe (+58% no total). Quem é Steel Ball ganha um 5º pulso de 42%. Um giro por alvo: um golpe novo reinicia a espiral, não soma. Steel Ball: rank IV. Outras classes: só por Lição.",
+  "glyph.isekai_mahou.steelball_on_ball_hit": "Ao Acertar a Bola de Aço",
+  "glyph.isekai_mahou.steelball_on_ball_hit.desc": "GATILHO (Steel Ball, no começo da receita). O slot sai SOZINHO, mirando quem levou a bolada, sempre que a sua Bola de Aço (arremessada ou da forma Bola de Aço) acerta uma criatura. No máximo 1× por segundo; paga o recurso e respeita a recarga. Apertar a tecla não conjura. Steel Ball: rank II. Outras classes: só por Lição.",
+
+  "message.isekai_mahou.glyphs_classes_b.trigger_only": "%s: esta magia sai sozinha (gatilho) — a tecla não conjura.",
+  "message.isekai_mahou.glyphs_classes_b.roulette_click": "Clique… a câmara %s estava vazia — poder ×%s",
+  "message.isekai_mahou.glyphs_classes_b.roulette_bang": "BANG! A bala estava na câmara %s.",
+  "message.isekai_mahou.glyphs_classes_b.class_unlock": "Seu caminho de %2$s revelou um glifo novo: %1$s. Veja no Grimório.",
+  "message.isekai_mahou.glyphs_classes_b.granted": "%s glifos de classe (v1.4) ensinados a %s jogador(es)."
+}

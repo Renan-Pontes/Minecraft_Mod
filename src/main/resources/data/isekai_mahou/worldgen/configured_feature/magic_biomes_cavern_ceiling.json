@@ -1,0 +1,41 @@
+{
+  "type": "minecraft:vegetation_patch",
+  "config": {
+    "surface": "ceiling",
+    "replaceable": "#minecraft:moss_replaceable",
+    "ground_state": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "minecraft:calcite"
+      }
+    },
+    "depth": 1,
+    "extra_bottom_block_chance": 0.0,
+    "extra_edge_column_chance": 0.3,
+    "vertical_range": 5,
+    "vegetation_chance": 0.06,
+    "vegetation_feature": {
+      "feature": {
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "type": "minecraft:simple_state_provider",
+            "state": {
+              "Name": "isekai_mahou:luminous_crystal_cluster",
+              "Properties": {
+                "facing": "down",
+                "waterlogged": "false"
+              }
+            }
+          }
+        }
+      },
+      "placement": []
+    },
+    "xz_radius": {
+      "type": "minecraft:uniform",
+      "min_inclusive": 2,
+      "max_inclusive": 4
+    }
+  }
+}

@@ -7,8 +7,8 @@ import com.renanpontes.isekaimahou.feature.forms_a.FormsAEntities;
 import com.renanpontes.isekaimahou.feature.forms_a.FormsFx;
 import com.renanpontes.isekaimahou.glyph.fx.SpellFxParticles;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -100,7 +100,7 @@ public class SpellBeamEntity extends Entity {
             level().addParticle(mote, x + (random.nextDouble() - 0.5) * s, y + (random.nextDouble() - 0.5) * s,
                     z + (random.nextDouble() - 0.5) * s, 0, 0, 0);
             if (random.nextFloat() < 0.25F) {
-                level().addParticle(ParticleTypes.END_ROD, x, y, z, (random.nextDouble() - 0.5) * 0.05,
+                level().addParticle(Vfx.endRod(), x, y, z, (random.nextDouble() - 0.5) * 0.05,
                         (random.nextDouble() - 0.5) * 0.05, (random.nextDouble() - 0.5) * 0.05);
             }
         }

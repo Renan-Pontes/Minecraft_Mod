@@ -1,0 +1,878 @@
+{
+  "layout": 2,
+  "branches": [
+    {
+      "id": "spin",
+      "color": "E8C84A"
+    },
+    {
+      "id": "body",
+      "color": "B4C0CC"
+    },
+    {
+      "id": "ride",
+      "color": "A87B4A"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "rotation",
+      "branch": 0,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:bow",
+      "effects": [
+        {
+          "stat": "ranged_damage",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "golden_ratio",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:spyglass",
+      "effects": [
+        {
+          "stat": "crit_chance",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "torque",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "isekai_mahou:essence_earth",
+      "effects": [
+        {
+          "stat": "spell_damage.earth",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "perfect_spin",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:blaze_powder",
+      "effects": [
+        {
+          "stat": "combo",
+          "amount": 0.025
+        }
+      ]
+    },
+    {
+      "id": "rebound",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "isekai_mahou:essence_wind",
+      "effects": [
+        {
+          "stat": "spell_damage.wind",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "golden_spin",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:diamond_sword",
+      "effects": [
+        {
+          "stat": "crit_damage",
+          "amount": 0.04
+        },
+        {
+          "attribute": "isekai_mahou:spell_power",
+          "amount": 0.008,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "heavy_ball",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:mace",
+      "effects": [
+        {
+          "stat": "near_damage",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "long_throw"
+      ]
+    },
+    {
+      "id": "long_throw",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:spectral_arrow",
+      "effects": [
+        {
+          "stat": "far_damage",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "heavy_ball"
+      ]
+    },
+    {
+      "id": "vibration",
+      "branch": 0,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:cobweb",
+      "effects": [
+        {
+          "stat": "on_hit.slowness",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "golden_rectangle",
+      "branch": 0,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:fire_charge",
+      "effects": [
+        {
+          "stat": "crit_fury",
+          "amount": 0.06
+        },
+        {
+          "stat": "crit_mana",
+          "amount": 3.0
+        }
+      ]
+    },
+    {
+      "id": "infinite_spin",
+      "branch": 0,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:bell",
+      "effects": [
+        {
+          "stat": "fifth_hit",
+          "amount": 0.7
+        },
+        {
+          "stat": "echo",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "mastery_spin",
+      "branch": 0,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "ranged_damage",
+          "amount": 0.005
+        }
+      ]
+    },
+    {
+      "id": "hardened_body",
+      "branch": 1,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:iron_chestplate",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.armor",
+          "amount": 0.4,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "surgeon_hands",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:honey_bottle",
+      "effects": [
+        {
+          "stat": "healing_received",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "steel_nerve",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:golden_apple",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 1.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "hardened_skin",
+      "branch": 1,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:diamond_chestplate",
+      "effects": [
+        {
+          "stat": "full_health_resist",
+          "amount": 0.06
+        },
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 2.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "relaxed_muscle",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:sweet_berries",
+      "effects": [
+        {
+          "stat": "regen_health",
+          "amount": 0.2
+        }
+      ]
+    },
+    {
+      "id": "zeppeli_tradition",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:totem_of_undying",
+      "effects": [
+        {
+          "stat": "second_wind",
+          "amount": 1.5
+        },
+        {
+          "stat": "damage_resist",
+          "amount": 0.006
+        }
+      ]
+    },
+    {
+      "id": "anesthesia",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:turtle_helmet",
+      "effects": [
+        {
+          "stat": "low_health_resist",
+          "amount": 0.15
+        }
+      ],
+      "exclusive": [
+        "suture"
+      ]
+    },
+    {
+      "id": "suture",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:glistering_melon_slice",
+      "effects": [
+        {
+          "stat": "heal_on_kill",
+          "amount": 2.5
+        }
+      ],
+      "exclusive": [
+        "anesthesia"
+      ]
+    },
+    {
+      "id": "posture",
+      "branch": 1,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:anvil",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.knockback_resistance",
+          "amount": 0.03,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "lesson_four",
+      "branch": 1,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:red_banner",
+      "effects": [
+        {
+          "stat": "revenge",
+          "amount": 0.06
+        },
+        {
+          "stat": "guard_fortify",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "final_lesson",
+      "branch": 1,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:totem_of_undying",
+      "effects": [
+        {
+          "stat": "cheat_death",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "id": "mastery_body",
+      "branch": 1,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 0.5,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "firm_saddle",
+      "branch": 2,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:anvil",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.knockback_resistance",
+          "amount": 0.03,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "gallop",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:sugar",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.movement_speed",
+          "amount": 0.01,
+          "op": "add_multiplied_base"
+        }
+      ]
+    },
+    {
+      "id": "long_road",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:lapis_lazuli",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 8.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "galloping_charge",
+      "branch": 2,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:rabbit_hide",
+      "effects": [
+        {
+          "stat": "run_power",
+          "amount": 0.07
+        }
+      ]
+    },
+    {
+      "id": "breath",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:glowstone_dust",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:mana_regen",
+          "amount": 0.02,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "final_stretch",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:golden_boots",
+      "effects": [
+        {
+          "stat": "kill_speed",
+          "amount": 0.6
+        },
+        {
+          "stat": "mana_on_kill",
+          "amount": 1.5
+        }
+      ]
+    },
+    {
+      "id": "long_race",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:compass",
+      "effects": [
+        {
+          "stat": "kill_cdr",
+          "amount": 1.5
+        }
+      ],
+      "exclusive": [
+        "sprint_start"
+      ]
+    },
+    {
+      "id": "sprint_start",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:crossbow",
+      "effects": [
+        {
+          "stat": "first_strike",
+          "amount": 0.18
+        }
+      ],
+      "exclusive": [
+        "long_race"
+      ]
+    },
+    {
+      "id": "stirrup",
+      "branch": 2,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:prismarine_crystals",
+      "effects": [
+        {
+          "stat": "mana_on_hit",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "id": "stage_won",
+      "branch": 2,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:blaze_rod",
+      "effects": [
+        {
+          "stat": "kill_fury",
+          "amount": 0.04
+        },
+        {
+          "stat": "charge_on_kill",
+          "amount": 1.0
+        }
+      ]
+    },
+    {
+      "id": "finish_line",
+      "branch": 2,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:beacon",
+      "effects": [
+        {
+          "stat": "ult_power",
+          "amount": 0.3
+        },
+        {
+          "stat": "boss_damage",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "mastery_ride",
+      "branch": 2,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 4.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "the_sentence",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "steelball_executioner",
+      "icon": "minecraft:iron_axe",
+      "effects": [
+        {
+          "stat": "execute",
+          "amount": 0.04
+        }
+      ]
+    },
+    {
+      "id": "hangmans_hand",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "steelball_executioner",
+      "icon": "minecraft:bow",
+      "effects": [
+        {
+          "stat": "ranged_damage",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "no_appeal",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "steelball_executioner",
+      "icon": "minecraft:dragon_head",
+      "effects": [
+        {
+          "stat": "boss_damage",
+          "amount": 0.06
+        },
+        {
+          "stat": "crit_cdr",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "id": "royal_duty",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "steelball_executioner",
+      "icon": "minecraft:gunpowder",
+      "effects": [
+        {
+          "stat": "kill_burst",
+          "amount": 0.2
+        },
+        {
+          "stat": "kill_cdr",
+          "amount": 1.5
+        }
+      ]
+    },
+    {
+      "id": "scalpel",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "steelball_surgeon",
+      "icon": "minecraft:spyglass",
+      "effects": [
+        {
+          "stat": "crit_chance",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "stitches",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "steelball_surgeon",
+      "icon": "minecraft:golden_apple",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 2.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "steelball_surgeon",
+      "icon": "minecraft:poisonous_potato",
+      "effects": [
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.06
+        },
+        {
+          "stat": "on_hit.weakness",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "zeppeli_miracle",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "steelball_surgeon",
+      "icon": "minecraft:glistering_melon_slice",
+      "effects": [
+        {
+          "stat": "heal_on_kill",
+          "amount": 2.0
+        },
+        {
+          "stat": "barrier",
+          "amount": 8.0
+        },
+        {
+          "attribute": "minecraft:generic.max_absorption",
+          "amount": 8.0,
+          "op": "add_value"
+        }
+      ]
+    }
+  ],
+  "subclasses": [
+    {
+      "id": "steelball_executioner",
+      "color": "E8C84A",
+      "icon": "minecraft:iron_axe",
+      "effects": [
+        {
+          "stat": "execute",
+          "amount": 0.25
+        },
+        {
+          "stat": "crit_chance",
+          "amount": 0.08
+        },
+        {
+          "stat": "ranged_damage",
+          "amount": 0.1
+        },
+        {
+          "stat": "cull",
+          "amount": 0.08
+        },
+        {
+          "stat": "kill_fury",
+          "amount": 0.06
+        }
+      ]
+    },
+    {
+      "id": "steelball_surgeon",
+      "color": "B4C0CC",
+      "icon": "minecraft:glistering_melon_slice",
+      "effects": [
+        {
+          "stat": "healing_received",
+          "amount": 0.25
+        },
+        {
+          "stat": "regen_health",
+          "amount": 1.5
+        },
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 6.0,
+          "op": "add_value"
+        },
+        {
+          "stat": "crit_heal",
+          "amount": 2.0
+        },
+        {
+          "stat": "low_health_resist",
+          "amount": 0.15
+        }
+      ]
+    }
+  ]
+}

@@ -2,6 +2,7 @@ package com.renanpontes.isekaimahou.feature.origins_b;
 
 import org.joml.Vector3f;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
@@ -42,8 +43,8 @@ public final class ObFx {
     // ------------------------------------------------------------------ Pacto
     /** Portal de brasas e fumaça (invocação de demônios). */
     public static void hellfireBurst(ServerLevel level, Vec3 at, double size) {
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y + size * 0.5, at.z, (int) (12 * size), size * 0.35, size * 0.4, size * 0.35, 0.02);
-        level.sendParticles(ParticleTypes.FLAME, at.x, at.y + size * 0.4, at.z, (int) (16 * size), size * 0.3, size * 0.4, size * 0.3, 0.05);
+        level.sendParticles(Vfx.largeSmoke(), at.x, at.y + size * 0.5, at.z, (int) (12 * size), size * 0.35, size * 0.4, size * 0.35, 0.02);
+        level.sendParticles(Vfx.flame(), at.x, at.y + size * 0.4, at.z, (int) (16 * size), size * 0.3, size * 0.4, size * 0.3, 0.05);
         level.sendParticles(ParticleTypes.LAVA, at.x, at.y + 0.2, at.z, (int) (4 * size), size * 0.3, 0.1, size * 0.3, 0);
         level.sendParticles(dust(CRIMSON, 1.6F), at.x, at.y + size * 0.5, at.z, (int) (14 * size), size * 0.4, size * 0.5, size * 0.4, 0);
     }
@@ -75,8 +76,8 @@ public final class ObFx {
 
     /** Puff de fumaça escura (sumir/aparecer). */
     public static void shadowPuff(ServerLevel level, Vec3 at, double height) {
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y + height * 0.5, at.z, 14, 0.3, height * 0.35, 0.3, 0.02);
-        level.sendParticles(ParticleTypes.SQUID_INK, at.x, at.y + height * 0.5, at.z, 8, 0.3, height * 0.3, 0.3, 0.02);
+        level.sendParticles(Vfx.largeSmoke(), at.x, at.y + height * 0.5, at.z, 14, 0.3, height * 0.35, 0.3, 0.02);
+        level.sendParticles(Vfx.ink(), at.x, at.y + height * 0.5, at.z, 8, 0.3, height * 0.3, 0.3, 0.02);
         level.sendParticles(dust(VIOLET, 1.2F), at.x, at.y + height * 0.5, at.z, 10, 0.35, height * 0.35, 0.35, 0);
     }
 
@@ -123,7 +124,7 @@ public final class ObFx {
             }
             if (flying && e.tickCount % 6 == 0) {
                 Vec3 tip = tips[1];
-                level.sendParticles(ParticleTypes.SMALL_FLAME, tip.x, tip.y, tip.z, 1, 0.02, 0.02, 0.02, 0.0);
+                level.sendParticles(Vfx.smallFlame(), tip.x, tip.y, tip.z, 1, 0.02, 0.02, 0.02, 0.0);
             }
         }
     }
@@ -131,9 +132,9 @@ public final class ObFx {
     // ------------------------------------------------------------------ Necromancia
     /** Almas subindo e ossos espalhando (erguer mortos, desfazer servos). */
     public static void soulBurst(ServerLevel level, Vec3 at, double height) {
-        level.sendParticles(ParticleTypes.SOUL, at.x, at.y + height * 0.5, at.z, 10, 0.3, height * 0.3, 0.3, 0.03);
-        level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, at.x, at.y + 0.2, at.z, 14, 0.35, 0.15, 0.35, 0.03);
-        level.sendParticles(ParticleTypes.SCULK_SOUL, at.x, at.y + height * 0.4, at.z, 6, 0.3, height * 0.25, 0.3, 0.02);
+        level.sendParticles(Vfx.soul(), at.x, at.y + height * 0.5, at.z, 10, 0.3, height * 0.3, 0.3, 0.03);
+        level.sendParticles(Vfx.soulFlame(), at.x, at.y + 0.2, at.z, 14, 0.35, 0.15, 0.35, 0.03);
+        level.sendParticles(Vfx.sculkSoul(), at.x, at.y + height * 0.4, at.z, 6, 0.3, height * 0.25, 0.3, 0.02);
         level.sendParticles(dust(SOUL_CYAN, 1.1F), at.x, at.y + height * 0.5, at.z, 10, 0.3, height * 0.35, 0.3, 0);
     }
 
@@ -148,7 +149,7 @@ public final class ObFx {
             level.sendParticles(new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK, state),
                     e.getX(), e.getY() + 0.1, e.getZ(), 30, 0.4, 0.05, 0.4, 0.15);
         }
-        level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, e.getX(), e.getY() + 0.1, e.getZ(), 6, 0.35, 0.02, 0.35, 0.02);
+        level.sendParticles(Vfx.soulFlame(), e.getX(), e.getY() + 0.1, e.getZ(), 6, 0.35, 0.02, 0.35, 0.02);
     }
 
     /** Fio de almas indo de {@code from} até {@code to} (drenar, contrato cumprido). */
@@ -171,15 +172,15 @@ public final class ObFx {
         for (int i = 0; i < 3; i++) {
             double a = t + i * Math.PI * 2 / 3;
             double y = e.getY() + h * (0.35 + 0.3 * Math.sin(t * 0.7 + i));
-            level.sendParticles(ParticleTypes.SOUL, e.getX() + Math.cos(a) * 0.9, y, e.getZ() + Math.sin(a) * 0.9, 1, 0, 0, 0, 0.0);
+            level.sendParticles(Vfx.soul(), e.getX() + Math.cos(a) * 0.9, y, e.getZ() + Math.sin(a) * 0.9, 1, 0, 0, 0, 0.0);
             level.sendParticles(dust(SOUL_CYAN, 0.8F), e.getX() + Math.cos(a + 0.4) * 0.85, y - 0.1, e.getZ() + Math.sin(a + 0.4) * 0.85,
                     1, 0, 0, 0, 0);
         }
         if (e.tickCount % 2 == 0) {
-            level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, e.getX(), e.getY() + 0.05, e.getZ(), 2, 0.3, 0.02, 0.3, 0.01);
+            level.sendParticles(Vfx.soulFlame(), e.getX(), e.getY() + 0.05, e.getZ(), 2, 0.3, 0.02, 0.3, 0.01);
         }
         if (e.tickCount % 5 == 0) {
-            level.sendParticles(ParticleTypes.SCULK_SOUL, e.getX(), e.getY() + h, e.getZ(), 1, 0.25, 0.1, 0.25, 0.02);
+            level.sendParticles(Vfx.sculkSoul(), e.getX(), e.getY() + h, e.getZ(), 1, 0.25, 0.1, 0.25, 0.02);
         }
     }
 

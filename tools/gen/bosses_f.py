@@ -846,6 +846,37 @@ def build_wyvern():
     m.bone("tail3", (0, 24, 50), "tail2")
     m.cube("tail3", (-2, 22, 50), (4, 4, 14), P(sc, deco=scales(sc_d, sc_l, 302)))
     m.cube("tail3", (-0.5, 19, 58), (1, 10, 10), P(bolt, deco=chain(glow_faces(bolt, core=bolt_w), clear_corner_tail())))
+    # ---- v1.3: mais detalhe ----
+    # barbatanas dorsais carregadas de raio (brilham) entre as pontas douradas
+    for k, z in enumerate((-8, -2, 4, 10)):
+        m.cube("body", (-0.5, 33, z), (1, 4 + (k % 2) * 2, 3), P(bolt, deco=glow_faces(bolt, core=bolt_w)), rotation=[-20, 0, 0], pivot=[0, 33, z + 1])
+    # espinhos laterais nas costas e no pescoço
+    for sx in (-1, 1):
+        for k, z in enumerate((-9, -3, 3, 9)):
+            m.cube("body", (sx * 7.5 - 0.5, 29, z), (1, 3, 2), P(horn, deco=speckle("#B8B09A", 0.2, 310 + k + sx)),
+                   rotation=[0, 0, sx * -35], pivot=[sx * 8, 29, z + 1])
+        m.cube("neck", (sx * 4 - 0.5, 31, -23), (1, 3, 2), P(horn), rotation=[0, 0, sx * -30], pivot=[sx * 4, 31, -22])
+        m.cube("neck", (sx * 4 - 0.5, 31, -17), (1, 3, 2), P(horn), rotation=[0, 0, sx * -30], pivot=[sx * 4, 31, -16])
+        # chifres menores na bochecha + barbela
+        m.cube("head", (sx * 5 - 0.5, 27, -32), (1, 2, 5), P(horn, faces={"back": "#FFFFFF"}), rotation=[10, sx * -25, 0], pivot=[sx * 5, 28, -30])
+        # dedo-garra na dobra da asa
+        side = "wing_l" if sx > 0 else "wing_r"
+        xc = 28 if sx > 0 else -31
+        m.cube(side, (xc, 29, -9), (3, 2, 3), P(horn, faces={"front": "#FFFFFF"}))
+        # esporão no tornozelo
+        leg = "leg_l" if sx > 0 else "leg_r"
+        m.cube(leg + "_foot", (sx * 6 - 0.5, 6, 7), (1, 1, 4), P(horn))
+    # olhos de raio (glowmask forte) e queixo com barbilhões
+    m.cube("head", (-5.3, 31, -37), (1, 1, 2), P(bolt_w, deco=glow_faces(bolt_w)))
+    m.cube("head", (4.3, 31, -37), (1, 1, 2), P(bolt_w, deco=glow_faces(bolt_w)))
+    m.cube("jaw", (-2, 21, -34), (1, 3, 1), P(gold_d))
+    m.cube("jaw", (1, 21, -34), (1, 3, 1), P(gold_d))
+    # cauda: anéis dourados e espinhos
+    m.cube("tail1", (-5.5, 19.5, 22), (11, 9, 2), P(gold, deco=chain(band([0], gold_d), runes(bolt, 320, faces=SIDES, n=1))))
+    m.cube("tail2", (-3.5, 20.5, 40), (7, 7, 2), P(gold, deco=band([0], gold_d)))
+    for k, z in enumerate((18, 26, 36, 44)):
+        bone = "tail1" if z < 32 else "tail2"
+        m.cube(bone, (-0.5, 27 if z < 32 else 26, z), (1, 3, 2), P(horn), rotation=[-25, 0, 0], pivot=[0, 27, z + 1])
     m.save(bounds=(9, 5), seed=23)
 
     a = {}
@@ -1220,7 +1251,46 @@ def build_colossus():
     m.cube("body", (-12, 46, 5), (5, 14, 5), P(st_l, deco=chain(bricks(mortar, "#D0CEC2", 550, bh=5, bw=5), moss(mossc, moss_d, 0.4, 551))),
            rotation=[-12, 0, 10], pivot=[-10, 46, 7])
     m.cube("body", (6, 47, 6), (6, 6, 5), P(st_d, deco=moss(mossc, moss_d, 0.6, 552)), rotation=[0, 20, -8], pivot=[9, 47, 8])
-    m.save(bounds=(6, 9), seed=31)
+    # ---- v1.3: mais detalhe ----
+    for side, sx in (("l", 1), ("r", -1)):
+        arm = "arm_" + side
+        x0 = 13 if sx > 0 else -25
+        # ombreira: laje de templo tombada + cristais de runa brotando
+        m.cube(arm, (x0 - 1, 49, -8), (14, 4, 16), P(st_l, deco=chain(bricks(mortar, "#D0CEC2", 560 + sx, bh=2, bw=7),
+                                                                         moss(mossc, moss_d, 0.45, 561 + sx, faces=("top",)))),
+               rotation=[0, 0, sx * 8], pivot=[sx * 19, 51, 0])
+        for k, (dz, h) in enumerate(((-4, 7), (1, 9), (5, 6))):
+            cx = (x0 + 5) if sx > 0 else (x0 + 6)
+            m.cube(arm, (cx, 52, dz), (2, h, 2), P(rune, deco=glow_faces(rune, core=rune_l)),
+                   rotation=[sx * 10 * (k - 1), 0, sx * (12 + 6 * k)], pivot=[cx + 1, 52, dz + 1])
+        # nós dos dedos: pedras salientes no punho
+        fore = "forearm_" + side
+        x3 = 13.5 if sx > 0 else -26.5
+        for k, dz in enumerate((-6, -2, 2)):
+            m.cube(fore, (x3 + 2 + k * 3, 1, -8), (3, 4, 3), P(st_d, deco=speckle(mortar, 0.3, 565 + k + sx * 3)))
+        # braçadeira de bronze com runa
+        x2 = 14.5 if sx > 0 else -25.5
+        m.cube(fore, (x2 - 0.5, 22, -6), (12, 3, 12), P(gold, deco=chain(band([0], "#9C7A22"), runes(rune, 568 + sx, faces=SIDES, n=1))))
+        # joelheira rachada
+        leg = "leg_" + side
+        xk = 3 if sx > 0 else -11
+        m.cube(leg, (xk, 13, -6), (8, 7, 2), P(st_l, deco=cracks(rune, 570 + sx, 1, faces=("front",))))
+    # olhos: duas brasas no visor + chifres de pilar quebrado
+    m.cube("head", (-4, 54, -8.6), (2, 2, 1), P(rune_l, deco=glow_faces(rune_l)))
+    m.cube("head", (2, 54, -8.6), (2, 2, 1), P(rune_l, deco=glow_faces(rune_l)))
+    for sx in (-1, 1):
+        m.cube("head", (sx * 6 - 1.5, 56, -4), (3, 9, 3), P(st_l, deco=chain(bricks(mortar, "#D0CEC2", 575 + sx, bh=3, bw=3), moss(mossc, moss_d, 0.4, 576 + sx))),
+               rotation=[-10, 0, -sx * 28], pivot=[sx * 6, 56, -2.5])
+    # mandíbula de pedra com "dentes" de entulho
+    m.cube("head", (-5, 48, -9), (10, 3, 6), P(st_d, deco=chain(teeth("#C8C4B4", faces=("front",), row=0), speckle(mortar, 0.2, 578))))
+    # peito: arco de pedras em volta do núcleo
+    m.cube("body", (-9, 46, -10), (18, 3, 3), P(st_l, deco=chain(bricks(mortar, "#D0CEC2", 580, bh=3, bw=4), runes(gold, 581, faces=("front",), n=2))))
+    m.cube("body", (-9, 28, -10), (18, 3, 3), P(st_d, deco=bricks(mortar, st, 582, bh=3, bw=4)))
+    # costas: mais entulho, uma estátua quebrada e raízes
+    m.cube("body", (-4, 50, 6), (8, 5, 4), P(st, deco=chain(bricks(mortar, st_l, 583), moss(mossc, moss_d, 0.6, 584))), rotation=[15, 0, 0], pivot=[0, 50, 8])
+    for k, x in enumerate((-11, -5, 3, 9)):
+        m.cube("body", (x, 30 + k % 2 * 4, 9), (1, 14 - k * 2, 1), P(vine, deco=speckle(moss_d, 0.3, 585 + k)))
+    m.save(bounds=(7, 10), seed=31)
 
     p = rest_point(m, "core", (0, 39, -10.5))
     print("COLOSSO - nucleo (px, espaco Java, repouso): %.2f, %.2f, %.2f" % p)
@@ -1327,6 +1397,21 @@ def build_colossus():
         "arm_l": {"rotation": keys([(0, [0, 0, 0]), (0.3, [-80, -40, 0]), (0.45, [-60, -60, 0]), (0.7, [-80, -40, 0]), (0.85, [-60, -60, 0]), (1.6, [0, 0, 0])])},
         "arm_r": {"rotation": keys([(0, [0, 0, 0]), (0.45, [-80, 40, 0]), (0.6, [-60, 60, 0]), (0.85, [-80, 40, 0]), (1.0, [-60, 60, 0]), (1.6, [0, 0, 0])])},
         "head": {"rotation": keys([(0, [0, 0, 0]), (1.0, [-30, 0, 0]), (1.4, [-30, 0, 0]), (1.6, [0, 0, 0])])},
+    })
+    # v1.3 — terremoto: ergue os dois braços (1.6 s = 32 ticks de aviso, tremendo), crava os punhos e segura
+    shake = [(0.0, [0, 0, 0]), (0.5, [-120, 0, 10]), (1.0, [-170, 0, 18])] + [(1.05 + 0.1 * k, [-172 + (3 if k % 2 else -3), 0, 18]) for k in range(5)]         + [(1.6, [-35, 0, 6]), (2.2, [-38, 0, 6]), (2.6, [0, 0, 0])]
+    a["quake"] = anim(2.6, {
+        "arm_l": {"rotation": keys(shake)},
+        "arm_r": {"rotation": keys([(t, [v[0], v[1], -v[2]]) for t, v in shake])},
+        "forearm_l": {"rotation": keys([(0, [0, 0, 0]), (1.0, [-30, 0, 0]), (1.6, [-10, 0, 0]), (2.6, [0, 0, 0])])},
+        "forearm_r": {"rotation": keys([(0, [0, 0, 0]), (1.0, [-30, 0, 0]), (1.6, [-10, 0, 0]), (2.6, [0, 0, 0])])},
+        "body": {"rotation": keys([(0, [0, 0, 0]), (1.0, [-18, 0, 0]), (1.5, [-20, 0, 0]), (1.65, [32, 0, 0]), (2.2, [28, 0, 0]), (2.6, [0, 0, 0])]),
+                 "position": keys([(0, [0, 0, 0]), (1.0, [0, 2, 0]), (1.5, [0, 2.5, 0]), (1.65, [0, -4, 0]), (2.2, [0, -3.5, 0]), (2.6, [0, 0, 0])])},
+        "head": {"rotation": keys([(0, [0, 0, 0]), (1.0, [-28, 0, 0]), (1.5, [-30, 0, 0]), (1.65, [14, 0, 0]), (2.6, [0, 0, 0])])},
+        "leg_l": {"rotation": keys([(0, [0, 0, 0]), (1.6, [0, 0, 0]), (1.7, [-25, 0, -6]), (2.2, [-25, 0, -6]), (2.6, [0, 0, 0])])},
+        "leg_r": {"rotation": keys([(0, [0, 0, 0]), (1.6, [0, 0, 0]), (1.7, [-25, 0, 6]), (2.2, [-25, 0, 6]), (2.6, [0, 0, 0])])},
+        "shin_l": {"rotation": keys([(0, [0, 0, 0]), (1.6, [0, 0, 0]), (1.7, [35, 0, 0]), (2.2, [35, 0, 0]), (2.6, [0, 0, 0])])},
+        "shin_r": {"rotation": keys([(0, [0, 0, 0]), (1.6, [0, 0, 0]), (1.7, [35, 0, 0]), (2.2, [35, 0, 0]), (2.6, [0, 0, 0])])},
     })
     # placas do peito (controlador proprio)
     a["core_closed"] = anim(1.0, {"plate_l": {"rotation": cyc(1.0, lambda p: [0, 0, 0])}, "plate_r": {"rotation": cyc(1.0, lambda p: [0, 0, 0])},

@@ -6,6 +6,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.feature.light_shadow.LsFx;
 import com.renanpontes.isekaimahou.feature.light_shadow.LsUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -116,7 +117,12 @@ public class GuardianFairyEntity extends PathfinderMob implements OwnableEntity,
             return;
         }
         Vec3 anchor;
-        if (o != null) {
+        // Forja de Invocações: com a ordem Guardar/Ficar a fada paira no posto em vez de acompanhar o dono
+        Vec3 post = SummonUtil.forgePost(this);
+        if (post != null) {
+            double a = tickCount * 0.06 + getId() * 1.7;
+            anchor = post.add(Math.cos(a) * 0.8, 1.2 + Math.sin(tickCount * 0.15) * 0.15, Math.sin(a) * 0.8);
+        } else if (o != null) {
             if (distanceToSqr(o) > 24 * 24) {
                 teleportTo(o.getX(), o.getY() + o.getBbHeight() + 0.3, o.getZ());
                 LsFx.holyBurst(sl, position(), 8, 0.3);
@@ -164,7 +170,7 @@ public class GuardianFairyEntity extends PathfinderMob implements OwnableEntity,
         best.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 0, true, true));
         LsFx.line(sl, position().add(0, 0.45, 0), LsFx.mid(best), LsFx.fade(LsFx.WHITE_GOLD, 0x9CFFB0, 0.8F), 5);
         sl.sendParticles(ParticleTypes.HEART, best.getX(), best.getY() + best.getBbHeight() + 0.3, best.getZ(), 2, 0.3, 0.1, 0.3, 0);
-        sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, best.getX(), best.getY() + best.getBbHeight() * 0.5, best.getZ(), 6, 0.3, 0.4, 0.3, 0);
+        sl.sendParticles(Vfx.happy(), best.getX(), best.getY() + best.getBbHeight() * 0.5, best.getZ(), 6, 0.3, 0.4, 0.3, 0);
         LsFx.sound(sl, position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.8F);
         triggerAnim("action", "heal");
     }
@@ -175,7 +181,7 @@ public class GuardianFairyEntity extends PathfinderMob implements OwnableEntity,
         for (LivingEntity e : LsUtil.enemiesOf(sl, owner, position(), 8, this)) {
             if (!LsUtil.isUnholy(e) || !hasLineOfSight(e)) continue;
             LsFx.line(sl, position().add(0, 0.45, 0), LsFx.mid(e), LsFx.dust(LsFx.GOLD, 0.9F), 4);
-            sl.sendParticles(ParticleTypes.END_ROD, e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 6, 0.2, 0.3, 0.2, 0.04);
+            sl.sendParticles(Vfx.endRod(), e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 6, 0.2, 0.3, 0.2, 0.04);
             LsUtil.spellHurt(sl, e, 3.0F * power, this, getOwner(), Element.LIGHT);
             LsFx.sound(sl, position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 1.7F);
             triggerAnim("action", "heal");

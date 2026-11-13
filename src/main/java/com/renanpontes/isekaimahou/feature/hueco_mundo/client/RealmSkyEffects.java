@@ -170,13 +170,19 @@ public class RealmSkyEffects extends DimensionSpecialEffects {
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         if (style == Style.HOLLOW) {
             // A lua fica ao NORTE (sobre o palácio, para quem chega pelo sul), alta e imóvel.
+            // v1.3: halo em três camadas que "respiram" devagar (a lua parece fria e enorme sobre Las Noches).
             RenderSystem.setShaderTexture(0, HALO);
             BufferBuilder h = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-            body(h, ps, 180F, 48F, 58F, 0xB8C8E8, 0.35F + 0.05F * Mth.sin(time * 0.02F));
+            float breath = Mth.sin(time * 0.02F);
+            body(h, ps, 180F, 48F, 110F, 0x6E7FA8, 0.10F + 0.03F * breath);
+            body(h, ps, 180F, 48F, 58F, 0xB8C8E8, 0.35F + 0.05F * breath);
+            body(h, ps, 180F, 48F, 34F, 0xE8F0FF, 0.22F + 0.04F * Mth.sin(time * 0.033F + 1.3F));
             BufferUploader.drawWithShader(h.buildOrThrow());
             RenderSystem.setShaderTexture(0, CRESCENT);
             BufferBuilder mo = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-            body(mo, ps, 180F, 48F, 26F, 0xF4F6FF, 1.0F);
+            body(mo, ps, 180F, 48F, 27F, 0xF4F6FF, 1.0F);
+            // Brilho aditivo por cima da própria lua (fica mais "luminosa" que um adesivo no céu).
+            body(mo, ps, 180F, 48F, 27.6F, 0xCFE0FF, 0.25F + 0.05F * breath);
             BufferUploader.drawWithShader(mo.buildOrThrow());
         } else {
             RenderSystem.setShaderTexture(0, HALO);

@@ -50,7 +50,19 @@ public final class CutsceneDirector {
     /** Por quantos ticks esperamos o foco chegar do servidor (o pacote pode chegar antes da entidade). */
     private static final int FOCUS_WAIT = 20;
 
+    /** Quanto uma cena de marco da campanha espera por uma cena de chefe antes de desistir (ticks). */
+    private static final int STORY_WAIT = 600;
+    /** Respiro entre o fim da cena de chefe e a cena de marco que esperava (ticks). */
+    private static final int STORY_BREATH = 30;
+
     private static Scene scene;
+    /**
+     * Cena de marco da campanha (tipo "story") que chegou no meio de uma cena de chefe ou travada — a câmera do abate
+     * (2 s), uma troca de fase, um ultimate: ela NÃO disputa a câmera; espera a outra acabar e toca depois.
+     */
+    private static CorePayloads.Cutscene pendingStory;
+    private static int pendingAge;
+    private static int idleTicks;
     /** Perspectiva que trocamos para 3ª pessoa (null = não mexemos); é a que volta no fim. */
     private static CameraType forcedFrom;
     private static final float[] SHAKE = new float[3];
@@ -175,6 +187,11 @@ public final class CutsceneDirector {
         if (CinematicSettings.ownCutscenesOnly() && foreign) return;
         // Uma cena importante (minha / travada / de chefe) não é interrompida por uma cena comum de outro
         Scene cur = scene;
+        if (isStory(p.kind()) && cur != null && !cur.skipping && (cur.shot.boss() || cur.locked)) {
+            pendingStory = p;
+            pendingAge = 0;
+            return;
+        }
         if (cur != null && !cur.skipping) {
             boolean curImportant = cur.locked || cur.ownFocus || cur.shot.boss();
             boolean newImportant = p.lockControls() || ownFocus || shot.boss();
@@ -191,6 +208,18 @@ public final class CutsceneDirector {
         CutsceneShot.playStartSounds(p.kind(), mc.getSoundManager());
         CameraShake.add(shot.shake(), shot.shakeTicks());
         mc.levelRenderer.needsUpdate();
+    }
+
+    /** Cena de marco da campanha? (nunca trava, nunca treme e cede a vez às cenas de chefe) */
+    static boolean isStory(String kind) {
+        return kind.startsWith("story");
+    }
+
+    /** Esquece a cena de marco em espera (saiu do mundo). */
+    static void clearPending() {
+        pendingStory = null;
+        pendingAge = 0;
+        idleTicks = 0;
     }
 
     /** Pula a cena: a câmera e as faixas voltam suavemente (≤ 0,5 s) e o controle volta na hora. */
@@ -235,8 +264,21 @@ public final class CutsceneDirector {
         Scene s = scene;
         if (s == null) {
             while (CinematicKeys.SKIP.consumeClick()) { /* sem cena: descarta cliques antigos */ }
+            // A cena de marco que esperava a de chefe: toca depois de um respiro (ou desiste se demorou demais).
+            if (pendingStory != null && !mc.isPaused()) {
+                idleTicks++;
+                if (++pendingAge > STORY_WAIT || mc.player == null || !mc.player.isAlive()) {
+                    clearPending();
+                } else if (idleTicks >= STORY_BREATH) {
+                    CorePayloads.Cutscene p = pendingStory;
+                    clearPending();
+                    play(p);
+                }
+            }
             return;
         }
+        idleTicks = 0;
+        if (pendingStory != null && !mc.isPaused() && ++pendingAge > STORY_WAIT) clearPending();
         // Morreu, renasceu, trocou de mundo ou desconectou: restaura imediatamente
         if (mc.player != s.player || mc.level != s.level || s.player.isRemoved() || s.player.isDeadOrDying()) {
             stop();

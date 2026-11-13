@@ -109,6 +109,36 @@ public final class SocialPayloads {
         }
     }
 
+    /** Onde está um membro do grupo (bloco), para o marcador dos amigos. */
+    public record MemberPos(UUID id, int x, int y, int z) {}
+
+    /**
+     * S→C (release 1.0, grupo melhorado): posição dos OUTROS membros online que estão na mesma dimensão do jogador —
+     * inclusive os que estão longe demais para o cliente enxergar. Alimenta o marcador no HUD e o minimapa.
+     */
+    public record PartyPos(List<MemberPos> list) implements CustomPacketPayload {
+        public static final Type<PartyPos> TYPE = new Type<>(IsekaiMahou.id("social_party_pos"));
+        public static final StreamCodec<FriendlyByteBuf, PartyPos> STREAM_CODEC = StreamCodec.of((b, p) -> {
+            b.writeVarInt(p.list.size());
+            for (MemberPos m : p.list) {
+                b.writeUUID(m.id());
+                b.writeVarInt(m.x());
+                b.writeVarInt(m.y());
+                b.writeVarInt(m.z());
+            }
+        }, b -> {
+            int n = Math.min(b.readVarInt(), 64);
+            List<MemberPos> list = new ArrayList<>(n);
+            for (int i = 0; i < n; i++) list.add(new MemberPos(b.readUUID(), b.readVarInt(), b.readVarInt(), b.readVarInt()));
+            return new PartyPos(list);
+        });
+        @Override public Type<? extends CustomPacketPayload> type() { return TYPE; }
+
+        public static PartyPos empty() {
+            return new PartyPos(List.of());
+        }
+    }
+
     /** Pedido pendente para o jogador local. */
     public record Req(UUID from, String name, int kind, int ticksLeft) {}
 
@@ -252,6 +282,7 @@ public final class SocialPayloads {
             if (c.player() instanceof ServerPlayer sp) SocialActions.onPartyOp(sp, p.op(), p.target());
         });
         r.playToClient(PartySync.TYPE, PartySync.STREAM_CODEC, (p, c) -> ClientSocialView.setParty(p));
+        r.playToClient(PartyPos.TYPE, PartyPos.STREAM_CODEC, (p, c) -> ClientSocialView.setPositions(p));
         r.playToClient(State.TYPE, State.STREAM_CODEC, (p, c) -> {
             ClientSocialView.setState(p);
             onState.accept(p);

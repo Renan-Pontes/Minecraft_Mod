@@ -18,6 +18,7 @@ import com.renanpontes.isekaimahou.core.boss.BossRewards;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
 import com.renanpontes.isekaimahou.core.item.GlyphScrollItem;
 import com.renanpontes.isekaimahou.feature.bosses_a.BossSpells;
+import com.renanpontes.isekaimahou.feature.bosses_a.polish.BossShow;
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphKind;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
@@ -95,7 +96,8 @@ public abstract class ElementalGuardian extends Monster implements GeoEntity {
     /** Tick da apresentação em que a animação "intro" bate no chão (tremor + explosão de elemento). */
     public static final int INTRO_IMPACT = 52;
     public static final int TRANSITION_TICKS = 50;
-    public static final int DEATH_TICKS = 60;
+    /** v1.0: 74 (era 60) — 3 s de animação de morte + o corpo se desfazendo. */
+    public static final int DEATH_TICKS = 74;
     /** Raio das cutscenes e da recompensa de grupo. */
     public static final double REWARD_RADIUS = 48.0;
     /** XP mágico dado a cada participante (via {@link BossRewards}). */
@@ -127,6 +129,8 @@ public abstract class ElementalGuardian extends Monster implements GeoEntity {
     private int stageTicks;
     private boolean introDone;
     private boolean rewarded;
+    /** v1.0: trava das falas reativas (provocação / último fôlego). */
+    private final BossShow.Voice voice = new BossShow.Voice();
     private int idleTicks;
     private int unreachableTicks;
     private int leapLandTick = -1;
@@ -460,6 +464,10 @@ public abstract class ElementalGuardian extends Monster implements GeoEntity {
         }
 
         updatePhase(level);
+        // v1.0: fala de último fôlego (uma vez por luta, fora das transições)
+        if (tickCount % 10 == 0 && stageTicks == 0 && introDone && voice.lastStand(this, 0.15F)) {
+            Announce.send(this, line("last_stand"), element().color, Announce.STYLE_BOSS);
+        }
         updateBossBar();
         if (tickCount % 10 == 0) updateBarViewers(level);
 
@@ -502,6 +510,8 @@ public abstract class ElementalGuardian extends Monster implements GeoEntity {
             else pickMove(target);
         }
         if (target != null && introDone) antiCheese(level, target);
+        // Arena protegida viva enquanto a luta durar (mesmo contra invocações ou em pausas sem alvo jogador)
+        if (introDone && target != null && tickCount % 40 == 0) BossKit.keepArena(this, REWARD_RADIUS);
         passiveTick(level, target);
     }
 
@@ -570,7 +580,7 @@ public abstract class ElementalGuardian extends Monster implements GeoEntity {
         moveCooldowns[index] = m.cooldown();
         getNavigation().stop();
         BossSpells.face(this, target.position());
-        triggerAnim("action", m.id);
+        triggerAnim("action", m.animId());
         if (m.announces()) {
             Announce.send(this, line("move." + m.id), element().color, Announce.STYLE_BOSS);
         }
@@ -585,7 +595,7 @@ public abstract class ElementalGuardian extends Monster implements GeoEntity {
 
     /** Interrompe o golpe atual (troca de fase, escudo quebrado...): os avisos pendentes somem sem acertar. */
     protected void cancelMove() {
-        if (current != null) stopTriggeredAnim("action", current.id);
+        if (current != null) stopTriggeredAnim("action", current.animId());
         current = null;
         moveTarget = null;
         if (!level().isClientSide) Telegraph.cancelAll(this);
@@ -700,6 +710,8 @@ public abstract class ElementalGuardian extends Monster implements GeoEntity {
         Cutscenes.playNear(this, REWARD_RADIUS, "boss_intro", getDisplayName(), line("epithet"), rgb, INTRO_TICKS, null);
         Announce.send(this, line("intro"), rgb, Announce.STYLE_BOSS);
         BossKit.roar(this, roarSound(), roarPitch());
+        // A arena fica inquebrável desde a apresentação (antes do primeiro golpe)
+        BossKit.sealArena(this);
         onIntro(level);
     }
 
@@ -869,6 +881,21 @@ public abstract class ElementalGuardian extends Monster implements GeoEntity {
         return false;
     }
 
+    /** v1.0: último golpe disparado no controlador "action" — interrompido na morte para não cobrir a animação "death". */
+    @Nullable private String lastActionAnim;
+
+    @Override
+    public void triggerAnim(String controllerName, String animName) {
+        if ("action".equals(controllerName)) lastActionAnim = animName;
+        GeoEntity.super.triggerAnim(controllerName, animName);
+    }
+
+    /** v1.0: um jogador caiu pelas mãos do Guardião — provocação curta (com trava: nunca em rajada). */
+    public void onPlayerSlain() {
+        if (level().isClientSide || isDeadOrDying() || !voice.taunt(this)) return;
+        Announce.send(this, line("taunt"), element().color, Announce.STYLE_BOSS);
+    }
+
     // =====================================================================================
     //  Morte e recompensas
     // =====================================================================================
@@ -878,10 +905,13 @@ public abstract class ElementalGuardian extends Monster implements GeoEntity {
         if (!(level() instanceof ServerLevel level) || !dead || rewarded) return;
         rewarded = true;
         cancelMove();
+        if (lastActionAnim != null) stopTriggeredAnim("action", lastActionAnim);
         bossEvent.setProgress(0F);
         Announce.send(this, line("death"), element().color, Announce.STYLE_BOSS);
         level.playSound(null, getX(), getY(), getZ(), roarSound(), SoundSource.HOSTILE, 4.0F, roarPitch() * 0.6F);
         BossKit.shake(level, position(), 40, 1.4F, 40);
+        // v1.0: golpe final marcado + câmera da derrota (curta, não trava ninguém)
+        BossShow.deathStart(level, this, element().color, DEATH_TICKS, true);
         // Recompensa de grupo do núcleo: XP mágico + contador boss.<id> para quem lutou (paga uma vez por chefe)
         Component msg = Component.translatable("boss.isekai_mahou.guardian_defeated", getDisplayName())
                 .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
@@ -893,8 +923,10 @@ public abstract class ElementalGuardian extends Monster implements GeoEntity {
         deathTime++;
         if (level() instanceof ServerLevel level) {
             deathFx(level, deathTime);
+            BossShow.deathTick(level, this, deathTime, DEATH_TICKS, element().color);
             if (deathTime >= DEATH_TICKS && !isRemoved()) {
                 Vec3 c = position().add(0, getBbHeight() * 0.5, 0);
+                BossShow.deathFinale(level, this, element().color);
                 level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, c.x, c.y, c.z, 2, 0.5, 0.5, 0.5, 0);
                 ElementFx.burst(level, c, element(), 120, getBbWidth());
                 level.playSound(null, c.x, c.y, c.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 3.0F, 0.6F);
@@ -1014,7 +1046,7 @@ public abstract class ElementalGuardian extends Monster implements GeoEntity {
         }));
         AnimationController<ElementalGuardian> action = new AnimationController<>(this, "action", 3, state -> PlayState.STOP);
         String p = "animation." + bossId + ".";
-        for (GuardianMove m : moves) action.triggerableAnim(m.id, RawAnimation.begin().thenPlay(p + m.id));
+        for (GuardianMove m : moves) action.triggerableAnim(m.animId(), RawAnimation.begin().thenPlay(p + m.animId()));
         // Rugido curto ao reagir a quem tenta trapacear (teleporte/rajada)
         action.triggerableAnim("roar", RawAnimation.begin().thenPlay(p + "roar"));
         controllers.add(action);

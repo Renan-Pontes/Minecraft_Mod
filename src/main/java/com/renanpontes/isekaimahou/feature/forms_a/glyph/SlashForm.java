@@ -153,8 +153,8 @@ public class SlashForm extends FormGlyph {
     /** Desenha 1/3 do arco: varredura (SWEEP_ATTACK) + fio de pó colorido em duas camadas + faíscas do elemento. */
     private static void drawArc(SpellContext ctx, Vec3 origin, FormAim.Frame frame, float reach, boolean leftToRight, int seg) {
         ServerLevel level = ctx.level();
-        DustParticleOptions edge = FormsFx.dust(ctx.color(), 1.3F);
-        DustParticleOptions core = FormsFx.dust(FormsFx.lighten(ctx.color(), 0.6F), 0.8F);
+        ParticleOptions edge = FormsFx.dust(ctx.color(), 1.3F);
+        ParticleOptions core = FormsFx.dust(FormsFx.lighten(ctx.color(), 0.6F), 0.8F);
         ParticleOptions sig = FormsFx.jet(ctx.element());
         double segSize = 2 * HALF / 3;
         double a0 = -HALF + segSize * seg;

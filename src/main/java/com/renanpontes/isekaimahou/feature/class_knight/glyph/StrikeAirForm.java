@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightFx;
+import com.renanpontes.isekaimahou.feature.class_knight.KnightFxNet;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightWards;
 import com.renanpontes.isekaimahou.glyph.FormGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
@@ -80,7 +81,6 @@ public class StrikeAirForm extends FormGlyph {
             Vec3 start = eye.add(side.scale(off)).add(look.scale(0.8));
             tunnel(ctx, sl, start, look, len, rad, i == tunnels - 1);
         }
-        sl.sendParticles(ParticleTypes.GUST_EMITTER_LARGE, eye.x + look.x * 1.5, eye.y + look.y * 1.5, eye.z + look.z * 1.5, 1, 0, 0, 0, 0);
         KnightFx.sound(sl, eye, SoundEvents.WIND_CHARGE_BURST.value(), 1.4F, 0.7F);
         KnightFx.sound(sl, eye, SoundEvents.BREEZE_SHOOT, 1.0F, 0.6F);
         // o vento volta a envolver a lâmina
@@ -91,6 +91,8 @@ public class StrikeAirForm extends FormGlyph {
     /** Um túnel: 7 trechos em 7 ticks; cada criatura recebe os efeitos uma vez e é arremessada. */
     private static void tunnel(SpellContext ctx, ServerLevel sl, Vec3 start, Vec3 dir, float len, float rad, boolean last) {
         Set<UUID> hit = new HashSet<>();
+        // o túnel de vento inteiro (espiral, anéis, linhas de velocidade) é desenhado no cliente
+        KnightFxNet.at(sl, KnightFxNet.STRIKE_AIR, start, dir.scale(len), rad, WIND, -1);
         int steps = 7;
         for (int k = 1; k <= steps; k++) {
             final int step = k;
@@ -98,18 +100,6 @@ public class StrikeAirForm extends FormGlyph {
                 double d0 = len * (step - 1) / steps, d1 = len * step / steps;
                 Vec3 a = start.add(dir.scale(d0));
                 Vec3 b = start.add(dir.scale(d1));
-                // espiral de vento em volta do eixo
-                Vec3 side = KnightFx.side(dir);
-                Vec3 up = side.cross(dir).normalize();
-                for (int j = 0; j < 14; j++) {
-                    double t = d0 + (d1 - d0) * j / 14.0;
-                    double ang = t * 1.4 + step;
-                    Vec3 p = start.add(dir.scale(t)).add(side.scale(Math.cos(ang) * rad)).add(up.scale(Math.sin(ang) * rad));
-                    sl.sendParticles(KnightFx.dust(j % 2 == 0 ? WIND : 0xFFFFFF, 1.1F), p.x, p.y, p.z, 1, 0, 0, 0, 0);
-                    if (j % 5 == 0) sl.sendParticles(ParticleTypes.CLOUD, p.x, p.y, p.z, 1, 0.05, 0.05, 0.05, 0.02);
-                }
-                Vec3 mid = a.add(b).scale(0.5);
-                sl.sendParticles(ParticleTypes.GUST, mid.x, mid.y, mid.z, 1, 0, 0, 0, 0);
                 AABB box = new AABB(a, b).inflate(rad);
                 for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, box,
                         e -> e.isAlive() && e != ctx.caster() && !e.isSpectator())) {

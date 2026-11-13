@@ -1,0 +1,866 @@
+{
+  "layout": 2,
+  "branches": [
+    {
+      "id": "archery",
+      "color": "6BCB5A"
+    },
+    {
+      "id": "companions",
+      "color": "C89A5A"
+    },
+    {
+      "id": "trail",
+      "color": "5AB8A8"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "firm_draw",
+      "branch": 0,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:bow",
+      "effects": [
+        {
+          "stat": "ranged_damage",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "fletching",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:spyglass",
+      "effects": [
+        {
+          "stat": "crit_chance",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "read_the_wind",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "isekai_mahou:essence_wind",
+      "effects": [
+        {
+          "stat": "spell_damage.wind",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "distant_shot",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:spectral_arrow",
+      "effects": [
+        {
+          "stat": "far_damage",
+          "amount": 0.06
+        }
+      ]
+    },
+    {
+      "id": "pin_down",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:cobweb",
+      "effects": [
+        {
+          "stat": "on_hit.slowness",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "heartseeker",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:diamond_sword",
+      "effects": [
+        {
+          "stat": "crit_damage",
+          "amount": 0.04
+        },
+        {
+          "stat": "ranged_damage",
+          "amount": 0.008
+        }
+      ]
+    },
+    {
+      "id": "from_the_bushes",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:target",
+      "effects": [
+        {
+          "stat": "aim_power",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "running_shot"
+      ]
+    },
+    {
+      "id": "running_shot",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:rabbit_hide",
+      "effects": [
+        {
+          "stat": "run_power",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "from_the_bushes"
+      ]
+    },
+    {
+      "id": "serrated_tip",
+      "branch": 0,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:red_dye",
+      "effects": [
+        {
+          "stat": "on_hit.bleed",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "twin_arrow",
+      "branch": 0,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:echo_shard",
+      "effects": [
+        {
+          "stat": "echo",
+          "amount": 0.05
+        },
+        {
+          "stat": "crit_mana",
+          "amount": 3.0
+        }
+      ]
+    },
+    {
+      "id": "killing_arrow",
+      "branch": 0,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:netherite_axe",
+      "effects": [
+        {
+          "stat": "cull",
+          "amount": 0.1
+        },
+        {
+          "stat": "first_strike",
+          "amount": 0.15
+        }
+      ]
+    },
+    {
+      "id": "mastery_archery",
+      "branch": 0,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "ranged_damage",
+          "amount": 0.005
+        }
+      ]
+    },
+    {
+      "id": "bond",
+      "branch": 1,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:bone",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "pack_tactics",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:bone",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "shared_meal",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:glistering_melon_slice",
+      "effects": [
+        {
+          "stat": "heal_on_kill",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "id": "sic_em",
+      "branch": 1,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:name_tag",
+      "effects": [
+        {
+          "stat": "summon_mark",
+          "amount": 0.08
+        }
+      ]
+    },
+    {
+      "id": "whistle",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:glowstone_dust",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:mana_regen",
+          "amount": 0.02,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "alpha",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:bone",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.02
+        },
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 0.6,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "sharp_fangs",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:bone",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "guardians"
+      ]
+    },
+    {
+      "id": "guardians",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:lead",
+      "effects": [
+        {
+          "stat": "summon_bond",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "sharp_fangs"
+      ]
+    },
+    {
+      "id": "good_feed",
+      "branch": 1,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:honey_bottle",
+      "effects": [
+        {
+          "stat": "healing_received",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "hunting_bond",
+      "branch": 1,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:sculk_catalyst",
+      "effects": [
+        {
+          "stat": "summon_lifesteal",
+          "amount": 0.04
+        }
+      ]
+    },
+    {
+      "id": "legendary_pack",
+      "branch": 1,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:blaze_rod",
+      "effects": [
+        {
+          "stat": "kill_fury",
+          "amount": 0.08
+        },
+        {
+          "stat": "summon_damage",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "mastery_companions",
+      "branch": 1,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.006
+        }
+      ]
+    },
+    {
+      "id": "trailblazer",
+      "branch": 2,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:sugar",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.movement_speed",
+          "amount": 0.01,
+          "op": "add_multiplied_base"
+        }
+      ]
+    },
+    {
+      "id": "soft_fall",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:feather",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.safe_fall_distance",
+          "amount": 1.0,
+          "op": "add_value"
+        },
+        {
+          "stat": "fall_resist",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "forager",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:sweet_berries",
+      "effects": [
+        {
+          "stat": "regen_health",
+          "amount": 0.2
+        }
+      ]
+    },
+    {
+      "id": "fresh_tracks",
+      "branch": 2,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:crossbow",
+      "effects": [
+        {
+          "stat": "first_strike",
+          "amount": 0.06
+        },
+        {
+          "stat": "kill_speed",
+          "amount": 1.0
+        }
+      ]
+    },
+    {
+      "id": "camouflage",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:phantom_membrane",
+      "effects": [
+        {
+          "stat": "dodge",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "hunters_mark",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:iron_axe",
+      "effects": [
+        {
+          "stat": "execute",
+          "amount": 0.02
+        },
+        {
+          "stat": "first_strike",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "monster_hunter",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:dragon_head",
+      "effects": [
+        {
+          "stat": "boss_damage",
+          "amount": 0.1
+        }
+      ],
+      "exclusive": [
+        "survivor"
+      ]
+    },
+    {
+      "id": "survivor",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:turtle_helmet",
+      "effects": [
+        {
+          "stat": "low_health_resist",
+          "amount": 0.15
+        }
+      ],
+      "exclusive": [
+        "monster_hunter"
+      ]
+    },
+    {
+      "id": "campfire",
+      "branch": 2,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:golden_apple",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 1.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "snare",
+      "branch": 2,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:poisonous_potato",
+      "effects": [
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.06
+        }
+      ]
+    },
+    {
+      "id": "apex_predator",
+      "branch": 2,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:compass",
+      "effects": [
+        {
+          "stat": "kill_cdr",
+          "amount": 2.0
+        },
+        {
+          "stat": "charge_on_kill",
+          "amount": 2.0
+        }
+      ]
+    },
+    {
+      "id": "mastery_trail",
+      "branch": 2,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 0.5,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "taut_string",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "ranger_sharpshooter",
+      "icon": "minecraft:bow",
+      "effects": [
+        {
+          "stat": "ranged_damage",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "fair_wind",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "ranger_sharpshooter",
+      "icon": "minecraft:spectral_arrow",
+      "effects": [
+        {
+          "stat": "far_damage",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "calm_aim",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "ranger_sharpshooter",
+      "icon": "minecraft:target",
+      "effects": [
+        {
+          "stat": "aim_power",
+          "amount": 0.06
+        },
+        {
+          "stat": "crit_fury",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "phantom_arrow",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "ranger_sharpshooter",
+      "icon": "minecraft:echo_shard",
+      "effects": [
+        {
+          "stat": "echo",
+          "amount": 0.15
+        },
+        {
+          "stat": "boss_damage",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "old_wolf",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "ranger_beastmaster",
+      "icon": "minecraft:bone",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "hawk_eye",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "ranger_beastmaster",
+      "icon": "minecraft:spyglass",
+      "effects": [
+        {
+          "stat": "crit_chance",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "paired_hunt",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "ranger_beastmaster",
+      "icon": "minecraft:sculk_catalyst",
+      "effects": [
+        {
+          "stat": "summon_lifesteal",
+          "amount": 0.05
+        },
+        {
+          "stat": "kill_speed",
+          "amount": 1.5
+        }
+      ]
+    },
+    {
+      "id": "one_heart",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "ranger_beastmaster",
+      "icon": "minecraft:blaze_rod",
+      "effects": [
+        {
+          "stat": "kill_fury",
+          "amount": 0.06
+        },
+        {
+          "stat": "cheat_death",
+          "amount": 0.25
+        }
+      ]
+    }
+  ],
+  "subclasses": [
+    {
+      "id": "ranger_sharpshooter",
+      "color": "6BCB5A",
+      "icon": "minecraft:bow",
+      "effects": [
+        {
+          "stat": "ranged_damage",
+          "amount": 0.15
+        },
+        {
+          "stat": "first_strike",
+          "amount": 0.2
+        },
+        {
+          "stat": "crit_damage",
+          "amount": 0.2
+        },
+        {
+          "stat": "far_damage",
+          "amount": 0.15
+        },
+        {
+          "stat": "combo",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "ranger_beastmaster",
+      "color": "C89A5A",
+      "icon": "minecraft:lead",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.25
+        },
+        {
+          "stat": "heal_on_kill",
+          "amount": 2.0
+        },
+        {
+          "stat": "regen_health",
+          "amount": 1.0
+        },
+        {
+          "stat": "summon_mark",
+          "amount": 0.2
+        },
+        {
+          "stat": "summon_bond",
+          "amount": 0.12
+        }
+      ]
+    }
+  ]
+}

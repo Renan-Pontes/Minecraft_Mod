@@ -30,6 +30,9 @@ import net.minecraft.world.phys.Vec3;
  * acima do III; usar de novo sela) e <b>Bankai</b> (a forma G {@code zanpakuto_bankai}, controlada por {@link BankaiState}).
  * Enquanto liberada, os golpes com a espada causam mais dano e aplicam a assinatura do arquétipo ({@link Signatures}).
  * O estado vive só em memória (some ao sair/morrer) e é espelhado no {@code custom_data} das zanpakutō na mão (modelo).
+ * <p>
+ * Release 1.0: cada liberação tem um espaço de receita de Transformação ({@link ReleaseForge}) — a receita escolhida
+ * pelo jogador entra por cima quando a liberação começa e sai quando a espada é selada. Sem receita, nada muda.
  */
 public final class Release {
     public enum Mode { SEALED, SHIKAI, BANKAI }
@@ -93,7 +96,9 @@ public final class Release {
             return;
         }
         s.mode = Mode.SHIKAI;
-        s.until = now + shikaiTicks(d);
+        // onda 5: a receita moldada pode esticar/encurtar a Shikai (Estender/Encurtar no corpo)
+        int shikaiTicks = Math.max(100, Math.round(shikaiTicks(d) * ReleaseForge.plannedDuration(sp, ReleaseForge.SHIKAI)));
+        s.until = now + shikaiTicks;
         MagicApi.addCounter(sp, Shinigami.RELEASES, 1);
         // grito do comando para quem está perto + efeitos
         Announce.send(sp, Shinigami.msg("shikai_shout", sp.getDisplayName(), a.command()), a.rgb, Announce.STYLE_SPELL);
@@ -107,15 +112,20 @@ public final class Release {
         ShinigamiFxNet.burst(sp, ShinigamiFxNet.RELEASE, at, Vec3.ZERO, 6.0F, a.rgb, a.command());
         ItemStack held = sp.getItemInHand(hand);
         if (held.getItem() instanceof ZanpakutoItem) ZanpakutoItem.setRelease(held, 1, a.counterValue(), s.until);
+        // a receita moldada pelo jogador (se houver) entra por cima da Shikai
+        ReleaseForge.begin(sp, ReleaseForge.SHIKAI, shikaiTicks);
         ShinigamiRanks.hintIfReady(sp);
     }
 
     /** Começa a Bankai (chamado pela forma G). */
     public static void beginBankai(ServerPlayer sp, int ticks) {
         State s = STATES.computeIfAbsent(sp.getUUID(), k -> new State());
+        // a Shikai dá lugar à Bankai: a receita da Shikai sai (as duas não se somam)
+        if (s.mode == Mode.SHIKAI) ReleaseForge.end(sp, ReleaseForge.SHIKAI);
         s.mode = Mode.BANKAI;
         s.until = sp.serverLevel().getGameTime() + ticks;
         syncHands(sp);
+        ReleaseForge.begin(sp, ReleaseForge.BANKAI, ticks);
     }
 
     /** Sela a espada (fim do tempo, usar de novo, fim da Bankai). */
@@ -124,7 +134,12 @@ public final class Release {
         if (s == null || s.mode == Mode.SEALED) return;
         Mode was = s.mode;
         s.mode = Mode.SEALED;
-        s.cooldownUntil = sp.serverLevel().getGameTime() + (was == Mode.BANKAI ? SHIKAI_COOLDOWN * 2 : SHIKAI_COOLDOWN);
+        // onda 5: a receita moldada mexe na recarga da liberação (Acelerar/Retardar no corpo) — lida antes de encerrar
+        String slot = was == Mode.BANKAI ? ReleaseForge.BANKAI : ReleaseForge.SHIKAI;
+        float cdMult = ReleaseForge.cooldownMult(sp, slot);
+        ReleaseForge.end(sp, slot);
+        s.cooldownUntil = sp.serverLevel().getGameTime()
+                + Math.round((was == Mode.BANKAI ? SHIKAI_COOLDOWN * 2 : SHIKAI_COOLDOWN) * cdMult);
         clearInventory(sp.getInventory());
         ServerLevel sl = sp.serverLevel();
         ShinigamiFx.sound(sl, sp.position(), SoundEvents.ARMOR_EQUIP_IRON.value(), 0.8F, 0.6F);
@@ -180,6 +195,11 @@ public final class Release {
             }
             long now = sp.serverLevel().getGameTime();
             if (now >= s.until && s.mode == Mode.SHIKAI) {
+                seal(sp, false);
+                continue;
+            }
+            // Bankai que perdeu o estado (troca de dimensão no meio): sela em vez de ficar liberada para sempre
+            if (s.mode == Mode.BANKAI && now >= s.until + 20 && !BankaiState.active(sp)) {
                 seal(sp, false);
                 continue;
             }

@@ -7,12 +7,14 @@ import com.renanpontes.isekaimahou.module.ClientModule;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
-/** Parte de cliente do módulo "hueco_mundo": renderers GeckoLib, portais, projéteis e os céus dos dois reinos. */
+/** Parte de cliente do módulo "hueco_mundo": renderers GeckoLib, portais, projéteis, os céus e o clima dos dois reinos. */
 public class HuecoMundoClient implements ClientModule {
     @Override
     public void initClient(IEventBus modBus) {
         modBus.addListener(this::onRenderers);
+        NeoForge.EVENT_BUS.addListener(HmAtmosphere::onTick);
         modBus.addListener((RegisterDimensionSpecialEffectsEvent e) -> {
             e.register(IsekaiMahou.id("hollow_world"), new RealmSkyEffects(RealmSkyEffects.Style.HOLLOW));
             e.register(IsekaiMahou.id("fey_realm"), new RealmSkyEffects(RealmSkyEffects.Style.FEY));

@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import org.joml.Vector3f;
 
 import com.renanpontes.isekaimahou.IsekaiMahou;
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.MahouConfig;
@@ -151,7 +152,7 @@ public final class CastAnimations {
     private static void onClientTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.isPaused()) return;
-        int every = MahouConfig.REDUCED_PARTICLES.get() ? 8 : 3;
+        int every = !FxQuality.atLeast(MahouConfig.Graphics.HIGH) ? 8 : 3;
         if (mc.level.getGameTime() % every != 0) return;
         for (AbstractClientPlayer p : mc.level.players()) {
             if (p.isInvisible()) continue;
@@ -235,7 +236,7 @@ public final class CastAnimations {
     }
 
     private static boolean reduced() {
-        return MahouConfig.REDUCED_PARTICLES.get();
+        return !FxQuality.atLeast(MahouConfig.Graphics.HIGH);
     }
 
     /** Cor do elemento ativo do próprio jogador (o CastState do núcleo não traz a cor). */

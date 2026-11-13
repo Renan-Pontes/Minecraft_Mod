@@ -649,7 +649,8 @@ public final class DestructionQueue {
 
     /** Caixas de lugares seguros que encostam na área do pedido (checadas por bloco sem consultar o SavedData). */
     private static List<BoundingBox> safeBoxesAround(ServerLevel l, Segment[] segments) {
-        if (!MahouConfig.CITY_PROTECTION.get()) return List.of();
+        // v1.3.2: zonas seguras (cidades) não bloqueiam mais a destruição; só arenas em luta (proteção registrada)
+        if (true) return List.of();
         List<Places.Place> places = PlaceData.all(l);
         if (places.isEmpty()) return List.of();
         int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;

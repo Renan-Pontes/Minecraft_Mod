@@ -5,11 +5,13 @@ import org.lwjgl.glfw.GLFW;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.client.CoreKeys;
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.client.menu.MenuTabs;
 import com.renanpontes.isekaimahou.feature.character.CharacterData;
 import com.renanpontes.isekaimahou.feature.character.CharacterNetwork;
 import com.renanpontes.isekaimahou.feature.character.Race;
 import com.renanpontes.isekaimahou.feature.character.RacePassives;
+import com.renanpontes.isekaimahou.feature.character.SlimePredator;
 import com.renanpontes.isekaimahou.module.ClientModule;
 
 import net.minecraft.client.KeyMapping;
@@ -39,7 +41,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 /**
  * Parte de cliente do módulo "character": tela "Escolha a sua Raça", aba "Raça" do menu B, letreiro de nível de raça,
  * tecla racial (padrão V: Transformação / golpe da forma; Shift + V: visão no escuro), a camada de aparência racial e o
- * movimento racial do jogador local (o Aracnídeo escala paredes; o Slime quica ao cair).
+ * movimento racial do jogador local (o Aracnídeo escala paredes; o Slime quica ao cair). v1.3.1: o voo planado das formas
+ * aladas fica no {@link GlideClient}.
  */
 public class CharacterClient implements ClientModule {
     public static final KeyMapping RACIAL = new KeyMapping("key.isekai_mahou.racial_ability", KeyConflictContext.IN_GAME,
@@ -53,7 +56,13 @@ public class CharacterClient implements ClientModule {
         CharacterNetwork.onData = ClientCharacter::onData;
         CharacterNetwork.onLook = ClientCharacter::onLook;
         CharacterNetwork.onFx = ClientCharacter::onFx;
-        CharacterNetwork.onOpen = o -> Minecraft.getInstance().setScreen(new CreationScreen(o.mode(), o.altar()));
+        CharacterNetwork.onOpen = o -> {
+            // release 1.0: os altares têm a própria tela (Recomeço; Reencarnação = raça OU classe). Personagem antigo sem
+            // raça escolhida vai direto para a tela de raça (a 1ª escolha é grátis)
+            boolean altarHub = o.mode() == CharacterNetwork.MODE_ALTAR && ClientCharacter.data().created();
+            Minecraft.getInstance().setScreen(altarHub || o.mode() == CharacterNetwork.MODE_RENEWAL
+                    ? new AltarScreen(o.mode(), o.altar()) : new CreationScreen(o.mode(), o.altar()));
+        };
         CharacterNetwork.onLevelUp = u -> UnlockOverlay.show(Race.byIndex(u.race()), u.level());
 
         MenuTabs.register("character", 5, Component.translatable("screen.isekai_mahou.character.tab"), CharacterTab::new);
@@ -62,6 +71,9 @@ public class CharacterClient implements ClientModule {
         modBus.addListener((RegisterGuiLayersEvent e) ->
                 e.registerAboveAll(IsekaiMahou.id("character_unlock"), UnlockOverlay::render));
         modBus.addListener(CharacterClient::addLayers);
+        modBus.addListener(RaceMoteParticle::register);
+        FormFx.init(modBus);
+        GlideClient.init();
         NeoForge.EVENT_BUS.addListener(CharacterClient::onTick);
         NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) -> {
             ClientCharacter.clear();
@@ -107,10 +119,13 @@ public class CharacterClient implements ClientModule {
                 && !p.isFallFlying();
         Vec3 v = p.getDeltaMovement();
         // Aracnídeo: escala paredes (frente/pulo = sobe; Shift = gruda; nada = escorrega devagar)
-        if (free && d.is(Race.ARACHNID) && p.horizontalCollision && RacePassives.touchingWall(p)) {
+        // v1.7: o Slime que copiou o Fio Pegajoso da aranha (Predador) também escala, devagar
+        boolean spiderSlime = SlimePredator.has(d, SlimePredator.Mimic.SPIDER);
+        if (free && (d.is(Race.ARACHNID) || spiderSlime) && p.horizontalCollision && RacePassives.touchingWall(p)) {
             int lv = ClientCharacter.raceLevel();
             boolean form = ClientCharacter.form(p.getId()) != null;
-            double climb = form ? 0.35 : lv >= 4 ? 0.25 : lv >= 3 ? 0.2 : lv >= 2 ? 0.15 : 0.1;
+            double climb = spiderSlime ? (form ? 0.2 : 0.12)
+                    : form ? 0.35 : lv >= 4 ? 0.25 : lv >= 3 ? 0.2 : lv >= 2 ? 0.15 : 0.1;
             boolean up = p.input.forwardImpulse > 0.1F || p.input.jumping;
             if (up) p.setDeltaMovement(v.x, Math.max(v.y, climb), v.z);
             else if (p.isShiftKeyDown()) p.setDeltaMovement(v.x, Math.max(v.y, 0), v.z);
@@ -132,14 +147,24 @@ public class CharacterClient implements ClientModule {
         wasOnGround = p.onGround();
     }
 
-    /** Partículas suaves de raça nos jogadores visíveis (fantasma: névoa; anjo: brilho; slime: gotas). */
+    /**
+     * Partículas suaves de raça nos jogadores visíveis (fantasma: névoa; anjo: brilho; slime: gotas). v1.3: crescem com
+     * o nível de raça (brasas do Demônio, fumaça das narinas do Dracônico, brilhos do Elfo e do Humano no III+), passam
+     * pelo preset gráfico e pulam quem está transformado (a aura da forma é do {@link FormFx}).
+     */
     private static void ambient(Minecraft mc) {
         RandomSource rnd = mc.level.random;
+        double range = FxQuality.range();
+        float rate = FxQuality.particles();
+        Vec3 cam = mc.gameRenderer.getMainCamera().getPosition();
         for (Player p : mc.level.players()) {
             if (p.isInvisible() || p.isSpectator()) continue;
             ClientCharacter.Look look = ClientCharacter.look(p.getId());
-            if (look == null || look.race() == null) continue;
+            if (look == null || look.race() == null || ClientCharacter.form(p.getId()) != null) continue;
+            if (p.position().distanceToSqr(cam) > range * range || rnd.nextFloat() > rate) continue;
             double x = p.getX() + (rnd.nextDouble() - 0.5) * 0.6, z = p.getZ() + (rnd.nextDouble() - 0.5) * 0.6;
+            int lv = look.level();
+            if (lv >= 3) levelAmbient(mc, p, look, lv, rnd);
             switch (look.race()) {
                 case PHANTOM -> {
                     if (rnd.nextInt(3) == 0) mc.level.addParticle(ParticleTypes.SOUL, x, p.getY() + 0.15, z, 0, 0.01, 0);
@@ -155,6 +180,35 @@ public class CharacterClient implements ClientModule {
                 }
                 default -> { }
             }
+        }
+    }
+
+    /** Sinais discretos de poder racial a partir do nível III (mais frequentes no IV e no V). */
+    private static void levelAmbient(Minecraft mc, Player p, ClientCharacter.Look look, int lv, RandomSource rnd) {
+        int chance = lv >= 5 ? 6 : lv >= 4 ? 10 : 16;
+        if (rnd.nextInt(chance) != 0) return;
+        double x = p.getX() + (rnd.nextDouble() - 0.5) * 0.7, z = p.getZ() + (rnd.nextDouble() - 0.5) * 0.7;
+        double y = p.getY() + rnd.nextDouble() * p.getBbHeight();
+        switch (look.race()) {
+            case DEMON -> mc.level.addParticle(rnd.nextBoolean() ? ParticleTypes.SMALL_FLAME : ParticleTypes.SMOKE, x, y, z, 0, 0.02, 0);
+            case DRAGONBORN -> {
+                Vec3 eye = p.getEyePosition();
+                Vec3 look2 = p.getLookAngle();
+                mc.level.addParticle(ParticleTypes.SMOKE, eye.x + look2.x * 0.35, eye.y - 0.15, eye.z + look2.z * 0.35, look2.x * 0.03, 0.015, look2.z * 0.03);
+            }
+            case ELF -> mc.level.addParticle(FormFx.glow(0xBFF0D8, 0.6F), x, y, z, 0, 0.01, 0);
+            case HUMAN -> mc.level.addParticle(FormFx.glow(0xFFD86B, 0.5F), x, y, z, 0, 0.015, 0);
+            case HALF_ORC -> mc.level.addParticle(FormFx.dust(0x8A1010, 0.8F), x, y, z, 0, 0, 0);
+            case DWARF -> {
+                if (lv >= 4) mc.level.addParticle(ParticleTypes.SMALL_FLAME, x, p.getY() + 0.1, z, 0, 0.01, 0);
+            }
+            case ARACHNID -> mc.level.addParticle(FormFx.glow(0x9A6AD8, 0.5F), x, y, z, 0, 0.005, 0);
+            case BEASTFOLK -> {
+                if (p.isSprinting()) mc.level.addParticle(ParticleTypes.CLOUD, x, p.getY() + 0.1, z, 0, 0.01, 0);
+            }
+            case PHANTOM -> mc.level.addParticle(ParticleTypes.SNOWFLAKE, x, y, z, 0, -0.01, 0);
+            case ANGEL -> mc.level.addParticle(ParticleTypes.WHITE_ASH, x, p.getY() + p.getBbHeight() + 0.2, z, 0, -0.01, 0);
+            case SLIME -> mc.level.addParticle(FormFx.glow(Race.SLIME.rgb, 0.7F), x, y, z, 0, 0.02, 0);
         }
     }
 }

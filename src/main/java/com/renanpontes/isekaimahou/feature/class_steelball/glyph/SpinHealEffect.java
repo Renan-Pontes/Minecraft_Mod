@@ -7,6 +7,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbFx;
+import com.renanpontes.isekaimahou.feature.class_steelball.SbFxNet;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbProgress;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
@@ -60,8 +61,7 @@ public class SpinHealEffect extends EffectGlyph {
         ctx.heal(le, HEAL, stats);
         strip(le, MobEffectCategory.HARMFUL, stats.amplify > 0 ? 2 : 1);
         le.addEffect(new MobEffectInstance(MobEffects.REGENERATION, stats.duration(60), 0), ctx.caster());
-        SbFx.spiral(ctx.level(), le.position(), SbFx.HEAL, le.getBbWidth() * 0.7 + 0.3, le.getBbHeight() + 0.2, 16,
-                ctx.random().nextFloat() * 6F);
+        SbFxNet.at(ctx.level(), SbFxNet.SPIN_HEAL, le.position(), net.minecraft.world.phys.Vec3.ZERO, 1F, SbFx.HEAL, le.getId());
         SbFx.sound(ctx.level(), le.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.6F, 1.4F);
         if (ctx.casterPlayer() instanceof ServerPlayer sp) MagicApi.addCounter(sp, SbProgress.SPIN_HEALS, 1);
     }

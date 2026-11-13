@@ -38,6 +38,7 @@ public class ClassEnchanterModule implements Module {
     @Override
     public void init(IEventBus modBus) {
         EnchRegistries.register(modBus);
+        modBus.addListener(EnchFxNet::register);
         EnchanterGlyphs.register();
         AntiMagic.register();
         HeavenlyRestriction.register();

@@ -1,6 +1,6 @@
 package com.renanpontes.isekaimahou.feature.origins_a.familiar;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -147,7 +147,7 @@ public class FamiliarCrowEntity extends FamiliarEntity implements FlyingAnimal {
         triggerAnim("action", "peck");
         float dmg = (float) getAttributeValue(Attributes.ATTACK_DAMAGE) * power;
         if (target.hurt(damageSources().mobAttack(this), dmg)) {
-            level.sendParticles(ParticleTypes.CRIT, target.getX(), target.getY() + target.getBbHeight() * 0.7, target.getZ(), 6, 0.2, 0.2, 0.2, 0.1);
+            level.sendParticles(Vfx.crit(), target.getX(), target.getY() + target.getBbHeight() * 0.7, target.getZ(), 6, 0.2, 0.2, 0.2, 0.1);
         }
         level.playSound(null, getX(), getY(), getZ(), SoundEvents.PARROT_AMBIENT, SoundSource.NEUTRAL, 0.9F, 0.55F);
         setDeltaMovement(getDeltaMovement().scale(-0.6).add(0, 0.25, 0));
@@ -192,7 +192,7 @@ public class FamiliarCrowEntity extends FamiliarEntity implements FlyingAnimal {
             spawnAtLevel(give);
         }
         level.playSound(null, o.getX(), o.getY(), o.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.4F, 1.6F);
-        level.sendParticles(ParticleTypes.WITCH, getX(), getY() + 0.2, getZ(), 4, 0.1, 0.1, 0.1, 0.02);
+        level.sendParticles(Vfx.witch(), getX(), getY() + 0.2, getZ(), 4, 0.1, 0.1, 0.1, 0.02);
     }
 
     private void spawnAtLevel(ItemStack stack) {

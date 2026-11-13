@@ -25,26 +25,26 @@ public enum Race {
     HUMAN("human",          0xE8C77A, 0.0,   Darkvision.NONE,        List.of("race_resolve", "race_adaptive"),
             List.of("human_ambition")),
     ELF("elf",              0x7BD88F, 0.0,   Darkvision.DARK,        List.of("race_moon_arrow", "race_forest_step"),
-            List.of("elf_darkvision", "elf_attunement")),
+            List.of("elf_darkvision", "elf_attunement", "elf_conceal")),
     DWARF("dwarf",          0xC98A4B, -0.15, Darkvision.UNDERGROUND, List.of("race_stone_skin", "race_forge_shout"),
             List.of("dwarf_darkvision", "dwarf_stout")),
     HALF_ORC("half_orc",    0x8DBF5A, 0.06,  Darkvision.NONE,        List.of("race_blood_fury", "race_savage_cleave"),
-            List.of("orc_hot_blood", "orc_build")),
+            List.of("orc_starved", "orc_hot_blood", "orc_build")),
     DEMON("demon",          0xD8455B, 0.0,   Darkvision.DARK,        List.of("race_hellfire", "race_shadow_wings"),
-            List.of("demon_rebuke", "demon_darkvision")),
+            List.of("demon_destruction_eyes", "demon_rebuke", "demon_darkvision")),
     DRAGONBORN("dragonborn", 0xE0A030, 0.08, Darkvision.NONE,        List.of("race_dragon_breath", "race_dragon_scales"),
-            List.of("dragon_ancestry", "dragon_build")),
+            List.of("dragon_eat", "dragon_ancestry", "dragon_build")),
     BEASTFOLK("beastfolk",  0xD08A3A, 0.0,   Darkvision.NONE,        List.of("race_predator_leap", "race_wild_instinct"),
             List.of("beast_speed", "beast_fall")),
     // ---- v1.0.1: novas ----
     ARACHNID("arachnid",    0x9A6AD8, 0.0,   Darkvision.DARK,        List.of("race_web_shot", "race_venom_fang"),
-            List.of("arachnid_eyes", "arachnid_climb")),
+            List.of("arachnid_thread", "arachnid_trap", "arachnid_evil_eye", "arachnid_eyes", "arachnid_climb")),
     PHANTOM("phantom",      0x9FD8E8, 0.0,   Darkvision.DARK,        List.of("race_spectral_touch", "race_phase_shift"),
             List.of("phantom_eyes", "phantom_float")),
     ANGEL("angel",          0xFFE08A, 0.0,   Darkvision.NONE,        List.of("race_holy_light", "race_divine_shield"),
             List.of("angel_halo", "angel_wings")),
     SLIME("slime",          0x8FE05A, 0.0,   Darkvision.NONE,        List.of("race_acid_splash", "race_jelly_body"),
-            List.of("slime_bounce", "slime_jelly"));
+            List.of("slime_predator", "slime_sage", "slime_bounce", "slime_jelly"));
 
     public static final Race[] ALL = values();
     private static final String KEY = "race.isekai_mahou.";
@@ -52,6 +52,7 @@ public enum Race {
     private static final String PASSIVE_KEY = "character.isekai_mahou.passive.";
     private static final String FORM_KEY = "character.isekai_mahou.form.";
     private static final String FEAT_KEY = "character.isekai_mahou.feat.";
+    private static final String STAGE_KEY = "character.isekai_mahou.stage.";
 
     /** Como a raça enxerga no escuro. */
     public enum Darkvision { NONE, DARK, UNDERGROUND }
@@ -122,6 +123,27 @@ public enum Race {
 
     public MutableComponent formPowerDesc() {
         return Component.translatable(FORM_KEY + id + ".power_desc");
+    }
+
+    /**
+     * v1.7 (raças de anime): raças que EVOLUEM de nome a cada nível de raça (Aracnídeo = Kumoko: Pequena Taratect Menor →
+     * … → Arachne; Slime = Rimuru: Slime → … → Lorde Demônio; Meio-Orc = Geld: Orc → … → Desastre Orc).
+     */
+    public boolean hasStages() {
+        return this == ARACHNID || this == SLIME || this == HALF_ORC;
+    }
+
+    /** Nome do estágio de evolução no nível de raça {@code lv} (1..5) — só para {@link #hasStages()}. */
+    public MutableComponent stageName(int lv) {
+        return Component.translatable(STAGE_KEY + id + ".lv" + Math.max(1, Math.min(5, lv)));
+    }
+
+    /**
+     * v1.7: Shift + tecla racial faz uma ação própria (em vez da visão no escuro): Aracnídeo = Fio de Aranha, Slime =
+     * relatório do Grande Sábio, Dracônico = Devorar Elemento ({@link RaceKits#onShiftKey}).
+     */
+    public boolean hasShiftAction() {
+        return this == ARACHNID || this == SLIME || this == DRAGONBORN;
     }
 
     /** Feito da raça (exigido no nível V), com o progresso "x/meta". */

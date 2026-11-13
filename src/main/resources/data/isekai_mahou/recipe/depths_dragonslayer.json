@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " B ",
+    " B ",
+    "FNF"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:iron_block"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "F": {
+      "item": "isekai_mahou:depths_worm_king_fang"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:depths_dragonslayer",
+    "count": 1
+  }
+}

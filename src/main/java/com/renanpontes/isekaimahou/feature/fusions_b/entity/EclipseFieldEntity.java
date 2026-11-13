@@ -8,7 +8,7 @@ import com.renanpontes.isekaimahou.feature.fusions_b.FbRegistries;
 import com.renanpontes.isekaimahou.feature.fusions_b.FbUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -53,7 +53,7 @@ public class EclipseFieldEntity extends FbSpellEntity {
         f.entityData.set(RADIUS, radius);
         sl.addFreshEntity(f);
         FbFx.ring(sl, at.add(0, 0.1, 0), FbFx.fade(FbFx.TWILIGHT_GOLD, FbFx.TWILIGHT_SHADOW, 1.5F), radius, 40, 0);
-        sl.sendParticles(ParticleTypes.END_ROD, at.x, at.y + SKY_HEIGHT, at.z, 30, 1.2, 0.1, 1.2, 0.05);
+        sl.sendParticles(Vfx.endRod(), at.x, at.y + SKY_HEIGHT, at.z, 30, 1.2, 0.1, 1.2, 0.05);
         FbFx.sound(sl, at, SoundEvents.BEACON_DEACTIVATE, 1.6F, 0.5F);
         FbFx.sound(sl, at, SoundEvents.ILLUSIONER_CAST_SPELL, 1.0F, 0.6F);
     }
@@ -87,7 +87,7 @@ public class EclipseFieldEntity extends FbSpellEntity {
     @Override
     protected void onExpire(ServerLevel sl) {
         Vec3 sky = position().add(0, SKY_HEIGHT, 0);
-        sl.sendParticles(ParticleTypes.END_ROD, sky.x, sky.y, sky.z, 40, 1.5, 0.2, 1.5, 0.08);
+        sl.sendParticles(Vfx.endRod(), sky.x, sky.y, sky.z, 40, 1.5, 0.2, 1.5, 0.08);
         FbFx.sound(sl, position(), SoundEvents.BEACON_POWER_SELECT, 1.0F, 1.4F);
     }
 
@@ -104,7 +104,7 @@ public class EclipseFieldEntity extends FbSpellEntity {
         }
         if (random.nextInt(3) == 0) {
             double a = random.nextDouble() * Math.PI * 2;
-            level().addParticle(ParticleTypes.END_ROD, getX() + Math.cos(a) * 2.4, getY() + SKY_HEIGHT, getZ() + Math.sin(a) * 2.4,
+            level().addParticle(Vfx.endRod(), getX() + Math.cos(a) * 2.4, getY() + SKY_HEIGHT, getZ() + Math.sin(a) * 2.4,
                     Math.cos(a) * 0.03, -0.01, Math.sin(a) * 0.03);
         }
     }

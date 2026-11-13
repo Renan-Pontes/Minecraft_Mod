@@ -53,6 +53,7 @@ public class ClassRangerModule implements Module {
     @Override
     public void init(IEventBus modBus) {
         RangerRegistries.register(modBus);
+        modBus.addListener(RangerFxNet::register);
         modBus.addListener(ClassRangerModule::attributes);
         modBus.addListener(ClassRangerModule::creativeTabs);
         modBus.addListener(RangerNet::register);
@@ -73,6 +74,7 @@ public class ClassRangerModule implements Module {
         ElementReactions.setMultiplier(IsekaiMahou.id(RangerSteedEntity.ID), Element.FIRE, 1.25F);
 
         NeoForge.EVENT_BUS.addListener(RangerPassives::onJoin);
+        NeoForge.EVENT_BUS.addListener(RangerArrowFx::onJoin);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOW, RangerPassives::onIncomingDamage);
         NeoForge.EVENT_BUS.addListener(RangerPassives::onDeath);
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, RainArrows::onImpact);

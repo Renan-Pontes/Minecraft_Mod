@@ -2,6 +2,7 @@ package com.renanpontes.isekaimahou.feature.ui_hud.client;
 
 import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.classes.ResourceTraining;
+import com.renanpontes.isekaimahou.feature.mana_core.Overcharge;
 import com.renanpontes.isekaimahou.network.ClientMagic;
 
 import net.minecraft.Util;
@@ -21,6 +22,10 @@ import net.minecraft.util.Mth;
  * nível ("teto 624" / "no teto") e os 3 treinos do dia (losangos dourados). Quando o recurso passou de 95% o próximo
  * losango pulsa e uma linha dourada marca o fundo da barra: esvaziar até ali conta um treino. Treinou → "+N Limite!"
  * com brilho. <b>Fadiga</b> (regeneração reduzida depois de esvaziar): barra acinzentada + ampulheta com o tempo.
+ * <p>
+ * v1.5 — <b>Sobrecarga</b> (mana acima do máximo, retirado de um Núcleo de Mana): a barra "transborda" em magenta de
+ * cima para baixo (proporção sobrecarga/máximo), a moldura brilha em magenta com faíscas saindo do topo e o rodapé
+ * mostra "+N" ao lado do máximo.
  */
 final class HudManaBar {
     private static final int BAR_W = 8;
@@ -53,11 +58,12 @@ final class HudManaBar {
         float popup = HudState.trainPopupTicks / (float) HudState.TRAIN_POPUP_TICKS;
 
         int bw = BAR_W, bx = BAR_X;
-        int bh = Mth.clamp(Math.round(g.guiHeight() * 0.36F), 56, 120);
+        int screenH = HudScale.h(g);
+        int bh = Mth.clamp(Math.round(screenH * 0.36F), 56, 120);
         // Reserva a linha do lugar atual sob o card e o nome do recurso (entrar numa cidade não faz a barra pular)
-        int top = Math.max(HudCard.maxBottom() + 16 + HudPlace.RESERVED + LABEL_H, g.guiHeight() / 2 - bh / 2 - 6);
+        int top = Math.max(HudCard.maxBottom() + 16 + HudPlace.RESERVED + LABEL_H, screenH / 2 - bh / 2 - 6);
         // Não descer até a área do chat/hotbar (a barra de vida fica no canto de baixo)
-        int maxBottom = g.guiHeight() - 60;
+        int maxBottom = screenH - HudScale.v(60);
         if (top + bh + FOOT > maxBottom) bh = Math.max(28, maxBottom - FOOT - top);
         lastTop = top - 13;
         lastBottom = top + bh + FOOT;
@@ -116,6 +122,26 @@ final class HudManaBar {
             g.fill(bx, bottom - fh, bx + bw, bottom - fh + 1, broke ? 0xFFFFD0D8 : HudDraw.brighten(cTop, 0.6F));
         }
 
+        // v1.5 — Sobrecarga: transborda em magenta de cima para baixo, com brilho e faíscas acima da moldura
+        float over = Overcharge.clientAmount;
+        if (over > 0F) {
+            float op = HudDraw.pulse(700);
+            int oh = Math.max(2, Math.round(bh * Math.min(1F, over / max)));
+            int oTop = HudDraw.lerp(op, 0xFFB03CE0, 0xFFFF9CFF);
+            g.fillGradient(bx, top, bx + bw, top + oh, oTop, 0xFF6A1A8A);
+            g.fill(bx + 1, top, bx + 2, top + oh, 0x60FFFFFF);
+            g.fill(bx, top + oh - 1, bx + bw, top + oh, 0xFFFFD6FF);
+            HudDraw.glow(g, bx - 2, top - 2, bw + 4, bh + 4, 0xFF000000 | Overcharge.RGB, 0.45F + 0.55F * op, 3);
+            int sparks = Math.min(4, 1 + Overcharge.level(over) / 2);
+            long ms = Util.getMillis();
+            for (int i = 0; i < sparks; i++) {
+                float t = ((ms + i * 397L) % 900L) / 900F;
+                int sx = bx + 1 + (int) ((i * 3 + (ms / 300L)) % (bw - 2));
+                int sy = top - 3 - Math.round(t * 7);
+                g.fill(sx, sy, sx + 1, sy + 1, HudDraw.fade(0xFFFF9CFF, 1F - t));
+            }
+        }
+
         // Marcas de 25% (dentro e fora da moldura)
         int notch = HudDraw.fade(frame, 0.85F);
         for (int q = 1; q < 4; q++) {
@@ -147,6 +173,7 @@ final class HudManaBar {
         int curX = Math.max(2, cx - font.width(cur) / 2);
         g.drawString(font, cur, curX, bottom + 5, tc, true);
         Component maxText = Component.literal("/" + max);
+        if (over > 0F) maxText = maxText.copy().append(Component.literal(" +" + (int) over).withColor(Overcharge.RGB));
         float mw = font.width(maxText) * 0.75F;
         HudDraw.scaledText(g, font, maxText, Math.max(2F, cx - mw / 2F), bottom + 14, 0.75F, style.muted(), true);
 

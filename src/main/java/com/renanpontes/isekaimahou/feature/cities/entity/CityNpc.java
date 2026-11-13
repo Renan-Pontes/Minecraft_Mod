@@ -280,7 +280,8 @@ public abstract class CityNpc extends PathfinderMob implements GeoEntity, Reputa
         if (!variantSet || !hasCustomName()) randomizeIfNeeded(random);
         if (home == null) home = blockPosition();
         int radius = currentRadius();
-        if (!hasRestriction() || !getRestrictCenter().equals(home) || getRestrictRadius() != radius) restrictTo(home, radius);
+        BlockPos center = currentCenter();
+        if (!hasRestriction() || !getRestrictCenter().equals(center) || getRestrictRadius() != radius) restrictTo(center, radius);
         if (cityBorn && !linked && tickCount % 40 == 7 && linkTries < 90) {
             linkTries++;
             tryLink(sl);
@@ -304,7 +305,9 @@ public abstract class CityNpc extends PathfinderMob implements GeoEntity, Reputa
             chatterCooldown = 500 + random.nextInt(700);
             Player near = level().getNearestPlayer(this, 7.0);
             if (near != null && !near.isSpectator() && !isSpeaking() && getTarget() == null) {
-                Component line = ambientLine(near);
+                // Quem tem um pedido hoje às vezes chama o jogador (release 1.0, sidequests).
+                Component line = com.renanpontes.isekaimahou.feature.cities.CityQuests.hook(this, near);
+                if (line == null) line = ambientLine(near);
                 if (line != null) say(line);
             }
         }
@@ -347,6 +350,11 @@ public abstract class CityNpc extends PathfinderMob implements GeoEntity, Reputa
     /** Raio de passeio agora (os civis encolhem para casa de noite). */
     protected int currentRadius() {
         return wanderRadius();
+    }
+
+    /** Centro do passeio agora: a casa (no começo da noite parte dos cidadãos troca pela taverna). Só no servidor. */
+    protected BlockPos currentCenter() {
+        return home != null ? home : blockPosition();
     }
 
     private void tryLink(ServerLevel sl) {

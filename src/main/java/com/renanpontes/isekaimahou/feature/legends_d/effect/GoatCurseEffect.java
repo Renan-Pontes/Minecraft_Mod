@@ -1,5 +1,6 @@
 package com.renanpontes.isekaimahou.feature.legends_d.effect;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -28,7 +29,7 @@ public class GoatCurseEffect extends MobEffect {
             sl.playSound(null, e.getX(), e.getY(), e.getZ(), SoundEvents.GOAT_SCREAMING_AMBIENT, SoundSource.PLAYERS,
                     1.1F, 0.9F + sl.random.nextFloat() * 0.3F);
             sl.sendParticles(ParticleTypes.NOTE, e.getX(), e.getY() + e.getBbHeight() + 0.4, e.getZ(), 1, 0.2, 0.1, 0.2, 0.6);
-            sl.sendParticles(ParticleTypes.POOF, e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 3, 0.25, 0.25, 0.25, 0.01);
+            sl.sendParticles(Vfx.poof(), e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 3, 0.25, 0.25, 0.25, 0.01);
         }
         return true;
     }

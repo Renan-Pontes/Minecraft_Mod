@@ -23,8 +23,8 @@ import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellSlot;
 import com.renanpontes.isekaimahou.glyph.TriggerGlyph;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -147,7 +147,7 @@ public final class ArcaneTriggers {
         if (caster != null && !(caster instanceof Player) && caster.hasEffect(CoreRegistries.SILENCED) && !ignoresSilence(caster)) {
             event.setCanceled(true);
             if (caster.level() instanceof ServerLevel level) {
-                level.sendParticles(ParticleTypes.SMOKE, caster.getX(), caster.getEyeY(), caster.getZ(), 8, 0.2, 0.15, 0.2, 0.02);
+                level.sendParticles(Vfx.smoke(), caster.getX(), caster.getEyeY(), caster.getZ(), 8, 0.2, 0.15, 0.2, 0.02);
                 level.playSound(null, caster.getX(), caster.getY(), caster.getZ(), SoundEvents.FIRE_EXTINGUISH,
                         caster.getSoundSource(), 0.5F, 1.6F);
             }

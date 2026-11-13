@@ -2,7 +2,7 @@ package com.renanpontes.isekaimahou.feature.arcane;
 
 import com.renanpontes.isekaimahou.IsekaiMahou;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -65,7 +65,7 @@ public final class RecallMarks {
             if (m == null || !m.dimension().equals(p.level().dimension())) continue;
             if (m.pos().distanceToSqr(p.position()) > 96 * 96) continue;
             var level = p.serverLevel();
-            level.sendParticles(p, ParticleTypes.END_ROD, true, m.pos().x, m.pos().y + 0.6, m.pos().z, 3, 0.05, 0.6, 0.05, 0.01);
+            level.sendParticles(p, Vfx.endRod(), true, m.pos().x, m.pos().y + 0.6, m.pos().z, 3, 0.05, 0.6, 0.05, 0.01);
             double a = server.getTickCount() * 0.15;
             for (int i = 0; i < 4; i++) {
                 double ang = a + i * Math.PI / 2;

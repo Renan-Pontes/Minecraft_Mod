@@ -1,7 +1,9 @@
 package com.renanpontes.isekaimahou.feature.earth_wind.entity;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -13,6 +15,7 @@ import com.renanpontes.isekaimahou.feature.earth_wind.EwUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -60,7 +63,10 @@ public class SummonedSylph extends PathfinderMob implements GeoEntity, OwnableEn
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("animation.summoned_sylph.idle");
     private static final RawAnimation FLY = RawAnimation.begin().thenLoop("animation.summoned_sylph.fly");
     private static final RawAnimation ATTACK = RawAnimation.begin().thenPlay("animation.summoned_sylph.attack");
-    private static final Map<UUID, UUID> ACTIVE = new HashMap<>();
+    /** Quantas silfides um dono pode ter ao mesmo tempo (v1.0: Dividir no glifo chama mais de uma). */
+    public static final int MAX_PER_OWNER = 2;
+    /** Silfides atuais de cada dono (da mais antiga para a mais nova; no maximo {@link #MAX_PER_OWNER}). */
+    private static final Map<UUID, List<UUID>> ACTIVE = new HashMap<>();
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private UUID ownerId;
@@ -88,11 +94,24 @@ public class SummonedSylph extends PathfinderMob implements GeoEntity, OwnableEn
 
     /** Invoca uma silfide para {@code ctx.caster()}. Desfaz a anterior do mesmo dono. */
     public static SummonedSylph summon(SpellContext ctx, Vec3 pos, int lifeTicks, float power, LivingEntity target) {
+        return summon(ctx, pos, lifeTicks, power, target, 0);
+    }
+
+    /**
+     * Igual a outra, mas deixa ficar ate {@code keep} silfides que o dono ja tem (as mais novas); as demais somem.
+     * O glifo usa isto para o Dividir: a 1a silfide da conjuracao troca as antigas, a 2a fica junto da 1a.
+     */
+    public static SummonedSylph summon(SpellContext ctx, Vec3 pos, int lifeTicks, float power, LivingEntity target, int keep) {
         ServerLevel level = ctx.level();
         LivingEntity owner = ctx.caster();
         if (owner != null) {
-            UUID old = ACTIVE.get(owner.getUUID());
-            if (old != null && level.getEntity(old) instanceof SummonedSylph s) s.vanish();
+            List<UUID> mine = ACTIVE.get(owner.getUUID());
+            int allowed = Math.max(0, Math.min(MAX_PER_OWNER - 1, keep));
+            while (mine != null && mine.size() > allowed) {
+                UUID old = mine.remove(0);
+                if (level.getEntity(old) instanceof SummonedSylph s) s.vanish();
+                mine = ACTIVE.get(owner.getUUID());
+            }
         }
         SummonedSylph s = new SummonedSylph(EwRegistries.SYLPH.get(), level);
         s.ownerId = owner != null ? owner.getUUID() : null;
@@ -107,7 +126,7 @@ public class SummonedSylph extends PathfinderMob implements GeoEntity, OwnableEn
         s.setPersistenceRequired();
         if (target != null && !SummonAi.isFriendly(s, target)) s.setTarget(target);
         level.addFreshEntity(s);
-        if (owner != null) ACTIVE.put(owner.getUUID(), s.getUUID());
+        if (owner != null) track(owner.getUUID(), s.getUUID());
         EwFx.windSpiral(level, pos.add(0, -0.5, 0), 1.2, 2.2, 30, 0);
         level.sendParticles(ParticleTypes.GUST_EMITTER_SMALL, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0);
         EwFx.sound(level, pos, SoundEvents.ALLAY_ITEM_GIVEN, 1.0F, 1.2F);
@@ -223,13 +242,10 @@ public class SummonedSylph extends PathfinderMob implements GeoEntity, OwnableEn
             vanish();
             return;
         }
-        // uma silfide mais nova do mesmo dono ja existe (esta estava num chunk descarregado): desfaz esta
-        if (ownerId != null) {
-            UUID current = ACTIVE.putIfAbsent(ownerId, getUUID());
-            if (current != null && !current.equals(getUUID())) {
-                vanish();
-                return;
-            }
+        // o dono ja tem o maximo de silfides mais novas (esta estava num chunk descarregado): desfaz esta
+        if (ownerId != null && !track(ownerId, getUUID())) {
+            vanish();
+            return;
         }
         LivingEntity owner = getOwner();
         if (ownerId != null && owner == null) {
@@ -280,7 +296,7 @@ public class SummonedSylph extends PathfinderMob implements GeoEntity, OwnableEn
     public void vanish() {
         if (level() instanceof ServerLevel level) {
             EwFx.windSpiral(level, position(), 0.8, 1.8, 24, tickCount * 0.3);
-            level.sendParticles(ParticleTypes.POOF, getX(), getY() + 0.6, getZ(), 12, 0.3, 0.4, 0.3, 0.02);
+            level.sendParticles(Vfx.poof(), getX(), getY() + 0.6, getZ(), 12, 0.3, 0.4, 0.3, 0.02);
             EwFx.sound(level, position(), SoundEvents.ALLAY_DEATH, 0.6F, 1.3F);
         }
         discard();
@@ -291,9 +307,25 @@ public class SummonedSylph extends PathfinderMob implements GeoEntity, OwnableEn
         ACTIVE.clear();
     }
 
+    /** Poe a silfide na lista do dono. false = a lista ja esta cheia de outras silfides (esta sobra). */
+    private static boolean track(UUID owner, UUID sylph) {
+        List<UUID> mine = ACTIVE.computeIfAbsent(owner, k -> new ArrayList<>(MAX_PER_OWNER));
+        if (mine.contains(sylph)) return true;
+        if (mine.size() >= MAX_PER_OWNER) return false;
+        mine.add(sylph);
+        return true;
+    }
+
+    private static void untrack(UUID owner, UUID sylph) {
+        List<UUID> mine = ACTIVE.get(owner);
+        if (mine == null) return;
+        mine.remove(sylph);
+        if (mine.isEmpty()) ACTIVE.remove(owner);
+    }
+
     @Override
     public void remove(RemovalReason reason) {
-        if (ownerId != null && reason.shouldDestroy()) ACTIVE.remove(ownerId, getUUID());
+        if (ownerId != null && reason.shouldDestroy()) untrack(ownerId, getUUID());
         super.remove(reason);
     }
 
@@ -337,7 +369,7 @@ public class SummonedSylph extends PathfinderMob implements GeoEntity, OwnableEn
         life = tag.contains("Life") ? tag.getInt("Life") : 600;
         power = tag.contains("Power") ? tag.getFloat("Power") : 1.0F;
         spellTag = tag.contains("Spell") ? tag.getCompound("Spell") : null;
-        if (ownerId != null) ACTIVE.putIfAbsent(ownerId, getUUID());
+        if (ownerId != null) track(ownerId, getUUID());
     }
 
     // =====================================================================================

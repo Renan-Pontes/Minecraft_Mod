@@ -18,6 +18,7 @@ import com.renanpontes.isekaimahou.feature.fusions_c.FcUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -84,6 +85,9 @@ public class MiniVolcanoEntity extends FcSpellEntity implements GeoEntity {
         v.interval = Math.max(8, 16 - 2 * stats.amplify - 2 * stats.split);
         v.bombDamage = 9F;
         sl.addFreshEntity(v);
+        // v1.3: o chão racha num impacto de magma e a área ferve enquanto o vulcão vive
+        com.renanpontes.isekaimahou.core.ElementFx.impactFx(sl, ground.add(0, 0.2, 0), com.renanpontes.isekaimahou.core.Element.MAGMA, 0xFF4500, 3, null, 1.2F);
+        com.renanpontes.isekaimahou.core.ElementFx.area(sl, ground, com.renanpontes.isekaimahou.core.Element.MAGMA, 0xFF4500, 3.0F, 2, 200);
         sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, sl.getBlockState(v.blockPosition().below())),
                 ground.x, ground.y + 0.3, ground.z, 60, 1.8, 0.4, 1.8, 0.3);
         FcFx.sound(sl, ground, SoundEvents.MACE_SMASH_GROUND_HEAVY, 1.5F, 0.5F);
@@ -156,7 +160,7 @@ public class MiniVolcanoEntity extends FcSpellEntity implements GeoEntity {
         entityData.set(ERUPT_AGE, age());
         Vec3 c = crater();
         sl.sendParticles(ParticleTypes.LAVA, c.x, c.y, c.z, 10, 0.4, 0.3, 0.4, 0.3);
-        sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y + 0.5, c.z, 8, 0.4, 0.4, 0.4, 0.06);
+        sl.sendParticles(Vfx.largeSmoke(), c.x, c.y + 0.5, c.z, 8, 0.4, 0.4, 0.4, 0.06);
         FcFx.sound(sl, c, SoundEvents.BLAZE_SHOOT, 1.4F, 0.5F);
         FcFx.sound(sl, c, SoundEvents.LAVA_POP, 1.6F, 0.7F);
     }
@@ -179,7 +183,7 @@ public class MiniVolcanoEntity extends FcSpellEntity implements GeoEntity {
         Vec3 c = crater();
         sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, c.x, c.y, c.z, 1, 0, 0, 0, 0);
         sl.sendParticles(ParticleTypes.LAVA, c.x, c.y, c.z, 60, 1.2, 0.8, 1.2, 0.5);
-        sl.sendParticles(ParticleTypes.FLAME, c.x, c.y, c.z, 80, 0.6, 1.2, 0.6, 0.35);
+        sl.sendParticles(Vfx.flame(), c.x, c.y, c.z, 80, 0.6, 1.2, 0.6, 0.35);
         sl.sendParticles(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, c.x, c.y + 1, c.z, 30, 1.5, 1.5, 1.5, 0.08);
         FcFx.shockwave(sl, base.add(0, 0.3, 0), FcFx.fade(FcFx.MAGMA_HOT, FcFx.MAGMA_DARK, 2.5F), 48, 0.6);
         FcFx.sound(sl, base, SoundEvents.GENERIC_EXPLODE.value(), 3F, 0.5F);
@@ -193,7 +197,7 @@ public class MiniVolcanoEntity extends FcSpellEntity implements GeoEntity {
         if (age() < EMERGE_TICKS) return;
         float s = scale();
         double y = getY() + 3.1 * s;
-        level().addParticle(ParticleTypes.SMOKE, getX() + (random.nextDouble() - 0.5) * s, y, getZ() + (random.nextDouble() - 0.5) * s, 0, 0.12, 0);
+        level().addParticle(Vfx.smoke(), getX() + (random.nextDouble() - 0.5) * s, y, getZ() + (random.nextDouble() - 0.5) * s, 0, 0.12, 0);
         if (random.nextInt(4) == 0) {
             level().addParticle(ParticleTypes.LAVA, getX(), y, getZ(), 0, 0, 0);
         }

@@ -4,6 +4,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.feature.origins_b.ObFx;
 import com.renanpontes.isekaimahou.feature.origins_b.ObUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -93,8 +94,8 @@ public class SummonedDemonEntity extends ObSummonEntity {
     @Override
     protected void arrivalTick(ServerLevel level, int ticksLeft) {
         if (ticksLeft % 3 == 0) ObFx.pactCircle(level, position(), 1.8);
-        level.sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.2, getZ(), 6, 0.7, 0.05, 0.7, 0.06);
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + 1.0, getZ(), 3, 0.6, 0.8, 0.6, 0.02);
+        level.sendParticles(Vfx.flame(), getX(), getY() + 0.2, getZ(), 6, 0.7, 0.05, 0.7, 0.06);
+        level.sendParticles(Vfx.largeSmoke(), getX(), getY() + 1.0, getZ(), 3, 0.6, 0.8, 0.6, 0.02);
         if (ticksLeft == 30) level.playSound(null, getX(), getY(), getZ(), SoundEvents.WITHER_SPAWN, getSoundSource(), 0.6F, 1.4F);
         if (ticksLeft == 8) level.playSound(null, getX(), getY(), getZ(), SoundEvents.RAVAGER_ROAR, getSoundSource(), 1.4F, 0.6F);
     }
@@ -164,7 +165,7 @@ public class SummonedDemonEntity extends ObSummonEntity {
             int pts = ring * 14;
             for (int i = 0; i < pts; i++) {
                 double a = Math.PI * 2 * i / pts;
-                sl.sendParticles(ParticleTypes.FLAME, getX() + Math.cos(a) * rr, getY() + 0.1, getZ() + Math.sin(a) * rr, 1, 0.05, 0.05, 0.05, 0.03);
+                sl.sendParticles(Vfx.flame(), getX() + Math.cos(a) * rr, getY() + 0.1, getZ() + Math.sin(a) * rr, 1, 0.05, 0.05, 0.05, 0.03);
                 if (i % 3 == 0) sl.sendParticles(ParticleTypes.LAVA, getX() + Math.cos(a) * rr, getY() + 0.1, getZ() + Math.sin(a) * rr, 1, 0, 0, 0, 0);
             }
         }
@@ -194,8 +195,8 @@ public class SummonedDemonEntity extends ObSummonEntity {
     @Override
     protected void onMeleeHit(ServerLevel level, Entity target) {
         target.igniteForSeconds(4.0F);
-        level.sendParticles(ParticleTypes.FLAME, target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 12, 0.3, 0.3, 0.3, 0.06);
-        level.sendParticles(ParticleTypes.CRIT, target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 6, 0.3, 0.3, 0.3, 0.2);
+        level.sendParticles(Vfx.flame(), target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 12, 0.3, 0.3, 0.3, 0.06);
+        level.sendParticles(Vfx.crit(), target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 6, 0.3, 0.3, 0.3, 0.2);
         level.playSound(null, getX(), getY(), getZ(), SoundEvents.RAVAGER_ATTACK, getSoundSource(), 1.0F, 0.8F);
     }
 
@@ -208,11 +209,11 @@ public class SummonedDemonEntity extends ObSummonEntity {
             if (random.nextInt(2) == 0) {
                 double yaw = Math.toRadians(yBodyRot);
                 double side = random.nextBoolean() ? 0.55 : -0.55;
-                level().addParticle(ParticleTypes.SMALL_FLAME, getX() + Math.cos(yaw) * side, getY() + 2.25, getZ() + Math.sin(yaw) * side,
+                level().addParticle(Vfx.smallFlame(), getX() + Math.cos(yaw) * side, getY() + 2.25, getZ() + Math.sin(yaw) * side,
                         0, 0.02, 0);
             }
             if (random.nextInt(4) == 0) {
-                level().addParticle(ParticleTypes.LARGE_SMOKE, getX() + (random.nextDouble() - 0.5), getY() + 0.2 + random.nextDouble() * 2.5,
+                level().addParticle(Vfx.largeSmoke(), getX() + (random.nextDouble() - 0.5), getY() + 0.2 + random.nextDouble() * 2.5,
                         getZ() + (random.nextDouble() - 0.5), 0, 0.02, 0);
             }
         }

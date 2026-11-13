@@ -1,0 +1,874 @@
+{
+  "layout": 2,
+  "branches": [
+    {
+      "id": "pact",
+      "color": "D43C3C"
+    },
+    {
+      "id": "black_flame",
+      "color": "FF7A2E"
+    },
+    {
+      "id": "tribute",
+      "color": "9A5BD0"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "blood_ink",
+      "branch": 0,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:ghast_tear",
+      "effects": [
+        {
+          "stat": "lifesteal",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "bargain",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:amethyst_shard",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:spell_power",
+          "amount": 0.01,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "price_of_pain",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:redstone",
+      "effects": [
+        {
+          "stat": "low_health_power",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "blood_interest",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:melon_slice",
+      "effects": [
+        {
+          "stat": "crit_heal",
+          "amount": 1.5
+        },
+        {
+          "stat": "crit_chance",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "debt_collected",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:iron_axe",
+      "effects": [
+        {
+          "stat": "execute",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "true_name",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:diamond_sword",
+      "effects": [
+        {
+          "stat": "crit_damage",
+          "amount": 0.04
+        },
+        {
+          "stat": "lifesteal",
+          "amount": 0.005
+        }
+      ]
+    },
+    {
+      "id": "reckless_pact",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:tnt",
+      "effects": [
+        {
+          "stat": "reckless",
+          "amount": 0.15
+        }
+      ],
+      "exclusive": [
+        "safety_clause"
+      ]
+    },
+    {
+      "id": "safety_clause",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:turtle_helmet",
+      "effects": [
+        {
+          "stat": "low_health_resist",
+          "amount": 0.15
+        }
+      ],
+      "exclusive": [
+        "reckless_pact"
+      ]
+    },
+    {
+      "id": "fine_print",
+      "branch": 0,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:nether_star",
+      "effects": [
+        {
+          "stat": "all_damage",
+          "amount": 0.008
+        }
+      ]
+    },
+    {
+      "id": "collection",
+      "branch": 0,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:blaze_rod",
+      "effects": [
+        {
+          "stat": "kill_fury",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "pawned_soul",
+      "branch": 0,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:netherite_axe",
+      "effects": [
+        {
+          "stat": "cull",
+          "amount": 0.1
+        },
+        {
+          "stat": "heal_on_kill",
+          "amount": 2.0
+        }
+      ]
+    },
+    {
+      "id": "mastery_pact",
+      "branch": 0,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "all_damage",
+          "amount": 0.004
+        }
+      ]
+    },
+    {
+      "id": "pact_embers",
+      "branch": 1,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "isekai_mahou:essence_fire",
+      "effects": [
+        {
+          "stat": "spell_damage.fire",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "umbra",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "isekai_mahou:essence_shadow",
+      "effects": [
+        {
+          "stat": "spell_damage.shadow",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "searing_mark",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:wither_rose",
+      "effects": [
+        {
+          "stat": "on_hit.wither",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "living_ember",
+      "branch": 1,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:flint_and_steel",
+      "effects": [
+        {
+          "stat": "on_hit.burn",
+          "amount": 0.15
+        },
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "fearless_of_fire",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:magma_cream",
+      "effects": [
+        {
+          "stat": "fire_resist",
+          "amount": 0.04
+        }
+      ]
+    },
+    {
+      "id": "hellfire",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:spyglass",
+      "effects": [
+        {
+          "stat": "crit_chance",
+          "amount": 0.01
+        },
+        {
+          "stat": "spell_damage.fire",
+          "amount": 0.008
+        }
+      ]
+    },
+    {
+      "id": "consuming_flame",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "isekai_mahou:essence_fire",
+      "effects": [
+        {
+          "stat": "spell_damage.fire",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "devouring_void"
+      ]
+    },
+    {
+      "id": "devouring_void",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "isekai_mahou:essence_shadow",
+      "effects": [
+        {
+          "stat": "spell_damage.shadow",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "consuming_flame"
+      ]
+    },
+    {
+      "id": "abyssal_soot",
+      "branch": 1,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:enchanted_book",
+      "effects": [
+        {
+          "stat": "spell_damage_all",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "flare",
+      "branch": 1,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:glowstone",
+      "effects": [
+        {
+          "stat": "surge",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "flames_of_hell",
+      "branch": 1,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:gunpowder",
+      "effects": [
+        {
+          "stat": "kill_burst",
+          "amount": 0.25
+        },
+        {
+          "stat": "echo",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "mastery_black_flame",
+      "branch": 1,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "spell_damage_all",
+          "amount": 0.004
+        }
+      ]
+    },
+    {
+      "id": "offering",
+      "branch": 2,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "mana_on_kill",
+          "amount": 2.0
+        }
+      ]
+    },
+    {
+      "id": "thick_blood",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:golden_apple",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 1.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "soul_tax",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:glistering_melon_slice",
+      "effects": [
+        {
+          "stat": "heal_on_kill",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "id": "tithe",
+      "branch": 2,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:end_crystal",
+      "effects": [
+        {
+          "stat": "charge_on_kill",
+          "amount": 1.0
+        },
+        {
+          "stat": "mana_on_kill",
+          "amount": 3.0
+        }
+      ]
+    },
+    {
+      "id": "patron_gift",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:lapis_lazuli",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 8.0,
+          "op": "add_value"
+        },
+        {
+          "attribute": "isekai_mahou:mana_regen",
+          "amount": 0.01,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "eternal_contract",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:totem_of_undying",
+      "effects": [
+        {
+          "stat": "second_wind",
+          "amount": 1.5
+        },
+        {
+          "stat": "damage_resist",
+          "amount": 0.006
+        }
+      ]
+    },
+    {
+      "id": "patrons_favor",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:ender_pearl",
+      "effects": [
+        {
+          "stat": "cast_refund",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "patrons_shelter"
+      ]
+    },
+    {
+      "id": "patrons_shelter",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:shulker_shell",
+      "effects": [
+        {
+          "stat": "cast_ward",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "patrons_favor"
+      ]
+    },
+    {
+      "id": "sacrifice",
+      "branch": 2,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:ghast_tear",
+      "effects": [
+        {
+          "stat": "lifesteal",
+          "amount": 0.006
+        }
+      ]
+    },
+    {
+      "id": "patrons_voice",
+      "branch": 2,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:beacon",
+      "effects": [
+        {
+          "stat": "ult_power",
+          "amount": 0.1
+        },
+        {
+          "stat": "boss_damage",
+          "amount": 0.04
+        }
+      ]
+    },
+    {
+      "id": "soul_contract",
+      "branch": 2,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:totem_of_undying",
+      "effects": [
+        {
+          "stat": "cheat_death",
+          "amount": 0.35
+        }
+      ]
+    },
+    {
+      "id": "mastery_tribute",
+      "branch": 2,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 0.5,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "boiling_blood",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "warlock_fiend",
+      "icon": "minecraft:redstone",
+      "effects": [
+        {
+          "stat": "low_health_power",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "scorched_hide",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "warlock_fiend",
+      "icon": "minecraft:magma_cream",
+      "effects": [
+        {
+          "stat": "fire_resist",
+          "amount": 0.08
+        },
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 1.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "infernal_fury",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "warlock_fiend",
+      "icon": "minecraft:blaze_rod",
+      "effects": [
+        {
+          "stat": "kill_fury",
+          "amount": 0.05
+        },
+        {
+          "stat": "crit_heal",
+          "amount": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ember_heart",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "warlock_fiend",
+      "icon": "minecraft:gunpowder",
+      "effects": [
+        {
+          "stat": "kill_burst",
+          "amount": 0.2
+        },
+        {
+          "stat": "on_struck.burn",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "id": "whispers",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "warlock_voidbound",
+      "icon": "isekai_mahou:essence_shadow",
+      "effects": [
+        {
+          "stat": "spell_damage.shadow",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "empty_gaze",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "warlock_voidbound",
+      "icon": "minecraft:spectral_arrow",
+      "effects": [
+        {
+          "stat": "far_damage",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "void_hunger",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "warlock_voidbound",
+      "icon": "minecraft:diamond",
+      "effects": [
+        {
+          "stat": "crit_mana",
+          "amount": 4.0
+        },
+        {
+          "stat": "crit_chance",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "event_horizon",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "warlock_voidbound",
+      "icon": "minecraft:echo_shard",
+      "effects": [
+        {
+          "stat": "echo",
+          "amount": 0.1
+        },
+        {
+          "stat": "kill_cdr",
+          "amount": 1.5
+        }
+      ]
+    }
+  ],
+  "subclasses": [
+    {
+      "id": "warlock_fiend",
+      "color": "FF5A2E",
+      "icon": "minecraft:blaze_powder",
+      "effects": [
+        {
+          "stat": "spell_damage.fire",
+          "amount": 0.12
+        },
+        {
+          "stat": "lifesteal",
+          "amount": 0.08
+        },
+        {
+          "stat": "low_health_power",
+          "amount": 0.15
+        },
+        {
+          "stat": "low_health_resist",
+          "amount": 0.15
+        },
+        {
+          "stat": "revenge",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "warlock_voidbound",
+      "color": "7A4BD8",
+      "icon": "minecraft:ender_eye",
+      "effects": [
+        {
+          "stat": "spell_damage.shadow",
+          "amount": 0.12
+        },
+        {
+          "stat": "mana_on_kill",
+          "amount": 8.0
+        },
+        {
+          "stat": "magic_resist",
+          "amount": 0.15
+        },
+        {
+          "stat": "echo",
+          "amount": 0.15
+        },
+        {
+          "stat": "far_damage",
+          "amount": 0.1
+        }
+      ]
+    }
+  ]
+}

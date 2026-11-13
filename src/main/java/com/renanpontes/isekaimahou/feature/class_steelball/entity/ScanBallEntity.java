@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbFx;
+import com.renanpontes.isekaimahou.feature.class_steelball.SbFxNet;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
@@ -112,15 +113,8 @@ public class ScanBallEntity extends ThrowableProjectile implements GeoEntity {
     private void wave(ServerLevel sl) {
         waves++;
         Vec3 c = position();
-        for (int i = 1; i <= 5; i++) {
-            final double r = radius * i / 5.0;
-            final int ring = i;
-            com.renanpontes.isekaimahou.glyph.SpellScheduler.schedule(i, () -> {
-                int pts = 10 + ring * 6;
-                SbFx.spinRing(sl, c, 0x7FE8FF, r, pts);
-                SbFx.spinRing(sl, c.add(0, 1.2, 0), 0x4FB8FF, r * 0.85, pts / 2);
-            });
-        }
+        // as frentes de onda do radar são desenhadas no cliente
+        SbFxNet.at(sl, SbFxNet.SCAN, c, Vec3.ZERO, (float) radius, 0x7FE8FF, getId());
         SbFx.sound(sl, c, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.0F, 1.2F + 0.2F * waves);
         SbFx.sound(sl, c, SoundEvents.NOTE_BLOCK_CHIME.value(), 0.7F, 1.6F + 0.1F * waves);
         if (ctx == null) return;

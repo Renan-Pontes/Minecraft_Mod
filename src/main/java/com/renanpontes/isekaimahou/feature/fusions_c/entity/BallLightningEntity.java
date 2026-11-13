@@ -11,6 +11,7 @@ import com.renanpontes.isekaimahou.feature.fusions_c.FcUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -117,7 +118,7 @@ public class BallLightningEntity extends FcSpellEntity {
             hit(le, zapDamage);
             if (i < 3) ids[i] = le.getId();
             Vec3 c = FcUtil.center(le);
-            sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, 10, 0.3, 0.4, 0.3, 0.4);
+            sl.sendParticles(Vfx.electric(), c.x, c.y, c.z, 10, 0.3, 0.4, 0.3, 0.4);
         }
         if (n == 0) return;
         entityData.set(ZAP_A, ids[0]);
@@ -137,7 +138,7 @@ public class BallLightningEntity extends FcSpellEntity {
             FcUtil.knock(le, out.lengthSqr() < 1.0E-3 ? new Vec3(0, 0.4, 0) : out.normalize().scale(0.6).add(0, 0.25, 0));
         }
         sl.sendParticles(ParticleTypes.FLASH, c.x, c.y, c.z, 1, 0, 0, 0, 0);
-        sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, 50, 0.3, 0.3, 0.3, 0.9);
+        sl.sendParticles(Vfx.electric(), c.x, c.y, c.z, 50, 0.3, 0.3, 0.3, 0.9);
         FcFx.sphere(sl, c, FcFx.dust(FcFx.VOLT, 1.4F), 2.4, 40, 0);
         FcFx.sound(sl, c, SoundEvents.LIGHTNING_BOLT_THUNDER, 0.8F, 1.6F);
         FcFx.sound(sl, c, SoundEvents.FIREWORK_ROCKET_BLAST, 1.2F, 0.8F);
@@ -148,7 +149,7 @@ public class BallLightningEntity extends FcSpellEntity {
         if (random.nextInt(2) == 0) {
             double a = random.nextDouble() * Math.PI * 2, b = random.nextDouble() * Math.PI;
             double r = scale() * 0.9;
-            level().addParticle(ParticleTypes.ELECTRIC_SPARK, getX() + Math.sin(b) * Math.cos(a) * r, getY() + Math.cos(b) * r,
+            level().addParticle(Vfx.electric(), getX() + Math.sin(b) * Math.cos(a) * r, getY() + Math.cos(b) * r,
                     getZ() + Math.sin(b) * Math.sin(a) * r, 0, 0, 0);
         }
     }

@@ -3,7 +3,7 @@ package com.renanpontes.isekaimahou.feature.light_shadow.effect;
 import com.renanpontes.isekaimahou.feature.light_shadow.LsFx;
 import com.renanpontes.isekaimahou.feature.light_shadow.ai.LsAi;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -44,7 +44,7 @@ public class FearEffect extends MobEffect {
         }
         sl.sendParticles(LsFx.dust(LsFx.DEEP_VIOLET, 0.9F), e.getX(), e.getEyeY() + 0.25, e.getZ(), 3, 0.3, 0.1, 0.3, 0);
         if (sl.random.nextInt(3) == 0) {
-            sl.sendParticles(ParticleTypes.SCULK_SOUL, e.getX(), e.getEyeY() + 0.2, e.getZ(), 1, 0.15, 0.1, 0.15, 0.01);
+            sl.sendParticles(Vfx.sculkSoul(), e.getX(), e.getEyeY() + 0.2, e.getZ(), 1, 0.15, 0.1, 0.15, 0.01);
         }
         return true;
     }

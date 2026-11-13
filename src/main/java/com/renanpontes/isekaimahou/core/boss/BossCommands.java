@@ -8,22 +8,27 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.renanpontes.isekaimahou.core.MahouCommands;
+import com.renanpontes.isekaimahou.core.api.BossArena;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
 /**
  * {@code /mahou boss telegraph [forma]} — demonstração das telegrafias perto do jogador (não causa dano);
- * {@code /mahou boss shake [intensidade]} — testa o tremor de câmera. Precisam de cheats.
+ * {@code /mahou boss shake [intensidade]} — testa o tremor de câmera;
+ * {@code /mahou boss arenas} — arenas seladas e aliados de jogador lutando em cada uma. Precisam de cheats.
  */
 final class BossCommands {
     private static final List<String> SHAPES = List.of("all", "circle", "ring", "line", "cone", "follow", "safe", "blast", "line_blast");
@@ -35,6 +40,7 @@ final class BossCommands {
                         .then(Commands.argument("shape", StringArgumentType.word())
                                 .suggests((c, b) -> SharedSuggestionProvider.suggest(SHAPES, b))
                                 .executes(c -> demo(c, StringArgumentType.getString(c, "shape")))))
+                .then(Commands.literal("arenas").executes(BossCommands::arenas))
                 .then(Commands.literal("shake")
                         .executes(c -> shake(c, 1.5F))
                         .then(Commands.argument("intensity", FloatArgumentType.floatArg(0.1F, 3.0F))
@@ -107,6 +113,25 @@ final class BossCommands {
             BossKit.shake(level, at, 18, 1.0F, 12);
             viewer.sendSystemMessage(Component.translatable("command.isekai_mahou.boss_kit.hit", shapeName(shape), targets.size()));
         };
+    }
+
+    /** v1.0: arenas seladas agora e quantos aliados de jogador lutam em cada uma (teste do "pokémon"). */
+    private static int arenas(CommandContext<CommandSourceStack> c) {
+        List<BossArena.Info> all = BossArena.all();
+        if (all.isEmpty()) {
+            c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.boss_kit.arenas.none"), false);
+            return 0;
+        }
+        for (BossArena.Info a : all) {
+            ServerLevel level = c.getSource().getServer().getLevel(ResourceKey.create(Registries.DIMENSION, a.dimension()));
+            Entity boss = level == null ? null : level.getEntity(a.boss());
+            Component name = boss != null ? boss.getDisplayName() : Component.literal(a.boss().toString().substring(0, 8));
+            Component line = Component.translatable("command.isekai_mahou.boss_kit.arenas.line", name, (int) a.radius(),
+                    Component.translatable("command.isekai_mahou.boss_kit.arenas." + (a.releasing() ? "releasing" : "fighting")),
+                    ArenaAllies.count(boss));
+            c.getSource().sendSuccess(() -> line, false);
+        }
+        return all.size();
     }
 
     private static int shake(CommandContext<CommandSourceStack> c, float intensity) throws CommandSyntaxException {

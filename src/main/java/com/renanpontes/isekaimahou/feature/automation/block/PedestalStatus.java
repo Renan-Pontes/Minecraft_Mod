@@ -18,7 +18,11 @@ public enum PedestalStatus {
     DISABLED("disabled", 0xFF6A6A, false),
     NO_OWNER("no_owner", 0xFF6A6A, false),
     /** A magia deu erro de código ao conjurar: pausado até trocar o pergaminho (detalhes no log). */
-    ERROR("error", 0xFF6A6A, false);
+    ERROR("error", 0xFF6A6A, false),
+    /** v1.5: desligado pelo botão ON/OFF da tela ou pelo Condutor de Mana (agachado). */
+    SWITCHED_OFF("switched_off", 0x9A93AC, false),
+    /** v1.5: o gatilho de pedestal (ex.: "Ao Amadurecer") ainda não está satisfeito — confere de novo no próximo intervalo. */
+    WAITING_CONDITION("waiting_condition", 0x8FD3FF, true);
 
     public final String id;
     public final int rgb;
@@ -36,6 +40,9 @@ public enum PedestalStatus {
     }
 
     public String hintKey() {
+        // v1.5: com o Núcleo de Mana, "sem bateria"/"sem mana" também falam do núcleo (chaves novas, do mana_core)
+        if (this == NO_BATTERY) return "gui.isekai_mahou.pedestal.hint.no_source";
+        if (this == NO_MANA) return "gui.isekai_mahou.pedestal.hint.no_mana_core";
         return "gui.isekai_mahou.pedestal.hint." + id;
     }
 

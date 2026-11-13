@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    {
+      "item": "minecraft:feather"
+    },
+    {
+      "item": "minecraft:bone"
+    },
+    {
+      "item": "minecraft:honeycomb"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:bond_incense",
+    "count": 1
+  }
+}

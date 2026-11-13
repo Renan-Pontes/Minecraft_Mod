@@ -40,9 +40,8 @@ public final class SmithFx {
 
     /** Fagulhas de martelada (chuva curta de pontos quentes + 1 ou 2 gotas de lava). */
     public static void forgeSparks(ServerLevel level, Vec3 at, int rgb, int count) {
-        level.sendParticles(spark(rgb), at.x, at.y, at.z, count, 0.25, 0.2, 0.25, 0.12);
-        level.sendParticles(ParticleTypes.LAVA, at.x, at.y, at.z, Math.max(1, count / 10), 0.1, 0.1, 0.1, 0);
-        level.sendParticles(ParticleTypes.SMALL_FLAME, at.x, at.y, at.z, Math.max(2, count / 4), 0.15, 0.15, 0.15, 0.02);
+        // brasas em arco, lava e brilho: desenhadas no cliente (SmithFxClient), respeitando o preset
+        SmithFxNet.at(level, SmithFxNet.SPARKS, at, Vec3.ZERO, count, rgb, -1);
     }
 
     /** Linha de partículas entre dois pontos (rastro de lâmina, estocada). */
@@ -65,10 +64,7 @@ public final class SmithFx {
 
     /** Terra que pula do chão no ponto (usa o bloco de baixo; nada se for ar). */
     public static void groundBurst(ServerLevel level, Vec3 at, int count) {
-        BlockPos below = BlockPos.containing(at.x, at.y - 0.2, at.z);
-        BlockState st = level.getBlockState(below);
-        if (st.isAir()) return;
-        level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, st), at.x, at.y + 0.1, at.z, count, 0.35, 0.05, 0.35, 0.15);
+        SmithFxNet.at(level, SmithFxNet.GROUND_BURST, at, Vec3.ZERO, count, 0, -1);
     }
 
     /** Centro do corpo de uma entidade. */

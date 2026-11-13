@@ -7,13 +7,18 @@ import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Cutscenes;
 import com.renanpontes.isekaimahou.core.api.Travel;
 import com.renanpontes.isekaimahou.core.event.MagicProgressEvent;
+import com.renanpontes.isekaimahou.core.item.GlyphScrollItem;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -35,6 +40,7 @@ public final class HmEvents {
         NeoForge.EVENT_BUS.addListener(HmEvents::onCounter);
         NeoForge.EVENT_BUS.addListener(HmEvents::onLogin);
         NeoForge.EVENT_BUS.addListener((ServerStartedEvent e) -> HmSites.registerBuilt(e.getServer()));
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, HmEvents::onSiteKingDeath);
     }
 
     private static void onChangedDimension(PlayerEvent.PlayerChangedDimensionEvent e) {
@@ -60,6 +66,30 @@ public final class HmEvents {
         if (realm == null || level.players().isEmpty()) return;
         HmSites.tick(level, realm);
     }
+
+    /**
+     * O Rei do trono (Barragan, marcado por {@link HmSites#SITE_KING_TAG}) caiu: a vaga do palácio fica vazia por um dia,
+     * cai o espólio do Rei de Hueco Mundo (Chave da Garganta, machado da decadência...) e quem lutou ganha o contador
+     * {@code boss.hollow_king} (o diário e o bestiário continuam valendo).
+     */
+    private static void onSiteKingDeath(LivingDeathEvent e) {
+        if (e.isCanceled() || !(e.getEntity().level() instanceof ServerLevel level)) return;
+        LivingEntity king = e.getEntity();
+        if (!king.getTags().contains(HmSites.SITE_KING_TAG) || king.getPersistentData().getBoolean(KING_PAID)) return;
+        king.getPersistentData().putBoolean(KING_PAID, true);
+        HmSites.bossDefeated(level, HmSites.KING_ID);
+        king.spawnAtLocation(new ItemStack(HmRegistries.DECAY_AXE.get()));
+        king.spawnAtLocation(new ItemStack(HmRegistries.ARRANCAR_SOUL_SHARD.get(), 2 + level.random.nextInt(3)));
+        king.spawnAtLocation(new ItemStack(HmRegistries.REISHI_CRYSTAL.get(), 2 + level.random.nextInt(2)));
+        king.spawnAtLocation(new ItemStack(HmRegistries.GARGANTA_KEY.get(), 1));
+        king.spawnAtLocation(GlyphScrollItem.of(IsekaiMahou.id("hollow_gran_cero")));
+        if (level.random.nextFloat() < 0.5F) king.spawnAtLocation(GlyphScrollItem.of(IsekaiMahou.id("visored_mask")));
+        for (ServerPlayer p : level.players()) {
+            if (!p.isSpectator() && p.distanceToSqr(king) < 56 * 56) MagicApi.addCounter(p, "boss." + HmSites.KING_ID, 1);
+        }
+    }
+
+    private static final String KING_PAID = "isekai_mahou.hm_site_king_paid";
 
     private static void onCounter(MagicProgressEvent.Counter e) {
         if (RANK_COUNTER.equals(e.key) && e.value >= SHORTCUT_RANK) grantShortcut(e.getPlayer());

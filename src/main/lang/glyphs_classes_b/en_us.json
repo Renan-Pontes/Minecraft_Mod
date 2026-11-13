@@ -1,0 +1,42 @@
+{
+  "glyph.isekai_mahou.enchanter_engraved_rune": "Engraved Rune",
+  "glyph.isekai_mahou.enchanter_engraved_rune.desc": "AUGMENT (Enchanter). Every enemy this glyph hurts gets a rune for 6 s (9 s if you are an Enchanter). The next MELEE hit on it — yours or an ally's — detonates the rune: the spell's effects repeat on it at 60% power (75% for the Enchanter). One rune per target; the detonation does not engrave a new one. Enchanter: rank II. Other classes: Lesson only.",
+  "glyph.isekai_mahou.enchanter_on_enchanted_strike": "On Enchanted Strike",
+  "glyph.isekai_mahou.enchanter_on_enchanted_strike.desc": "TRIGGER (Enchanter, at the start of the recipe). The slot fires ON ITS OWN, aimed at whoever you hit, when you strike in melee with an enchanted weapon: Imbued Weapon or Enchanted Gear active on you (even if an Enchanter ally cast it), or a weapon with real enchantments. At most once every 3 s; pays the resource and respects the cooldown. Pressing the key does not cast. Enchanter: rank III. Other classes: Lesson only.",
+
+  "glyph.isekai_mahou.shinigami_shunpo_cast": "Shunpo: Flash Cast",
+  "glyph.isekai_mahou.shinigami_shunpo_cast.desc": "AUGMENT (Shinigami). An instant before the spell leaves, you vanish in a Shunpo and reappear BEHIND the enemy you are aiming at (up to 12 blocks; +4 per extra copy), already facing it: the spell fires from there, point-blank — Kidō with no warning. With nobody in your sights, the step goes 6 blocks forward (stopping before walls). At most one Shunpo per second. Shinigami: rank II. Other classes: Lesson only.",
+  "glyph.isekai_mahou.shinigami_on_released_cut": "On Released Blade Cut",
+  "glyph.isekai_mahou.shinigami_on_released_cut.desc": "TRIGGER (Shinigami, at the start of the recipe). The slot fires ON ITS OWN when you shout your Shikai in combat and, while the zanpakutō is released (Shikai or Bankai), every 4 cuts with it — aimed at whoever you cut. Pays the resource and respects the cooldown. Pressing the key does not cast. Shinigami: rank III (with the Shikai). Other classes: Lesson only.",
+
+  "glyph.isekai_mahou.quincy_sklaverei": "Sklaverei",
+  "glyph.isekai_mahou.quincy_sklaverei.desc": "AUGMENT (Quincy). Reishi enslavement: every enemy this glyph hurts has its Reishi torn out — it is Weakened for 3 s and a thread of light flies to you: +1 stored Reishi (up to 3 per cast). If the hit KILLS, the whole body turns into Reishi: +2 Reishi and 3% Focus. Non-Quincy casters recover 1.5% of their resource per target instead. Quincy: rank IV. Other classes: Lesson only.",
+  "glyph.isekai_mahou.quincy_on_reishi": "On Absorbing Reishi",
+  "glyph.isekai_mahou.quincy_on_reishi.desc": "TRIGGER (Quincy, at the start of the recipe). Whenever you ABSORB Reishi (Drain Reishi, Absorption, Spirit Blade, Sklaverei...) and have 3 or more stored in combat (an enemy within 20 blocks), the slot fires ON ITS OWN at the nearest enemy — and SPENDS 3 stored Reishi (the absorbed light becomes the arrow). At most once per second; pays Focus and respects the cooldown. Pressing the key does not cast. Quincy: rank II. Other classes: Lesson only.",
+
+  "glyph.isekai_mahou.gun_trick_ricochet": "Trick Ricochet",
+  "glyph.isekai_mahou.gun_trick_ricochet.desc": "AUGMENT (Gunslinger). A western trick shot: when this glyph hurts an enemy, the whole FORM bounces off it toward the nearest enemy not yet hit (up to 14 blocks) and fires again from there, with +25% power per ricochet. 1 ricochet per copy of the glyph (max 3). Unlike the common Ricochet (bounces off walls) and Chain (loses strength). Only on forms that leave from a point (projectile, beam, cone...); never on a G form. Gunslinger: rank III. Other classes: Lesson only.",
+  "glyph.isekai_mahou.gun_on_headshot": "On Headshot",
+  "glyph.isekai_mahou.gun_on_headshot.desc": "TRIGGER (Gunslinger, at the start of the recipe). The slot fires ON ITS OWN, aimed at whoever took the bullet, whenever you land a HEADSHOT with a mana gun or a gun form. At most once per second; pays Focus and respects the cooldown. Pressing the key does not cast. Gunslinger: rank II. Other classes: Lesson only.",
+
+  "glyph.isekai_mahou.ranger_coordinated_strike": "Coordinated Strike",
+  "glyph.isekai_mahou.ranger_coordinated_strike.desc": "AUGMENT (Ranger). When the spell leaves, up to 2 of your companions nearby (the Ranger's Wolf and Eagle, or any pet you tamed within 24 blocks) repeat the SAME form from where they stand at your target — each copy at 50% power, one after the other. The target is whoever you aim at (up to 32 blocks) or the nearest marked enemy. With no companion or target, only yours fires. Only on forms that leave from a point; never on a G form. Ranger: rank III. Other classes: Lesson only.",
+  "glyph.isekai_mahou.ranger_on_mark": "On Marking a Target",
+  "glyph.isekai_mahou.ranger_on_mark.desc": "TRIGGER (Ranger, at the start of the recipe). The slot fires ON ITS OWN, aimed at the prey, whenever you (or your Eagle) place a new HUNTER'S MARK on a target. Refreshing the mark on the same target won't fire again for 5 s. Pays Focus and respects the cooldown. Pressing the key does not cast. Ranger: rank II. Other classes: Lesson only.",
+
+  "glyph.isekai_mahou.gambler_russian_roulette": "Russian Roulette",
+  "glyph.isekai_mahou.gambler_russian_roulette.desc": "AUGMENT (Gambler). A 6-chamber cylinder with ONE bullet. Each cast pulls the trigger: click (empty) = power x1.20, rising +0.15 per click in a row (up to x1.80 — the closer to the bullet, the bigger the prize). BANG = the bullet is YOURS: lose 35% of max health (it never kills you), the spell fires at half power and the cylinder spins again (Gambler: +20 Tension). Luck cannot buy this bet. Gambler: rank II. Other classes: Lesson only.",
+  "glyph.isekai_mahou.gambler_on_big_win": "On Big Win",
+  "glyph.isekai_mahou.gambler_on_big_win.desc": "TRIGGER (Gambler, at the start of the recipe). In combat (an enemy within 20 blocks), the slot fires ON ITS OWN at the nearest enemy right after a luck roll lands GREAT, NATURAL or JACKPOT — ride the streak. At most once every 1.5 s and never from a roll of another triggered spell. Pays the resource and respects the cooldown. Pressing the key does not cast. Gambler: rank III. Other classes: Lesson only (and they must roll luck with a Gambler glyph in the spell).",
+
+  "glyph.isekai_mahou.steelball_golden_spin": "Golden Spin",
+  "glyph.isekai_mahou.steelball_golden_spin.desc": "AUGMENT (Steel Ball). The golden-ratio spin enters the target's body and GROWS: after the hit, the target is Spun and takes 4 rotation pulses (one every 0.5 s), each 1.618x stronger than the last — 6% → 10% → 16% → 26% of the hit's damage (+58% total). Steel Ball users get a 5th pulse of 42%. One spin per target: a new hit restarts the spiral, it does not stack. Steel Ball: rank IV. Other classes: Lesson only.",
+  "glyph.isekai_mahou.steelball_on_ball_hit": "On Steel Ball Hit",
+  "glyph.isekai_mahou.steelball_on_ball_hit.desc": "TRIGGER (Steel Ball, at the start of the recipe). The slot fires ON ITS OWN, aimed at whoever took the ball, whenever your Steel Ball (thrown or from the Steel Ball form) hits a creature. At most once per second; pays the resource and respects the cooldown. Pressing the key does not cast. Steel Ball: rank II. Other classes: Lesson only.",
+
+  "message.isekai_mahou.glyphs_classes_b.trigger_only": "%s: this spell fires on its own (trigger) — the key does not cast it.",
+  "message.isekai_mahou.glyphs_classes_b.roulette_click": "Click… chamber %s was empty — power x%s",
+  "message.isekai_mahou.glyphs_classes_b.roulette_bang": "BANG! The bullet was in chamber %s.",
+  "message.isekai_mahou.glyphs_classes_b.class_unlock": "Your %2$s path revealed a new glyph: %1$s. Check the Grimoire.",
+  "message.isekai_mahou.glyphs_classes_b.granted": "%s class glyphs (v1.4) taught to %s player(s)."
+}

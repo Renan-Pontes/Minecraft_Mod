@@ -197,14 +197,8 @@ public final class RangerService {
         RangerFx.sound(level, sp.position(), SoundEvents.WOLF_HOWL, 1.0F, 0.9F);
         RangerFx.sound(level, sp.position(), SoundEvents.PARROT_IMITATE_PHANTOM, 0.9F, 1.5F);
         int rgb = MagicPath.RANGER.rgb();
-        DustParticleOptions dust = new DustParticleOptions(new Vector3f(((rgb >> 16) & 0xFF) / 255F, ((rgb >> 8) & 0xFF) / 255F,
-                (rgb & 0xFF) / 255F), 1.3F);
         double x = sp.getX(), y = sp.getY(), z = sp.getZ();
-        for (int i = 0; i < 48; i++) {
-            float a = i * 0.45F;
-            double rr = 1.1 - i * 0.01;
-            level.sendParticles(dust, x + Mth.cos(a) * rr, y + i * 0.05, z + Mth.sin(a) * rr, 1, 0, 0, 0, 0);
-        }
+        RangerFxNet.at(level, RangerFxNet.LEARN, sp.position(), net.minecraft.world.phys.Vec3.ZERO, 1F, rgb, sp.getId());
         level.sendParticles(ParticleTypes.CHERRY_LEAVES, x, y + 1.5, z, 30 + 6 * n, 0.9, 0.9, 0.9, 0.02);
         level.sendParticles(ParticleTypes.HAPPY_VILLAGER, x, y + 1.0, z, 20, 0.7, 0.8, 0.7, 0);
         level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, x, y + 1.0, z, 30, 0.5, 0.8, 0.5, 0.3);

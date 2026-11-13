@@ -11,8 +11,8 @@ import com.renanpontes.isekaimahou.core.api.Cutscenes;
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -116,11 +116,11 @@ public final class WitchProgress {
         for (int i = 0; i < 48; i++) {
             double a = i * Math.PI / 8;
             double y = player.getY() + i * 0.05;
-            level.sendParticles(ParticleTypes.WITCH, player.getX() + Math.cos(a) * 1.1, y, player.getZ() + Math.sin(a) * 1.1,
+            level.sendParticles(Vfx.witch(), player.getX() + Math.cos(a) * 1.1, y, player.getZ() + Math.sin(a) * 1.1,
                     1, 0, 0, 0, 0);
         }
-        level.sendParticles(ParticleTypes.ENCHANT, player.getX(), player.getY() + 1.2, player.getZ(), 80, 0.6, 0.8, 0.6, 1.0);
-        level.sendParticles(ParticleTypes.SOUL, player.getX(), player.getY() + 1.0, player.getZ(), 12, 0.5, 0.6, 0.5, 0.02);
+        level.sendParticles(Vfx.enchant(), player.getX(), player.getY() + 1.2, player.getZ(), 80, 0.6, 0.8, 0.6, 1.0);
+        level.sendParticles(Vfx.soul(), player.getX(), player.getY() + 1.0, player.getZ(), 12, 0.5, 0.6, 0.5, 0.02);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ZOMBIE_VILLAGER_CURE, SoundSource.PLAYERS, 0.6F, 1.6F);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.5F, 0.6F);
         player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 600, 0, false, false, true));

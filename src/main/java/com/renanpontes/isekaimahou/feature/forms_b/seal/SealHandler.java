@@ -11,9 +11,9 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellParser;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -110,7 +110,7 @@ public final class SealHandler {
             ElementFx.burst(level, target.getBoundingBox().getCenter(), data.element(), 12, 0.3);
             level.sendParticles(FormsBUtil.dust(rgb, 1.3F), target.getX(), target.getY() + target.getBbHeight() * 0.6,
                     target.getZ(), 10, 0.25, 0.3, 0.25, 0);
-            level.sendParticles(ParticleTypes.ENCHANTED_HIT, target.getX(), target.getY() + target.getBbHeight() * 0.6,
+            level.sendParticles(Vfx.magicCrit(), target.getX(), target.getY() + target.getBbHeight() * 0.6,
                     target.getZ(), 8, 0.3, 0.3, 0.3, 0.1);
         });
         level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.AMETHYST_BLOCK_HIT, SoundSource.PLAYERS, 1.0F, 1.4F);

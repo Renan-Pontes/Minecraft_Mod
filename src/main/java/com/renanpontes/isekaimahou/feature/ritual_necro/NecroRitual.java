@@ -21,9 +21,9 @@ import com.renanpontes.isekaimahou.feature.ritual_necro.soul.SoulStore;
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -128,7 +128,7 @@ public final class NecroRitual {
         }
         player.sendSystemMessage(msg("rite_begin", roman(next)).withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.ITALIC));
         Vec3 c = Vec3.atBottomCenterOf(pos).add(0, 1.0, 0);
-        level.sendParticles(ParticleTypes.SOUL, c.x, c.y, c.z, 20, 0.4, 0.3, 0.4, 0.03);
+        level.sendParticles(Vfx.soul(), c.x, c.y, c.z, 20, 0.4, 0.3, 0.4, 0.03);
         level.playSound(null, pos, SoundEvents.SOUL_ESCAPE.value(), SoundSource.BLOCKS, 1.5F, 0.5F);
     }
 
@@ -280,8 +280,8 @@ public final class NecroRitual {
         player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 1200, 0, false, false, true));
 
         ServerLevel fxLevel = atAltar ? altarLevel : level;
-        fxLevel.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, focus.x, focus.y, focus.z, 50, 0.4, 1.2, 0.4, 0.05);
-        fxLevel.sendParticles(ParticleTypes.SOUL, focus.x, focus.y, focus.z, 25, 0.8, 0.8, 0.8, 0.04);
+        fxLevel.sendParticles(Vfx.soulFlame(), focus.x, focus.y, focus.z, 50, 0.4, 1.2, 0.4, 0.05);
+        fxLevel.sendParticles(Vfx.soul(), focus.x, focus.y, focus.z, 25, 0.8, 0.8, 0.8, 0.04);
         fxLevel.playSound(null, focus.x, focus.y, focus.z, SoundEvents.WITHER_SKELETON_AMBIENT, SoundSource.PLAYERS, 1.0F, 0.5F);
         fxLevel.playSound(null, focus.x, focus.y, focus.z, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.5F, 0.5F);
 
@@ -309,8 +309,8 @@ public final class NecroRitual {
             Entity e = type.get().spawn(level, ent -> bindOwner(ent, player), at, MobSpawnType.MOB_SUMMONED, false, false);
             if (e == null) continue;
             spawned++;
-            level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, e.getX(), e.getY() + 0.8, e.getZ(), 25, 0.3, 0.6, 0.3, 0.03);
-            level.sendParticles(ParticleTypes.SCULK_SOUL, e.getX(), e.getY() + 0.2, e.getZ(), 8, 0.4, 0.1, 0.4, 0.02);
+            level.sendParticles(Vfx.soulFlame(), e.getX(), e.getY() + 0.8, e.getZ(), 25, 0.3, 0.6, 0.3, 0.03);
+            level.sendParticles(Vfx.sculkSoul(), e.getX(), e.getY() + 0.2, e.getZ(), 8, 0.4, 0.1, 0.4, 0.02);
             level.playSound(null, e.getX(), e.getY(), e.getZ(), SoundEvents.ZOMBIE_INFECT, SoundSource.HOSTILE, 1.0F, 0.6F);
             level.playSound(null, e.getX(), e.getY(), e.getZ(), SoundEvents.BONE_BLOCK_PLACE, SoundSource.HOSTILE, 1.0F, 0.7F);
         }

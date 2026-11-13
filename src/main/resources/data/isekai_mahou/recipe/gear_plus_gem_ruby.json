@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:gem_ruby_chipped"
+    },
+    {
+      "item": "isekai_mahou:gem_ruby_chipped"
+    },
+    {
+      "item": "isekai_mahou:gem_ruby_chipped"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:gem_ruby",
+    "count": 1
+  }
+}

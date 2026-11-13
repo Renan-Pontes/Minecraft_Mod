@@ -41,8 +41,11 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public final class CharacterService {
     /** Id da etapa de criação no {@link Onboarding} (a do núcleo: sempre logo depois da classe). */
     public static final String STEP = EntryFlow.STEP_RACE;
-    /** Custo de renascer no altar (Cristais de Mana; criativo não paga). */
-    public static final int ALTAR_COST = 3;
+    /**
+     * Cristais de Mana para renascer com outra RAÇA (release 1.0: custo MUITO alto — {@link Reincarnation#RACE}, que
+     * também pede 1 Núcleo de Guardião; criativo não paga).
+     */
+    public static final int ALTAR_COST = Reincarnation.RACE.crystals();
     private static final double ALTAR_REACH = 8.0;
 
     /** Altar aberto por jogador (o "Renascer" só vale perto dele). */
@@ -66,10 +69,14 @@ public final class CharacterService {
         NeoForge.EVENT_BUS.addListener(CharacterService::onTick);
         NeoForge.EVENT_BUS.addListener((ServerStoppedEvent e) -> {
             ALTAR_SESSION.clear();
+            Reincarnation.clearAll();
             NOTICED.clear();
             FREE_REBUILD.clear();
             RacePassives.clearAll();
             RaceForms.clearAll();
+            SlimePredator.clearAll();
+            KumoThreads.clearAll();
+            RaceKits.clearAll();
         });
     }
 
@@ -86,7 +93,13 @@ public final class CharacterService {
     }
 
     private static CharacterNetwork.Look look(ServerPlayer sp, CharacterData d) {
-        return new CharacterNetwork.Look(sp.getId(), d.created() ? d.race().ordinal() : -1, d.ancestry().color);
+        return new CharacterNetwork.Look(sp.getId(), d.created() ? d.race().ordinal() : -1, d.ancestry().color,
+                d.created() ? RaceProgress.level(sp) : 0);
+    }
+
+    /** Reenvia só a aparência (o nível de raça mudou: os traços crescem com ele). */
+    static void sendLook(ServerPlayer sp) {
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(sp, look(sp, CharacterContent.data(sp)));
     }
 
     private static void onTracking(PlayerEvent.StartTracking e) {
@@ -114,6 +127,7 @@ public final class CharacterService {
     private static void onLogout(PlayerEvent.PlayerLoggedOutEvent e) {
         UUID id = e.getEntity().getUUID();
         ALTAR_SESSION.remove(id);
+        Reincarnation.forget(id);
         NOTICED.remove(id);
         FREE_REBUILD.remove(id);
     }
@@ -137,13 +151,20 @@ public final class CharacterService {
         if (d.dirty) flush(sp);
         RaceForms.tick(sp, d);
         int t = sp.tickCount;
-        if (t % 5 == 2) RacePassives.tickWall(sp, d);
+        if (t % 5 == 2) {
+            RacePassives.tickWall(sp, d);
+            KumoThreads.tickTraps(sp, d); // v1.7: Armadilha de Fios (Aracnídeo)
+        }
         if (t % 20 == 7) {
             RacePassives.tickVision(sp, d);
             RacePassives.tickSecond(sp, d);
             if (t > 200) legacyNotice(sp, d);
         }
-        if (t % 200 == 37) RaceProgress.check(sp);
+        if (t % 200 == 37) {
+            RaceProgress.check(sp);
+            // Dica de primeira vez (uma só): os dois altares existem — quando o jogador já tem talentos para errar
+            if (MagicApi.get(sp).level() >= 10 && !Onboarding.quiet(sp)) Reincarnation.hint(sp);
+        }
     }
 
     /** Personagem antigo (ou que pulou a etapa): uma vez por sessão, convida a escolher a raça pela aba. */
@@ -177,6 +198,7 @@ public final class CharacterService {
             return;
         }
         ALTAR_SESSION.put(sp.getUUID(), GlobalPos.of(sp.level().dimension(), pos.immutable()));
+        Reincarnation.hint(sp);
         flush(sp);
         PacketDistributor.sendToPlayer(sp, new CharacterNetwork.Open(CharacterNetwork.MODE_ALTAR, pos.immutable()));
     }
@@ -213,10 +235,14 @@ public final class CharacterService {
                     fail(sp, Component.translatable("message.isekai_mahou.character.same_race", race.displayName()));
                     return;
                 }
-                // Escolher pela 1ª vez (personagem antigo) é grátis, como na aba; renascer custa os cristais
-                if (d.created() && !sp.getAbilities().instabuild && !pay(sp)) {
-                    fail(sp, Component.translatable("message.isekai_mahou.character.altar_cost", ALTAR_COST,
-                            CoreRegistries.MANA_CRYSTAL.get().getDescription()));
+                // Não no meio de uma Transformação (a forma é da raça antiga)
+                if (RaceForms.charging(sp) || RaceForms.formOf(sp) != null) {
+                    fail(sp, Component.translatable("message.isekai_mahou.character.class_in_form"));
+                    return;
+                }
+                // Escolher pela 1ª vez (personagem antigo) é grátis, como na aba; renascer custa caro
+                if (d.created() && !Reincarnation.pay(sp, Reincarnation.RACE)) {
+                    fail(sp, Component.translatable("message.isekai_mahou.character.cant_pay", Reincarnation.describe(Reincarnation.RACE)));
                     return;
                 }
             }
@@ -254,18 +280,11 @@ public final class CharacterService {
         return e != null && Element.BASE.contains(e) ? e : Element.FIRE;
     }
 
-    private static boolean nearAltar(ServerPlayer sp) {
+    static boolean nearAltar(ServerPlayer sp) {
         GlobalPos g = ALTAR_SESSION.get(sp.getUUID());
         if (g == null || !g.dimension().equals(sp.level().dimension())) return false;
         if (!sp.level().getBlockState(g.pos()).is(CharacterContent.ALTAR.get())) return false;
         return sp.distanceToSqr(g.pos().getCenter()) <= ALTAR_REACH * ALTAR_REACH;
-    }
-
-    private static boolean pay(ServerPlayer sp) {
-        var crystal = CoreRegistries.MANA_CRYSTAL.get();
-        if (sp.getInventory().countItem(crystal) < ALTAR_COST) return false;
-        sp.getInventory().clearOrCountMatchingItems(s -> s.is(crystal), ALTAR_COST, sp.inventoryMenu.getCraftSlots());
-        return true;
     }
 
     private static void rebirthFx(ServerPlayer sp, Race race) {

@@ -140,7 +140,6 @@ public final class BladeWaves {
         }
         // visual a cada tick: meia-lua e uma faísca de varrida
         KnightFx.crescent(w.level, w.pos, w.dir, w.half, w.rgb, w.big ? 9 : 6, w.big ? 1.6F : 1.1F);
-        if (w.age % 2 == 0) w.level.sendParticles(ParticleTypes.SWEEP_ATTACK, w.pos.x, w.pos.y, w.pos.z, 1, 0, 0, 0, 0);
         return --w.life > 0;
     }
 
@@ -165,8 +164,7 @@ public final class BladeWaves {
     }
 
     private static void burst(Wave w) {
-        w.level.sendParticles(KnightFx.dust(w.rgb, 1.3F), w.pos.x, w.pos.y, w.pos.z, w.big ? 24 : 12, 0.35, 0.35, 0.35, 0);
-        w.level.sendParticles(ParticleTypes.CRIT, w.pos.x, w.pos.y, w.pos.z, 8, 0.3, 0.3, 0.3, 0.3);
+        KnightFxNet.at(w.level, KnightFxNet.WAVE_BURST, w.pos, w.dir, (float) w.half, w.rgb, -1, w.big ? 1 : 0);
         KnightFx.sound(w.level, w.pos, SoundEvents.AMETHYST_BLOCK_BREAK, 0.7F, 1.4F);
     }
 

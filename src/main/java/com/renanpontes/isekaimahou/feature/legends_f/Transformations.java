@@ -9,15 +9,17 @@ import java.util.UUID;
 import org.joml.Vector3f;
 
 import com.renanpontes.isekaimahou.core.CoreRegistries;
+import com.renanpontes.isekaimahou.core.Element;
+import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.feature.legends_f.entity.BarrierEntity;
 import com.renanpontes.isekaimahou.feature.legends_f.necro.ShadowArmy;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -91,8 +93,13 @@ public final class Transformations {
         LfUtil.sound(level, sp.position(), SoundEvents.BEE_LOOP_AGGRESSIVE, 1.4F, 0.5F);
         LfUtil.sound(level, sp.position(), SoundEvents.RAVAGER_ROAR, 0.7F, 1.3F);
         level.sendParticles(new DustParticleOptions(new Vector3f(0.75F, 0.05F, 0.05F), 1.6F), sp.getX(), sp.getY() + 1.4, sp.getZ(),
-                40, 0.5, 0.5, 0.5, 0.1);
+                16, 0.5, 0.5, 0.5, 0.1);
         LfUtil.ring(level, sp.position().add(0, 0.1, 0), CHAINSAW_COLOR, 14, 4F);
+        // v1.3: o motor do coração pega — estouro de sangue e faíscas, tremor e uma aura de faíscas vermelhas
+        Vec3 chest = sp.position().add(0, 1.2, 0);
+        ElementFx.impactFx(level, chest, Element.HELLFIRE, 0xC0182E, 4, new Vec3(0, 1, 0), 1.2F);
+        ElementFx.slash(level, chest, sp.getLookAngle(), Element.FIRE, 0xFF4040, 4.5F, 4);
+        ElementFx.aura(level, sp, Element.LIGHTNING, 0xFF5050, 0.9F, 3, Math.min(ticks, 600));
     }
 
     public static boolean chainsaw(Player p) {
@@ -136,7 +143,7 @@ public final class Transformations {
         LfUtil.banner(sp, "announce.isekai_mahou.legends_f.faust_done", 0xFFC84A, false);
         LfUtil.fx(level, LfNet.SEAL, sp.position().add(0, 0.05, 0), new Vec3(0, 1, 0), 0xFFC84A, 30, 3F);
         LfUtil.sound(level, sp.position(), SoundEvents.PLAYER_LEVELUP, 1.0F, 0.7F);
-        level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, sp.getX(), sp.getY() + 1, sp.getZ(), 30, 0.5, 0.6, 0.5, 0.3);
+        level.sendParticles(Vfx.totem(), sp.getX(), sp.getY() + 1, sp.getZ(), 30, 0.5, 0.6, 0.5, 0.3);
     }
 
     private static void punish(ServerPlayer sp) {
@@ -149,8 +156,8 @@ public final class Transformations {
         sp.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 400, 1));
         LfUtil.banner(sp, "announce.isekai_mahou.legends_f.faust_fail", FAUST_COLOR, false);
         LfUtil.sound(level, sp.position(), SoundEvents.WITHER_HURT, 1.0F, 0.6F);
-        level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, sp.getX(), sp.getY() + 1, sp.getZ(), 30, 0.4, 0.6, 0.4, 0.05);
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, sp.getX(), sp.getY() + 1, sp.getZ(), 20, 0.4, 0.6, 0.4, 0.05);
+        level.sendParticles(Vfx.soulFlame(), sp.getX(), sp.getY() + 1, sp.getZ(), 30, 0.4, 0.6, 0.4, 0.05);
+        level.sendParticles(Vfx.largeSmoke(), sp.getX(), sp.getY() + 1, sp.getZ(), 20, 0.4, 0.6, 0.4, 0.05);
     }
 
     // =====================================================================================
@@ -166,6 +173,9 @@ public final class Transformations {
         LfStates.set(sp, LfNet.S_MEDITATE, MEDITATE_TICKS, 0);
         LfUtil.actionbar(sp, Component.translatable("message.isekai_mahou.legends_f.sage_meditate").withStyle(ChatFormatting.GOLD));
         LfUtil.sound(sp.serverLevel(), sp.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 1F, 0.5F);
+        // v1.3: a energia natural converge para o corpo enquanto medita (folhas e brilho verde vindo de longe)
+        ElementFx.gatherAt(sp.serverLevel(), sp.position().add(0, 1.0, 0), Element.NATURE, 0x9AE070, 4.5F, 3, MEDITATE_TICKS);
+        ElementFx.area(sp.serverLevel(), sp.position(), Element.NATURE, 0x7FD05A, 3.5F, 2, MEDITATE_TICKS);
     }
 
     private static void enterSage(ServerPlayer sp, int ticks) {
@@ -177,7 +187,10 @@ public final class Transformations {
         LfUtil.ring(level, sp.position().add(0, 0.1, 0), SAGE_COLOR, 20, 8F);
         LfUtil.sound(level, sp.position(), SoundEvents.BEACON_POWER_SELECT, 1.2F, 0.8F);
         LfUtil.sound(level, sp.position(), SoundEvents.FROG_AMBIENT, 1.2F, 0.7F);
-        level.sendParticles(ParticleTypes.HAPPY_VILLAGER, sp.getX(), sp.getY() + 1, sp.getZ(), 30, 0.6, 0.8, 0.6, 0.05);
+        level.sendParticles(Vfx.happy(), sp.getX(), sp.getY() + 1, sp.getZ(), 12, 0.6, 0.8, 0.6, 0.05);
+        // v1.3: despertar do Modo Sábio — nova de natureza laranja, coluna de luz e aura que dura o modo inteiro
+        ElementFx.nova(level, sp.position().add(0, 0.1, 0), Element.NATURE, SAGE_COLOR, 6F, 4, true);
+        ElementFx.aura(level, sp, Element.SUN, SAGE_COLOR, 0.8F, 3, Math.min(ticks, 600));
     }
 
     public static boolean sage(Player p) {
@@ -212,7 +225,7 @@ public final class Transformations {
                 double a = level.random.nextDouble() * Math.PI * 2, r = 3 + level.random.nextDouble() * 3;
                 Vec3 from = p.add(Math.cos(a) * r, 0.2 + level.random.nextDouble() * 2, Math.sin(a) * r);
                 Vec3 v = p.add(0, 1, 0).subtract(from).scale(0.12);
-                level.sendParticles(ParticleTypes.HAPPY_VILLAGER, from.x, from.y, from.z, 0, v.x, v.y, v.z, 1);
+                level.sendParticles(Vfx.happy(), from.x, from.y, from.z, 0, v.x, v.y, v.z, 1);
                 level.sendParticles(new DustParticleOptions(new Vector3f(0.95F, 0.55F, 0.15F), 1.0F), from.x, from.y, from.z, 1, 0, 0, 0, 0);
             }
             if (now - m.start >= MEDITATE_TICKS) {
@@ -290,7 +303,7 @@ public final class Transformations {
                         && !(e instanceof Player p && !level.getServer().isPvpAllowed()) && !(e instanceof net.minecraft.world.entity.OwnableEntity oe && sp.getUUID().equals(oe.getOwnerUUID())));
         for (LivingEntity e : hit) {
             e.hurt(sp.damageSources().playerAttack(sp), 5F + 2F * s.amp);
-            level.sendParticles(ParticleTypes.CRIT, e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(), 8, 0.3, 0.3, 0.3, 0.3);
+            level.sendParticles(Vfx.crit(), e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(), 8, 0.3, 0.3, 0.3, 0.3);
         }
         if (!hit.isEmpty()) LfUtil.sound(level, front, SoundEvents.GRINDSTONE_USE, 1.0F, 1.6F);
     }
@@ -319,7 +332,7 @@ public final class Transformations {
             e.setAmount(amount *= 1.5F);
             victim.removeEffect(LfRegistry.ENCHANTED_SLEEP);
             LfStates.clear(victim, LfNet.S_SLEEP);
-            level.sendParticles(ParticleTypes.CRIT, victim.getX(), victim.getY() + victim.getBbHeight(), victim.getZ(), 10, 0.3, 0.2, 0.3, 0.2);
+            level.sendParticles(Vfx.crit(), victim.getX(), victim.getY() + victim.getBbHeight(), victim.getZ(), 10, 0.3, 0.2, 0.3, 0.2);
             LfUtil.sound(level, victim.position(), SoundEvents.AMETHYST_BLOCK_BREAK, 1.0F, 1.2F);
         }
         // Mana Oculta: o primeiro golpe revela tudo de uma vez
@@ -342,7 +355,7 @@ public final class Transformations {
             sp.heal(amount * 0.25F);
             level.sendParticles(new DustParticleOptions(new Vector3f(0.7F, 0.02F, 0.02F), 1.4F), victim.getX(),
                     victim.getY() + victim.getBbHeight() * 0.6, victim.getZ(), 14, 0.3, 0.3, 0.3, 0.2);
-            level.sendParticles(ParticleTypes.CRIT, victim.getX(), victim.getY() + victim.getBbHeight() * 0.6, victim.getZ(), 6, 0.2, 0.2, 0.2, 0.4);
+            level.sendParticles(Vfx.crit(), victim.getX(), victim.getY() + victim.getBbHeight() * 0.6, victim.getZ(), 6, 0.2, 0.2, 0.2, 0.4);
             LfUtil.sound(level, victim.position(), SoundEvents.GRINDSTONE_USE, 1.0F, 1.4F);
         }
         // Modo Sábio: onda de energia natural em volta do alvo

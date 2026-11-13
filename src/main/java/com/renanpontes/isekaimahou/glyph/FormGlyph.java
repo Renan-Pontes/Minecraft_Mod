@@ -27,6 +27,25 @@ public abstract class FormGlyph extends Glyph {
     /** Pode receber glifos de Lei depois dela (Domínios). */
     public boolean acceptsLaws() { return false; }
 
+    /**
+     * v1.4: a forma é uma TRANSFORMAÇÃO de quem conjura e aceita {@link TransformLawGlyph Leis de Transformação} no fim
+     * da receita. Padrão: registrada em {@link TransformTargets#registerForm}. (Magias com um EFEITO de transformação,
+     * como Si Mesmo + Kaioken, também aceitam — ver {@link TransformTargets#isTransformation}.)
+     */
+    public boolean acceptsTransformLaws() { return TransformTargets.isForm(id()); }
+
+    /**
+     * Release 1.0: a forma pode ser seguida de ligações (Ao Acertar, Ao Terminar, Saltar...)? Padrão: sim. A forma
+     * Transformação ({@link TransformForge}) responde não — ela não dispara estágios, e o jogador pagaria por nada.
+     */
+    public boolean allowsLinks() { return true; }
+
+    /**
+     * Release 1.0 (onda 5): multiplicador da RECARGA da magia pelos aumentos postos na forma (o {@link SpellParser}
+     * aplica sobre a recarga final). Padrão 1 (nada muda). A forma Transformação usa Acelerar/Retardar para isso.
+     */
+    public float cooldownMult(SpellStats stats) { return 1.0F; }
+
     /** Esta forma cria magia que fica no mundo (zona, torre...), para limitar quantidade por jogador. */
     public boolean isPersistent() { return false; }
 

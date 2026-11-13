@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "isekai_mahou:block/depths_mana_bud"
+  },
+  "render_type": "minecraft:cutout"
+}

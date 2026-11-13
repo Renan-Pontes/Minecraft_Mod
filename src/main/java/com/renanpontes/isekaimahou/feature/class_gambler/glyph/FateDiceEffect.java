@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.feature.class_gambler.glyph;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbFx;
+import com.renanpontes.isekaimahou.feature.class_gambler.GbFxNet;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbRegistries;
 import com.renanpontes.isekaimahou.feature.class_gambler.entity.GamblerDiceEntity;
 import com.renanpontes.isekaimahou.feature.class_gambler.luck.LuckService;
@@ -85,13 +86,11 @@ public class FateDiceEffect extends EffectGlyph {
         if (sum == 2) {
             dmg = 1F;
             if (caster != null) caster.addEffect(new MobEffectInstance(GbRegistries.JINXED, 120, 0), caster);
-            level.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y, c.z, 10, 0.3, 0.3, 0.3, 0.02);
+            GbFxNet.at(level, GbFxNet.DICE_SNAKE, c, Vec3.ZERO, 1F, 0x6A6478, target.getId());
             GbFx.sound(level, c, SoundEvents.NOTE_BLOCK_DIDGERIDOO.value(), 1.0F, 0.5F);
         } else if (sum == 12) {
             dmg *= 3F;
-            level.sendParticles(ParticleTypes.FLASH, c.x, c.y, c.z, 1, 0, 0, 0, 0);
-            level.sendParticles(ParticleTypes.END_ROD, c.x, c.y + 3, c.z, 30, 0.1, 2.0, 0.1, 0.02);
-            level.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, 30, 0.5, 0.8, 0.5, 0.3);
+            GbFxNet.at(level, GbFxNet.DICE_TWELVE, c, Vec3.ZERO, 1F, GbFx.GOLD, target.getId());
             GbFx.sound(level, c, SoundEvents.LIGHTNING_BOLT_THUNDER, 0.5F, 1.4F);
             if (caster instanceof ServerPlayer sp && LuckService.isGambler(sp)) LuckService.addFever(sp, 10);
         } else if (a == b) {

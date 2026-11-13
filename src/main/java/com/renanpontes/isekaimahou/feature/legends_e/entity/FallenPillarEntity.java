@@ -14,6 +14,7 @@ import com.renanpontes.isekaimahou.feature.legends_e.LeUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -85,7 +86,7 @@ public class FallenPillarEntity extends LeSpellEntity {
         if (age < IMPACT) {
             if (age % 2 == 0) {
                 double a = random.nextDouble() * Math.PI * 2, d = Math.sqrt(random.nextDouble()) * r;
-                LeFx.send(level, ParticleTypes.END_ROD, g.x + Math.cos(a) * d, g.y + 0.2, g.z + Math.sin(a) * d, 1, 0.05, 0.05, 0.05, 0.08);
+                LeFx.send(level, Vfx.endRod(), g.x + Math.cos(a) * d, g.y + 0.2, g.z + Math.sin(a) * d, 1, 0.05, 0.05, 0.05, 0.08);
             }
             if (age == TARGET) {
                 LeFx.sound(level, g, SoundEvents.BEACON_POWER_SELECT, 3.0F, 0.5F);
@@ -98,8 +99,8 @@ public class FallenPillarEntity extends LeSpellEntity {
         if (t > 0 && t <= HEAT_TICKS) heatWave(level, ctx, g, r, t);
         if (t > 0 && t < ACTIVE && t % 10 == 0) burnInside(level, ctx, g, r);
         if (t > 0 && t < ACTIVE && t % 3 == 0) {
-            LeFx.send(level, ParticleTypes.END_ROD, g.x, g.y + 1, g.z, 6, r * 0.5, 2.0, r * 0.5, 0.15);
-            LeFx.send(level, ParticleTypes.WHITE_ASH, g.x, g.y + 3, g.z, 10, r * 0.8, 3.0, r * 0.8, 0.02);
+            LeFx.send(level, Vfx.endRod(), g.x, g.y + 1, g.z, 6, r * 0.5, 2.0, r * 0.5, 0.15);
+            LeFx.send(level, Vfx.whiteAsh(), g.x, g.y + 3, g.z, 10, r * 0.8, 3.0, r * 0.8, 0.02);
         }
         if (t == ACTIVE) LeFx.sound(level, g, SoundEvents.BEACON_DEACTIVATE, 3.0F, 0.6F);
         if (t >= ACTIVE + FADE) discard();
@@ -116,8 +117,8 @@ public class FallenPillarEntity extends LeSpellEntity {
         LeFx.ring(level, g.add(0, 0.3, 0), new Vec3(0, 1, 0), r * 3.2F, 0xCFE8FF, HEAT_TICKS + 4);
         LeFx.ring(level, g.add(0, 0.6, 0), new Vec3(0, 1, 0), r * 1.8F, 0xFFFFFF, 14);
         LeFx.send(level, ParticleTypes.FLASH, g.add(0, 1, 0), 3, r * 0.3, 0);
-        LeFx.send(level, ParticleTypes.END_ROD, g.x, g.y + 1, g.z, 160, r * 0.6, 1.0, r * 0.6, 0.6);
-        LeFx.send(level, ParticleTypes.CLOUD, g.x, g.y + 0.5, g.z, 60, r, 0.3, r, 0.25);
+        LeFx.send(level, Vfx.endRod(), g.x, g.y + 1, g.z, 160, r * 0.6, 1.0, r * 0.6, 0.6);
+        LeFx.send(level, Vfx.cloud(), g.x, g.y + 0.5, g.z, 60, r, 0.3, r, 0.25);
 
         // Vaporizar: tudo que a magia afeta dentro do pilar (do fundo até bem alto)
         for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(g.x - r, g.y - r * 1.6, g.z - r, g.x + r, g.y + 60, g.z + r),
@@ -156,7 +157,7 @@ public class FallenPillarEntity extends LeSpellEntity {
         if (t % 2 == 0) {
             for (int i = 0; i < 16; i++) {
                 double a = Math.PI * 2 * i / 16 + random.nextDouble() * 0.3;
-                LeFx.send(level, ParticleTypes.FLAME, g.x + Math.cos(a) * front, g.y + 0.4, g.z + Math.sin(a) * front, 1, 0.2, 0.1, 0.2, 0.02);
+                LeFx.send(level, Vfx.flame(), g.x + Math.cos(a) * front, g.y + 0.4, g.z + Math.sin(a) * front, 1, 0.2, 0.1, 0.2, 0.02);
             }
         }
     }

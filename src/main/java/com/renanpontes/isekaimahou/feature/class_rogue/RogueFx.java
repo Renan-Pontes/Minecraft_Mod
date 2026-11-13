@@ -51,41 +51,23 @@ public final class RogueFx {
 
     /** Fumaça de sumir/aparecer (passo de sombra). */
     public static void vanish(ServerLevel level, Vec3 at) {
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y + 1.0, at.z, 12, 0.3, 0.5, 0.3, 0.02);
-        level.sendParticles(dust(SHADOW, 1.6F), at.x, at.y + 1.0, at.z, 16, 0.35, 0.6, 0.35, 0);
-        level.sendParticles(ParticleTypes.REVERSE_PORTAL, at.x, at.y + 1.0, at.z, 10, 0.25, 0.5, 0.25, 0.04);
+        // fumaça, imagem e brilho desenhados no cliente (RogueFxClient)
+        RogueFxNet.at(level, RogueFxNet.VANISH, at, Vec3.ZERO, 1F, SHADOW, -1);
     }
 
     /** Corte em arco (golpe pelas costas). */
     public static void slash(ServerLevel level, LivingEntity target, int rgb) {
-        Vec3 c = center(target);
-        float yaw = target.getYRot() * Mth.DEG_TO_RAD;
-        for (int i = 0; i < 9; i++) {
-            double t = -1 + i / 4.0;
-            double x = c.x + Math.cos(yaw) * t * 0.6;
-            double z = c.z + Math.sin(yaw) * t * 0.6;
-            level.sendParticles(dust(rgb, 1.1F), x, c.y + 0.35 - Math.abs(t) * 0.3, z, 1, 0, 0, 0, 0);
-        }
-        level.sendParticles(ParticleTypes.SWEEP_ATTACK, c.x, c.y, c.z, 1, 0, 0, 0, 0);
+        RogueFxNet.at(level, RogueFxNet.SLASH, center(target), Vec3.ZERO, 1F, rgb, target.getId());
     }
 
     /** Estouro de crítico (pequeno). */
     public static void crit(ServerLevel level, Entity target, boolean vital) {
-        Vec3 c = center(target);
-        level.sendParticles(ParticleTypes.CRIT, c.x, c.y, c.z, vital ? 22 : 12, 0.3, 0.35, 0.3, 0.3);
-        if (vital) level.sendParticles(dust(BLOOD, 1.3F), c.x, c.y + 0.2, c.z, 10, 0.25, 0.25, 0.25, 0);
-        else level.sendParticles(ParticleTypes.ENCHANTED_HIT, c.x, c.y, c.z, 6, 0.25, 0.3, 0.25, 0.2);
+        RogueFxNet.at(level, RogueFxNet.CRIT, center(target), Vec3.ZERO, 1F, vital ? BLOOD : 0xFFFFFF, target.getId(), vital ? 1 : 0);
     }
 
     /** Cartão de visita do Ladrão Fantasma: um losango de luz branca girando. */
     public static void callingCard(ServerLevel level, Vec3 at) {
-        for (int i = 0; i < 16; i++) {
-            double a = i * Math.PI / 8;
-            double r = (i % 2 == 0) ? 0.9 : 0.5;
-            level.sendParticles(dust(CARD, 1.3F), at.x + Math.cos(a) * r, at.y + 1.2 + Math.sin(a) * r, at.z, 1, 0, 0, 0, 0);
-        }
-        level.sendParticles(ParticleTypes.END_ROD, at.x, at.y + 1.2, at.z, 14, 0.4, 0.5, 0.4, 0.05);
-        level.sendParticles(ParticleTypes.FIREWORK, at.x, at.y + 1.2, at.z, 10, 0.2, 0.2, 0.2, 0.08);
+        RogueFxNet.at(level, RogueFxNet.CARD, at, Vec3.ZERO, 1F, CARD, -1);
     }
 
     /** Mensagem na barra de ação. */

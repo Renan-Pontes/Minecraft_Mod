@@ -4,6 +4,9 @@ package com.renanpontes.isekaimahou.glyph;
  * Lei de Domínio (Acerto Garantido, Sem Fuga, Território...). Só vale depois de uma forma com
  * {@link FormGlyph#acceptsLaws()}. O módulo de Domínio define as leis (subclasses) e lê
  * {@code ctx.spell().laws()} para aplicar as regras.
+ * <p>
+ * v1.4: a subclasse {@link TransformLawGlyph} (Leis de Transformação) usa o mesmo tipo LAW, mas vale depois de uma
+ * TRANSFORMAÇÃO em vez de um Domínio (ver {@link TransformTargets}).
  */
 public class LawGlyph extends Glyph {
 

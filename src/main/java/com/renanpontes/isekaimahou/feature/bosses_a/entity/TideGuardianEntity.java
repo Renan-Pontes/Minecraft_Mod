@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
+import com.renanpontes.isekaimahou.core.boss.BossCurses;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
 import com.renanpontes.isekaimahou.feature.bosses_a.BossSpells;
@@ -296,6 +297,12 @@ public class TideGuardianEntity extends ElementalGuardian {
                 .soak(160)
                 .knock(2.0, 0.5)
                 .launch();
+        // Quem estiver no leque quando a onda passar engole água: alguns segundos sem ar
+        Telegraph.Shape cone = Telegraph.Shape.cone(position(), BossSpells.yawOf(waveDir), (float) (half * 2), 20F);
+        BossKit.schedule(level, 6, () -> {
+            if (!isAlive()) return;
+            for (LivingEntity e : foesIn(level, cone)) BossCurses.apply(e, BossCurses.DROWNING, 50 + 20 * phase(), 0);
+        });
         // Na fase 2+ a Maré também conjura a Onda dos glifos atrás da sua, na MESMA direção do leque
         if (phase() >= 2) {
             BossSpells.setYaw(this, BossSpells.yawOf(waveDir));

@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.classes.ResourceTraining;
 import com.renanpontes.isekaimahou.feature.fusions_a.FaUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -68,10 +69,10 @@ public final class FaEffects {
             if (sl != null) {
                 FaUtil.around(sl, e, FaUtil.dustFade(0xFF6A00, 0x3A1A10, 1.0F), 3, 0);
                 if (e.getRandom().nextInt(3) == 0) {
-                    sl.sendParticles(ParticleTypes.DRIPPING_LAVA, e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(), 1,
+                    sl.sendParticles(Vfx.lavaDrip(), e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(), 1,
                             e.getBbWidth() * 0.4, e.getBbHeight() * 0.3, e.getBbWidth() * 0.4, 0);
                 }
-                sl.sendParticles(ParticleTypes.SMALL_FLAME, e.getX(), e.getY() + 0.1, e.getZ(), 1, 0.3, 0.05, 0.3, 0.005);
+                sl.sendParticles(Vfx.smallFlame(), e.getX(), e.getY() + 0.1, e.getZ(), 1, 0.3, 0.05, 0.3, 0.005);
             }
             return true;
         }
@@ -95,7 +96,7 @@ public final class FaEffects {
             if (e.getTicksFrozen() > 0) e.setTicksFrozen(0);
             ServerLevel sl = server(e);
             if (sl != null) {
-                FaUtil.around(sl, e, ParticleTypes.SNOWFLAKE, 2, 0.01);
+                FaUtil.around(sl, e, Vfx.snowflake(), 2, 0.01);
                 FaUtil.around(sl, e, FaUtil.dust(0xCFF4FF, 0.8F), 3, 0);
             }
             return true;
@@ -123,7 +124,7 @@ public final class FaEffects {
             if (sl == null) return true;
             Vec3 v = e.getDeltaMovement();
             boolean moving = v.horizontalDistanceSqr() > 0.003 || e.walkDist != e.walkDistO;
-            sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(),
+            sl.sendParticles(Vfx.electric(), e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(),
                     moving ? 3 : 1, e.getBbWidth() * 0.5, e.getBbHeight() * 0.4, e.getBbWidth() * 0.5, 0.05);
             if (moving) sl.sendParticles(FaUtil.dust(0x7FDBFF, 0.9F), e.getX(), e.getY() + 0.2, e.getZ(), 2, 0.2, 0.1, 0.2, 0);
             return true;
@@ -158,7 +159,7 @@ public final class FaEffects {
                     d.addMana((2.5F + 1.5F * amplifier) * ResourceTraining.MANA_SCALE); // v1.0: mana ×3
                 }
                 if (e.getHealth() < e.getMaxHealth()) e.heal(0.5F + 0.5F * amplifier);
-                sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(), 3,
+                sl.sendParticles(Vfx.happy(), e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(), 3,
                         e.getBbWidth() * 0.5, e.getBbHeight() * 0.3, e.getBbWidth() * 0.5, 0);
                 sl.sendParticles(FaUtil.dustFade(0xFFF07A, 0x58C84A, 1.0F), e.getX(), e.getY() + e.getBbHeight() + 0.4,
                         e.getZ(), 4, 0.3, 0.25, 0.3, 0);
@@ -234,9 +235,9 @@ public final class FaEffects {
             if (FaUtil.isUndead(e)) dmg *= 2F;
             e.invulnerableTime = 0;
             e.hurt(FaUtil.creditedSource(e), dmg);
-            FaUtil.around(sl, e, ParticleTypes.FLAME, 4, 0.02);
+            FaUtil.around(sl, e, Vfx.flame(), 4, 0.02);
             FaUtil.around(sl, e, FaUtil.dustFade(0xFFF3B0, 0xFFB300, 1.1F), 5, 0);
-            sl.sendParticles(ParticleTypes.END_ROD, e.getX(), e.getY() + e.getBbHeight() + 0.2, e.getZ(), 1, 0.2, 0.1, 0.2, 0.02);
+            sl.sendParticles(Vfx.endRod(), e.getX(), e.getY() + e.getBbHeight() + 0.2, e.getZ(), 1, 0.2, 0.1, 0.2, 0.02);
             return true;
         }
     }
@@ -271,7 +272,7 @@ public final class FaEffects {
             }
             ServerLevel sl = server(e);
             if (sl != null && e.tickCount % 10 == 0) {
-                FaUtil.around(sl, e, ParticleTypes.SNOWFLAKE, 2, 0.0);
+                FaUtil.around(sl, e, Vfx.snowflake(), 2, 0.0);
                 FaUtil.around(sl, e, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.PACKED_ICE.defaultBlockState()), 2, 0);
             }
             return true;
@@ -302,7 +303,7 @@ public final class FaEffects {
             }
             ServerLevel sl = server(e);
             if (sl != null && e.tickCount % 15 == 0) {
-                sl.sendParticles(ParticleTypes.FALLING_SPORE_BLOSSOM, e.getX(), e.getY() + e.getBbHeight() + 0.4, e.getZ(), 2,
+                sl.sendParticles(Vfx.sporeFall(), e.getX(), e.getY() + e.getBbHeight() + 0.4, e.getZ(), 2,
                         0.25, 0.1, 0.25, 0);
                 sl.sendParticles(FaUtil.dustFade(0xD9B8FF, 0x6B4FA0, 0.8F), e.getX() + 0.3, e.getY() + e.getBbHeight() + 0.2,
                         e.getZ(), 1, 0.05, 0.15, 0.05, 0);
@@ -334,7 +335,7 @@ public final class FaEffects {
             if (second) {
                 sl.sendParticles(FaUtil.dustFade(0xFFE9A8, 0xE3C77A, 0.9F), e.getX(), e.getY() + e.getBbHeight() + 0.3, e.getZ(),
                         4, 0.35, 0.15, 0.35, 0);
-                sl.sendParticles(ParticleTypes.WAX_OFF, e.getX(), e.getY() + e.getBbHeight() * 0.8, e.getZ(), 1, 0.3, 0.2, 0.3, 0);
+                sl.sendParticles(Vfx.waxOff(), e.getX(), e.getY() + e.getBbHeight() * 0.8, e.getZ(), 1, 0.3, 0.2, 0.3, 0);
             }
             if (!(e instanceof Mob mob) || FaUtil.isBoss(e)) return true;
             CompoundTag t = e.getPersistentData();

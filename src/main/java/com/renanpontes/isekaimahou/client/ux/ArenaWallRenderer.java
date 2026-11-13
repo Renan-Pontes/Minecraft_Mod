@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.core.api.ArenaBounds;
 
@@ -175,9 +176,9 @@ final class ArenaWallRenderer {
     /** Faíscas subindo pela parede perto do jogador (chamado a cada tick do cliente). */
     static void particles(Minecraft mc, ClientArenas.Focus focus, RandomSource random) {
         if (mc.level == null || mc.player == null || !focus.arena().showWall()) return;
-        boolean reduced = MahouConfig.safe(MahouConfig.REDUCED_PARTICLES);
+        // v1.3: chance pelo preset gráfico (Fraco 0,24 … Ultra 1,0; "reducedParticles" entra no FxQuality)
         float close = focus.inside() ? focus.closeness() : 1F;
-        if (close < 0.35F || random.nextFloat() > (reduced ? 0.25F : 0.8F) * close) return;
+        if (close < 0.35F || random.nextFloat() > Math.min(1F, 0.8F * FxQuality.particles()) * close) return;
         ArenaBounds.Arena a = focus.arena();
         Vec3 p = mc.player.position();
         Vec3 edge = a.nearestEdge(p);

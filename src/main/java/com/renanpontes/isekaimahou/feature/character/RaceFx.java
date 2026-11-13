@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -58,6 +59,11 @@ public final class RaceFx {
 
     public static void sound(ServerLevel level, Vec3 at, SoundEvent s, float volume, float pitch) {
         level.playSound(null, at.x, at.y, at.z, s, SoundSource.PLAYERS, volume, pitch);
+    }
+
+    /** Som para todos MENOS {@code except} (que já ouviu pela previsão do cliente). */
+    public static void sound(ServerLevel level, Vec3 at, SoundEvent s, float volume, float pitch, Player except) {
+        level.playSound(except, at.x, at.y, at.z, s, SoundSource.PLAYERS, volume, pitch);
     }
 
     public static Vec3 center(Entity e) {

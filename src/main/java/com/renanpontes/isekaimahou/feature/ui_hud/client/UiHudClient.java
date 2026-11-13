@@ -9,6 +9,7 @@ import com.renanpontes.isekaimahou.client.hud.HudLayout;
 import com.renanpontes.isekaimahou.client.menu.MenuTabs;
 import com.renanpontes.isekaimahou.client.stack.StackHud;
 import com.renanpontes.isekaimahou.client.status.ClientStatuses;
+import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.module.ClientModule;
 import com.renanpontes.isekaimahou.network.ClientHooks;
 import com.renanpontes.isekaimahou.network.CorePayloads;
@@ -40,8 +41,13 @@ public class UiHudClient implements ClientModule {
             e.registerBelow(VanillaGuiLayers.OVERLAY_MESSAGE, IsekaiMahou.id("ui_hud"), new MahouHudLayer());
             // Topo central (Olho Analítico + banners) por cima do HUD do mod; desenha depois das barras de chefe
             e.registerAbove(IsekaiMahou.id("ui_hud"), IsekaiMahou.id("ui_hud_top"), new MahouTopLayer());
+            // v1.0 RELEASE: dicas de primeira vez (uma linha discreta acima da barra de itens)
+            e.registerAbove(IsekaiMahou.id("ui_hud_top"), IsekaiMahou.id("ui_hud_hints"), new HintOverlay());
         });
         NeoForge.EVENT_BUS.addListener(HudState::tick);
+        // v1.0 RELEASE: opções do mod no menu do Minecraft (Mods → Config e Opções → Isekai Mahou)
+        MahouSettings.init();
+        NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingIn e) -> HintOverlay.onLogin());
         NeoForge.EVENT_BUS.addListener(HudState::logout);
 
         // Onde terminam as barras de chefe neste quadro (o painel do alvo fica logo abaixo)
@@ -58,10 +64,13 @@ public class UiHudClient implements ClientModule {
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.client.event.RenderGuiLayerEvent.Pre e) -> {
             if (!e.getName().equals(net.neoforged.neoforge.client.gui.VanillaGuiLayers.PLAYER_HEALTH)) return;
             Minecraft mc = Minecraft.getInstance();
+            // (com a barra de vida do mod desligada nas opções, os corações voltam)
+            if (!HudDraw.config(MahouConfig.HUD_HEALTH_BAR)) return;
             if (mc.gameMode != null && mc.gameMode.canHurtPlayer() && !mc.getDebugOverlay().showDebugScreen()) e.setCanceled(true);
         });
         NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) -> {
             HudPlace.clear();
+            HintOverlay.clear();
             HudPlayerStatuses.clear();
             HudHealthBar.clear();
             JadeCompat.clear();
@@ -71,7 +80,9 @@ public class UiHudClient implements ClientModule {
         });
         // A Pilha (meio à esquerda) desvia da coluna de condições do jogador ao lado da barra de mana
         IntSupplier stackEdge = StackHud.leftEdge;
-        StackHud.leftEdge = () -> Math.max(stackEdge.getAsInt(), HudPlayerStatuses.stackEdge());
+        // (e, com o HUD ampliado nas opções, da própria barra, que fica mais larga)
+        StackHud.leftEdge = () -> Math.max(Math.max(stackEdge.getAsInt(), HudScale.toReal(HudManaBar.RIGHT + 7)),
+                HudPlayerStatuses.stackEdge());
 
         // Início/fim EXATOS da conjuração (completou x interrompida, canalizações longas). Encadeia o gancho:
         // quem registrou antes (animações, cinemática...) continua recebendo o estado.

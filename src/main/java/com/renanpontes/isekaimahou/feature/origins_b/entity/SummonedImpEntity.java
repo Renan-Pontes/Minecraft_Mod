@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.feature.origins_b.entity;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.feature.origins_b.ObFx;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -124,7 +125,7 @@ public class SummonedImpEntity extends ObSummonEntity {
         ball.setPos(from.x, from.y, from.z);
         sl.addFreshEntity(ball);
         triggerAnim("action", "cast");
-        sl.sendParticles(ParticleTypes.FLAME, from.x, from.y, from.z, 5, 0.08, 0.08, 0.08, 0.03);
+        sl.sendParticles(Vfx.flame(), from.x, from.y, from.z, 5, 0.08, 0.08, 0.08, 0.03);
         playSound(SoundEvents.BLAZE_SHOOT, 0.6F, 1.6F + random.nextFloat() * 0.3F);
     }
 

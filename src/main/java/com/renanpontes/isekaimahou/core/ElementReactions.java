@@ -13,7 +13,6 @@ import com.renanpontes.isekaimahou.core.status.ReactionFx;
 import com.renanpontes.isekaimahou.core.status.StatusEngine;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -37,11 +36,23 @@ import net.neoforged.neoforge.common.NeoForge;
  * {@link ElementReactionEvent} e contadores {@code reaction.<id>} / {@code reaction.any} para jogadores.
  *
  * <p>Módulos registram resistências/fraquezas das suas criaturas com {@link #setMultiplier}.
+ *
+ * <p>Release 1.0 (perf) — reações mais LEVES, com a mesma força: o dano e as condições não mudaram. O que mudou: alvo sem
+ * nenhuma condição pula toda a checagem de reações; a explosão de cada reação é UM pacote montado no cliente pelo Preset
+ * Gráfico (as rajadas de partículas do vanilla saíram do servidor); os arcos do Eletrocutar são um item do lote cada; e
+ * há um orçamento por tick ({@link #FX_FULL_PER_TICK} anúncios completos, até {@link #FX_MAX_PER_TICK} explosões
+ * enxutas) para uma magia de área em 20 alvos não virar 20 textos, 40 sons e 20 explosões no mesmo instante.
  */
 public final class ElementReactions {
     private static final String TAG = "isekai_mahou_last";
     /** Janela das reações de sequência (Luz→Sombra, Terra→Vento): 3 s. */
     private static final long SEQUENCE_TICKS = 60;
+    /** Reações por tick que ganham tudo (explosão completa + som + texto flutuante). */
+    public static final int FX_FULL_PER_TICK = 4;
+    /** Reações por tick que ainda ganham explosão (as além das completas: versão enxuta, sem som nem texto). */
+    public static final int FX_MAX_PER_TICK = 12;
+    private static long fxTick = Long.MIN_VALUE;
+    private static int fxThisTick;
     /** Tipo de entidade -> (elemento base -> multiplicador de dano). <1 resiste, >1 fraco, 0 imune. */
     private static final Map<ResourceLocation, Map<Element, Float>> MULTIPLIERS = new HashMap<>();
 
@@ -195,28 +206,34 @@ public final class ElementReactions {
         dmg *= multiplier(target.getType(), el);
         if (dmg <= 0) return 0;
 
-        // Exposto: +25% por nível
-        MobEffectInstance exposed = target.getEffect(CoreRegistries.EXPOSED);
-        if (exposed != null) dmg *= 1.0F + 0.25F * (exposed.getAmplifier() + 1);
-
         LivingEntity causer = ctx.caster();
         float power = statusPower(ctx);
-        int burning = Statuses.stacks(target, Kind.BURNING);
-        int chilled = Statuses.stacks(target, Kind.CHILLED);
-        int shocked = Statuses.stacks(target, Kind.SHOCKED);
-        int bleeding = Statuses.stacks(target, Kind.BLEEDING);
-        boolean wet = Statuses.has(target, Kind.WET);
-        boolean frozen = Statuses.has(target, Kind.FROZEN);
-        boolean stone = Statuses.stacks(target, Kind.PETRIFIED) >= 3;
+        // Caminho rápido: sem nenhum efeito ativo e sem fogo, não existe condição para reagir (a maioria dos golpes).
+        // Todas as condições são efeitos de poção; Em Chamas também vale pelo fogo do vanilla.
+        boolean clean = target.getActiveEffectsMap().isEmpty() && !target.isOnFire();
+
+        // Exposto: +25% por nível
+        MobEffectInstance exposed = clean ? null : target.getEffect(CoreRegistries.EXPOSED);
+        if (exposed != null) dmg *= 1.0F + 0.25F * (exposed.getAmplifier() + 1);
+
+        int burning = clean ? 0 : Statuses.stacks(target, Kind.BURNING);
+        int chilled = clean ? 0 : Statuses.stacks(target, Kind.CHILLED);
+        int shocked = clean ? 0 : Statuses.stacks(target, Kind.SHOCKED);
+        int bleeding = clean ? 0 : Statuses.stacks(target, Kind.BLEEDING);
+        boolean wet = !clean && Statuses.has(target, Kind.WET);
+        boolean frozen = !clean && Statuses.has(target, Kind.FROZEN);
+        boolean stone = !clean && Statuses.stacks(target, Kind.PETRIFIED) >= 3;
 
         // Bônus passivos
-        if (isFire(el) && burning > 0) dmg *= 1.0F + 0.08F * Statuses.stacks(target, Kind.BURNING);
+        if (isFire(el) && burning > 0) dmg *= 1.0F + 0.08F * burning;
         if (isLightning(el) && shocked > 0) dmg *= 1.0F + 0.15F * shocked;
 
         // ---------- Uma reação de condição por golpe ----------
         Reaction reaction = null;
         boolean skipAuto = false;
-        if (isLightning(el) && wet) {
+        if (clean) {
+            // nada a reagir
+        } else if (isLightning(el) && wet) {
             reaction = Reaction.ELECTROCUTE;
             dmg *= 2.0F;
             StatusEngine.clear(target, Kind.WET);
@@ -322,7 +339,8 @@ public final class ElementReactions {
         for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(4.0),
                 e -> e != target && e != causer && e.isAlive() && !ctx.isAlly(e) && e.hasEffect(CoreRegistries.SOAKED))) {
             if (e.distanceToSqr(target) > 16.0 || arcs++ >= 6) continue;
-            StatusEngine.sparkLine(level, from, StatusEngine.center(e));
+            // Arco elétrico: um item no lote do tick (antes, até 25 pacotes de faísca por arco)
+            ElementFx.line(level, from, StatusEngine.center(e), Element.LIGHTNING);
             StatusEngine.clear(e, Kind.WET);
             e.hurt(ctx.damageSource(null), arcDamage);
             Statuses.apply(e, Kind.SHOCKED, 1, Statuses.DEFAULT_TICKS, causer, statusPower(ctx));
@@ -343,7 +361,8 @@ public final class ElementReactions {
             e.push(away.x * 0.6, 0.35, away.z * 0.6);
             e.hurtMarked = true;
         }
-        level.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y, c.z, 1, 0, 0, 0, 0);
+        // Visual da explosão: a própria reação (FxBurst REACTION/OVERLOAD) já desenha clarão, anéis e brasas
+        ElementFx.shake(level, c, 14, 0.5F, 8);
         return blast;
     }
 
@@ -355,7 +374,20 @@ public final class ElementReactions {
         if (!(target.level() instanceof ServerLevel level)) return;
         // A mesma reação repetida no mesmo alvo em <0,5 s (feixes): a mecânica vale, o anúncio/contador não repete
         if (!ReactionFx.claim(target, r)) return;
-        ReactionFx.play(level, target, r);
+        // Orçamento por tick: as primeiras ganham explosão completa + som + texto; as seguintes, explosão enxuta; depois
+        // disso só a mecânica (evento e contadores continuam valendo para todas)
+        long now = level.getGameTime();
+        if (now != fxTick) {
+            fxTick = now;
+            fxThisTick = 0;
+        }
+        int n = ++fxThisTick;
+        if (n <= FX_FULL_PER_TICK) {
+            ReactionFx.play(level, target, r); // som + texto flutuante
+            ElementFx.reaction(level, target, r, false); // explosão própria da reação, montada no cliente pelo preset
+        } else if (n <= FX_MAX_PER_TICK) {
+            ElementFx.reaction(level, target, r, true);
+        }
         NeoForge.EVENT_BUS.post(new ElementReactionEvent(target, r, ctx, causer, el));
         ServerPlayer sp = causer instanceof ServerPlayer p ? p : null;
         if (sp != null) {

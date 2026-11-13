@@ -44,5 +44,9 @@ public class TempestEffect extends EffectGlyph {
         BlockPos ground = EwUtil.groundBelow(ctx.level(), BlockPos.containing(at).above(1), 10);
         Vec3 pos = ground != null ? new Vec3(at.x, ground.getY() + 1.0, at.z) : at;
         TempestStorm.spawn(ctx, pos, stats.radius(10.0F), stats.duration(300), stats.power());
+        // v1.3: selo no céu, vento em espiral no chão durante a tempestade inteira e um primeiro raio de abertura
+        com.renanpontes.isekaimahou.core.ElementFx.skyStrike(ctx.level(), pos, Element.LIGHTNING, 0x9FE8FF, 2.5F, 5, 16);
+        com.renanpontes.isekaimahou.core.ElementFx.area(ctx.level(), pos, Element.WIND, ctx.color(), stats.radius(10.0F), 4,
+                Math.min(400, stats.duration(300)));
     }
 }

@@ -6,6 +6,7 @@ import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.feature.fire_water.FwRegistries;
 import com.renanpontes.isekaimahou.feature.fire_water.FwUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -136,7 +137,7 @@ public class SummonedUndine extends FwSummon {
                 e -> e.isAlive() && (e == owner || isAlliedTo(e)) && !(e instanceof SummonedUndine))) {
             if (e.isOnFire()) {
                 e.clearFire();
-                ((ServerLevel) level()).sendParticles(ParticleTypes.SPLASH, e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(),
+                ((ServerLevel) level()).sendParticles(Vfx.splash(), e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(),
                         12, 0.3, 0.3, 0.3, 0.1);
             }
             float ratio = e.getHealth() / e.getMaxHealth();
@@ -168,7 +169,7 @@ public class SummonedUndine extends FwSummon {
             if (i % 3 == 0) sl.sendParticles(ParticleTypes.SPLASH, p.x, p.y, p.z, 1, 0.05, 0.05, 0.05, 0);
         }
         sl.sendParticles(ParticleTypes.HEART, to.x, to.y + target.getBbHeight() * 0.5, to.z, 3, 0.3, 0.2, 0.3, 0);
-        FwUtil.around(sl, target, ParticleTypes.DRIPPING_WATER, 10, 0);
+        FwUtil.around(sl, target, Vfx.water(), 10, 0);
         FwUtil.sound(sl, to, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.4F);
         FwUtil.sound(sl, to, SoundEvents.BUBBLE_COLUMN_UPWARDS_INSIDE, 0.6F, 1.3F);
     }
@@ -180,7 +181,7 @@ public class SummonedUndine extends FwSummon {
     @Override
     protected void clientFx() {
         if (tickCount % 2 != 0) return;
-        level().addParticle(ParticleTypes.DRIPPING_WATER, getX() + (random.nextDouble() - 0.5) * 0.5, getY() + 0.3 + random.nextDouble() * 1.2,
+        level().addParticle(Vfx.water(), getX() + (random.nextDouble() - 0.5) * 0.5, getY() + 0.3 + random.nextDouble() * 1.2,
                 getZ() + (random.nextDouble() - 0.5) * 0.5, 0, 0, 0);
         if (random.nextInt(3) == 0) {
             level().addParticle(FwUtil.dust(0x9FE6FF, 0.7F), getX() + (random.nextDouble() - 0.5) * 0.6, getY() + random.nextDouble() * 1.8,
@@ -192,7 +193,7 @@ public class SummonedUndine extends FwSummon {
     @Override
     protected void spawnFx(ServerLevel level) {
         Vec3 c = position().add(0, 0.2, 0);
-        FwUtil.shockwave(level, c, ParticleTypes.SPLASH, 32, 0.35);
+        FwUtil.shockwave(level, c, Vfx.splash(), 32, 0.35);
         level.sendParticles(ParticleTypes.BUBBLE_POP, c.x, c.y + 1, c.z, 20, 0.4, 0.8, 0.4, 0.02);
         level.sendParticles(FwUtil.dust(0x7FD8FF, 1.4F), c.x, c.y + 1, c.z, 24, 0.4, 0.8, 0.4, 0);
         FwUtil.sound(level, c, SoundEvents.PLAYER_SPLASH_HIGH_SPEED, 0.8F, 1.2F);
@@ -201,8 +202,8 @@ public class SummonedUndine extends FwSummon {
 
     @Override
     protected void vanishFx(ServerLevel level) {
-        level.sendParticles(ParticleTypes.SPLASH, getX(), getY() + 1, getZ(), 30, 0.3, 0.7, 0.3, 0.2);
-        level.sendParticles(ParticleTypes.FALLING_WATER, getX(), getY() + 1.2, getZ(), 16, 0.3, 0.5, 0.3, 0);
+        level.sendParticles(Vfx.splash(), getX(), getY() + 1, getZ(), 30, 0.3, 0.7, 0.3, 0.2);
+        level.sendParticles(Vfx.water(), getX(), getY() + 1.2, getZ(), 16, 0.3, 0.5, 0.3, 0);
         FwUtil.sound(level, position(), SoundEvents.GENERIC_SPLASH, 0.8F, 1.3F);
     }
 

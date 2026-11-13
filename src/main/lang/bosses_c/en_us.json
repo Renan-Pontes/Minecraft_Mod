@@ -10,16 +10,13 @@
   "entity.isekai_mahou.corrupted_ent_root": "Corrupted Root",
   "entity.isekai_mahou.class_boss_bolt": "Magic Bolt",
   "entity.isekai_mahou.cursed_bottle": "Bottled Curse",
-
   "item.isekai_mahou.renegade_archmage_spawn_egg": "Renegade Archmage Spawn Egg",
   "item.isekai_mahou.corrupted_witch_spawn_egg": "Corrupted Witch Spawn Egg",
   "item.isekai_mahou.imprisoned_patron_spawn_egg": "Imprisoned Patron Spawn Egg",
   "item.isekai_mahou.corrupted_ent_spawn_egg": "Corrupted Ent Spawn Egg",
   "item.isekai_mahou.lich_spawn_egg": "Lich Spawn Egg",
-
   "command.isekai_mahou.spawnboss.class_done": "%s has been summoned!",
   "command.isekai_mahou.spawnboss.class_fail": "The boss could not be summoned here.",
-
   "boss.isekai_mahou.renegade_archmage.subtitle": "Master of the Forgotten Tower",
   "boss.isekai_mahou.renegade_archmage.phase1": "Forbidden Magic",
   "announce.isekai_mahou.renegade_archmage.intro": "Another apprentice after my secrets? Come and die like the others!",
@@ -31,7 +28,6 @@
   "message.isekai_mahou.renegade_archmage.illusions": "Tip: illusions have no shadow, no glowing eyes and no runes at their feet.",
   "message.isekai_mahou.renegade_archmage.weary": "The Archmage is out of breath and can't blink — strike now!",
   "announce.isekai_mahou.renegade_archmage.death": "The Tower's secrets... are yours...",
-
   "boss.isekai_mahou.corrupted_witch.subtitle": "Mistress of the Rotten Cauldron",
   "boss.isekai_mahou.corrupted_witch.phase1": "Witching Night",
   "announce.isekai_mahou.corrupted_witch.intro": "Hehehe! What a juicy little thing just walked into my cauldron!",
@@ -41,7 +37,6 @@
   "announce.isekai_mahou.corrupted_witch.drink": "Just a little sip of potion...",
   "announce.isekai_mahou.corrupted_witch.cauldron": "Bubble, bubble... my cauldron overflows!",
   "announce.isekai_mahou.corrupted_witch.death": "My recipes... no... leave them be...",
-
   "boss.isekai_mahou.imprisoned_patron.subtitle": "The One Who Was Sealed",
   "boss.isekai_mahou.imprisoned_patron.phase1": "A Chain Snaps",
   "boss.isekai_mahou.imprisoned_patron.phase2": "The Seal Weakens",
@@ -57,7 +52,6 @@
   "announce.isekai_mahou.imprisoned_patron.chain_lash": "Feel the weight of my chains!",
   "message.isekai_mahou.imprisoned_patron.nova": "The soulfire wave hugs the ground: jump over it!",
   "announce.isekai_mahou.imprisoned_patron.death": "Back... to the abyss... but I will return...",
-
   "boss.isekai_mahou.corrupted_ent.subtitle": "Rotten Heart of the Grove",
   "boss.isekai_mahou.corrupted_ent.phase1": "The Forest Rots",
   "announce.isekai_mahou.corrupted_ent.intro": "Hrrrm... little one... trampling... my grove...",
@@ -67,7 +61,6 @@
   "announce.isekai_mahou.corrupted_ent.root_line": "Roots... tear... the earth!",
   "announce.isekai_mahou.corrupted_ent.regen": "The earth... feeds me... (lure it off the grass or set it on fire!)",
   "announce.isekai_mahou.corrupted_ent.death": "At last... the grove... breathes...",
-
   "boss.isekai_mahou.lich.subtitle": "King of the Forgotten Crypt",
   "boss.isekai_mahou.lich.phase1": "Undying",
   "boss.isekai_mahou.lich.phylactery_broken": "The Phylactery Shatters!",
@@ -81,5 +74,24 @@
   "announce.isekai_mahou.lich.phylactery_broken": "NO! My soul... my soul!",
   "announce.isekai_mahou.lich.collapse": "Hehehe... death is only a pause...",
   "announce.isekai_mahou.lich.reform": "You cannot kill what is already dead!",
-  "announce.isekai_mahou.lich.death": "Impossible... eternity... was mine..."
+  "announce.isekai_mahou.lich.death": "Impossible... eternity... was mine...",
+  "message.isekai_mahou.lich.soul_drain": "The Lich bound part of your SOUL to the phylactery (lower max health)! Break the phylactery to get it back.",
+  "message.isekai_mahou.lich.souls_released": "Your soul has returned to you!",
+  "message.isekai_mahou.corrupted_witch.frogged": "You've been turned into a FROG! Run until the curse wears off!",
+  "message.isekai_mahou.corrupted_witch.inverted": "Inverted Mind! Forward is back, left is right!",
+  "message.isekai_mahou.renegade_archmage.mirror_swap": "Tip: when they all shine together, the Archmage SWAPS places with the illusions — look for the shadow again.",
+  "announce.isekai_mahou.imprisoned_patron.bind": "You shall share my chains!",
+  "message.isekai_mahou.imprisoned_patron.bind": "Tip: leave the red circle when it locks — whoever stays is chained. Chained: stay TOGETHER for 2 s to snap the chain.",
+  "message.isekai_mahou.imprisoned_patron.bound_pair": "Chained to an ally! Stay together to snap the chain.",
+  "message.isekai_mahou.imprisoned_patron.bound_self": "Chained to the Patron! Don't stray too far.",
+  "announce.isekai_mahou.renegade_archmage.taunt": "Failed. Next apprentice!",
+  "announce.isekai_mahou.renegade_archmage.last_stand": "No... I still have one last spell!",
+  "announce.isekai_mahou.corrupted_witch.taunt": "Heehee! One more for the cauldron!",
+  "announce.isekai_mahou.corrupted_witch.last_stand": "My potions... where are my potions?!",
+  "announce.isekai_mahou.imprisoned_patron.taunt": "Your soul will do. Thank you, mortal.",
+  "announce.isekai_mahou.imprisoned_patron.last_stand": "No... NOT back into the seal!",
+  "announce.isekai_mahou.corrupted_ent.taunt": "Fertilizer... for the... roots...",
+  "announce.isekai_mahou.corrupted_ent.last_stand": "The rot... withers... HRRRM!",
+  "announce.isekai_mahou.lich.taunt": "Rise. You serve me now.",
+  "announce.isekai_mahou.lich.last_stand": "My bones crack... but death is my ally!"
 }

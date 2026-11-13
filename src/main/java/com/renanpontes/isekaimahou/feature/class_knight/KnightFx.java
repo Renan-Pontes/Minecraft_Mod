@@ -43,61 +43,24 @@ public final class KnightFx {
         return s.normalize();
     }
 
-    /** Círculo de runas no chão (anel + 6 runas que brilham alternadas). */
+    /** Círculo de runas no chão (anel + runas que brilham) — desenhado no cliente (KnightFxClient). */
     public static void runeCircle(ServerLevel level, Vec3 c, double r, int rgb, int points, float spin) {
-        ParticleOptions d = dust(rgb, 0.9F);
-        for (int i = 0; i < points; i++) {
-            double a = spin + Mth.TWO_PI * i / points;
-            level.sendParticles(d, c.x + Math.cos(a) * r, c.y + 0.05, c.z + Math.sin(a) * r, 1, 0, 0, 0, 0);
-        }
-        for (int i = 0; i < 6; i++) {
-            double a = -spin * 1.5 + Mth.TWO_PI * i / 6;
-            double rr = r * 0.62;
-            level.sendParticles(i % 2 == 0 ? ParticleTypes.ENCHANT : dust(GOLD, 1.1F), c.x + Math.cos(a) * rr, c.y + 0.1,
-                    c.z + Math.sin(a) * rr, 2, 0.05, 0.02, 0.05, 0);
-        }
+        KnightFxNet.at(level, KnightFxNet.RUNE_CIRCLE, c, Vec3.ZERO, (float) r, rgb, -1);
     }
 
-    /** Meia-lua de lâmina: arco curvado para trás, de largura {@code half} para cada lado. */
+    /** Meia-lua de lâmina: arco curvado para trás, de largura {@code half} para cada lado (desenhada no cliente). */
     public static void crescent(ServerLevel level, Vec3 pos, Vec3 dir, double half, int rgb, int n, float size) {
-        Vec3 s = side(dir);
-        Vec3 up = s.cross(dir).normalize();
-        ParticleOptions core = dust(rgb, size);
-        ParticleOptions rim = dust(0xFFFFFF, size * 0.6F);
-        for (int k = -n; k <= n; k++) {
-            double t = k / (double) n;
-            Vec3 p = pos.add(s.scale(t * half)).subtract(dir.scale(t * t * half * 0.55)).add(up.scale(t * 0.15 * half));
-            level.sendParticles(core, p.x, p.y, p.z, 1, 0.02, 0.02, 0.02, 0);
-            if ((k & 1) == 0) {
-                Vec3 q = p.add(dir.scale(0.18));
-                level.sendParticles(rim, q.x, q.y, q.z, 1, 0, 0, 0, 0);
-            }
-        }
+        KnightFxNet.at(level, KnightFxNet.CRESCENT, pos, dir, (float) half, rgb, -1, n >= 9 ? 1 : 0);
     }
 
     /** Linha de partículas de {@code from} até {@code to} (passo em blocos). */
     public static void line(ServerLevel level, Vec3 from, Vec3 to, int rgb, double step, float size) {
-        Vec3 d = to.subtract(from);
-        double len = d.length();
-        if (len < 1.0E-3) return;
-        Vec3 u = d.scale(1 / len);
-        ParticleOptions p = dust(rgb, size);
-        int n = Math.min(160, (int) (len / step));
-        for (int i = 0; i <= n; i++) {
-            Vec3 q = from.add(u.scale(i * step));
-            level.sendParticles(p, q.x, q.y, q.z, 1, 0.03, 0.03, 0.03, 0);
-        }
+        KnightFxNet.at(level, KnightFxNet.LINE, from, to, size / 1.6F, rgb, -1);
     }
 
     /** Coluna de luz subindo de {@code base}. */
     public static void pillar(ServerLevel level, Vec3 base, double height, double r, int rgb) {
-        ParticleOptions p = dust(rgb, 1.4F);
-        for (int i = 0; i < 24; i++) {
-            double a = i * 0.9;
-            double y = height * i / 24.0;
-            level.sendParticles(p, base.x + Math.cos(a) * r, base.y + y, base.z + Math.sin(a) * r, 1, 0, 0, 0, 0);
-        }
-        level.sendParticles(ParticleTypes.END_ROD, base.x, base.y + height * 0.5, base.z, 10, r * 0.4, height * 0.4, r * 0.4, 0.02);
+        KnightFxNet.at(level, KnightFxNet.PILLAR, base, Vec3.ZERO, (float) r, rgb, -1, (int) Math.round(height));
     }
 
     private KnightFx() {}

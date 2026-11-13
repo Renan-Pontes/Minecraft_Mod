@@ -288,10 +288,14 @@ public final class Conquest {
 
     /** Deixa de ser Senhor (abdicou ou perdeu a confiança do reino). */
     public static void abdicate(MinecraftServer server, Settlement s, boolean voluntary) {
+        // v1.4: só tira o Senhor do poder — a cidade guarda estoques, população, nível e o registro (o próximo Senhor herda)
+        UUID old = s.owner;
         Allegiance.setLeader(server, s.id, null);
-        SettlementData.get(server).remove(s.id);
-        if (s.owner == null) return;
-        ServerPlayer p = server.getPlayerList().getPlayer(s.owner);
+        s.owner = null;
+        s.ownerName = "";
+        s.council.clear();
+        if (old == null) return;
+        ServerPlayer p = server.getPlayerList().getPlayer(old);
         if (p != null) {
             p.displayClientMessage(Component.translatable(voluntary ? "settlements.isekai_mahou.lord.abdicated" : "settlements.isekai_mahou.lord.lost",
                     Allegiance.cityName(server, s.id)).withColor(0xE8735E), false);

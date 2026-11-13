@@ -13,8 +13,8 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -129,7 +129,7 @@ public final class RuneGlyphs {
             Vec3 from = e.position();
             // Chefes resistem ao banimento (tirar o chefe da arena quebraria a luta)
             if (e.getType().is(Tags.EntityTypes.BOSSES)) {
-                level.sendParticles(ParticleTypes.SMOKE, from.x, from.y + e.getBbHeight() * 0.5, from.z, 12, 0.4, 0.4, 0.4, 0.02);
+                level.sendParticles(Vfx.smoke(), from.x, from.y + e.getBbHeight() * 0.5, from.z, 12, 0.4, 0.4, 0.4, 0.02);
                 return;
             }
             double range = 12 + 6 * stats.power();
@@ -138,7 +138,7 @@ public final class RuneGlyphs {
                 double y = e.getY() + e.getRandom().nextInt(9) - 4;
                 double z = e.getZ() + (e.getRandom().nextDouble() - 0.5) * 2 * range;
                 if (e.randomTeleport(x, y, z, true)) {
-                    level.sendParticles(ParticleTypes.REVERSE_PORTAL, from.x, from.y + 1, from.z, 30, 0.3, 0.6, 0.3, 0.05);
+                    level.sendParticles(Vfx.reversePortal(), from.x, from.y + 1, from.z, 30, 0.3, 0.6, 0.3, 0.05);
                     level.playSound(null, from.x, from.y, from.z, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.9F, 0.8F);
                     return;
                 }
@@ -189,11 +189,11 @@ public final class RuneGlyphs {
             TempEnchant.Result result = TempEnchant.apply(p, stack, ctx.element(), bonus, duration);
             if (result != TempEnchant.Result.OK) {
                 OaUtil.actionbar(p, result == TempEnchant.Result.ALREADY_STRONGER ? "enchant_maxed" : "enchant_fail");
-                ctx.level().sendParticles(ParticleTypes.SMOKE, p.getX(), p.getY() + 1.2, p.getZ(), 8, 0.2, 0.2, 0.2, 0.01);
+                ctx.level().sendParticles(Vfx.smoke(), p.getX(), p.getY() + 1.2, p.getZ(), 8, 0.2, 0.2, 0.2, 0.01);
                 return;
             }
             ServerLevel level = ctx.level();
-            level.sendParticles(ParticleTypes.ENCHANT, p.getX(), p.getY() + 1.2, p.getZ(), 60, 0.5, 0.6, 0.5, 0.8);
+            level.sendParticles(Vfx.enchant(), p.getX(), p.getY() + 1.2, p.getZ(), 60, 0.5, 0.6, 0.5, 0.8);
             ElementFx.burst(level, p.position().add(0, 1.0, 0), ctx.element(), 16, 0.4);
             level.playSound(null, p.getX(), p.getY(), p.getZ(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
             level.playSound(null, p.getX(), p.getY(), p.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0F, 0.8F);

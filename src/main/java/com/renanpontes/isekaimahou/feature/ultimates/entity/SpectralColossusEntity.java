@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.core.api.Destruction;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
@@ -14,10 +15,12 @@ import com.renanpontes.isekaimahou.feature.ultimates.UltNet;
 import com.renanpontes.isekaimahou.feature.ultimates.UltRegistries;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -125,9 +128,13 @@ public class SpectralColossusEntity extends Entity implements GeoEntity, Traceab
         // Surgir: pilar de luz, anel no chão, chão rachando
         BlockState ground = groundState(level, pos);
         UltFx.far(level, new BlockParticleOption(ParticleTypes.BLOCK, ground), pos.x, pos.y + 0.2, pos.z, 80, 2.5, 0.3, 2.5, 0.3);
-        UltFx.far(level, ParticleTypes.POOF, pos.x, pos.y + 0.5, pos.z, 40, 3.0, 0.4, 3.0, 0.05);
-        UltFx.far(level, dust(rgb, 2.5F), pos.x, pos.y + 6, pos.z, 160, 2.0, 5.0, 2.0, 0);
-        for (int y = 0; y < 30; y += 2) UltFx.far(level, ParticleTypes.END_ROD, pos.x, pos.y + y, pos.z, 3, 0.6, 0.6, 0.6, 0.02);
+        UltFx.far(level, Vfx.poof(), pos.x, pos.y + 0.5, pos.z, 40, 3.0, 0.4, 3.0, 0.05);
+        UltFx.far(level, dust(rgb, 2.5F), pos.x, pos.y + 6, pos.z, 50, 2.0, 5.0, 2.0, 0);
+        // v1.3: o colosso sobe de um portal no chão, dentro de um pilar de luz (montados no cliente)
+        com.renanpontes.isekaimahou.core.ElementFx.portal(level, pos.add(0, 0.08, 0), null, com.renanpontes.isekaimahou.core.Element.ARCANE,
+                rgb, 4.5F, 5, 40);
+        com.renanpontes.isekaimahou.core.ElementFx.pillar(level, pos, rgb, 2.6F, 32F, 36);
+        com.renanpontes.isekaimahou.core.ElementFx.nova(level, pos.add(0, 0.1, 0), com.renanpontes.isekaimahou.core.Element.ARCANE, rgb, 8F, 5, false);
         UltNet.fx(level, UltNet.FX_RING, pos.add(0, 0.2, 0), 0F, 12F, rgb, 18);
         UltNet.fx(level, UltNet.FX_FLASH, pos.add(0, 6, 0), 0F, 5F, rgb, 10);
         UltFx.sound(level, pos, SoundEvents.WARDEN_EMERGE, 2.5F, 0.7F);
@@ -243,9 +250,9 @@ public class SpectralColossusEntity extends Entity implements GeoEntity, Traceab
             if (flat.lengthSqr() < 0.25 || face.dot(flat.normalize()) < 0.05) continue;
             // Bloqueado: o projétil se desfaz no escudo
             Vec3 at = p.position();
-            UltFx.far(sl, ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, 12, 0.3, 0.3, 0.3, 0.2);
+            UltFx.far(sl, Vfx.electric(), at.x, at.y, at.z, 12, 0.3, 0.3, 0.3, 0.2);
             UltFx.far(sl, dust(color(), 1.6F), at.x, at.y, at.z, 10, 0.4, 0.4, 0.4, 0);
-            UltFx.far(sl, ParticleTypes.CRIT, at.x, at.y, at.z, 6, 0.2, 0.2, 0.2, 0.3);
+            UltFx.far(sl, Vfx.crit(), at.x, at.y, at.z, 6, 0.2, 0.2, 0.2, 0.3);
             UltFx.sound(sl, at, SoundEvents.SHIELD_BLOCK, 1.5F, 0.6F);
             UltFx.sound(sl, at, SoundEvents.AMETHYST_BLOCK_HIT, 1.5F, 0.6F);
             p.discard();
@@ -368,8 +375,11 @@ public class SpectralColossusEntity extends Entity implements GeoEntity, Traceab
         UltFx.far(sl, ParticleTypes.EXPLOSION_EMITTER, p.x, p.y + 0.5, p.z, 1, 0, 0, 0, 0);
         UltFx.far(sl, new BlockParticleOption(ParticleTypes.BLOCK, ground), p.x, p.y + 0.3, p.z, 90, slamRadius * 0.5, 0.4,
                 slamRadius * 0.5, 0.45);
-        UltFx.far(sl, ParticleTypes.POOF, p.x, p.y + 0.4, p.z, 40, slamRadius * 0.5, 0.2, slamRadius * 0.5, 0.08);
-        UltFx.far(sl, dust(rgb, 2.2F), p.x, p.y + 1, p.z, 80, slamRadius * 0.5, 1.0, slamRadius * 0.5, 0);
+        UltFx.far(sl, Vfx.poof(), p.x, p.y + 0.4, p.z, 40, slamRadius * 0.5, 0.2, slamRadius * 0.5, 0.08);
+        UltFx.far(sl, dust(rgb, 2.2F), p.x, p.y + 1, p.z, 30, slamRadius * 0.5, 1.0, slamRadius * 0.5, 0);
+        // v1.3: o soco abre o chão — impacto de terra pesado montado no cliente
+        com.renanpontes.isekaimahou.core.ElementFx.impactFx(sl, p.add(0, 0.2, 0), com.renanpontes.isekaimahou.core.Element.EARTH, rgb, 4,
+                null, Math.max(1F, slamRadius / 3F));
         UltNet.fx(sl, UltNet.FX_RING, p.add(0, 0.2, 0), 0F, slamRadius * 1.7F, rgb, 14);
         UltNet.fx(sl, UltNet.FX_FLASH, p.add(0, 0.8, 0), 0F, slamRadius * 0.6F, rgb, 7);
         UltFx.sound(sl, p, SoundEvents.GENERIC_EXPLODE.value(), 2.5F, 0.6F);
@@ -395,9 +405,9 @@ public class SpectralColossusEntity extends Entity implements GeoEntity, Traceab
     private void clientTick() {
         if (isDespawning() && clientDespawnTick < 0) clientDespawnTick = tickCount;
         RandomSource r = random;
-        boolean reduced = MahouConfig.REDUCED_PARTICLES.get();
+        boolean reduced = !FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         if (tickCount % (reduced ? 4 : 2) != 0) return;
-        DustParticleOptions d = dust(color(), 1.4F);
+        ParticleOptions d = dust(color(), 1.4F);
         int n = isDespawning() ? 6 : 2;
         for (int i = 0; i < n; i++) {
             double a = r.nextDouble() * Math.PI * 2;
@@ -405,7 +415,7 @@ public class SpectralColossusEntity extends Entity implements GeoEntity, Traceab
             level().addParticle(d, getX() + Math.cos(a) * rad, getY() + r.nextDouble() * 11, getZ() + Math.sin(a) * rad, 0, 0.03, 0);
         }
         if (r.nextInt(4) == 0) {
-            level().addParticle(ParticleTypes.END_ROD, getX() + (r.nextDouble() - 0.5) * 3, getY() + 4 + r.nextDouble() * 5,
+            level().addParticle(Vfx.endRod(), getX() + (r.nextDouble() - 0.5) * 3, getY() + 4 + r.nextDouble() * 5,
                     getZ() + (r.nextDouble() - 0.5) * 3, 0, 0.02, 0);
         }
     }
@@ -434,8 +444,9 @@ public class SpectralColossusEntity extends Entity implements GeoEntity, Traceab
         return g.isAir() ? Blocks.STONE.defaultBlockState() : g;
     }
 
-    private static DustParticleOptions dust(int rgb, float size) {
-        return new DustParticleOptions(Vec3.fromRGB24(rgb).toVector3f(), size);
+    private static ParticleOptions dust(int rgb, float size) {
+        // v1.3: brilho fx aditivo (mesmo tamanho do pó do vanilla; respeita o preset gráfico no cliente)
+        return com.renanpontes.isekaimahou.core.ElementFx.glow(rgb, size);
     }
 
     @Override

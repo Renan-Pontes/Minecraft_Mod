@@ -18,6 +18,7 @@ import com.renanpontes.isekaimahou.glyph.ParsedSpell;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
@@ -277,17 +278,17 @@ public class FusionZoneEntity extends Entity {
             if (age < j.at) {
                 // Aviso: o chão racha e solta fumaça antes do jato
                 if (age % 2 == 0) {
-                    sl.sendParticles(ParticleTypes.LARGE_SMOKE, p.x, p.y + 0.1, p.z, 2, 0.25, 0.02, 0.25, 0.01);
+                    sl.sendParticles(Vfx.largeSmoke(), p.x, p.y + 0.1, p.z, 2, 0.25, 0.02, 0.25, 0.01);
                     sl.sendParticles(FaUtil.dust(0xFF5A1A, 1.3F), p.x, p.y + 0.05, p.z, 4, 0.4, 0.01, 0.4, 0);
                 }
                 continue;
             }
             it.remove();
             FaUtil.column(sl, p, ParticleTypes.LAVA, 3.5, 3, 0.15, 0);
-            FaUtil.column(sl, p, ParticleTypes.FLAME, 4.0, 5, 0.2, 0.03);
+            FaUtil.column(sl, p, Vfx.flame(), 4.0, 5, 0.2, 0.03);
             sl.sendParticles(new BlockParticleOption(ParticleTypes.DUST_PILLAR, Blocks.MAGMA_BLOCK.defaultBlockState()),
                     p.x, p.y + 0.1, p.z, 25, 0.4, 0.1, 0.4, 0.3);
-            sl.sendParticles(ParticleTypes.LARGE_SMOKE, p.x, p.y + 3.5, p.z, 6, 0.3, 0.3, 0.3, 0.02);
+            sl.sendParticles(Vfx.largeSmoke(), p.x, p.y + 3.5, p.z, 6, 0.3, 0.3, 0.3, 0.02);
             FaUtil.sound(sl, p, SoundEvents.GENERIC_EXPLODE.value(), 0.5F, 1.5F);
             FaUtil.sound(sl, p, SoundEvents.LAVA_POP, 1.0F, 0.7F);
             for (LivingEntity e : ctx.enemiesAround(p.add(0, 1.5, 0), 2.8)) {
@@ -317,7 +318,7 @@ public class FusionZoneEntity extends Entity {
             return;
         }
         FaUtil.visualLightning(sl, at);
-        sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, at.x, at.y + 0.5, at.z, 30, 0.6, 0.6, 0.6, 0.3);
+        sl.sendParticles(Vfx.electric(), at.x, at.y + 0.5, at.z, 30, 0.6, 0.6, 0.6, 0.3);
         if (main != null) {
             hurt(main, 6.0F);
             main.addEffect(new MobEffectInstance(CoreRegistries.STUNNED, 15, 0), ctx.caster());
@@ -337,7 +338,7 @@ public class FusionZoneEntity extends Entity {
             if (n >= 6) {
                 exposure.put(e.getUUID(), 0);
                 e.addEffect(new MobEffectInstance(CoreRegistries.FROZEN, 40, 0), ctx.caster());
-                FaUtil.around(sl, e, ParticleTypes.SNOWFLAKE, 14, 0.05);
+                FaUtil.around(sl, e, Vfx.snowflake(), 14, 0.05);
                 FaUtil.sound(sl, e.position(), SoundEvents.PLAYER_HURT_FREEZE, 0.6F, 1.0F);
             }
             if (age % 20 == 0) hurt(e, 1.5F);
@@ -409,7 +410,7 @@ public class FusionZoneEntity extends Entity {
             hurt(e, dmg);
             e.igniteForSeconds(2);
             FaUtil.line(sl, crown, e.position().add(0, e.getBbHeight() * 0.6, 0), FaUtil.dust(0xFFC83A, 0.8F), 4);
-            sl.sendParticles(ParticleTypes.FLAME, e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(), 4, 0.2, 0.2, 0.2, 0.02);
+            sl.sendParticles(Vfx.flame(), e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(), 4, 0.2, 0.2, 0.2, 0.02);
         }
     }
 
@@ -443,7 +444,7 @@ public class FusionZoneEntity extends Entity {
                 for (int i = 0; i < n; i++) {
                     Vec3 p = randomIn(c, rad, r);
                     if (r.nextInt(5) == 0) level().addParticle(ParticleTypes.LAVA, p.x, c.y + 0.15, p.z, 0, 0, 0);
-                    level().addParticle(r.nextBoolean() ? ParticleTypes.SMALL_FLAME : ParticleTypes.SMOKE, p.x, c.y + 0.15, p.z, 0, 0.03, 0);
+                    level().addParticle(r.nextBoolean() ? Vfx.smallFlame() : Vfx.smoke(), p.x, c.y + 0.15, p.z, 0, 0.03, 0);
                 }
             }
             case HOT_MIST -> {
@@ -451,7 +452,7 @@ public class FusionZoneEntity extends Entity {
                 for (int i = 0; i < n; i++) {
                     Vec3 p = randomIn(c, rad, r);
                     double y = c.y + r.nextDouble() * 2.6;
-                    level().addParticle(ParticleTypes.CLOUD, p.x, y, p.z, (r.nextDouble() - 0.5) * 0.02, 0.01, (r.nextDouble() - 0.5) * 0.02);
+                    level().addParticle(Vfx.cloud(), p.x, y, p.z, (r.nextDouble() - 0.5) * 0.02, 0.01, (r.nextDouble() - 0.5) * 0.02);
                     if (r.nextInt(3) == 0) level().addParticle(FaUtil.dust(0xF2F6F8, 2.5F), p.x, y, p.z, 0, 0, 0);
                 }
             }
@@ -479,7 +480,7 @@ public class FusionZoneEntity extends Entity {
                 for (int i = 0; i < n; i++) {
                     Vec3 p = randomIn(c, rad, r);
                     double y = c.y + r.nextDouble() * 3.5;
-                    level().addParticle(ParticleTypes.SNOWFLAKE, p.x, y, p.z, Math.cos(t) * 0.25, -0.05, Math.sin(t) * 0.25);
+                    level().addParticle(Vfx.snowflake(), p.x, y, p.z, Math.cos(t) * 0.25, -0.05, Math.sin(t) * 0.25);
                     if (r.nextInt(3) == 0) level().addParticle(FaUtil.dust(0xFFFFFF, 1.2F), p.x, y, p.z, 0, 0, 0);
                 }
             }
@@ -487,7 +488,7 @@ public class FusionZoneEntity extends Entity {
                 n = density(area * 0.15, reduced);
                 for (int i = 0; i < n; i++) {
                     Vec3 p = randomIn(c, rad, r);
-                    level().addParticle(r.nextBoolean() ? ParticleTypes.SNOWFLAKE : ParticleTypes.WAX_OFF, p.x, c.y + 0.1, p.z, 0, 0.01, 0);
+                    level().addParticle(r.nextBoolean() ? Vfx.snowflake() : Vfx.waxOff(), p.x, c.y + 0.1, p.z, 0, 0.01, 0);
                 }
             }
             case SANDSTORM -> {
@@ -540,7 +541,7 @@ public class FusionZoneEntity extends Entity {
                 for (int i = 0; i < n; i++) {
                     Vec3 p = randomIn(c, rad, r);
                     double y = c.y + r.nextDouble() * 2.2;
-                    level().addParticle(r.nextBoolean() ? ParticleTypes.SPORE_BLOSSOM_AIR : ParticleTypes.CRIMSON_SPORE, p.x, y, p.z, 0, 0, 0);
+                    level().addParticle(r.nextBoolean() ? Vfx.sporeAir() : Vfx.crimsonSpore(), p.x, y, p.z, 0, 0, 0);
                     if (r.nextInt(3) == 0) level().addParticle(FaUtil.dust(r.nextBoolean() ? 0x9C6BD8 : 0x7FBF4A, 1.3F), p.x, y, p.z, 0, 0, 0);
                 }
             }

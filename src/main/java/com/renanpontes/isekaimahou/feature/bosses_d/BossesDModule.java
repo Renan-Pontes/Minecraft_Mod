@@ -5,10 +5,13 @@ import com.renanpontes.isekaimahou.feature.bosses_d.entity.TrialAvatar;
 import com.renanpontes.isekaimahou.feature.bosses_d.entity.TrialSentinel;
 import com.renanpontes.isekaimahou.module.Module;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.CreativeModeTab;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 
 /**
  * Módulo "bosses_d": chefes das Câmaras de Provação (v0.7).
@@ -32,6 +35,10 @@ public class BossesDModule implements Module {
         modBus.addListener(this::attributes);
         modBus.addListener(this::creativeTabs);
         BdCommands.register();
+        // v1.0: o Avatar provoca quando derruba um jogador (a fala tem trava no próprio chefe)
+        NeoForge.EVENT_BUS.addListener((LivingDeathEvent e) -> {
+            if (e.getEntity() instanceof ServerPlayer && e.getSource().getEntity() instanceof TrialAvatar a) a.onPlayerSlain();
+        });
     }
 
     private void attributes(EntityAttributeCreationEvent e) {

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "CPC",
+    "CGC",
+    "SSS"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:cherry_planks"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "G": {
+      "item": "minecraft:gold_nugget"
+    },
+    "S": {
+      "item": "minecraft:cherry_slab"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:sakura_omikuji_box",
+    "count": 1
+  }
+}

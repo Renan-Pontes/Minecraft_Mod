@@ -4,9 +4,9 @@ import org.joml.Vector3f;
 
 import com.mojang.serialization.MapCodec;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -77,7 +77,7 @@ public class ArcaneLightBlock extends Block {
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         level.removeBlock(pos, false);
-        level.sendParticles(ParticleTypes.END_ROD, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 8, 0.15, 0.15, 0.15, 0.04);
+        level.sendParticles(Vfx.endRod(), pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 8, 0.15, 0.15, 0.15, 0.04);
         level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.BLOCKS, 0.4F, 1.6F);
     }
 
@@ -87,7 +87,7 @@ public class ArcaneLightBlock extends Block {
         level.addParticle(GLOW, x + (random.nextDouble() - 0.5) * 0.5, y + (random.nextDouble() - 0.5) * 0.5,
                 z + (random.nextDouble() - 0.5) * 0.5, 0, 0, 0);
         if (random.nextInt(3) == 0) {
-            level.addParticle(ParticleTypes.END_ROD, x, y, z, (random.nextDouble() - 0.5) * 0.02, 0.015,
+            level.addParticle(Vfx.endRod(), x, y, z, (random.nextDouble() - 0.5) * 0.02, 0.015,
                     (random.nextDouble() - 0.5) * 0.02);
         }
     }

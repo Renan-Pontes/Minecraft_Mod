@@ -8,10 +8,10 @@ import com.mojang.serialization.MapCodec;
 import com.renanpontes.isekaimahou.feature.ritual_mage.MageRegistries;
 import com.renanpontes.isekaimahou.feature.ritual_mage.network.MagePayloads;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -145,19 +145,19 @@ public class ResearchTableBlock extends BaseEntityBlock {
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         for (BlockPos offset : EnchantingTableBlock.BOOKSHELF_OFFSETS) {
             if (random.nextInt(18) == 0 && EnchantingTableBlock.isValidBookShelf(level, pos, offset)) {
-                level.addParticle(ParticleTypes.ENCHANT, pos.getX() + 0.5, pos.getY() + 1.6, pos.getZ() + 0.5,
+                level.addParticle(Vfx.enchant(), pos.getX() + 0.5, pos.getY() + 1.6, pos.getZ() + 0.5,
                         offset.getX() + random.nextFloat() - 0.5, offset.getY() - random.nextFloat() - 1.0F,
                         offset.getZ() + random.nextFloat() - 0.5);
             }
         }
         double[] flame = rotate(state.getValue(FACING), 13.5, 13.0);
-        level.addParticle(ParticleTypes.SMALL_FLAME, pos.getX() + flame[0], pos.getY() + 19.4 / 16.0, pos.getZ() + flame[1], 0, 0, 0);
+        level.addParticle(Vfx.smallFlame(), pos.getX() + flame[0], pos.getY() + 19.4 / 16.0, pos.getZ() + flame[1], 0, 0, 0);
         if (random.nextInt(4) == 0) {
-            level.addParticle(ParticleTypes.SMOKE, pos.getX() + flame[0], pos.getY() + 19.8 / 16.0, pos.getZ() + flame[1], 0, 0.01, 0);
+            level.addParticle(Vfx.smoke(), pos.getX() + flame[0], pos.getY() + 19.8 / 16.0, pos.getZ() + flame[1], 0, 0.01, 0);
         }
         if (random.nextInt(6) == 0) {
             double[] book = rotate(state.getValue(FACING), 4 + random.nextDouble() * 8, 5 + random.nextDouble() * 5);
-            level.addParticle(ParticleTypes.END_ROD, pos.getX() + book[0], pos.getY() + 1.05, pos.getZ() + book[1],
+            level.addParticle(Vfx.endRod(), pos.getX() + book[0], pos.getY() + 1.05, pos.getZ() + book[1],
                     0, 0.012 + random.nextDouble() * 0.01, 0);
         }
     }

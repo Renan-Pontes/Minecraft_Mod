@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.renanpontes.isekaimahou.feature.ritual_necro.NecroContent;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -95,7 +96,7 @@ public class BoneScytheItem extends SwordItem {
         for (int i = 0; i < 16; i++) {
             double a = i * Math.PI * 2 / 16;
             double x = c.x + Math.cos(a) * 2.2, z = c.z + Math.sin(a) * 2.2;
-            level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, x, c.y + 1.0, z, 1, 0.05, 0.1, 0.05, 0.01);
+            level.sendParticles(Vfx.soulFlame(), x, c.y + 1.0, z, 1, 0.05, 0.1, 0.05, 0.01);
             if (i % 4 == 0) level.sendParticles(ParticleTypes.SWEEP_ATTACK, x, c.y + 1.0, z, 1, 0, 0, 0, 0);
         }
         level.playSound(null, c.x, c.y, c.z, SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1.0F, 0.6F);

@@ -79,7 +79,8 @@ L = {
     "biome.isekai_mahou.glowcap_hollow": ("Vale dos Chapéus-Luz", "Glowcap Hollow"),
     "place.isekai_mahou.hueco_mundo.hub_hollow_world": ("Mirante da Garganta", "Garganta Lookout"),
     "place.isekai_mahou.hueco_mundo.hub_fey_realm": ("Portão da Corte", "Court Gate"),
-    "place.isekai_mahou.hueco_mundo.hollow_palace": ("Palácio da Noite Eterna", "Palace of Eternal Night"),
+    # v1.3: o antigo Palácio da Noite Eterna virou o Portão de Las Noches (o lugar inteiro se chama Las Noches).
+    "place.isekai_mahou.hueco_mundo.hollow_palace": ("Las Noches", "Las Noches"),
     "place.isekai_mahou.hueco_mundo.fey_court": ("Corte das Fadas", "Fey Court"),
     "cutscene.isekai_mahou.hueco_mundo.arrive.hollow_world": (
         "Areia branca, lua que nunca se põe... e algo faminto observando.",
@@ -119,7 +120,7 @@ L = {
         "Você aprendeu a Ponte de Reishi: um glifo que rasga o caminho até o Mundo Oco (Grimório).",
         "You learned the Reishi Bridge: a glyph that tears a path to the Hollow World (Grimoire)."),
     # ---------------------------------------------------------------- chefes
-    "boss.isekai_mahou.hollow_king.subtitle": ("Soberano do Palácio da Noite Eterna", "Sovereign of the Palace of Eternal Night"),
+    "boss.isekai_mahou.hollow_king.subtitle": ("Rei do Portão de Las Noches", "King of the Gate of Las Noches"),
     "boss.isekai_mahou.hollow_king.phase1": ("Ressurreição — Coroa do Fim", "Resurrection — Crown of the End"),
     "boss.isekai_mahou.hollow_king.phase2": ("Respira", "Respira"),
     "announce.isekai_mahou.hollow_king.intro": ("Ajoelhem-se. Tudo envelhece diante do rei.", "Kneel. All things age before the king."),
@@ -129,6 +130,16 @@ L = {
     "announce.isekai_mahou.hollow_king.death": ("Até... um rei... vira pó...", "Even... a king... turns to dust..."),
     "message.isekai_mahou.hollow_king.resurrect": ("O Rei virou só ossos: está mais rápido!", "The King is bare bones now: he is faster!"),
     "message.isekai_mahou.hollow_king.respira": ("Respira! Corra para as zonas verdes!", "Respira! Run to the green zones!"),
+    # v1.3: golpes novos (Ruína do Trono, Maremoto das Dunas, Valsa das Pétalas).
+    "announce.isekai_mahou.hollow_king.ruin": ("Curvem-se diante da RUÍNA DO TRONO!", "Bow before the RUIN OF THE THRONE!"),
+    "message.isekai_mahou.hollow_king.ruin": ("Ruína do Trono: as ondas saem do machado — pise onde a onda JÁ passou!",
+                                               "Ruin of the Throne: waves spread from the axe — step where the wave ALREADY passed!"),
+    "announce.isekai_mahou.sand_empress.tsunami": ("Maremoto das Dunas!", "Dune Tsunami!"),
+    "message.isekai_mahou.sand_empress.tsunami": ("Uma muralha de areia vem aí: corra para a brecha verde!",
+                                                   "A wall of sand is coming: run to the green gap!"),
+    "announce.isekai_mahou.thorn_queen.waltz": ("Dancem comigo... a Valsa das Pétalas!", "Dance with me... the Petal Waltz!"),
+    "message.isekai_mahou.thorn_queen.waltz": ("Valsa das Pétalas: os braços de pétalas giram — pule por cima ou afaste-se!",
+                                                "Petal Waltz: the petal arms are spinning — jump over them or back off!"),
     "message.isekai_mahou.hollow_king.breath": ("Sopro da Senescência: saia do cone!", "Breath of Senescence: get out of the cone!"),
     "message.isekai_mahou.hollow_king.legion": ("A Legião de Ossos desperta!", "The Bone Legion awakens!"),
     "message.isekai_mahou.hollow_king.pools": ("Poças da Decadência seguem você — não pare!", "Pools of Decay follow you — keep moving!"),

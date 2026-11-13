@@ -11,6 +11,7 @@ import com.renanpontes.isekaimahou.feature.fusions_b.FbUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -63,7 +64,7 @@ public class GravityWellEntity extends FbSpellEntity {
         w.pull = pullStrength;
         w.entityData.set(RADIUS, radius);
         sl.addFreshEntity(w);
-        FbFx.implode(sl, at, ParticleTypes.REVERSE_PORTAL, radius * 0.6, 32, 0.3);
+        FbFx.implode(sl, at, Vfx.reversePortal(), radius * 0.6, 32, 0.3);
         FbFx.sound(sl, at, SoundEvents.PORTAL_TRIGGER, 0.6F, 1.8F);
         FbFx.sound(sl, at, SoundEvents.WARDEN_SONIC_CHARGE, 1.0F, 0.6F);
     }
@@ -103,7 +104,7 @@ public class GravityWellEntity extends FbSpellEntity {
                 le.resetFallDistance();
                 if (d < 1.6 && tickCount % 10 == 0) {
                     hit(le, damage);
-                    sl.sendParticles(ParticleTypes.CRIT, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 4, 0.2, 0.2, 0.2, 0.1);
+                    sl.sendParticles(Vfx.crit(), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 4, 0.2, 0.2, 0.2, 0.1);
                 }
             }
         }
@@ -114,7 +115,7 @@ public class GravityWellEntity extends FbSpellEntity {
     protected void onExpire(ServerLevel sl) {
         Vec3 c = core();
         sl.sendParticles(ParticleTypes.FLASH, c.x, c.y, c.z, 1, 0, 0, 0, 0);
-        sl.sendParticles(ParticleTypes.REVERSE_PORTAL, c.x, c.y, c.z, 60, 0.1, 0.1, 0.1, 0.6);
+        sl.sendParticles(Vfx.reversePortal(), c.x, c.y, c.z, 60, 0.1, 0.1, 0.1, 0.6);
         FbFx.shockwave(sl, c, FbFx.dust(FbFx.GRAVITY, 1.6F), 32, 0.5);
         FbFx.burst(sl, c, Element.GRAVITY, 20, 0.4);
         FbFx.sound(sl, c, SoundEvents.ENDER_EYE_DEATH, 1.4F, 0.5F);
@@ -139,7 +140,7 @@ public class GravityWellEntity extends FbSpellEntity {
             double x = Math.cos(a) * d, z = Math.sin(a) * d;
             // Velocidade tangencial + radial para dentro: as partículas giram enquanto caem no buraco
             double tx = -Math.sin(a), tz = Math.cos(a);
-            level().addParticle(ParticleTypes.REVERSE_PORTAL, getX() + x, getY() + 0.5 + y, getZ() + z,
+            level().addParticle(Vfx.reversePortal(), getX() + x, getY() + 0.5 + y, getZ() + z,
                     -x * 0.08 + tx * 0.12, -y * 0.08, -z * 0.08 + tz * 0.12);
         }
         if (random.nextInt(2) == 0) {

@@ -9,8 +9,8 @@ import com.renanpontes.isekaimahou.feature.legends_f.LfUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -107,8 +107,8 @@ public class ForestGodEntity extends LfSpellEntity {
         double side = left ? 1.1 : -1.1;
         Vec3 hoof = position().add(Mth.cos(yaw) * side, 0, Mth.sin(yaw) * side);
         boolean death = deathMode();
-        level.sendParticles(death ? ParticleTypes.ASH : ParticleTypes.HAPPY_VILLAGER, hoof.x, hoof.y + 0.1, hoof.z, 8, 0.6, 0.05, 0.6, 0);
-        level.sendParticles(death ? ParticleTypes.SMOKE : ParticleTypes.SPORE_BLOSSOM_AIR, hoof.x, hoof.y + 0.2, hoof.z, 6, 0.7, 0.1, 0.7, 0);
+        level.sendParticles(death ? Vfx.ash() : Vfx.happy(), hoof.x, hoof.y + 0.1, hoof.z, 8, 0.6, 0.05, 0.6, 0);
+        level.sendParticles(death ? Vfx.smoke() : Vfx.sporeAir(), hoof.x, hoof.y + 0.2, hoof.z, 6, 0.7, 0.1, 0.7, 0);
         LfUtil.sound(level, hoof, death ? SoundEvents.ROOTED_DIRT_BREAK : SoundEvents.AZALEA_LEAVES_PLACE, 0.9F, 0.6F);
         if (death) return;
         for (int i = 0; i < 3; i++) {
@@ -134,14 +134,14 @@ public class ForestGodEntity extends LfSpellEntity {
                 ctx.heal(a, HEAL, stats);
                 a.removeEffect(MobEffects.POISON);
                 a.removeEffect(MobEffects.WITHER);
-                level.sendParticles(ParticleTypes.HAPPY_VILLAGER, a.getX(), a.getY() + a.getBbHeight() * 0.7, a.getZ(), 4, 0.3, 0.3, 0.3, 0);
+                level.sendParticles(Vfx.happy(), a.getX(), a.getY() + a.getBbHeight() * 0.7, a.getZ(), 4, 0.3, 0.3, 0.3, 0);
             }
         }
         List<LivingEntity> foes = LfUtil.foesAround(ctx, c, r, 24);
         for (LivingEntity f : foes) {
             ctx.damage(f, DAMAGE * (death ? 1.6F : 1F), stats, this);
             f.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, 0), ctx.caster());
-            level.sendParticles(ParticleTypes.SCULK_SOUL, f.getX(), f.getY() + f.getBbHeight() * 0.6, f.getZ(), 2, 0.2, 0.3, 0.2, 0.02);
+            level.sendParticles(Vfx.sculkSoul(), f.getX(), f.getY() + f.getBbHeight() * 0.6, f.getZ(), 2, 0.2, 0.3, 0.2, 0.02);
             if (!f.isAlive()) {
                 LfUtil.fx(level, LfNet.BLOOM, f.position().add(0, 0.1, 0), new Vec3(0, 1, 0), death ? 0x6B5A3A : 0xFFB8D8, 24, 2.5F);
             }

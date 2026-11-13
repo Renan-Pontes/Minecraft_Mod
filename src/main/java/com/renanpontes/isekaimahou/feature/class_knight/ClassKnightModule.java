@@ -31,6 +31,7 @@ public class ClassKnightModule implements Module {
     @Override
     public void init(IEventBus modBus) {
         KnightRegistries.register(modBus);
+        modBus.addListener(KnightFxNet::register);
         KnightGlyphs.register();
         KnightEvents.register();
         KnightOutfitRewards.register();

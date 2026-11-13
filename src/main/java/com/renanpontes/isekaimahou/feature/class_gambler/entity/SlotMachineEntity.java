@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.feature.class_gambler.GbFx;
+import com.renanpontes.isekaimahou.feature.class_gambler.GbFxNet;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbRegistries;
 import com.renanpontes.isekaimahou.feature.class_gambler.luck.JackpotService;
 import com.renanpontes.isekaimahou.feature.class_gambler.luck.LuckService;
@@ -104,12 +105,12 @@ public class SlotMachineEntity extends Entity implements GeoEntity {
             if (tickCount == STOP[i]) {
                 GbFx.sound(sl, position(), SoundEvents.NOTE_BLOCK_BIT.value(), 0.8F, 0.8F + reel(i) * 0.2F);
                 Vec3 p = reelPos(i);
-                sl.sendParticles(GbFx.dust(GbFx.GOLD, 0.8F), p.x, p.y, p.z, 4, 0.05, 0.05, 0.05, 0);
+                GbFxNet.at(sl, GbFxNet.SLOT_REEL, p, Vec3.ZERO, 1F, GbFx.GOLD, getId(), Math.max(0, reel(i)));
             }
         }
         if (tickCount == PAYOUT && !paid) payout(sl);
         if (tickCount >= LIFE) {
-            sl.sendParticles(GbFx.dust(GbFx.GOLD, 1.4F), getX(), getY() + 1.1, getZ(), 30, 0.4, 0.8, 0.4, 0);
+            GbFxNet.at(sl, GbFxNet.SLOT_END, position(), Vec3.ZERO, 1F, GbFx.GOLD, getId());
             GbFx.sound(sl, position(), SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.7F, 1.4F);
             discard();
         }

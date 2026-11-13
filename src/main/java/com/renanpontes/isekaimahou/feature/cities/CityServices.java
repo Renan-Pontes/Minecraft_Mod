@@ -19,14 +19,15 @@ import com.renanpontes.isekaimahou.feature.cities.entity.CityGuard;
 import com.renanpontes.isekaimahou.feature.cities.entity.CityLord;
 import com.renanpontes.isekaimahou.feature.cities.entity.CityMerchant;
 import com.renanpontes.isekaimahou.feature.cities.entity.CityNpc;
+import com.renanpontes.isekaimahou.feature.cities.entity.Profession;
 import com.renanpontes.isekaimahou.feature.cities.network.CitiesNetwork;
 import com.renanpontes.isekaimahou.feature.cities.trade.CityTrades;
 import com.renanpontes.isekaimahou.feature.cities.world.CityKingdom;
+import com.renanpontes.isekaimahou.feature.vehicles.VehicleMechanic;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -36,14 +37,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.BedBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -51,6 +48,8 @@ import net.minecraft.world.phys.Vec3;
  * (quarto), alquimista (restaurar mana), ferreiro (consertar), receptador (limpar a ficha), guarda (fiança DO REINO
  * dele) e o Lorde (audiência com recompensa por patamar no reino dele). Pagos em Moedas da Guilda; dão um pouco de
  * reputação no reino da cidade.
+ * <p>Release 1.0: o taverneiro virou estalajadeiro — descanso, quarto alugado por dias e rumores pagos ficam em
+ * {@link CityInn}; de madrugada as lojas fecham ({@link CityRoutine#shopClosed}) e só sobram os guias de graça.
  * <p>v0.9: guias de graça — sacerdote, escriba e guardas mostram o caminho do <b>Altar de Ascensão</b> público da
  * cidade e os guardas o da <b>Pedra de Teleporte</b> da praça (seta no rastreador, ver {@link CityRumors#guide}).
  */
@@ -75,6 +74,11 @@ public final class CityServices {
             return out;
         }
         if (!(npc instanceof CityMerchant m) || !Reputation.canTrade(p, m.faction())) return out;
+        if (CityRoutine.shopClosed(m)) {
+            // Loja fechada de madrugada: só o caminho do altar, que é de graça.
+            if (m.profession() == Profession.SCRIBE) guides(p, npc, out, false);
+            return out;
+        }
         switch (m.profession()) {
             case PRIEST -> {
                 out.add(service("heal", price(p, m, 4), p.getHealth() < p.getMaxHealth() || p.isOnFire()));
@@ -83,24 +87,31 @@ public final class CityServices {
                 guides(p, npc, out, false);
             }
             case SCRIBE -> guides(p, npc, out, false);
-            case INNKEEPER -> out.add(service("room", price(p, m, 6), true));
+            case INNKEEPER -> CityInn.services(p, m, out);
             case ALCHEMIST -> {
                 MagicData d = MagicApi.get(p);
                 out.add(service("mana", price(p, m, 5), d.mana() < d.maxMana()));
             }
             case BLACKSMITH -> out.add(service("repair", repairCost(p, m), p.getMainHandItem().isDamaged()));
             case FENCE -> out.add(service("clear_record", price(p, m, 25), wanted));
+            case MECHANIC -> {
+                // onda 10: consertar / reconstruir / resgatar veículos (VehicleMechanic); nível de oficina 2 nas cidades do mundo
+                for (String id : VehicleMechanic.SERVICES) {
+                    VehicleMechanic.Offer o = VehicleMechanic.quote(p, npc.position(), MECHANIC_SHOP, id);
+                    out.add(service(id, o == null ? 0 : price(p, m, o.cost()), o != null));
+                }
+            }
             default -> { }
         }
         return out;
     }
 
-    private static CitiesNetwork.Service service(String id, int cost, boolean available) {
+    static CitiesNetwork.Service service(String id, int cost, boolean available) {
         return new CitiesNetwork.Service(id, cost, available, CityLines.tr("service.isekai_mahou.cities." + id),
                 CityLines.tr("service.isekai_mahou.cities." + id + ".desc"));
     }
 
-    private static int price(ServerPlayer p, CityMerchant m, int base) {
+    static int price(ServerPlayer p, CityMerchant m, int base) {
         return Math.max(1, Math.round(base * Reputation.priceMultiplier(p, m.faction())));
     }
 
@@ -134,8 +145,8 @@ public final class CityServices {
         if (s == null || !s.available()) return CityLines.line("service.unavailable");
         if (id.equals("audience")) return audience(p, (CityLord) npc);
         if (id.equals("altar_guide") || id.equals("stone_guide")) return guide(p, npc, id.equals("altar_guide"));
-        BlockPos bed = id.equals("room") ? findBed(p.serverLevel(), npc.blockPosition(), 20) : null;
-        if (id.equals("room") && bed == null) return CityLines.line("service.room.none");
+        if (id.startsWith("inn_") && npc instanceof CityMerchant inn) return CityInn.perform(p, inn, s);
+        if (id.startsWith("vehicle_") && npc instanceof CityMerchant mech) return vehicleService(p, mech, id, s.cost());
         if (!CityPlayer.pay(p, s.cost())) {
             p.level().playSound(null, npc.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 0.8F, 1.0F);
             return CityLines.line("service.no_coins", s.cost());
@@ -179,9 +190,6 @@ public final class CityServices {
                 Reputation.addDaily(p, "church", 3, "cities.service", 20, reason);
                 return CityLines.line("service.blessing.done");
             }
-            case "room" -> {
-                return rentRoom(p, bed, npc.kingdomFaction());
-            }
             case "mana" -> {
                 MagicData d = MagicApi.get(p);
                 d.fillMana();
@@ -214,6 +222,27 @@ public final class CityServices {
         }
     }
 
+    /** Nível de "oficina" do Mecânico das cidades do mundo (desconto de conserto/resgate igual a uma Oficina nível 2). */
+    private static final int MECHANIC_SHOP = 2;
+
+    /** Onda 10: serviço do Mecânico — cobra, faz e, se o veículo sumiu entre a lista e o clique, devolve as moedas. */
+    private static Component vehicleService(ServerPlayer p, CityMerchant m, String id, int cost) {
+        VehicleMechanic.Offer o = VehicleMechanic.quote(p, m.position(), MECHANIC_SHOP, id);
+        if (o == null) return CityLines.line("service.unavailable");
+        if (!CityPlayer.pay(p, cost)) {
+            p.level().playSound(null, m.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 0.8F, 1.0F);
+            return CityLines.line("service.no_coins", cost);
+        }
+        Component done = VehicleMechanic.perform(p, o);
+        if (done == null) {
+            VehicleMechanic.refund(p, CityTrades.coin(), cost);
+            return CityLines.line("service.unavailable");
+        }
+        m.playAction("attack");
+        Reputation.addDaily(p, m.kingdomFaction(), 1, "cities.service", 20, Component.translatable("reason.isekai_mahou.cities.service"));
+        return done;
+    }
+
     /** Guardas por perto (do reino que perdoou; null = todos) param de perseguir quem acabou de quitar a dívida. */
     private static void forgiveGuards(ServerPlayer p, @Nullable String kingdomFaction) {
         for (CityGuard g : p.serverLevel().getEntitiesOfClass(CityGuard.class, p.getBoundingBox().inflate(48))) {
@@ -242,85 +271,6 @@ public final class CityServices {
 
     private static void sparkle(ServerLevel sl, LivingEntity e, net.minecraft.core.particles.SimpleParticleType type, int n) {
         sl.sendParticles(type, e.getX(), e.getY() + 1.0, e.getZ(), n, 0.4, 0.6, 0.4, 0.02);
-    }
-
-    // =====================================================================================
-    //  Quarto da taverna
-    // =====================================================================================
-    /** Aluga a cama livre mais perto do taverneiro: vira o ponto de nascimento e dá "Descansado" ao acordar nela. */
-    private static Component rentRoom(ServerPlayer p, BlockPos bed, String kingdomFaction) {
-        ServerLevel sl = p.serverLevel();
-        p.setRespawnPosition(sl.dimension(), bed, 0.0F, false, false);
-        CompoundTag t = CityPlayer.tag(p);
-        t.putLong("RoomBed", bed.asLong());
-        t.putLong("RoomDay", sl.getDayTime() / 24000L);
-        t.putString("RoomDim", sl.dimension().location().toString());
-        Telegraph.show(sl, Telegraph.Shape.circle(Vec3.atBottomCenterOf(bed), 1.4F).warmup(100).color(Telegraph.SAFE).noFlash());
-        sl.sendParticles(ParticleTypes.HEART, bed.getX() + 0.5, bed.getY() + 1.0, bed.getZ() + 0.5, 6, 0.4, 0.3, 0.4, 0.0);
-        sl.playSound(null, p.blockPosition(), SoundEvents.WOOL_PLACE, SoundSource.PLAYERS, 1.0F, 0.9F);
-        Reputation.addDaily(p, kingdomFaction, 1, "cities.service", 20, Component.translatable("reason.isekai_mahou.cities.service"));
-        return CityLines.line("service.room.done", bed.getX(), bed.getY(), bed.getZ());
-    }
-
-    @Nullable
-    private static BlockPos findBed(ServerLevel sl, BlockPos center, int r) {
-        BlockPos best = null;
-        double bestD = Double.MAX_VALUE;
-        for (BlockPos pos : BlockPos.betweenClosed(center.offset(-r, -6, -r), center.offset(r, 8, r))) {
-            BlockState st = sl.getBlockState(pos);
-            if (!(st.getBlock() instanceof BedBlock) || st.getValue(BedBlock.PART) != BedPart.HEAD) continue;
-            if (st.getValue(BedBlock.OCCUPIED)) continue;
-            double d = pos.distSqr(center);
-            if (d < bestD) {
-                bestD = d;
-                best = pos.immutable();
-            }
-        }
-        return best;
-    }
-
-    /**
-     * Quarto alugado "pula a noite": quem dorme na cama alugada faz a noite passar mesmo num servidor em que os outros
-     * jogadores estão acordados (no mundo solo o jogo já faz isso sozinho). Vale uma vez por aluguel (o acordar tira a
-     * marca do quarto). Chamado a cada 2 s.
-     */
-    public static void tickRooms(net.minecraft.server.MinecraftServer server) {
-        for (ServerPlayer p : server.getPlayerList().getPlayers()) {
-            if (!p.isSleepingLongEnough()) continue;
-            CompoundTag t = CityPlayer.tag(p);
-            if (!t.contains("RoomBed")) continue;
-            ServerLevel sl = p.serverLevel();
-            if (!sl.dimension().location().toString().equals(t.getString("RoomDim"))) continue;
-            BlockPos bed = BlockPos.of(t.getLong("RoomBed"));
-            if (p.getSleepingPos().map(sp -> !sp.closerThan(bed, 2.5)).orElse(true)) continue;
-            if (sl.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DAYLIGHT)) {
-                long next = sl.getDayTime() + 24000L;
-                sl.setDayTime(net.neoforged.neoforge.event.EventHooks.onSleepFinished(sl, next - next % 24000L, sl.getDayTime()));
-            }
-            Component msg = Component.translatable("message.isekai_mahou.cities.room_night", p.getDisplayName());
-            for (ServerPlayer o : new ArrayList<>(sl.players())) {
-                if (o.isSleeping()) o.stopSleepInBed(false, true);
-                else o.displayClientMessage(msg, true);
-            }
-        }
-    }
-
-    /** Ao acordar na cama alugada (no dia do aluguel ou no seguinte): Descansado. */
-    public static void onWake(ServerPlayer p) {
-        CompoundTag t = CityPlayer.tag(p);
-        if (!t.contains("RoomBed")) return;
-        BlockPos bed = BlockPos.of(t.getLong("RoomBed"));
-        long day = p.level().getDayTime() / 24000L;
-        if (day - t.getLong("RoomDay") > 1 || !p.blockPosition().closerThan(bed, 3.0)) return;
-        t.remove("RoomBed");
-        p.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 1));
-        p.addEffect(new MobEffectInstance(MobEffects.SATURATION, 40, 0));
-        p.addEffect(new MobEffectInstance(MobEffects.LUCK, 6000, 0));
-        MagicData d = MagicApi.get(p);
-        d.fillMana();
-        d.markDirty();
-        p.displayClientMessage(Component.translatable("message.isekai_mahou.cities.rested"), false);
-        p.level().playSound(null, p.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.5F, 1.4F);
     }
 
     // =====================================================================================

@@ -25,7 +25,7 @@
   "glyph.isekai_mahou.till": "Arar",
   "glyph.isekai_mahou.till.desc": "Ara a grama e a terra da área como uma enxada e deixa a terra arada bem úmida.",
   "glyph.isekai_mahou.sow": "Semear",
-  "glyph.isekai_mahou.sow.desc": "Planta sementes do seu inventário (no pedestal: dos baús encostados nele) na terra arada vazia da área, seguindo as fileiras.",
+  "glyph.isekai_mahou.sow.desc": "Planta sementes do seu inventário (no pedestal: dos baús encostados nele) na terra arada vazia da área, seguindo as fileiras. Filtro do pedestal (ou semente na mão secundária): planta só essa semente.",
   "glyph.isekai_mahou.call_rain": "Chamar Chuva",
   "glyph.isekai_mahou.call_rain.desc": "Faz chover no mundo por 5 minutos. A criatura atingida fica encharcada e o fogo se apaga.",
   "glyph.isekai_mahou.clear_sky": "Céu Limpo",

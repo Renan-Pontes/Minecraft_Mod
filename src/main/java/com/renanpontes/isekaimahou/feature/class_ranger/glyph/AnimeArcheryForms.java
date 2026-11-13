@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_ranger.RangerFx;
+import com.renanpontes.isekaimahou.feature.class_ranger.RangerFxNet;
 import com.renanpontes.isekaimahou.feature.class_ranger.RangerGlyphIds;
 import com.renanpontes.isekaimahou.feature.class_ranger.entity.BulletLineEntity;
 import com.renanpontes.isekaimahou.glyph.FormGlyph;
@@ -132,8 +133,7 @@ public final class AnimeArcheryForms {
             }
             caster.swing(InteractionHand.MAIN_HAND, true);
             Vec3 hand = eye.add(look.scale(0.8)).subtract(0, 0.2, 0);
-            level.sendParticles(WeaponFx.dust(0x8FE07A, 1.0F), hand.x, hand.y, hand.z, 6, 0.15, 0.15, 0.15, 0);
-            level.sendParticles(ParticleTypes.CHERRY_LEAVES, hand.x, hand.y, hand.z, 3, 0.3, 0.2, 0.3, 0.02);
+            RangerFxNet.at(level, RangerFxNet.HAND_FLARE, hand, dir, 1F, 0x8FE07A, caster.getId(), v);
             RangerFx.sound(level, hand, SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.3F + v * 0.25F);
             if (moving && v == 0) RangerFx.sound(level, hand, SoundEvents.PHANTOM_FLAP, 0.7F, 1.6F);
         }

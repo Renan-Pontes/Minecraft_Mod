@@ -39,6 +39,10 @@ public class MilitiaNpc extends SettlementNpc {
     private static final Set<String> KINGDOM = Set.of("helmet", "sword", "shield", "pauldron_r", "pauldron_l");
     private static final Set<String> DESERT = Set.of("hood", "sword", "shield");
     private static final Set<String> NORDIC = Set.of("helmet", "horns", "axe", "shield", "beard");
+    // onda 5: texturas recoloridas do Reino (Oriental, Élfico, Sombrio) e do Nórdico (Anão) — só peças que a origem pinta
+    private static final Set<String> ORIENTAL = Set.of("sword", "pauldron_r", "pauldron_l");
+    private static final Set<String> ELVEN = Set.of("sword", "shield");
+    private static final Set<String> DWARVEN = Set.of("helmet", "axe", "shield", "beard");
 
     private int orderCheck;
 
@@ -67,6 +71,9 @@ public class MilitiaNpc extends SettlementNpc {
         return switch (style()) {
             case DESERT -> DESERT;
             case NORDIC -> NORDIC;
+            case ORIENTAL -> ORIENTAL;
+            case ELVEN -> ELVEN;
+            case DWARVEN -> DWARVEN;
             default -> KINGDOM;
         };
     }

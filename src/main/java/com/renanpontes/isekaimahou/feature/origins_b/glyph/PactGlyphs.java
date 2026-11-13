@@ -14,6 +14,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -141,9 +142,9 @@ public final class PactGlyphs {
                 le.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, ticks, Mth.clamp(Math.round(power) - 1, 0, 2)), ctx.caster());
             }
             Vec3 hand = le.position().add(0, le.getBbHeight() * 0.6, 0);
-            level.sendParticles(ParticleTypes.SQUID_INK, hand.x, hand.y, hand.z, 14, 0.3, 0.3, 0.3, 0.04);
+            level.sendParticles(Vfx.ink(), hand.x, hand.y, hand.z, 14, 0.3, 0.3, 0.3, 0.04);
             level.sendParticles(ObFx.dust(ObFx.VIOLET, 1.3F), hand.x, hand.y, hand.z, 18, 0.35, 0.4, 0.35, 0);
-            level.sendParticles(ParticleTypes.ENCHANTED_HIT, hand.x, hand.y, hand.z, 10, 0.3, 0.3, 0.3, 0.1);
+            level.sendParticles(Vfx.magicCrit(), hand.x, hand.y, hand.z, 10, 0.3, 0.3, 0.3, 0.1);
             ObFx.sound(level, hand, SoundEvents.ILLUSIONER_PREPARE_BLINDNESS, 0.9F, 0.8F);
             ObFx.sound(level, hand, SoundEvents.ARMOR_EQUIP_NETHERITE.value(), 1.0F, 0.7F);
         }
@@ -192,7 +193,7 @@ public final class PactGlyphs {
             le.addEffect(new MobEffectInstance(ObRegistries.DEATH_CONTRACT, stats.duration(300), 0, false, true, true), ctx.caster());
             Vec3 head = le.position().add(0, le.getBbHeight() + 0.4, 0);
             level.sendParticles(ObFx.dust(ObFx.CRIMSON, 1.4F), head.x, head.y, head.z, 20, 0.3, 0.2, 0.3, 0);
-            level.sendParticles(ParticleTypes.ENCHANT, head.x, head.y, head.z, 20, 0.4, 0.4, 0.4, 0.4);
+            level.sendParticles(Vfx.enchant(), head.x, head.y, head.z, 20, 0.4, 0.4, 0.4, 0.4);
             ObFx.sound(level, head, SoundEvents.EVOKER_PREPARE_ATTACK, 0.8F, 0.6F);
             ObFx.sound(level, head, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.5F);
         }

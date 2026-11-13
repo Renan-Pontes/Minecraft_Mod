@@ -22,6 +22,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -59,10 +60,14 @@ public class ZephyrEntity extends ElementalGuardian {
             GuardianMove.of("tornado", 40).range(0, 30).cooldown(300).weight(9).announce(),
             GuardianMove.of("dive", 52).range(3, 28).cooldown(180).weight(10).announce().selfMoving(),
             GuardianMove.of("wind_curtain", 110).range(0, 20).cooldown(400).weight(11).phases(2, 3).announce(),
-            GuardianMove.of("vacuum", 56).range(0, 16).cooldown(420).weight(13).phases(3, 3).announce());
+            GuardianMove.of("vacuum", 56).range(0, 16).cooldown(420).weight(13).phases(3, 3).announce(),
+            // v1.3 ASSINATURA — Corrente Ascendente: círculos perseguem cada um e LANÇAM ao céu; no ar, lâminas de vento
+            GuardianMove.of("updraft", 56).anim("gale").range(0, 24).cooldown(260).weight(11).announce());
 
     private static final EntityDataAccessor<Boolean> DATA_EXPOSED = SynchedEntityData.defineId(ZephyrEntity.class, EntityDataSerializers.BOOLEAN);
     private static final float CURTAIN_INNER = 2.5F;
+    /** Quem a Corrente Ascendente jogou para o alto (alvos das lâminas no ar). */
+    private final List<LivingEntity> updraftLifted = new java.util.ArrayList<>();
     private static final float CURTAIN_OUTER = 15F;
 
     private final RawAnimation animFly;
@@ -271,6 +276,7 @@ public class ZephyrEntity extends ElementalGuardian {
             case "dive" -> dive(level, t, target);
             case "wind_curtain" -> windCurtain(level, t);
             case "vacuum" -> vacuum(level, t);
+            case "updraft" -> updraft(level, t);
             default -> {}
         }
     }
@@ -550,6 +556,67 @@ public class ZephyrEntity extends ElementalGuardian {
         }
         GuardianShockwave.create(this, vacuumGround, Element.WIND).radius(13F, 1.0F).damage(4F * mult())
                 .knock(1.0, 0.5).groundOnly().launch();
+    }
+
+    /**
+     * Corrente Ascendente (assinatura do Zéfiro): um círculo persegue cada inimigo (até 2 + fase) e TRAVA nos últimos
+     * 10 ticks; quem ficar dentro é arremessado ao céu por uma coluna de vento e, lá em cima, sem chão para desviar,
+     * o Zéfiro dispara lâminas de vento. Saia do círculo quando ele travar.
+     */
+    private void updraft(ServerLevel level, int t) {
+        if (t < 14 && t % 2 == 0) {
+            // Antecipação: o vento gira em volta dele e sobe
+            for (int i = 0; i < 3; i++) {
+                double a = t * 0.6 + i * Math.PI * 2 / 3;
+                level.sendParticles(ParticleTypes.CLOUD, getX() + Math.cos(a) * 2.2, getY() + 0.3 + t * 0.12, getZ() + Math.sin(a) * 2.2,
+                        0, 0, 0.4, 0, 1.0);
+            }
+            if (t == 0) level.playSound(null, getX(), getY(), getZ(), SoundEvents.BREEZE_INHALE, SoundSource.HOSTILE, 3.0F, 0.6F);
+        }
+        if (t == 6) {
+            updraftLifted.clear();
+            int max = 2 + phase();
+            for (LivingEntity e : BossSpells.foesAround(this, position(), 26)) {
+                if (max-- <= 0) break;
+                float r = 2.2F;
+                Telegraph.delayed(level, Telegraph.Shape.follow(e, r).warmup(30).lock(10).vertical(0.5, 3.0).color(windColor()).owner(this),
+                        hits -> {
+                            if (!isAlive()) return;
+                            for (LivingEntity h : hits) {
+                                if (!isFoe(h)) continue;
+                                launchUp(level, h);
+                            }
+                        });
+                if (e instanceof ServerPlayer sp) BossKit.vignette(sp, 0xBDF2FF, 0.55F, 36);
+            }
+            hint("updraft", 32);
+        }
+        // Lá em cima: lâminas de vento em quem ainda está no ar
+        if ((t == 44 || t == 50) && !updraftLifted.isEmpty()) {
+            level.playSound(null, getX(), getY(), getZ(), SoundEvents.BREEZE_SHOOT, SoundSource.HOSTILE, 2.5F, 0.7F);
+            for (LivingEntity e : List.copyOf(updraftLifted)) {
+                if (!e.isAlive() || e.onGround()) continue;
+                BossSpells.cast(this, Element.WIND, e, spellPower() * 0.8F, "projectile accelerate wind_blade", "projectile gust",
+                        "projectile");
+            }
+        }
+        if (t == 55) updraftLifted.clear();
+    }
+
+    private void launchUp(ServerLevel level, LivingEntity e) {
+        Vec3 at = e.position();
+        e.setDeltaMovement(e.getDeltaMovement().multiply(0.2, 0, 0.2).add(0, 1.35, 0));
+        e.hurtMarked = true;
+        e.fallDistance = 0;
+        BossSpells.hit(this, e, Element.WIND, 3F * mult());
+        updraftLifted.add(e);
+        // Coluna de vento visível + estalo
+        for (int i = 0; i < 12; i++) {
+            level.sendParticles(ParticleTypes.GUST, at.x, at.y + i * 0.8, at.z, 1, 0.3, 0.2, 0.3, 0);
+        }
+        level.sendParticles(ParticleTypes.CLOUD, at.x, at.y + 0.2, at.z, 30, 1.2, 0.1, 1.2, 0.15);
+        level.playSound(null, at.x, at.y, at.z, SoundEvents.WIND_CHARGE_BURST.value(), SoundSource.HOSTILE, 2.0F, 0.8F);
+        BossKit.debris(level, at, 1.6, 10);
     }
 
     // =====================================================================================

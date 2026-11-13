@@ -17,7 +17,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -51,7 +51,7 @@ public final class LightningGlyphs {
     }
 
     static void sparks(ServerLevel sl, Vec3 c, int n) {
-        sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, n, 0.35, 0.35, 0.35, 0.25);
+        sl.sendParticles(Vfx.electric(), c.x, c.y, c.z, n, 0.35, 0.35, 0.35, 0.25);
         sl.sendParticles(FaUtil.dust(0x7FDBFF, 1.0F), c.x, c.y, c.z, n / 2, 0.3, 0.3, 0.3, 0);
     }
 
@@ -116,7 +116,7 @@ public final class LightningGlyphs {
                 sparks(sl, c, 24);
                 for (int i = 0; i < 3; i++) {
                     Vec3 off = c.add((sl.random.nextDouble() - 0.5) * 1.6, (sl.random.nextDouble() - 0.5) * 1.6, (sl.random.nextDouble() - 0.5) * 1.6);
-                    FaUtil.zigzag(sl, c, off, FaUtil.dust(0xBFF4FF, 0.6F), ParticleTypes.ELECTRIC_SPARK);
+                    FaUtil.zigzag(sl, c, off, FaUtil.dust(0xBFF4FF, 0.6F), Vfx.electric());
                 }
                 FaUtil.sound(sl, c, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.5F, 1.8F);
             }
@@ -152,7 +152,7 @@ public final class LightningGlyphs {
                 origin = ctx.caster() != null ? ctx.eyePos().subtract(0, 0.2, 0) : chest(le);
             }
             hit.add(first.getUUID());
-            FaUtil.zigzag(sl, origin, chest(first), FaUtil.dust(0x7FDBFF, 0.8F), ParticleTypes.ELECTRIC_SPARK);
+            FaUtil.zigzag(sl, origin, chest(first), FaUtil.dust(0x7FDBFF, 0.8F), Vfx.electric());
             zap(ctx, stats, first, 5.0F);
             hop(ctx, stats, first, 5.0F * 0.8F, 1, hit);
         }
@@ -164,7 +164,7 @@ public final class LightningGlyphs {
                 LivingEntity next = nearest(ctx, from.position(), 6.0, hit);
                 if (next == null) return;
                 hit.add(next.getUUID());
-                FaUtil.zigzag(ctx.level(), chest(from), chest(next), FaUtil.dust(0x7FDBFF, 0.8F), ParticleTypes.ELECTRIC_SPARK);
+                FaUtil.zigzag(ctx.level(), chest(from), chest(next), FaUtil.dust(0x7FDBFF, 0.8F), Vfx.electric());
                 zap(ctx, stats, next, dmg);
                 hop(ctx, stats, next, dmg * 0.8F, jump + 1, hit);
             });
@@ -240,7 +240,7 @@ public final class LightningGlyphs {
                 FaUtil.setMotion(it, v.add(0, 0.15, 0));
                 if (items++ < 8) FaUtil.line(sl, pole, it.position(), FaUtil.dust(0x9AB4D8, 0.5F), 2);
             }
-            sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, pole.x, pole.y, pole.z, 12, 0.3, 0.3, 0.3, 0.15);
+            sl.sendParticles(Vfx.electric(), pole.x, pole.y, pole.z, 12, 0.3, 0.3, 0.3, 0.15);
             FaUtil.sound(sl, pole, SoundEvents.CHAIN_PLACE, 1.0F, 0.6F);
             FaUtil.sound(sl, pole, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.3F, 2.0F);
         }
@@ -286,7 +286,7 @@ public final class LightningGlyphs {
             for (int i = 0; i < 4; i++) {
                 double a = Math.PI * 0.5 * i + sl.random.nextDouble();
                 Vec3 to = c.add(Math.cos(a) * 1.4, (sl.random.nextDouble() - 0.3) * 1.5, Math.sin(a) * 1.4);
-                FaUtil.zigzag(sl, c, to, FaUtil.dust(0xE0FAFF, 0.6F), ParticleTypes.ELECTRIC_SPARK);
+                FaUtil.zigzag(sl, c, to, FaUtil.dust(0xE0FAFF, 0.6F), Vfx.electric());
             }
             FaUtil.sound(sl, c, SoundEvents.BEACON_POWER_SELECT, 0.8F, 1.7F);
             FaUtil.sound(sl, c, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.4F, 1.6F);
@@ -321,7 +321,7 @@ public final class LightningGlyphs {
             float r = stats.radius(6.0F);
             FusionZoneEntity.spawn(ctx, stats, this, FusionZoneEntity.Kind.THUNDERSTORM, c, r, stats.duration(200), null);
             sl.sendParticles(FaUtil.dust(0x3A3F4A, 3.5F), c.x, c.y + 7, c.z, 60, r * 0.6, 0.4, r * 0.6, 0);
-            sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y + 7, c.z, 20, r * 0.5, 0.3, r * 0.5, 0.1);
+            sl.sendParticles(Vfx.electric(), c.x, c.y + 7, c.z, 20, r * 0.5, 0.3, r * 0.5, 0.1);
             FaUtil.sound(sl, c, SoundEvents.LIGHTNING_BOLT_THUNDER, 2.0F, 1.2F);
         }
     }

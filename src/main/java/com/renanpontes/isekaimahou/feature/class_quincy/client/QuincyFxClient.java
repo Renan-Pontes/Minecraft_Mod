@@ -12,8 +12,12 @@ import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.renanpontes.isekaimahou.IsekaiMahou;
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
+import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.feature.class_quincy.Quincy;
 import com.renanpontes.isekaimahou.feature.class_quincy.QuincyFxNet;
 import com.renanpontes.isekaimahou.feature.class_quincy.item.QuincyCrossItem;
@@ -25,6 +29,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -41,7 +46,10 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
  *   (mais rápidas quanto mais carregado) e um lampejo em anel quando a carga fica cheia;</li>
  *   <li><b>Vollständig</b>: um par de asas grandes de penas de luz e a auréola (Heiligenschein) girando;
  *   <b>Letzt Stil</b>: dois pares de asas douradas, a estrela Quincy girando nas costas e a auréola;
- *   <b>O Todo-Poderoso</b>: olhos de muitas pupilas orbitando a cabeça e o brilho azul nos olhos;</li>
+ *   <b>O Todo-Poderoso</b> (w10): SOMBRA — poça de tinta negra sob ele, aura de fumaça negra subindo pelo corpo e
+ *   tentáculos de tinta se contorcendo em volta; os OLHOS de muitas pupilas se abrindo e piscando numa nuvem em volta e
+ *   acima dele (mais olhos no preset alto), o brilho nos olhos do próprio jogador e, ao ativar, um respingo de tinta e
+ *   um anel de olhos se abrindo — para quem ativou, um breve "olho" e bordas de tinta na tela;</li>
  *   <li>Heilig Bogen (o arco gigante + a estrela atrás), a estrela da Chuva de Luz no céu com o cone de luz, a troca
  *   tremeluzente da Antítese (com o lampejo invertido na tela) e a coluna de ascensão das formas finais.</li>
  * </ul>
@@ -74,6 +82,15 @@ public final class QuincyFxClient {
     private static final List<Fx> FX = new ArrayList<>();
     private static final List<Spark> SPARKS = new ArrayList<>();
     private static final Map<Integer, Integer> DRAW = new HashMap<>();
+    /** w10: respingos de TINTA (escuros, mistura normal) — Todo-Poderoso. */
+    private static final List<Spark> INK = new ArrayList<>();
+    private static final int MAX_INK = 300;
+    /** w10: quem está no Todo-Poderoso e é desenhado neste quadro (e se é o próprio jogador em 1ª pessoa). */
+    private static final List<LivingEntity> ALMIGHTY = new ArrayList<>();
+    private static final ResourceLocation VIGNETTE = IsekaiMahou.id("textures/misc/boss_vignette.png");
+    /** w10: a tela do Todo-Poderoso (para quem ativou): quando começou (tempo do jogo) — -1 = nada. */
+    private static long almightyScreenStart = -1;
+    private static final int ALMIGHTY_SCREEN_TICKS = 36;
     private static final RandomSource RND = RandomSource.create();
     private static ClientLevel level;
 
@@ -107,6 +124,7 @@ public final class QuincyFxClient {
         };
         if (FX.size() > 200) FX.remove(0);
         FX.add(new Fx(p, life));
+        if (p.kind() == QuincyFxNet.EYES) almightyBurst(l, p);
         if (p.kind() == QuincyFxNet.BOGEN) {
             // estilhaços de luz saindo do arco
             for (int i = 0; i < 24 * QuincyRenderTypes.particleScale(); i++) {
@@ -114,6 +132,51 @@ public final class QuincyFxClient {
                 spark(p.pos().x, p.pos().y, p.pos().z, v.x, v.y, v.z, i % 3 == 0 ? 0xFFFFFF : BLUE, 10 + RND.nextInt(8), 0.12F);
             }
         }
+    }
+
+    /**
+     * w10 — O Todo-Poderoso abre os olhos: a tinta ESPIRRA para fora do corpo e corre pelo chão; para quem ativou,
+     * começa o efeito curto de tela ({@link #overlay}).
+     */
+    private static void almightyBurst(ClientLevel l, QuincyFxNet.Burst p) {
+        Entity e = l.getEntity(p.entity());
+        Vec3 c = e != null ? e.position().add(0, e.getBbHeight() * 0.55, 0) : p.pos();
+        Vec3 feet = e != null ? e.position() : p.pos().subtract(0, 1.5, 0);
+        int n = inkCount(46);
+        for (int i = 0; i < n; i++) {
+            double th = RND.nextDouble() * Mth.TWO_PI, ph = Math.acos(RND.nextDouble() * 2 - 1);
+            double sp = 0.12 + RND.nextDouble() * 0.22;
+            ink(c.x, c.y, c.z, Math.sin(ph) * Math.cos(th) * sp, Math.cos(ph) * sp * 0.7 + 0.04, Math.sin(ph) * Math.sin(th) * sp,
+                    14 + RND.nextInt(12), 0.22F + RND.nextFloat() * 0.25F);
+        }
+        int g = inkCount(28);
+        for (int i = 0; i < g; i++) {
+            double a = i * Mth.TWO_PI / g + RND.nextDouble() * 0.2;
+            double sp = 0.16 + RND.nextDouble() * 0.1;
+            ink(feet.x, feet.y + 0.08, feet.z, Math.cos(a) * sp, 0, Math.sin(a) * sp, 18 + RND.nextInt(8), 0.35F + RND.nextFloat() * 0.2F);
+        }
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null && p.entity() == mc.player.getId()) almightyScreenStart = l.getGameTime();
+    }
+
+    /** Quantidade de efeito escuro: preset do mod × configuração de partículas do jogo. */
+    private static int inkCount(int base) {
+        return Math.max(1, Math.round(FxQuality.count(base) * QuincyRenderTypes.particleScale()));
+    }
+
+    private static void ink(double x, double y, double z, double vx, double vy, double vz, int life, float size) {
+        if (INK.size() >= MAX_INK) return;
+        Spark s = new Spark();
+        s.x = x;
+        s.y = y;
+        s.z = z;
+        s.vx = vx;
+        s.vy = vy;
+        s.vz = vz;
+        s.rgb = 0x050308;
+        s.life = life;
+        s.size = size;
+        INK.add(s);
     }
 
     private static ClientLevel sync() {
@@ -130,6 +193,9 @@ public final class QuincyFxClient {
         FX.clear();
         SPARKS.clear();
         DRAW.clear();
+        INK.clear();
+        ALMIGHTY.clear();
+        almightyScreenStart = -1;
         level = null;
     }
 
@@ -199,6 +265,38 @@ public final class QuincyFxClient {
                 }
             }
         }
+        Iterator<Spark> ii = INK.iterator();
+        while (ii.hasNext()) {
+            Spark s = ii.next();
+            if (++s.age >= s.life) {
+                ii.remove();
+                continue;
+            }
+            s.x += s.vx;
+            s.y += s.vy;
+            s.z += s.vz;
+            // a tinta freia e escorre
+            s.vx *= 0.86;
+            s.vz *= 0.86;
+            s.vy = s.vy * 0.86 - 0.004;
+        }
+        // O Todo-Poderoso: fiapos de sombra subindo do corpo (quantidade pelo preset)
+        for (Map.Entry<Integer, FormC> en : FORMS.entrySet()) {
+            if (en.getValue().kind() != QuincyFxNet.FORM_ALMIGHTY) continue;
+            Entity ent = l.getEntity(en.getKey());
+            if (ent == null || ent.isInvisible() || !FxQuality.inRange(ent.distanceToSqr(cam))) continue;
+            // em 1ª pessoa, a fumaça subindo do próprio corpo passaria na frente da câmera: não solta
+            if (ent == mc.getCameraEntity() && mc.options.getCameraType().isFirstPerson()) continue;
+            float chance = 0.9F * FxQuality.particles() * scale;
+            while (chance > 0) {
+                if (RND.nextFloat() < chance) {
+                    double a = RND.nextDouble() * Mth.TWO_PI, r = 0.35 + RND.nextDouble() * 0.5;
+                    ink(ent.getX() + Math.cos(a) * r, ent.getY() + RND.nextDouble() * ent.getBbHeight() * 0.9, ent.getZ() + Math.sin(a) * r,
+                            0, 0.03 + RND.nextDouble() * 0.03, 0, 18 + RND.nextInt(10), 0.18F + RND.nextFloat() * 0.18F);
+                }
+                chance -= 1F;
+            }
+        }
         // a Letzt Stil solta faíscas douradas subindo
         for (Map.Entry<Integer, FormC> en : FORMS.entrySet()) {
             if (en.getValue().kind() != QuincyFxNet.FORM_LETZT || RND.nextFloat() > 0.6F * scale) continue;
@@ -224,7 +322,7 @@ public final class QuincyFxClient {
         if (e.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.level != level) return;
-        if (FORMS.isEmpty() && FX.isEmpty() && SPARKS.isEmpty()) return;
+        if (FORMS.isEmpty() && FX.isEmpty() && SPARKS.isEmpty() && INK.isEmpty()) return;
         float pt = mc.isPaused() ? 0F : e.getPartialTick().getGameTimeDeltaPartialTick(false);
         Camera camera = e.getCamera();
         Vec3 cam = camera.getPosition();
@@ -262,24 +360,44 @@ public final class QuincyFxClient {
             }
             buffers.endBatch(haloT);
 
-            RenderType eyeT = QuincyRenderTypes.translucent(QuincyRenderTypes.EYE);
-            vc = buffers.getBuffer(eyeT);
-            for (Map.Entry<Integer, Integer> en : DRAW.entrySet()) {
-                if (en.getValue() == QuincyFxNet.FORM_ALMIGHTY) {
-                    drawEyes(vc, m, left, up, (LivingEntity) mc.level.getEntity(en.getKey()), FORMS.get(en.getKey()), cam, time, pt);
-                }
+        }
+
+        // O Todo-Poderoso (w10): primeiro a SOMBRA (tinta, mistura normal), depois os OLHOS por cima
+        ALMIGHTY.clear();
+        for (Map.Entry<Integer, FormC> en : FORMS.entrySet()) {
+            if (en.getValue().kind() != QuincyFxNet.FORM_ALMIGHTY) continue;
+            Entity ent = mc.level.getEntity(en.getKey());
+            if (!(ent instanceof LivingEntity le) || ent.isInvisible() || !FxQuality.inRange(ent.distanceToSqr(cam))) continue;
+            ALMIGHTY.add(le);
+        }
+        boolean eyeBurst = false;
+        for (Fx fx : FX) eyeBurst |= fx.p.kind() == QuincyFxNet.EYES;
+        if (!ALMIGHTY.isEmpty() || !INK.isEmpty()) {
+            RenderType inkT = QuincyRenderTypes.translucent(QuincyRenderTypes.INK);
+            VertexConsumer ivc = buffers.getBuffer(inkT);
+            for (LivingEntity le : ALMIGHTY) {
+                boolean self1p = firstPerson && le == camEntity;
+                drawShadow(ivc, m, left, up, le, FORMS.get(le.getId()), cam, time, pt, self1p);
+            }
+            for (Spark s : INK) {
+                double dx = s.x - cam.x, dy = s.y - cam.y, dz = s.z - cam.z;
+                if (dx * dx + dy * dy + dz * dz < 1.0) continue; // colado na lente vira um borrão: não desenha
+                float a = Mth.clamp((s.life - s.age - pt) / 6F, 0F, 1F) * Mth.clamp((s.age + pt) / 2F, 0F, 1F);
+                float sz = s.size * (1F + 0.4F * (s.age + pt) / s.life);
+                billboard(ivc, m, left, up, (float) (s.x + s.vx * pt - cam.x), (float) (s.y + s.vy * pt - cam.y), (float) (s.z + s.vz * pt - cam.z),
+                        sz, sz, s.age * 0.1F, argb(s.rgb, 0.8F * a));
+            }
+            buffers.endBatch(inkT);
+        }
+        if (!ALMIGHTY.isEmpty() || eyeBurst) {
+            RenderType eyeT = QuincyRenderTypes.translucent(QuincyRenderTypes.SHADOW_EYE);
+            VertexConsumer vc = buffers.getBuffer(eyeT);
+            for (LivingEntity le : ALMIGHTY) {
+                if (firstPerson && le == camEntity) continue;
+                drawEyes(vc, m, left, up, le, FORMS.get(le.getId()), cam, time, pt);
             }
             for (Fx fx : FX) if (fx.p.kind() == QuincyFxNet.EYES) drawEyeOpen(vc, m, left, up, fx, cam, pt);
             buffers.endBatch(eyeT);
-        } else {
-            boolean eyes = false;
-            for (Fx fx : FX) eyes |= fx.p.kind() == QuincyFxNet.EYES;
-            if (eyes) {
-                RenderType eyeT = QuincyRenderTypes.translucent(QuincyRenderTypes.EYE);
-                VertexConsumer vc = buffers.getBuffer(eyeT);
-                for (Fx fx : FX) if (fx.p.kind() == QuincyFxNet.EYES) drawEyeOpen(vc, m, left, up, fx, cam, pt);
-                buffers.endBatch(eyeT);
-            }
         }
 
         // estrelas (Letzt Stil nas costas, céu da Chuva de Luz, ascensão, arco gigante)
@@ -326,10 +444,18 @@ public final class QuincyFxClient {
         }
         for (Map.Entry<Integer, Integer> en : DRAW.entrySet()) {
             if (en.getValue() == QuincyFxNet.FORM_ALMIGHTY) {
+                // w10: os DOIS olhos acendem (azul-branco), com um risco de luz horizontal em cada
                 LivingEntity le = (LivingEntity) mc.level.getEntity(en.getKey());
-                Vec3 eye = le.getEyePosition(pt).add(le.getViewVector(pt).scale(0.3)).subtract(cam);
-                float pulse = 0.25F + 0.05F * Mth.sin(time * 0.3F);
-                billboard(gvc, m, left, up, (float) eye.x, (float) eye.y, (float) eye.z, pulse, pulse * 0.6F, 0, argb(0x6FA8FF, 0.9F));
+                Vec3 look = le.getViewVector(pt);
+                Vec3 right = new Vec3(-look.z, 0, look.x);
+                right = right.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : right.normalize();
+                float a = formAlpha(FORMS.get(en.getKey()), pt);
+                float pulse = 0.16F + 0.04F * Mth.sin(time * 0.3F);
+                for (int side = -1; side <= 1; side += 2) {
+                    Vec3 eye = le.getEyePosition(pt).add(look.scale(0.28)).add(right.scale(0.11 * side)).subtract(cam);
+                    billboard(gvc, m, left, up, (float) eye.x, (float) eye.y, (float) eye.z, pulse, pulse * 0.7F, 0, argb(0x8FC0FF, 0.95F * a));
+                    billboard(gvc, m, left, up, (float) eye.x, (float) eye.y, (float) eye.z, pulse * 2.6F, pulse * 0.18F, 0, argb(0xDDEBFF, 0.7F * a));
+                }
             }
         }
         for (Fx fx : FX) if (fx.p.kind() == QuincyFxNet.ANTITHESIS) drawAntithesisGlow(gvc, m, left, up, fx, cam, pt);
@@ -414,20 +540,105 @@ public final class QuincyFxClient {
         vc.addVertex(m, (float) (c.x + ax.x - ay.x), (float) (c.y + ax.y - ay.y), (float) (c.z + ax.z - ay.z)).setUv(1, 1).setColor(col);
     }
 
-    // ---------------- O Todo-Poderoso ----------------
-    private static void drawEyes(VertexConsumer vc, Matrix4f m, Vector3f left, Vector3f up, LivingEntity e, FormC f, Vec3 cam, float time,
-                                 float pt) {
+    // ---------------- O Todo-Poderoso (w10) ----------------
+    /**
+     * A SOMBRA do Todo-Poderoso (tinta negra, mistura normal): poça larga sob os pés que respira e gira devagar,
+     * borrões de sombra subindo pelo corpo e tentáculos de tinta saindo da poça e se contorcendo em volta.
+     * Em 1ª pessoa o próprio jogador vê só a poça e os tentáculos (nada colado na câmera).
+     */
+    private static void drawShadow(VertexConsumer vc, Matrix4f m, Vector3f left, Vector3f up, LivingEntity e, FormC f, Vec3 cam, float time,
+                                   float pt, boolean self1p) {
+        if (f == null) return;
         float a = formAlpha(f, pt);
         if (a <= 0.01F) return;
-        Vec3 c = e.getPosition(pt).add(0, e.getBbHeight() * 0.8, 0);
-        for (int k = 0; k < 6; k++) {
-            float ang = time * 0.04F + k * Mth.TWO_PI / 6;
-            Vec3 p = c.add(Mth.cos(ang) * 1.4, Mth.sin(ang * 2F) * 0.35, Mth.sin(ang) * 1.4).subtract(cam);
-            float blink = Mth.clamp(Math.abs(Mth.sin(time * 0.05F + k * 1.7F)) * 6F, 0.1F, 1F);
-            billboard(vc, m, left, up, (float) p.x, (float) p.y, (float) p.z, 0.32F, 0.32F * blink, 0, argb(0xFFFFFF, 0.92F * a));
+        float sc = e.getBbHeight() / 1.8F;
+        Vec3 feet = e.getPosition(pt);
+        Vec3 g = feet.subtract(cam);
+        // poça (duas camadas girando ao contrário)
+        float breathe = 1F + 0.06F * Mth.sin(time * 0.09F);
+        QuincyRenderTypes.flat(vc, m, (float) g.x, (float) g.y + 0.03F, (float) g.z, 1.9F * sc * breathe, time * 0.006F, argb(0x050308, 0.9F * a));
+        QuincyRenderTypes.flat(vc, m, (float) g.x, (float) g.y + 0.025F, (float) g.z, 3.1F * sc * breathe, -time * 0.004F + 1.3F, argb(0x0A0612, 0.45F * a));
+        // tentáculos de tinta
+        int tendrils = FxQuality.atLeast(MahouConfig.Graphics.HIGH) ? 7 : FxQuality.atLeast(MahouConfig.Graphics.MEDIUM) ? 5 : 3;
+        int segs = 9;
+        for (int k = 0; k < tendrils; k++) {
+            float base = k * Mth.TWO_PI / tendrils + time * 0.008F + k * 0.7F;
+            float reach = (1.0F + 0.25F * Mth.sin(time * 0.05F + k * 2.1F)) * sc;
+            Vec3 prev = null;
+            float prevW = 0;
+            for (int j = 0; j <= segs; j++) {
+                float u = j / (float) segs;
+                float ang = base + 0.55F * Mth.sin(time * 0.07F + k * 1.3F + u * 3.2F) * u;
+                float rad = (1.35F - 0.65F * u) * sc + 0.25F * Mth.sin(time * 0.11F + k + u * 4F) * u;
+                // em 1ª pessoa os tentáculos ficam baixos (não passam na frente da câmera)
+                float h = u * reach * (self1p ? 0.9F : 2.1F);
+                Vec3 pnt = g.add(Mth.cos(ang) * rad, 0.04 + h, Mth.sin(ang) * rad);
+                float w = (0.2F - 0.17F * u) * sc;
+                if (prev != null) inkRibbon(vc, m, prev, pnt, prevW, w, argb(0x040208, 0.85F * a * (1F - 0.5F * u)));
+                prev = pnt;
+                prevW = w;
+            }
+        }
+        if (self1p) return;
+        // aura: borrões de sombra subindo e girando pelo corpo
+        int blobs = Math.max(4, Math.round(12 * FxQuality.particles()));
+        for (int k = 0; k < blobs; k++) {
+            float ph = (k * 0.618F + time * 0.012F) % 1F;
+            float ang = k * 2.39996F + time * 0.03F;
+            float r = (0.45F + 0.2F * Mth.sin(time * 0.05F + k)) * sc;
+            float y = ph * e.getBbHeight() * 1.15F;
+            float fade = Mth.sin(ph * Mth.PI);
+            float size = (0.55F + 0.35F * fade) * sc;
+            Vec3 c = g.add(Mth.cos(ang) * r, y, Mth.sin(ang) * r);
+            billboard(vc, m, left, up, (float) c.x, (float) c.y, (float) c.z, size, size, ang, argb(0x07040C, 0.5F * a * fade));
         }
     }
 
+    /** Fita de tinta de {@code a} até {@code b} (posições relativas à câmera), larguras diferentes nas pontas. */
+    private static void inkRibbon(VertexConsumer vc, Matrix4f m, Vec3 a, Vec3 b, float wa, float wb, int col) {
+        Vec3 d = b.subtract(a);
+        Vec3 mid = a.add(b).scale(-0.5);
+        Vec3 side = d.cross(mid);
+        if (side.lengthSqr() < 1.0E-8) return;
+        side = side.normalize();
+        vc.addVertex(m, (float) (a.x - side.x * wa), (float) (a.y - side.y * wa), (float) (a.z - side.z * wa)).setUv(0, 0.5F).setColor(col);
+        vc.addVertex(m, (float) (a.x + side.x * wa), (float) (a.y + side.y * wa), (float) (a.z + side.z * wa)).setUv(1, 0.5F).setColor(col);
+        vc.addVertex(m, (float) (b.x + side.x * wb), (float) (b.y + side.y * wb), (float) (b.z + side.z * wb)).setUv(1, 0.5F).setColor(col);
+        vc.addVertex(m, (float) (b.x - side.x * wb), (float) (b.y - side.y * wb), (float) (b.z - side.z * wb)).setUv(0, 0.5F).setColor(col);
+    }
+
+    /**
+     * Os OLHOS do Todo-Poderoso: uma nuvem de olhos de muitas pupilas em volta e ACIMA dele (6 / 9 / 14 pelo preset),
+     * cada um se abrindo em sequência quando a forma começa e depois piscando no seu próprio ritmo, todos encarando a
+     * câmera. Tamanhos e alturas variam (deterministicamente, por índice) para não parecer um anel.
+     */
+    private static void drawEyes(VertexConsumer vc, Matrix4f m, Vector3f left, Vector3f up, LivingEntity e, FormC f, Vec3 cam, float time,
+                                 float pt) {
+        if (f == null) return;
+        float a = formAlpha(f, pt);
+        if (a <= 0.01F) return;
+        float sc = e.getBbHeight() / 1.8F;
+        int count = FxQuality.atLeast(MahouConfig.Graphics.HIGH) ? 14 : FxQuality.atLeast(MahouConfig.Graphics.MEDIUM) ? 9 : 6;
+        float since = level.getGameTime() + pt - f.start();
+        Vec3 c = e.getPosition(pt);
+        for (int k = 0; k < count; k++) {
+            float fr = (k * 0.618034F) % 1F, fr2 = (k * 0.381966F + 0.13F) % 1F;
+            float ang = k * 2.39996F + time * 0.006F;
+            float r = (1.15F + 0.9F * fr2) * sc;
+            float y = e.getBbHeight() * (0.5F + 0.75F * fr) + 0.12F * Mth.sin(time * 0.05F + k);
+            Vec3 p = c.add(Mth.cos(ang) * r, y, Mth.sin(ang) * r).subtract(cam);
+            // abre em sequência (2 ticks entre um olho e outro) e depois pisca
+            float open = Mth.clamp((since - k * 2F) / 5F, 0F, 1F);
+            float cyc = (time + k * 37F) % 140F;
+            float blink = cyc < 8F ? Math.abs(cyc - 4F) / 4F : 1F;
+            float lid = open * Math.max(0.06F, blink);
+            if (lid <= 0.05F) continue;
+            float size = (0.26F + 0.22F * fr2) * sc;
+            billboard(vc, m, left, up, (float) p.x, (float) p.y, (float) p.z, size, size * lid, 0, argb(0xFFFFFF, 0.95F * a * open));
+        }
+    }
+
+    /** Ao ativar: um olho GRANDE se abre acima da cabeça e um anel de olhos estala em volta, um depois do outro. */
     private static void drawEyeOpen(VertexConsumer vc, Matrix4f m, Vector3f left, Vector3f up, Fx fx, Vec3 cam, float pt) {
         Entity e = level.getEntity(fx.p.entity());
         Minecraft mc = Minecraft.getInstance();
@@ -435,9 +646,19 @@ public final class QuincyFxClient {
         float t = fx.age + pt;
         float open = Mth.clamp(t / 6F, 0F, 1F);
         float a = 1F - Mth.clamp((t - 12) / 12F, 0F, 1F);
-        Vec3 c = e.getEyePosition(pt).add(0, 0.9, 0).subtract(cam);
-        float s = fx.p.size() * (0.8F + 0.2F * open);
-        billboard(vc, m, left, up, (float) c.x, (float) c.y, (float) c.z, s, s * 0.6F * open, 0, argb(0xFFFFFF, 0.9F * a));
+        Vec3 c = e.getEyePosition(pt).add(0, 1.1, 0).subtract(cam);
+        float s = fx.p.size() * 0.55F * (0.8F + 0.2F * open);
+        billboard(vc, m, left, up, (float) c.x, (float) c.y, (float) c.z, s, s * open, 0, argb(0xFFFFFF, 0.95F * a));
+        int ring = 8;
+        Vec3 mid = e.getPosition(pt).add(0, e.getBbHeight() * 0.6, 0);
+        for (int k = 0; k < ring; k++) {
+            float o = Mth.clamp((t - k * 1.2F) / 3F, 0F, 1F);
+            if (o <= 0.01F) continue;
+            double ang = k * Mth.TWO_PI / ring;
+            double r = 1.6 + 0.6 * o;
+            Vec3 p = mid.add(Math.cos(ang) * r, 0.25 * Math.sin(ang * 3), Math.sin(ang) * r).subtract(cam);
+            billboard(vc, m, left, up, (float) p.x, (float) p.y, (float) p.z, 0.4F, 0.4F * o, 0, argb(0xFFFFFF, 0.9F * a));
+        }
     }
 
     // ---------------- estrelas, colunas e o arco gigante ----------------
@@ -599,11 +820,13 @@ public final class QuincyFxClient {
         int w = g.guiWidth(), h = g.guiHeight();
         FormC mine = FORMS.get(mc.player.getId());
         if (mine != null && mine.kind() == QuincyFxNet.FORM_ALMIGHTY) {
+            // w10: bordas de tinta (mais escuras que antes), pulsando devagar enquanto dura
             float a = formAlpha(mine, pt) * (0.7F + 0.3F * Mth.sin((mc.level.getGameTime() + pt) * 0.08F));
-            int edge = ((int) (70 * a) << 24) | 0x0A1430;
-            g.fillGradient(0, 0, w, h / 5, edge, 0x000A1430);
-            g.fillGradient(0, h - h / 5, w, h, 0x000A1430, edge);
+            int edge = ((int) (85 * a) << 24) | 0x05030A;
+            g.fillGradient(0, 0, w, h / 5, edge, 0x0005030A);
+            g.fillGradient(0, h - h / 5, w, h, 0x0005030A, edge);
         }
+        almightyScreen(g, mc, w, h, pt);
         for (Fx fx : FX) {
             if (fx.p.kind() != QuincyFxNet.ANTITHESIS) continue;
             boolean involved = fx.p.entity() == mc.player.getId() || mc.player.getEyePosition().distanceToSqr(fx.p.vec()) < 4;
@@ -613,6 +836,35 @@ public final class QuincyFxClient {
             if (t < 4) g.fill(0, 0, w, h, ((int) (150 * (1 - t / 4F)) << 24) | 0xE8F0FF);
             else if (t < 12) g.fill(0, 0, w, h, ((int) (110 * (1 - (t - 4) / 8F)) << 24) | 0x0A0A20);
         }
+    }
+
+    /**
+     * w10 — a tela de quem ATIVOU o Todo-Poderoso (1,8 s, sem poluir): a tinta fecha pelas bordas e volta, e um olho
+     * grande e translúcido se abre no meio da visão e some. Respeita o tremor/flash do preset ({@link FxQuality#shake}).
+     */
+    private static void almightyScreen(GuiGraphics g, Minecraft mc, int w, int h, float pt) {
+        if (almightyScreenStart < 0) return;
+        float t = mc.level.getGameTime() + pt - almightyScreenStart;
+        if (t < 0 || t > ALMIGHTY_SCREEN_TICKS) {
+            if (t > ALMIGHTY_SCREEN_TICKS) almightyScreenStart = -1;
+            return;
+        }
+        float k = FxQuality.shake();
+        float in = Mth.clamp(t / 6F, 0F, 1F), out = Mth.clamp((ALMIGHTY_SCREEN_TICKS - t) / 14F, 0F, 1F);
+        float a = Math.min(in, out) * k;
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        // bordas de tinta
+        RenderSystem.setShaderColor(0.02F, 0.01F, 0.04F, 0.85F * a);
+        g.blit(VIGNETTE, 0, 0, 0, 0, w, h, w, h);
+        // o olho no meio: abre (pálpebra) e some
+        float open = Mth.clamp((t - 3F) / 6F, 0F, 1F);
+        int size = (int) (Math.min(w, h) * 0.42F);
+        int eh = Math.max(1, (int) (size * open));
+        RenderSystem.setShaderColor(1F, 1F, 1F, 0.32F * a);
+        g.blit(QuincyRenderTypes.SHADOW_EYE, (w - size) / 2, (h - eh) / 2, size, eh, 0, 0, 64, 64, 64, 64);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.disableBlend();
     }
 
     private QuincyFxClient() {}

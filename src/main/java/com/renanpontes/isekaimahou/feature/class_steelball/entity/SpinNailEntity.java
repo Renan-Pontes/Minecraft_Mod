@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.classes.ClassResources;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbFx;
+import com.renanpontes.isekaimahou.feature.class_steelball.SbFxNet;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbProgress;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbRegistry;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbSpin;
@@ -141,6 +142,7 @@ public class SpinNailEntity extends ThrowableProjectile implements GeoEntity {
     @Override
     public void tick() {
         super.tick();
+        SbFxNet.trail(this);
         if (!(level() instanceof ServerLevel sl)) return;
         if (tickCount > LIFE) {
             SpellContext c = context();
@@ -149,11 +151,7 @@ public class SpinNailEntity extends ThrowableProjectile implements GeoEntity {
             return;
         }
         if (mode() != Mode.MOB && act >= 2 && tickCount > 2) steer();
-        int rgb = golden() ? SbFx.GOLD : SbFx.NAIL;
-        sl.sendParticles(SbFx.dust(rgb, 0.6F), getX(), getY(), getZ(), 1, 0, 0, 0, 0);
-        if (golden() && tickCount % 2 == 0) {
-            sl.sendParticles(ParticleTypes.END_ROD, getX(), getY(), getZ(), 1, 0.02, 0.02, 0.02, 0.0);
-        }
+        // rastro desenhado no cliente (SbFxNet.trail)
     }
 
     /** Ato 2+: a unha corrige o rumo em espiral para o inimigo mais próximo. */
@@ -209,7 +207,7 @@ public class SpinNailEntity extends ThrowableProjectile implements GeoEntity {
                     c.impact(at, getDeltaMovement(), target);
                     InfiniteSpinEntity.attach(c, le, infiniteTicks);
                 }
-                SbFx.goldenSpiral(sl, at, getDeltaMovement(), 1.4);
+                SbFxNet.at(sl, SbFxNet.NAIL_HIT, at, getDeltaMovement(), 4F, SbFx.GOLD, -1);
                 SbFx.sound(sl, at, SoundEvents.TRIDENT_RIPTIDE_3.value(), 1.0F, 1.4F);
                 discard();
             }
@@ -232,8 +230,7 @@ public class SpinNailEntity extends ThrowableProjectile implements GeoEntity {
                         wormhole(sl, sp, le);
                     }
                 }
-                sl.sendParticles(SbFx.dust(SbFx.NAIL, 1.0F), at.x, at.y, at.z, 5, 0.15, 0.15, 0.15, 0);
-                SbFx.sound(sl, at, SoundEvents.AMETHYST_BLOCK_HIT, 0.6F, 1.8F);
+                SbFxNet.at(sl, SbFxNet.NAIL_HIT, at, getDeltaMovement(), Math.min(3, act), golden() ? SbFx.GOLD : SbFx.NAIL, -1);
                 if (pierce > 0) {
                     pierce--;
                 } else {
@@ -251,7 +248,7 @@ public class SpinNailEntity extends ThrowableProjectile implements GeoEntity {
         Vec3 dest = target.position().subtract(back.scale(target.getBbWidth() + 1.2));
         if (!sl.noCollision(sp, sp.getDimensions(sp.getPose()).makeBoundingBox(dest))) return;
         Vec3 from = sp.position();
-        sl.sendParticles(SbFx.dust(SbFx.NAIL, 1.2F), from.x, from.y + 1, from.z, 16, 0.3, 0.6, 0.3, 0);
+        SbFxNet.at(sl, SbFxNet.WORMHOLE, from, dest, 1F, SbFx.NAIL, sp.getId());
         sp.stopRiding();
         sp.teleportTo(sl, dest.x, dest.y, dest.z, (float) Math.toDegrees(Math.atan2(-back.x, back.z)), sp.getXRot());
         sl.sendParticles(SbFx.dust(SbFx.NAIL, 1.2F), dest.x, dest.y + 1, dest.z, 16, 0.3, 0.6, 0.3, 0);
@@ -270,8 +267,8 @@ public class SpinNailEntity extends ThrowableProjectile implements GeoEntity {
         } else if (c != null) {
             c.end(at, getDeltaMovement());
         }
-        sl.sendParticles(SbFx.dust(golden() ? SbFx.GOLD : SbFx.NAIL, 0.8F), at.x, at.y, at.z, 4, 0.1, 0.1, 0.1, 0);
-        SbFx.sound(sl, at, SoundEvents.AMETHYST_BLOCK_STEP, 0.5F, 1.8F);
+        SbFxNet.at(sl, SbFxNet.NAIL_HIT, at, Vec3.atLowerCornerOf(result.getDirection().getNormal()), golden() ? 2F : 1F,
+                golden() ? SbFx.GOLD : SbFx.NAIL, -1);
         discard();
     }
 

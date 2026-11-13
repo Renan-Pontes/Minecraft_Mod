@@ -9,6 +9,7 @@ import com.renanpontes.isekaimahou.feature.origins_a.OaUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -101,7 +102,7 @@ public class ExplosiveSealEntity extends OriginRuneEntity {
             e.hurtMarked = true;
         }
         level.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y, c.z, 2, 0.3, 0.2, 0.3, 0);
-        level.sendParticles(ParticleTypes.FLAME, c.x, c.y, c.z, 30, radius * 0.3, 0.3, radius * 0.3, 0.08);
+        level.sendParticles(Vfx.flame(), c.x, c.y, c.z, 30, radius * 0.3, 0.3, radius * 0.3, 0.08);
         ElementFx.burst(level, c, element, 30, radius * 0.35);
         ElementFx.ring(level, position(), element, radius, Math.max(16, (int) (radius * 10)));
         level.playSound(null, c.x, c.y, c.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.PLAYERS, 1.2F, 1.1F);
@@ -111,7 +112,7 @@ public class ExplosiveSealEntity extends OriginRuneEntity {
 
     @Override
     protected void onExpire(ServerLevel level) {
-        level.sendParticles(ParticleTypes.SMOKE, getX(), getY() + 0.1, getZ(), 8, 0.35, 0.02, 0.35, 0.01);
+        level.sendParticles(Vfx.smoke(), getX(), getY() + 0.1, getZ(), 8, 0.35, 0.02, 0.35, 0.01);
     }
 
     @Override

@@ -18,6 +18,7 @@ import com.renanpontes.isekaimahou.core.Progression;
 import com.renanpontes.isekaimahou.core.api.Party;
 import com.renanpontes.isekaimahou.core.api.Rewards;
 import com.renanpontes.isekaimahou.core.api.Statuses;
+import com.renanpontes.isekaimahou.core.anim.MahouAnims;
 
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
@@ -32,6 +33,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -40,6 +42,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Abilities;
@@ -47,6 +51,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -65,10 +70,18 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
  * tecla racial usa o <b>golpe da forma</b> (recarga {@link #POWER_COOLDOWN}). Os atributos ficam no MobEffect da forma
  * ({@link CharacterContent#form}); o resto está aqui.
  * <p>
- * <b>Voo</b> (Anjo, Demônio, Dracônico; Fantasma voa devagar): {@code abilities.mayfly} enquanto o efeito durar, marcado
- * em {@code persistentData} ({@value #FLIGHT_TAG}). A checagem de todo tick tira o voo assim que o efeito some (fim do
- * tempo, leite, morte, relog com o efeito vencido) e dá Queda Lenta para pousar; criativo/espectador nunca são tocados.
- * O efeito da forma é do namespace do mod, então o {@link MagicHover} já isenta o jogador da expulsão por "voar".
+ * <b>Voo</b>: v1.3.1 — as formas ALADAS (Anjo, Demônio, Dracônico) planam como com élitros ({@link RaceFlight}: decolar
+ * com pulo duplo, bater as asas, mergulho). Só o Fantasma ainda flutua devagar com {@code abilities.mayfly} enquanto o
+ * efeito durar, marcado em {@code persistentData} ({@value #FLIGHT_TAG}). A checagem de todo tick tira o voo assim que o
+ * efeito some (fim do tempo, leite, morte, relog com o efeito vencido) e dá Queda Lenta para pousar; criativo/espectador
+ * nunca são tocados. O efeito da forma é do namespace do mod, então o {@link MagicHover} já isenta o jogador da expulsão
+ * por "voar".
+ * <p>
+ * v1.7 (raças de anime): Slime = <b>Despertar do Lorde Demônio</b> (Rimuru; a Predação também ensina habilidades na
+ * hora, {@link SlimePredator}), Aracnídeo = <b>Arachne</b> (Kumoko), Dracônico = <b>Dragon Force</b> (golpes corpo a
+ * corpo carregam o elemento; o golpe vira o Rugido do Dragão), Meio-Orc = <b>Desastre Orc</b> (Geld; golpe = Fome
+ * Insaciável, drena vida em volta e enche a Fome Voraz) e Demônio = <b>Rei Demônio da Tirania</b> (Anos; golpe =
+ * Jio Graze, um sol negro no ponto mirado).
  */
 public final class RaceForms {
     public static final int DURATION = 45 * 20;
@@ -78,10 +91,29 @@ public final class RaceForms {
     private static final float DEFAULT_FLY_SPEED = 0.05F, PHANTOM_FLY_SPEED = 0.03F;
     private static final int MITOSIS_GAP = 60;
 
+    /**
+     * v1.3: a Transformação tem uma <b>sequência de 2,5 s</b> antes da forma: o corpo se ergue ({@code transform_rise}),
+     * o chão racha e a raça ruge ({@code transform_roar}, aos {@value #ROAR_AT} ticks) e tudo explode
+     * ({@code transform_burst}) — só então o efeito da forma entra. Durante a carga: −60% de dano recebido e lento.
+     */
+    public static final int WINDUP = 50;
+    private static final int ROAR_AT = 20;
+    /** Raio do medo da explosão (criaturas fogem, ficam lentas e fracas). */
+    private static final double FEAR_RADIUS = 12.0;
+    private static final int FEAR_TICKS = 70;
+
+    /** Carga em andamento: raça, quando começou e a recarga antiga (devolvida se a carga for interrompida). */
+    private record Charge(Race race, long start, long prevReady) {}
+
+    /** Criaturas apavoradas pela explosão (re-mandadas fugir a cada 10 ticks até {@code until}). */
+    private record Fear(List<Mob> mobs, Vec3 from, long until) {}
+
     /** Forma em vigor por jogador (para perceber quando acaba, por qualquer motivo). */
     private static final Map<UUID, Race> ACTIVE = new ConcurrentHashMap<>();
     private static final Map<UUID, Long> POWER_READY = new ConcurrentHashMap<>();
     private static final Map<UUID, Long> MITOSIS_READY = new ConcurrentHashMap<>();
+    private static final Map<UUID, Charge> CHARGING = new ConcurrentHashMap<>();
+    private static final Map<UUID, Fear> FEAR = new ConcurrentHashMap<>();
 
     static void init() {
         NeoForge.EVENT_BUS.addListener(RaceForms::onIncomingDamage);
@@ -90,6 +122,11 @@ public final class RaceForms {
             ACTIVE.remove(id);
             POWER_READY.remove(id);
             MITOSIS_READY.remove(id);
+            FEAR.remove(id);
+            RaceFlight.forget(id);
+            // Saiu no meio da carga: a forma não saiu, a recarga volta como estava
+            Charge c = CHARGING.remove(id);
+            if (c != null && e.getEntity() instanceof ServerPlayer sp) CharacterContent.data(sp).setFormReadyAt(c.prevReady());
         });
     }
 
@@ -97,11 +134,35 @@ public final class RaceForms {
         ACTIVE.clear();
         POWER_READY.clear();
         MITOSIS_READY.clear();
+        CHARGING.clear();
+        FEAR.clear();
+        RaceFlight.clearAll();
     }
 
-    /** A forma dá voo? */
+    /** O jogador está no meio da sequência de Transformação? */
+    public static boolean charging(LivingEntity e) {
+        return CHARGING.containsKey(e.getUUID());
+    }
+
+    /** A forma dá voo (planado com asas ou flutuando)? Sem dano de queda. */
     public static boolean flies(Race r) {
-        return r == Race.ANGEL || r == Race.DEMON || r == Race.DRAGONBORN || r == Race.PHANTOM;
+        return RaceFlight.winged(r) || hovers(r);
+    }
+
+    /** A forma flutua devagar ({@code mayfly}) em vez de planar: só o Fantasma. */
+    public static boolean hovers(Race r) {
+        return r == Race.PHANTOM;
+    }
+
+    /** Comando de op (testes): transforma já, sem exigir o nível de raça V nem esperar a recarga. */
+    static boolean forceTransform(ServerPlayer sp) {
+        CharacterData d = CharacterContent.data(sp);
+        if (!d.created() || CHARGING.containsKey(sp.getUUID())) return false;
+        Race cur = formOf(sp);
+        if (cur != null) sp.removeEffect(CharacterContent.form(cur));
+        d.setFormReadyAt(0);
+        activate(sp, d, d.race());
+        return true;
     }
 
     /** Forma racial ativa na entidade (null = nenhuma). */
@@ -123,6 +184,7 @@ public final class RaceForms {
             sp.displayClientMessage(Component.translatable("message.isekai_mahou.character.not_created"), true);
             return;
         }
+        if (CHARGING.containsKey(sp.getUUID())) return; // já está se transformando
         Race form = formOf(sp);
         if (form != null) {
             usePower(sp, d, form);
@@ -147,10 +209,104 @@ public final class RaceForms {
         activate(sp, d, r);
     }
 
+    /** Começa a sequência de Transformação (a forma entra em {@link #WINDUP} ticks, em {@link #burst}). */
     static void activate(ServerPlayer sp, CharacterData d, Race r) {
-        d.setFormReadyAt(RacePassives.now(sp) + DURATION + COOLDOWN);
+        long now = RacePassives.now(sp);
+        CHARGING.put(sp.getUUID(), new Charge(r, now, d.formReadyAt()));
+        d.setFormReadyAt(now + WINDUP + DURATION + COOLDOWN);
+        sp.addEffect(hidden(MobEffects.DAMAGE_RESISTANCE, WINDUP + 4, 2));
+        sp.addEffect(hidden(MobEffects.MOVEMENT_SLOWDOWN, WINDUP, 3));
+        MagicHover.allow(sp, WINDUP + 100);
+        RaceFx.entityFx(sp, CharacterNetwork.FX_CHARGE, WINDUP);
+        MahouAnims.play(sp, "transform_rise");
+        ServerLevel level = sp.serverLevel();
+        RaceFx.sound(level, sp.position(), RaceSounds.FORM_CHARGE.get(), 1.6F, 1.0F);
+        sp.displayClientMessage(Component.translatable("message.isekai_mahou.character.form_charging", r.formName()).withColor(r.rgb), true);
+    }
+
+    /** Um tick da carga: o rugido no meio, a explosão no fim; cancela se morrer ou trocar de raça. */
+    private static void tickCharge(ServerPlayer sp, CharacterData d, Charge c) {
+        long el = RacePassives.now(sp) - c.start();
+        boolean broken = !sp.isAlive() || (!d.is(c.race()) && !sp.getAbilities().instabuild) || formOf(sp) != null;
+        if (broken || el < 0 || el > WINDUP + 40) {
+            CHARGING.remove(sp.getUUID());
+            if (broken && formOf(sp) == null) d.setFormReadyAt(c.prevReady());
+            RaceFx.entityFx(sp, CharacterNetwork.FX_CHARGE, 0);
+            removeHidden(sp, MobEffects.MOVEMENT_SLOWDOWN);
+            return;
+        }
+        ServerLevel level = sp.serverLevel();
+        if (el == ROAR_AT) {
+            MahouAnims.play(sp, "transform_roar");
+            RaceFx.sound(level, sp.position(), RaceSounds.roar(c.race()), 2.2F, 1.0F);
+            // O chão começa a rachar (o cliente desenha as rachaduras; aqui só os blocos saltando, para todos)
+            BlockState ground = level.getBlockState(sp.blockPosition().below());
+            if (!ground.isAir()) {
+                BlockParticleOption crumbs = new BlockParticleOption(ParticleTypes.BLOCK, ground);
+                RaceFx.ring(level, sp.position().add(0, 0.15, 0), 1.8, 14, crumbs);
+            }
+        }
+        if (el >= WINDUP) {
+            CHARGING.remove(sp.getUUID());
+            removeHidden(sp, MobEffects.MOVEMENT_SLOWDOWN);
+            burst(sp, c.race());
+        }
+    }
+
+    /** O instante da Transformação: a forma entra, explosão, medo em volta. */
+    private static void burst(ServerPlayer sp, Race r) {
         sp.addEffect(new MobEffectInstance(CharacterContent.form(r), DURATION, 0, false, false, true));
+        MahouAnims.play(sp, "transform_burst");
+        RaceFx.entityFx(sp, CharacterNetwork.FX_BURST, 1);
         start(sp, r, DURATION, true);
+        fear(sp, r);
+    }
+
+    /**
+     * Medo: criaturas hostis num raio de {@value #FEAR_RADIUS} ficam lentas e fracas; as que não são chefes largam o
+     * alvo e fogem por {@value #FEAR_TICKS} ticks. UMA busca no instante da explosão (as fugas são renovadas na lista).
+     */
+    private static void fear(ServerPlayer sp, Race r) {
+        ServerLevel level = sp.serverLevel();
+        List<Mob> fleeing = new ArrayList<>();
+        int n = 0;
+        for (Mob m : level.getEntitiesOfClass(Mob.class, sp.getBoundingBox().inflate(FEAR_RADIUS), e -> foe(sp, e))) {
+            if (m.distanceToSqr(sp) > FEAR_RADIUS * FEAR_RADIUS) continue;
+            if (++n > 24) break; // orçamento
+            m.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1), sp);
+            m.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 80, 0), sp);
+            level.sendParticles(ParticleTypes.SMOKE, m.getX(), m.getY() + m.getBbHeight() + 0.2, m.getZ(), 4, 0.2, 0.1, 0.2, 0.01);
+            if (Statuses.isBossLike(m)) continue; // chefes não fogem
+            if (m.getTarget() == sp) m.setTarget(null);
+            flee(m, sp.position());
+            fleeing.add(m);
+        }
+        if (!fleeing.isEmpty()) FEAR.put(sp.getUUID(), new Fear(fleeing, sp.position(), level.getGameTime() + FEAR_TICKS));
+    }
+
+    private static void flee(Mob m, Vec3 from) {
+        Vec3 away = m.position().subtract(from);
+        away = new Vec3(away.x, 0, away.z);
+        away = away.lengthSqr() < 1e-4 ? new Vec3(1, 0, 0) : away.normalize();
+        Vec3 to = null;
+        if (m instanceof PathfinderMob pm) to = DefaultRandomPos.getPosAway(pm, 12, 6, from);
+        if (to == null) to = m.position().add(away.scale(10));
+        m.getNavigation().moveTo(to.x, to.y, to.z, 1.5);
+    }
+
+    /** Renova a fuga dos apavorados (a IA deles tenta voltar a atacar). */
+    private static void tickFear(ServerPlayer sp) {
+        Fear f = FEAR.get(sp.getUUID());
+        if (f == null) return;
+        if (sp.serverLevel().getGameTime() > f.until()) {
+            FEAR.remove(sp.getUUID());
+            return;
+        }
+        for (Mob m : f.mobs()) {
+            if (!m.isAlive() || m.level() != sp.level()) continue;
+            if (m.getTarget() == sp) m.setTarget(null);
+            if (m.getNavigation().isDone()) flee(m, f.from());
+        }
     }
 
     /** Liga os visuais/efeitos ocultos (ativação ou o jogador voltando com a forma ainda ativa). */
@@ -181,23 +337,42 @@ public final class RaceForms {
             default -> { }
         }
         sp.setHealth(Math.min(sp.getHealth(), sp.getMaxHealth()));
-        // Explosão de transformação: coluna, anel duplo e a partícula da raça
-        RaceFx.dustBurst(level, c, r.rgb, 70, 0.9);
-        RaceFx.spiral(level, sp, RaceFx.dust(r.rgb, 1.6F), 40, 1.1);
-        RaceFx.ring(level, sp.position().add(0, 0.1, 0), 2.2, 28, RaceFx.dust(r.rgb, 1.4F));
-        RaceFx.ring(level, sp.position().add(0, 0.1, 0), 3.2, 36, signature(sp, r));
+        // Explosão de transformação. O grosso do espetáculo (onda de choque, rachaduras, clarão, tremor, título) é do
+        // cliente (FormFx, respeita o preset gráfico); aqui só o mínimo que todo mundo vê, com orçamento baixo.
+        RaceFx.dustBurst(level, c, r.rgb, 24, 0.9);
+        RaceFx.ring(level, sp.position().add(0, 0.1, 0), 3.2, 20, signature(sp, r));
         level.sendParticles(ParticleTypes.FLASH, c.x, c.y, c.z, 1, 0, 0, 0, 0);
-        level.sendParticles(signature(sp, r), c.x, c.y, c.z, 40, 0.8, 1.2, 0.8, 0.08);
-        RaceFx.sound(level, c, formSound(r), 1.0F, 1.0F);
-        RaceFx.sound(level, c, SoundEvents.TOTEM_USE, 0.5F, 1.3F);
+        level.sendParticles(signature(sp, r), c.x, c.y, c.z, 16, 0.8, 1.2, 0.8, 0.08);
+        RaceFx.sound(level, c, RaceSounds.FORM_BURST.get(), 2.4F, 1.0F);
+        RaceFx.sound(level, c, formSound(r), 1.0F, 0.8F);
         Rewards.banner(sp, Component.translatable("message.isekai_mahou.character.form_start", r.formName()), r.rgb);
         sp.displayClientMessage(Component.translatable("message.isekai_mahou.character.form_power_hint", r.formPower(),
                 Component.keybind("key.isekai_mahou.racial_ability")).withColor(r.rgb), true);
+        if (RaceFlight.winged(r)) {
+            // Formas aladas: como voar (no chat, para não brigar com a barra de ação)
+            sp.sendSystemMessage(Component.translatable("message.isekai_mahou.character.glide_hint",
+                    Component.keybind("key.jump"), Component.keybind("key.sprint"), Component.keybind("key.sneak"),
+                    Component.keybind("key.isekai_mahou.racial_ability"),
+                    Component.translatable("character.isekai_mahou.dive." + r.id)).withColor(r.rgb));
+            // As asas se abrem num golpe de vento: empurra quem está colado
+            for (LivingEntity le : foesAround(sp, 4.0)) {
+                Vec3 away = le.position().subtract(sp.position());
+                away = new Vec3(away.x, 0, away.z);
+                away = away.lengthSqr() < 1e-4 ? new Vec3(1, 0, 0) : away.normalize();
+                le.push(away.x * 0.9, 0.35, away.z * 0.9);
+                le.hurtMarked = true;
+            }
+            RaceFx.sound(level, c, RaceFlight.flapSound(r), 1.6F, RaceFlight.flapPitch(r) * 0.8F);
+        }
     }
 
     /** Efeito vanilla oculto (ambiente, sem partícula nem ícone) — a marca para tirar só o nosso no fim. */
     private static MobEffectInstance hidden(Holder<MobEffect> e, int ticks) {
-        return new MobEffectInstance(e, ticks, 0, true, false, false);
+        return hidden(e, ticks, 0);
+    }
+
+    private static MobEffectInstance hidden(Holder<MobEffect> e, int ticks, int amp) {
+        return new MobEffectInstance(e, ticks, amp, true, false, false);
     }
 
     private static void removeHidden(ServerPlayer sp, Holder<MobEffect> e) {
@@ -213,9 +388,10 @@ public final class RaceForms {
         if (r == Race.DEMON) removeHidden(sp, MobEffects.FIRE_RESISTANCE);
         if (!sp.isAlive()) return;
         ServerLevel level = sp.serverLevel();
-        RaceFx.dustBurst(level, RaceFx.center(sp), r.rgb, 30, 0.6);
-        level.sendParticles(ParticleTypes.POOF, sp.getX(), sp.getY() + 1.0, sp.getZ(), 16, 0.4, 0.6, 0.4, 0.02);
-        RaceFx.sound(level, sp.position(), SoundEvents.BEACON_DEACTIVATE, 0.6F, 1.2F);
+        // Desfazer: o cliente dissipa o corpo da forma aos poucos (FormFx); aqui o som e um resto de poeira
+        RaceFx.dustBurst(level, RaceFx.center(sp), r.rgb, 12, 0.6);
+        level.sendParticles(ParticleTypes.POOF, sp.getX(), sp.getY() + 1.0, sp.getZ(), 8, 0.4, 0.6, 0.4, 0.02);
+        RaceFx.sound(level, sp.position(), RaceSounds.FORM_END.get(), 1.0F, 1.0F);
         CharacterData d = CharacterContent.data(sp);
         int secs = (int) Math.max(0, Math.ceil((d.formReadyAt() - RacePassives.now(sp)) / 20.0));
         sp.displayClientMessage(Component.translatable("message.isekai_mahou.character.form_end", r.formName(), secs / 60, secs % 60)
@@ -226,8 +402,12 @@ public final class RaceForms {
     //  Tick (CharacterService, todo tick)
     // =====================================================================================
     static void tick(ServerPlayer sp, CharacterData d) {
+        Charge charge = CHARGING.get(sp.getUUID());
+        if (charge != null) tickCharge(sp, d, charge);
+        if (sp.tickCount % 5 == 0 && !FEAR.isEmpty()) tickFear(sp);
         Race form = formOf(sp);
         handleFlight(sp, form);
+        RaceFlight.tick(sp, form);
         Race was = ACTIVE.get(sp.getUUID());
         if (form == null) {
             if (was != null) end(sp, was);
@@ -245,7 +425,7 @@ public final class RaceForms {
         }
         if (!sp.isAlive()) return; // animação de morte: sem auras
         int t = sp.tickCount;
-        if (t % 6 == 0) ambient(sp, form, d);
+        // v1.3: a aura constante da forma é desenhada no cliente (FormFx.ambient, com o preset gráfico)
         if (t % 20 == 0) perSecond(sp, form);
         if (t % 40 == 0) everyTwoSeconds(sp, form);
     }
@@ -254,13 +434,14 @@ public final class RaceForms {
         Abilities a = sp.getAbilities();
         boolean tagged = sp.getPersistentData().getBoolean(FLIGHT_TAG);
         boolean special = sp.isCreative() || sp.isSpectator();
-        if (form != null && flies(form) && !special && sp.isAlive()) {
+        // v1.3.1: só quem FLUTUA usa mayfly; as formas aladas planam (RaceFlight) — e quem tinha o voo antigo perde aqui
+        if (form != null && hovers(form) && !special && sp.isAlive()) {
             boolean changed = false;
             if (!a.mayfly) {
                 a.mayfly = true;
                 changed = true;
             }
-            float speed = form == Race.PHANTOM ? PHANTOM_FLY_SPEED : DEFAULT_FLY_SPEED;
+            float speed = PHANTOM_FLY_SPEED;
             if (Math.abs(a.getFlyingSpeed() - speed) > 1e-4F) {
                 a.setFlyingSpeed(speed);
                 changed = true;
@@ -288,33 +469,9 @@ public final class RaceForms {
         if (!sp.onGround()) sp.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 160, 0, true, false, true));
     }
 
-    private static void ambient(ServerPlayer sp, Race r, CharacterData d) {
-        ServerLevel level = sp.serverLevel();
-        double x = sp.getX(), y = sp.getY(), z = sp.getZ(), h = sp.getBbHeight();
-        switch (r) {
-            case ANGEL -> {
-                level.sendParticles(ParticleTypes.END_ROD, x, y + h * 0.7, z, 1, 0.5, 0.4, 0.5, 0.01);
-                level.sendParticles(RaceFx.dust(0xFFF2B0, 1.0F), x, y + h + 0.3, z, 2, 0.25, 0.05, 0.25, 0);
-            }
-            case DEMON -> {
-                level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, x, y + h * 0.4, z, 2, 0.35, 0.5, 0.35, 0.01);
-                level.sendParticles(ParticleTypes.SMOKE, x, y + h * 0.8, z, 1, 0.3, 0.3, 0.3, 0.01);
-            }
-            case DRAGONBORN -> level.sendParticles(ElementFx.dust(d.ancestry(), 1.2F), x, y + h * 0.5, z, 3, 0.4, 0.6, 0.4, 0.01);
-            case PHANTOM -> level.sendParticles(ParticleTypes.SOUL, x, y + 0.3, z, 1, 0.3, 0.2, 0.3, 0.01);
-            case SLIME -> level.sendParticles(ParticleTypes.ITEM_SLIME, x, y + h * 0.5, z, 2, 0.5, 0.5, 0.5, 0.02);
-            case ELF -> level.sendParticles(ParticleTypes.HAPPY_VILLAGER, x, y + h * 0.6, z, 1, 0.5, 0.6, 0.5, 0);
-            case DWARF -> level.sendParticles(RaceFx.dust(0x9A8F80, 1.4F), x, y + h * 0.3, z, 2, 0.5, 0.4, 0.5, 0);
-            case HALF_ORC -> level.sendParticles(RaceFx.dust(0xC02020, 1.2F), x, y + h * 0.6, z, 2, 0.4, 0.5, 0.4, 0);
-            case BEASTFOLK -> level.sendParticles(RaceFx.dust(r.rgb, 1.0F), x, y + h * 0.4, z, 2, 0.4, 0.4, 0.4, 0);
-            case HUMAN -> level.sendParticles(RaceFx.dust(0xFFD86B, 1.1F), x, y + h * 0.5, z, 2, 0.4, 0.6, 0.4, 0);
-            case ARACHNID -> level.sendParticles(RaceFx.dust(r.rgb, 1.0F), x, y + h * 0.5, z, 2, 0.4, 0.5, 0.4, 0);
-        }
-    }
-
     private static void perSecond(ServerPlayer sp, Race r) {
         if (r == Race.SLIME && sp.getHealth() < sp.getMaxHealth()) {
-            // Regeneração enorme do Rei Slime
+            // Regeneração enorme do Lorde Demônio (Rimuru)
             sp.heal(Math.max(3F, sp.getMaxHealth() * 0.03F));
         }
         MagicHover.allow(sp, 60);
@@ -376,6 +533,9 @@ public final class RaceForms {
             return;
         }
         POWER_READY.put(sp.getUUID(), now + POWER_COOLDOWN);
+        // v1.3.1: planando, a tecla racial vira mergulho (olhando para baixo) ou o Sopro Rasante do Dracônico
+        if (RaceFlight.glidePower(sp, d, r)) return;
+        MahouAnims.play(sp, powerAnim(r));
         ServerLevel level = sp.serverLevel();
         Vec3 eye = sp.getEyePosition();
         Vec3 look = sp.getLookAngle();
@@ -424,18 +584,28 @@ public final class RaceForms {
                 RaceFx.sound(level, sp.position(), SoundEvents.ANVIL_LAND, 0.8F, 0.5F);
             }
             case HALF_ORC -> {
-                // Brado de Guerra: inimigos fraquejam, aliados ganham Força
+                // v1.7 Fome Insaciável (Geld, o Desastre Orc): devora a força de quem está em volta — dano, inimigos
+                // fracos/lentos/expostos, 25% do dano vira vida e cada presa enche a Fome Voraz; aliados ganham Força
+                float drained = 0F;
+                int fed = 0;
                 for (LivingEntity le : foesAround(sp, 8.0)) {
+                    float before = le.getHealth();
+                    hit(sp, le, 10F);
+                    drained += Math.max(0F, before - le.getHealth());
                     le.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 120, 1), sp);
                     le.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, 0), sp);
                     Statuses.apply(le, Statuses.Kind.EXPOSED, 1, 120, sp, 1F);
-                    level.sendParticles(ParticleTypes.ANGRY_VILLAGER, le.getX(), le.getY() + le.getBbHeight() + 0.2, le.getZ(), 2, 0.2, 0.1, 0.2, 0);
+                    if (fed++ < 8) RaceFx.line(level, RaceFx.center(le), RaceFx.center(sp), RaceFx.dust(0x6A1010, 1.0F));
                 }
+                if (drained > 0F) sp.heal(drained * 0.25F);
+                RaceKits.feed(sp, Math.min(4, fed));
                 for (Player p : level.getEntitiesOfClass(Player.class, sp.getBoundingBox().inflate(8.0), p -> p.isAlive() && !foe(sp, p))) {
                     p.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 160, 0), sp);
                 }
                 RaceFx.ring(level, sp.position().add(0, 1.0, 0), 4.0, 32, RaceFx.dust(0xC02020, 1.5F));
+                RaceFx.ring(level, sp.position().add(0, 0.3, 0), 7.0, 40, RaceFx.dust(0x4A3A10, 1.2F));
                 RaceFx.sound(level, eye, SoundEvents.RAVAGER_ROAR, 1.2F, 0.9F);
+                RaceFx.sound(level, eye, SoundEvents.GENERIC_EAT, 1.2F, 0.5F);
             }
             case BEASTFOLK -> {
                 // Investida Feral: salta na presa mais alinhada e a dilacera
@@ -453,37 +623,38 @@ public final class RaceForms {
                 RaceFx.sound(level, eye, SoundEvents.PLAYER_ATTACK_STRONG, 1.0F, 0.8F);
             }
             case DEMON -> {
-                // Chamas Negras: cone de fogo do Abismo
-                for (LivingEntity le : foesInCone(sp, 8.0, 0.7)) {
-                    hit(sp, le, 14F);
+                // v1.7 Jio Graze (Anos): um sol negro voa até o ponto mirado (20 blocos) e explode em chamas da destruição
+                Vec3 at = jioTarget(sp, 20.0);
+                RaceFx.line(level, eye.add(look), at, RaceFx.dust(0x1A0A10, 1.3F));
+                double rad = 4.5;
+                for (LivingEntity le : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(rad), e -> foe(sp, e))) {
+                    if (le.distanceToSqr(at) > rad * rad) continue;
+                    hit(sp, le, 18F);
                     le.igniteForSeconds(6F);
                     Statuses.apply(le, Statuses.Kind.BURNING, 2, 100, sp, 1F);
                     Statuses.apply(le, Statuses.Kind.CORRUPTED, 1, 100, sp, 1F);
                 }
-                cone(level, eye, look, 8.0, ParticleTypes.SOUL_FIRE_FLAME, RaceFx.dust(0x2A1A22, 1.6F));
-                RaceFx.sound(level, eye, SoundEvents.BLAZE_SHOOT, 1.0F, 0.5F);
-                RaceFx.sound(level, eye, SoundEvents.WITHER_SHOOT, 0.6F, 0.7F);
+                // A esfera: casca de chamas negras + núcleo vermelho, depois a onda
+                for (int i = 0; i < 36; i++) {
+                    Vec3 dir = new Vec3(sp.getRandom().nextGaussian(), sp.getRandom().nextGaussian(), sp.getRandom().nextGaussian());
+                    if (dir.lengthSqr() < 1e-4) continue;
+                    Vec3 p = at.add(dir.normalize().scale(1.5));
+                    if (i % 2 == 0) level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, p.x, p.y, p.z, 1, 0, 0, 0, 0);
+                    else level.sendParticles(RaceFx.dust(0x120608, 1.8F), p.x, p.y, p.z, 1, 0, 0, 0, 0);
+                }
+                level.sendParticles(RaceFx.dust(0xFF2030, 2.0F), at.x, at.y, at.z, 10, 0.4, 0.4, 0.4, 0);
+                level.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y, at.z, 3, 1.2, 0.6, 1.2, 0);
+                RaceFx.ring(level, at, rad, 36, ParticleTypes.SOUL_FIRE_FLAME);
+                RaceFx.sound(level, eye, SoundEvents.WITHER_SHOOT, 0.8F, 0.6F);
+                RaceFx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), 1.0F, 0.6F);
+                RaceFx.sound(level, at, SoundEvents.BLAZE_SHOOT, 1.0F, 0.4F);
             }
             case DRAGONBORN -> {
                 // Sopro Dracônico no elemento da ancestralidade
                 Element el = d.ancestry();
                 for (LivingEntity le : foesInCone(sp, 10.0, 0.7)) {
                     hit(sp, le, 16F);
-                    switch (el) {
-                        case FIRE -> {
-                            le.igniteForSeconds(5F);
-                            Statuses.apply(le, Statuses.Kind.BURNING, 2, 100, sp, 1F);
-                        }
-                        case WATER -> {
-                            Statuses.apply(le, Statuses.Kind.WET, 1, 100, sp, 1F);
-                            Statuses.apply(le, Statuses.Kind.CHILLED, 2, 100, sp, 1F);
-                        }
-                        case EARTH -> Statuses.apply(le, Statuses.Kind.PETRIFIED, 1, 60, sp, 1F);
-                        case WIND -> knock(sp, le, 1.4);
-                        case LIGHT -> Statuses.apply(le, Statuses.Kind.EXPOSED, 2, 120, sp, 1F);
-                        case SHADOW -> Statuses.apply(le, Statuses.Kind.CORRUPTED, 2, 120, sp, 1F);
-                        default -> { }
-                    }
+                    elementEffect(sp, le, el);
                 }
                 cone(level, eye, look, 10.0, ElementFx.signature(el), ElementFx.dust(el, 1.6F));
                 for (int i = 0; i < 12; i++) {
@@ -593,6 +764,10 @@ public final class RaceForms {
                     case BEASTFOLK -> {
                         if (melee) Statuses.apply(victim, Statuses.Kind.BLEEDING, 1, 100, sp, 1F);
                     }
+                    case DRAGONBORN -> {
+                        // v1.7 Dragon Force: os punhos carregam o elemento da ancestralidade
+                        if (melee) elementEffect(sp, victim, CharacterContent.data(sp).ancestry());
+                    }
                     case DEMON -> {
                         if (melee) {
                             e.setAmount(e.getAmount() * 1.15F);
@@ -627,6 +802,14 @@ public final class RaceForms {
         if (src.is(DamageTypeTags.IS_FALL) && (flies(f) || f == Race.SLIME)) {
             e.setCanceled(true);
             return;
+        }
+        // Planando: bater na parede dói metade (no mergulho, a batida vira o impacto e não dói)
+        if (src.is(DamageTypes.FLY_INTO_WALL) && RaceFlight.winged(f)) {
+            if (RaceFlight.diving(vp)) {
+                e.setCanceled(true);
+                return;
+            }
+            e.setAmount(e.getAmount() * 0.5F);
         }
         switch (f) {
             case HUMAN -> e.setAmount(e.getAmount() * 0.8F);
@@ -686,7 +869,7 @@ public final class RaceForms {
         return e instanceof Mob m && m.getTarget() == sp;
     }
 
-    private static List<LivingEntity> foesAround(ServerPlayer sp, double r) {
+    static List<LivingEntity> foesAround(ServerPlayer sp, double r) {
         List<LivingEntity> out = new ArrayList<>();
         for (LivingEntity le : sp.serverLevel().getEntitiesOfClass(LivingEntity.class, sp.getBoundingBox().inflate(r), e -> foe(sp, e))) {
             if (le.distanceToSqr(sp) <= r * r) out.add(le);
@@ -710,6 +893,17 @@ public final class RaceForms {
         }
         out.sort(Comparator.comparingDouble(e -> e.distanceToSqr(sp)));
         return out;
+    }
+
+    /** Onde cai o Jio Graze: o inimigo mirado, senão o bloco olhado, senão {@code range} blocos à frente. */
+    private static Vec3 jioTarget(ServerPlayer sp, double range) {
+        LivingEntity t = aimed(sp, range, 0.96);
+        if (t != null) return RaceFx.center(t);
+        Vec3 eye = sp.getEyePosition();
+        Vec3 look = sp.getLookAngle();
+        BlockHitResult bh = sp.level().clip(new ClipContext(eye, eye.add(look.scale(range)), ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE, sp));
+        return bh.getType() == HitResult.Type.BLOCK ? bh.getLocation().subtract(look.scale(0.6)) : eye.add(look.scale(range));
     }
 
     /** Inimigo mais alinhado com o olhar. */
@@ -740,6 +934,25 @@ public final class RaceForms {
         DamageSource src = new DamageSource(sp.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE)
                 .getHolderOrThrow(CoreRegistries.SPELL_DAMAGE), sp, sp);
         return target.hurt(src, scaled(sp, base));
+    }
+
+    /** O que o sopro/impacto do Dracônico faz em cada elemento da ancestralidade. */
+    static void elementEffect(ServerPlayer sp, LivingEntity le, Element el) {
+        switch (el) {
+            case FIRE -> {
+                le.igniteForSeconds(5F);
+                Statuses.apply(le, Statuses.Kind.BURNING, 2, 100, sp, 1F);
+            }
+            case WATER -> {
+                Statuses.apply(le, Statuses.Kind.WET, 1, 100, sp, 1F);
+                Statuses.apply(le, Statuses.Kind.CHILLED, 2, 100, sp, 1F);
+            }
+            case EARTH -> Statuses.apply(le, Statuses.Kind.PETRIFIED, 1, 60, sp, 1F);
+            case WIND -> knock(sp, le, 1.4);
+            case LIGHT -> Statuses.apply(le, Statuses.Kind.EXPOSED, 2, 120, sp, 1F);
+            case SHADOW -> Statuses.apply(le, Statuses.Kind.CORRUPTED, 2, 120, sp, 1F);
+            default -> { }
+        }
     }
 
     private static void knock(ServerPlayer sp, LivingEntity le, double k) {
@@ -785,6 +998,23 @@ public final class RaceForms {
             case BEASTFOLK -> ParticleTypes.CRIT;
             case HUMAN -> ParticleTypes.TOTEM_OF_UNDYING;
             case ARACHNID -> new BlockParticleOption(ParticleTypes.BLOCK, Blocks.COBWEB.defaultBlockState());
+        };
+    }
+
+    /** Gesto do golpe da forma (ids do AnimLibrary; id desconhecido = nada acontece). */
+    private static String powerAnim(Race r) {
+        return switch (r) {
+            case HUMAN -> "spin_slash";
+            case ELF -> "bow_charge_big";
+            case DWARF -> "ground_slam";
+            case HALF_ORC -> "transform_roar";
+            case BEASTFOLK -> MahouAnims.CAST_DASH;
+            case DEMON -> "throw_overhand";
+            case DRAGONBORN -> MahouAnims.CAST_BEAM;
+            case ARACHNID -> "throw_overhand";
+            case PHANTOM -> MahouAnims.CAST_DASH;
+            case ANGEL -> MahouAnims.CAST_AREA_BIG;
+            case SLIME -> "ground_slam";
         };
     }
 

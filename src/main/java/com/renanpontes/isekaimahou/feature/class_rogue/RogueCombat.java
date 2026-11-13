@@ -1,5 +1,7 @@
 package com.renanpontes.isekaimahou.feature.class_rogue;
 
+import com.renanpontes.isekaimahou.feature.class_rogue.RogueFxNet;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -150,8 +152,7 @@ public final class RogueCombat {
         }
         if (dest == null) return false;
         Vec3 old = caster.position();
-        RogueFx.vanish(level, old);
-        RogueFx.line(level, old.add(0, 1, 0), dest.add(0, 1, 0), RogueFx.dust(RogueFx.SHADOW, 1.0F), 0.7);
+        RogueFxNet.at(level, RogueFxNet.STEP, old, dest, 1F, RogueFx.PURPLE, caster.getId());
         Vec3 look = target.position().subtract(dest);
         float yaw = (float) (Math.atan2(-look.x, look.z) * (180F / Math.PI));
         caster.teleportTo(dest.x, dest.y, dest.z);
@@ -161,7 +162,6 @@ public final class RogueCombat {
         if (caster instanceof ServerPlayer sp) sp.connection.teleport(dest.x, dest.y, dest.z, yaw, sp.getXRot());
         caster.fallDistance = 0;
         caster.resetFallDistance();
-        level.sendParticles(ParticleTypes.REVERSE_PORTAL, dest.x, dest.y + 1, dest.z, 18, 0.3, 0.6, 0.3, 0.05);
         RogueFx.sound(level, dest, net.minecraft.sounds.SoundEvents.ENDERMAN_TELEPORT, 0.6F, 1.7F);
         return true;
     }

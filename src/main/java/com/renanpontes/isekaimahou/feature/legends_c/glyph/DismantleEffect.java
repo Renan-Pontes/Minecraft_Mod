@@ -11,6 +11,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -106,7 +107,7 @@ public class DismantleEffect extends EffectGlyph {
             to = wall.point();
             float amount = Math.max(4F, damage) * stats.power() * ctx.powerMult();
             LcUtil.strikeWall(l, wall, caster != null ? caster.position() : from, caster, amount);
-            l.sendParticles(ParticleTypes.CRIT, to.x, to.y, to.z, 16, 0.3, 0.6, 0.3, 0.4);
+            l.sendParticles(Vfx.crit(), to.x, to.y, to.z, 16, 0.3, 0.6, 0.3, 0.4);
         }
         Vec3 seg = to.subtract(from);
         double L = seg.length();

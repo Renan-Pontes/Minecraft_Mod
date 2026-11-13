@@ -26,7 +26,7 @@ import com.renanpontes.isekaimahou.feature.legends_c.LcUtil;
 import com.renanpontes.isekaimahou.feature.legends_c.entity.InfinityFieldEntity;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -208,7 +208,7 @@ public final class Infinity {
             if ((le.tickCount + le.getId()) % 8 == 0) {
                 Vec3 at = c.add(n.scale(e.getBbWidth() * 0.5 + Math.max(STOP, d) * 0.9));
                 LcFx.ripple(sl, at, n, 0.5F + le.getBbHeight() * 0.3F, LcFx.BLUE_LIGHT);
-                sl.sendParticles(ParticleTypes.ENCHANT, at.x, at.y, at.z, 3, 0.15, 0.25, 0.15, 0.02);
+                sl.sendParticles(Vfx.enchant(), at.x, at.y, at.z, 3, 0.15, 0.25, 0.15, 0.02);
             }
         }
     }
@@ -291,7 +291,7 @@ public final class Infinity {
         n = n.lengthSqr() < 1.0E-6 ? new Vec3(0, 0, 1) : n.normalize();
         Vec3 at = c.add(n.scale(t.getBbWidth() * 0.5 + STOP));
         LcFx.ripple(sl, at, n, 0.9F, LcFx.BLUE_LIGHT);
-        sl.sendParticles(ParticleTypes.ENCHANT, at.x, at.y, at.z, 8, 0.2, 0.3, 0.2, 0.05);
+        sl.sendParticles(Vfx.enchant(), at.x, at.y, at.z, 8, 0.2, 0.3, 0.2, 0.05);
         LcFx.sound(sl, at, SoundEvents.AMETHYST_BLOCK_HIT, 1.0F, 0.6F);
     }
 

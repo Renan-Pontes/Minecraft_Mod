@@ -564,7 +564,14 @@ public final class StatusEngine {
         if ((e.tickCount + e.getId()) % 20 != 0 || !e.isAlive()) return;
         if (e instanceof Player p && (p.isSpectator() || !MahouConfig.STATUS_ON_PLAYERS.get())) return;
         if (e.isInWaterRainOrBubble()) {
-            apply(e, Kind.WET, 1, 100, null, 1.0F);
+            // Exposição acumula: cada segundo na água soma tempo de Molhado (mergulhado > na água > na chuva).
+            // Uns 10 s nadando ≈ 1 min molhado; 20 s ≈ 2 min (máximo). Só chuva chega a 1 min.
+            boolean water = e.isInWaterOrBubble();
+            int gain = e.isUnderWater() ? 240 : water ? 140 : 50;
+            int cap = water ? WET_MAX_WATER : WET_MAX_RAIN;
+            MobEffectInstance cur = e.getEffect(Statuses.effect(Kind.WET));
+            int have = cur == null || cur.isInfiniteDuration() ? 0 : cur.getDuration();
+            if (have < cap) apply(e, Kind.WET, 1, Math.min(cap, Math.max(200, have + gain)), null, 1.0F);
         } else if (e.isInPowderSnow || e.wasInPowderSnow) {
             // Neve em pó gela (até 3 por conta própria: não prende ninguém para sempre numa armadilha de neve)
             if (effectStacks(e, Kind.CHILLED) < 3) apply(e, Kind.CHILLED, 1, Statuses.DEFAULT_TICKS, null, 1.0F);
@@ -574,6 +581,9 @@ public final class StatusEngine {
             apply(e, Kind.BURNING, 1, 60, null, 1.0F);
         }
     }
+
+    /** Molhado do ambiente: máximo de 2 min na água e 1 min só de chuva (ticks). */
+    private static final int WET_MAX_WATER = 2400, WET_MAX_RAIN = 1200;
 
     private static boolean inFireBlock(LivingEntity e) {
         return e.level().getBlockStatesIfLoaded(e.getBoundingBox().deflate(1.0E-3))
@@ -796,9 +806,10 @@ public final class StatusEngine {
         for (int i = 0; i <= n; i++) {
             double t = i / (double) n;
             double jitter = (i == 0 || i == n) ? 0 : 0.18;
-            sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, a.x + d.x * t + (sl.random.nextDouble() - 0.5) * jitter,
-                    a.y + d.y * t + (sl.random.nextDouble() - 0.5) * jitter, a.z + d.z * t + (sl.random.nextDouble() - 0.5) * jitter,
-                    1, 0, 0, 0, 0);
+            // release 1.0 (perf): entra no lote do tick (um pacote por jogador, não um por faísca)
+            com.renanpontes.isekaimahou.core.fx.FxBatch.emit(sl, ParticleTypes.ELECTRIC_SPARK,
+                    a.x + d.x * t + (sl.random.nextDouble() - 0.5) * jitter, a.y + d.y * t + (sl.random.nextDouble() - 0.5) * jitter,
+                    a.z + d.z * t + (sl.random.nextDouble() - 0.5) * jitter, 1, 0, 0, 0, 0, false);
         }
     }
 

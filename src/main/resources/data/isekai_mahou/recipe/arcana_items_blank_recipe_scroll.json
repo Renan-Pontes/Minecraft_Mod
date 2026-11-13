@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "EAE",
+    "CPC",
+    "EFE"
+  ],
+  "key": {
+    "E": {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    "A": {
+      "item": "isekai_mahou:abyss_shard"
+    },
+    "C": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "F": {
+      "item": "isekai_mahou:shadow_fragment"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:blank_recipe_scroll",
+    "count": 1
+  }
+}

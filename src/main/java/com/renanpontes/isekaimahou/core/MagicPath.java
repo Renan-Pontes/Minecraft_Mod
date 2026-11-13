@@ -74,13 +74,25 @@ public enum MagicPath {
             EnumSet.of(Element.LIGHT, Element.SHADOW), Set.of()),
     /** Steel Ball — Rotação, lições do mestre e Partes do Cadáver Santo (módulo class_steelball). */
     STEELBALL("steelball", ChatFormatting.GRAY, 0xB4C0CC, Category.DEXTERITY, Element.EARTH, "steel_ball", "steel_ball",
-            EnumSet.of(Element.EARTH, Element.WIND), EnumSet.of(Element.FIRE));
+            EnumSet.of(Element.EARTH, Element.WIND), EnumSet.of(Element.FIRE)),
+    // ---------------- Classes de história (v1.3) — NÃO aparecem na tela inicial ----------------
+    /**
+     * Hollow — o Shinigami que PERDEU para o Vazio Interior (ou o aceitou) e foi tomado por ele: devora almas e evolui
+     * (Hollow → Gillian → Adjuchas → Vasto Lorde → Arrancar), Cero, Sonído, Hierro, Garganta e Resurrección (módulo
+     * class_hollow). Id {@code hollowfied} (e não "hollow"): o Mundo Oco já tem itens {@code hollow_*} que não podem virar
+     * "itens de classe" no vínculo de alma.
+     */
+    HOLLOW("hollowfied", ChatFormatting.WHITE, 0xE6DFCF, Category.PHYSICAL, Element.SHADOW, "hollowfied_claw", null,
+            EnumSet.of(Element.SHADOW, Element.FIRE), EnumSet.of(Element.LIGHT));
 
     /** As 15 classes escolhíveis, agrupadas por categoria (Mágicas, Físicas, Destreza), na ordem da tela. */
     public static final MagicPath[] PLAYABLE = {
             MAGE, WITCH, WARLOCK, DRUID, NECROMANCER,
             SMITH, ROGUE, KNIGHT, ENCHANTER, SHINIGAMI,
             QUINCY, GUNSLINGER, RANGER, GAMBLER, STEELBALL};
+
+    /** Classes que só se alcançam pela história (não aparecem na tela de escolha; a tela mostra só a dica "bloqueada"). */
+    public static final MagicPath[] STORY_ONLY = {HOLLOW};
 
     private static final Map<Category, List<MagicPath>> BY_CATEGORY = new EnumMap<>(Category.class);
 
@@ -177,6 +189,7 @@ public enum MagicPath {
 
     /** Módulo que implementa o sistema próprio da classe ({@code class_<id>} nas 10 novas; ritual_* nas Mágicas). */
     public String moduleId() {
+        if (this == HOLLOW) return "class_hollow";
         return switch (category) {
             case MAGIC -> this == NONE ? "" : "ritual_" + (this == NECROMANCER ? "necro" : id);
             default -> "class_" + id;
@@ -187,6 +200,21 @@ public enum MagicPath {
     public ResourceLocation iconTexture() { return IsekaiMahou.id("textures/gui/class/" + id + ".png"); }
 
     public boolean isPlayable() { return this != NONE; }
+
+    /**
+     * Pode ser escolhida na tela inicial? (v1.3: o {@link #HOLLOW} não — só um Shinigami que perde para o Vazio Interior,
+     * ou o aceita, vira Hollow.) Quem recebe a escolha da classe deve recusar as que dão false.
+     */
+    public boolean pickableAtStart() {
+        if (this == NONE) return false;
+        for (MagicPath p : STORY_ONLY) if (p == this) return false;
+        return true;
+    }
+
+    /** Dica de como se chega a uma classe de história ({@code path.isekai_mahou.<id>.locked}). */
+    public MutableComponent lockedHint() {
+        return Component.translatable("path.isekai_mahou." + id + ".locked");
+    }
 
     public MutableComponent displayName() {
         return Component.translatable("path.isekai_mahou." + id).withColor(rgb);

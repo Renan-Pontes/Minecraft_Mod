@@ -34,6 +34,8 @@ import com.renanpontes.isekaimahou.feature.journal.data.JournalCondition;
 import com.renanpontes.isekaimahou.feature.journal.data.JournalRewards;
 import com.renanpontes.isekaimahou.feature.journal.data.JournalStep;
 import com.renanpontes.isekaimahou.feature.journal.entity.GuideSpiritEntity;
+import com.renanpontes.isekaimahou.feature.journal.story.StoryService;
+import com.renanpontes.isekaimahou.feature.ui_hud.Hints;
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellParser;
@@ -79,7 +81,10 @@ import net.neoforged.neoforge.network.PacketDistributor;
  *   <li>O Espírito Guia fala pela caixa de diálogo do núcleo ({@code Dialogue}), não pelo chat.</li>
  *   <li>v1.0: a ROTA DA CLASSE corre em paralelo (capítulos com {@code "path"}): o seu capítulo em andamento abre depois
  *       do tutorial, com toast + fala do espírito (sem título por cima da história), tem alvo próprio no rastreador e entra
- *       nas dicas do espírito. Depois do final (Dragão), o capítulo SECRETO 150→200 abre quando o epílogo termina.</li>
+ *       nas dicas do espírito. Depois do final (Dragão), o capítulo SECRETO abre quando o epílogo termina.</li>
+ *   <li>Onda 5 — "o Dragão é o fim": a história inteira (masmorras, torres, biomas, Cidade Anã, Cidadela, Biblioteca)
+ *       fica ANTES do capítulo final; depois dele só existe o capítulo do Abismo Infinito. O final fecha quando o Dragão
+ *       cai, mesmo com capítulos anteriores por fazer (ver {@link #evaluateMain}).</li>
  * </ul>
  */
 public final class JournalService {
@@ -108,6 +113,11 @@ public final class JournalService {
      * (progrediu fora de ordem), o título "Capítulo concluído" não atropela o da abertura.
      */
     private static final int OPENING_HOLD = 80;
+    /**
+     * Intervalo mínimo entre duas ABERTURAS de capítulo (título + fala do espírito). Só importa quando há dois para
+     * abrir quase juntos: o pós-final (Abismo) e um capítulo que ficou para trás.
+     */
+    private static final int OPENING_GAP = 400;
     /** Recarga do botão "Chamar Espírito Guia". */
     public static final int GUIDE_COOLDOWN = 20 * 30;
     /** Cor do Espírito Guia quando não há capítulo (tutorial, livro vazio). */
@@ -186,12 +196,14 @@ public final class JournalService {
             if (q.isEmpty()) QUEUE.remove(player.getUUID());
         }
         runTasks(player);
+        // Campanha (v1.0): falas e cutscenes de marco esperando a vez.
+        StoryService.tick(player);
         // Durante o tutorial o espírito fica ao lado (a duração normal dele é de 2 min).
         if (player.tickCount % 100 == 43 && JournalTutorial.running(player)) keepGuide(player);
     }
 
     /** Agenda uma ação para daqui a {@code ticks} (some se o jogador sair do mundo). */
-    static void later(ServerPlayer player, int ticks, Consumer<ServerPlayer> action) {
+    public static void later(ServerPlayer player, int ticks, Consumer<ServerPlayer> action) {
         if (player instanceof FakePlayer) return;
         TASKS.computeIfAbsent(player.getUUID(), k -> new ArrayList<>()).add(new Task(now(player) + Math.max(1, ticks), action));
     }
@@ -236,6 +248,7 @@ public final class JournalService {
         INTRO_AT.clear();
         TASKS.clear();
         FINALE_SCHEDULED.clear();
+        StoryService.clearAll();
         JournalTutorial.clearAll();
         JournalLocator.clearAll();
     }
@@ -260,18 +273,36 @@ public final class JournalService {
         if (!opened) evaluateClass(player, d, book);
     }
 
-    /** História principal. @return true se um capítulo acabou de abrir agora */
+    /**
+     * História principal. @return true se um capítulo acabou de abrir agora
+     * <p>
+     * O "capítulo atual" é o primeiro não concluído (dono do rastreador). Onda 5 — "o Dragão é o fim": além dele,
+     * <ul>
+     *   <li>o capítulo FINAL fecha assim que o Dragão cai, mesmo bloqueado por capítulos anteriores por fazer (mundo
+     *       antigo que ganhou capítulos antes do final, jogador carregado pelo grupo): ninguém perde o final;</li>
+     *   <li>o capítulo DEPOIS do final (o Abismo Infinito) anda em paralelo com o que tiver ficado para trás — esses
+     *       continuam abrindo um por vez, em ordem.</li>
+     * </ul>
+     */
     private static boolean evaluateMain(ServerPlayer player, MagicData d, JournalBook book) {
         List<JournalChapter> chapters = book.chapters();
+        JournalChapter current = book.active(d);
         for (int i = 0; i < chapters.size(); i++) {
             JournalChapter ch = chapters.get(i);
             JournalBook.State state = book.state(i, d);
-            if (state == JournalBook.State.LOCKED) return false;
+            boolean isCurrent = ch == current;
+            if (state == JournalBook.State.LOCKED) {
+                if (ch.finale() && finaleOutOfOrder(player, d, ch)) return false;
+                continue;
+            }
             if (state == JournalBook.State.ACTIVE && !d.hasFlag(ch.begunFlag())) {
-                if (!canBegin(player, d, i)) return false;
+                // Ainda não é hora de abrir (pausa entre capítulos, final tocando): os outros seguem sendo conferidos.
+                if (!canBegin(player, d, i)) continue;
                 begin(player, ch, i);
                 HOLD.put(player.getUUID(), now(player) + OPENING_HOLD);
-                JournalLocator.clear(player);
+                // Se houver outro capítulo para abrir (o pós-final ao lado de um atrasado), ele espera esta abertura passar.
+                NEXT_BEGIN.put(player.getUUID(), now(player) + OPENING_GAP);
+                if (isCurrent) JournalLocator.clear(player);
                 return true;
             }
             List<JournalStep> newly = newlyDone(player, d, ch);
@@ -279,19 +310,37 @@ public final class JournalService {
             if (state == JournalBook.State.ACTIVE) {
                 boolean allDone = ch.required().stream().allMatch(s -> d.hasFlag(s.flag(ch)));
                 if (!allDone) {
-                    JournalLocator.update(player, ch, JournalBook.currentStep(ch, d, player));
-                    return false;
+                    if (isCurrent) JournalLocator.update(player, ch, JournalBook.currentStep(ch, d, player));
+                    continue;
                 }
                 completeChapter(player, ch);
                 // Depois do final, o próximo (o capítulo secreto) espera a cutscene e o epílogo inteiros.
                 long wait = ch.finale() ? FINALE_DELAY + finaleLength(ch) + NEXT_CHAPTER_DELAY : NEXT_CHAPTER_DELAY;
                 NEXT_BEGIN.put(player.getUUID(), now(player) + wait);
-                JournalLocator.clear(player);
+                if (isCurrent) JournalLocator.clear(player);
                 return false;
             }
         }
-        JournalLocator.clear(player);
+        if (current == null) JournalLocator.clear(player);
         return false;
+    }
+
+    /**
+     * O capítulo final ainda está bloqueado (há capítulos anteriores por fazer), mas o que ele pede já aconteceu — o
+     * Dragão caiu. O final fecha agora: recompensas, aviso ao servidor, cutscene e epílogo. Os capítulos que ficaram para
+     * trás continuam no Diário, abrindo um a um. Enquanto o Dragão não cai, nada do capítulo é conferido (os passos
+     * opcionais dele — o Décimo Círculo — esperam a vez).
+     * @return true se o final fechou nesta checagem
+     */
+    private static boolean finaleOutOfOrder(ServerPlayer player, MagicData d, JournalChapter ch) {
+        List<JournalStep> required = ch.required();
+        if (required.isEmpty() || !required.stream().allMatch(s -> JournalBook.stepDone(ch, s, d, player))) return false;
+        d.setFlag(ch.begunFlag(), true);
+        List<JournalStep> newly = newlyDone(player, d, ch);
+        if (!newly.isEmpty()) completeSteps(player, ch, newly);
+        completeChapter(player, ch);
+        NEXT_BEGIN.put(player.getUUID(), now(player) + FINALE_DELAY + finaleLength(ch) + NEXT_CHAPTER_DELAY);
+        return true;
     }
 
     /** Passos de um capítulo que acabaram de ser cumpridos (já marcados). */
@@ -477,6 +526,8 @@ public final class JournalService {
     private static void begin(ServerPlayer player, JournalChapter ch, int index) {
         MagicData d = MagicApi.get(player);
         d.setFlag(ch.begunFlag(), true);
+        // Campanha: a batida de abertura (se houver) entra na fila e fala depois do título e do Espírito Guia.
+        StoryService.onChapterBegin(player, ch.id());
         MutableComponent number = Component.translatable("screen.isekai_mahou.journal.chapter_n", index + 1);
         title(player, number.copy().withColor(ch.color()), ch.title().withStyle(ChatFormatting.ITALIC), 15, 70, 25);
         player.playNotifySound(SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 0.9F);
@@ -496,6 +547,8 @@ public final class JournalService {
                     Component.keybind("key.isekai_mahou.menu").withStyle(ChatFormatting.YELLOW),
                     Component.keybind("key.isekai_mahou.tracker").withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GRAY));
         }
+        // Segundo capítulo: o jogador já saiu do básico — uma dica discreta (uma vez) mostra onde fica o "Onde Conseguir".
+        if (index == 1) Hints.show(player, "journal_where");
         // O espírito aparece com a fala curta do capítulo e o primeiro objetivo (caixa de diálogo, depois do título).
         later(player, GREET_DELAY, p -> greet(p, ch));
     }
@@ -564,6 +617,7 @@ public final class JournalService {
         MagicData d = MagicApi.get(player);
         for (int k = 0; k < steps.size(); k++) {
             JournalStep step = steps.get(k);
+            StoryService.onStep(player, step.uid(ch));
             // Tributo de Ascensão de quem já está naquele Círculo (e afins): o passo vale, o prêmio não.
             boolean skipRewards = step.rewardUnless() != null && step.rewardUnless().done(d, player);
             List<Component> rewards = skipRewards ? List.of() : grantRewards(player, step.rewards());
@@ -606,6 +660,7 @@ public final class JournalService {
     private static void completeChapter(ServerPlayer player, JournalChapter ch) {
         MagicData d = MagicApi.get(player);
         d.setFlag(ch.doneFlag(), true);
+        StoryService.onChapterDone(player, ch.id());
         List<Component> rewards = grantRewards(player, ch.rewards());
 
         if (!Onboarding.quiet(player)) {
@@ -966,7 +1021,8 @@ public final class JournalService {
         GuideSpiritEntity spirit = findGuide(player);
         // Já foi embora (duração acabou, outra dimensão): nada a esperar — sem laço de novas tentativas.
         if (spirit == null) return;
-        if (Dialogue.isOpen(player, DIALOGUE_GREET) || Dialogue.isOpen(player, DIALOGUE_HINT) || Dialogue.isOpen(player, DIALOGUE_CLASS)) {
+        if (Dialogue.isOpen(player, DIALOGUE_GREET) || Dialogue.isOpen(player, DIALOGUE_HINT) || Dialogue.isOpen(player, DIALOGUE_CLASS)
+                || StoryService.talking(player)) {
             later(player, DISMISS_RETRY, JournalService::dismissGuide);
             return;
         }
@@ -1097,6 +1153,28 @@ public final class JournalService {
         HOLD.remove(player.getUUID());
         evaluate(player);
         return ch;
+    }
+
+    /**
+     * Teste (onda 5): põe um capítulo no estado pedido SEM recompensas, títulos nem falas — para montar na mão a situação
+     * de um mundo antigo (ex.: Dragão vencido e os capítulos novos por fazer). {@code done=false} apaga os marcadores do
+     * capítulo (concluído, aberto e passos).
+     */
+    public static void forceMark(ServerPlayer player, JournalChapter ch, boolean done) {
+        MagicData d = MagicApi.get(player);
+        if (done) {
+            d.setFlag(ch.begunFlag(), true);
+            for (JournalStep s : ch.required()) d.setFlag(s.flag(ch), true);
+            d.setFlag(ch.doneFlag(), true);
+        } else {
+            String prefix = ch.doneFlag() + ".";
+            List<String> flags = d.flags().stream().filter(f -> f.equals(ch.doneFlag()) || f.startsWith(prefix)).toList();
+            flags.forEach(f -> d.setFlag(f, false));
+        }
+        if (ch.finale()) d.setFlag(FINALE_PENDING, false);
+        NEXT_BEGIN.remove(player.getUUID());
+        HOLD.remove(player.getUUID());
+        markDirty(player);
     }
 
     /** Apaga todo o progresso do Diário do jogador. Retorna quantos marcadores foram removidos. */

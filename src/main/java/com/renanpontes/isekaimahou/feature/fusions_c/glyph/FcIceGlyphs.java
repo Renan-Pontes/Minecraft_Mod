@@ -13,6 +13,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -72,7 +73,7 @@ public final class FcIceGlyphs {
             FusionShockwaveEntity.frost(ctx, stats, g.add(0, 0.05, 0), r, 28, 10F, stats.duration(80));
             Destruction.surface(sl, g, r, caster, Destruction.Mode.FREEZE);
             FcFx.implode(sl, g.add(0, 1, 0), FcFx.dust(FcFx.FROST, 1.4F), 3, 24, 0.3);
-            sl.sendParticles(ParticleTypes.SNOWFLAKE, g.x, g.y + 1, g.z, 80, 0.5, 0.5, 0.5, 0.5);
+            sl.sendParticles(Vfx.snowflake(), g.x, g.y + 1, g.z, 80, 0.5, 0.5, 0.5, 0.5);
             sl.sendParticles(ParticleTypes.FLASH, g.x, g.y + 1, g.z, 1, 0, 0, 0, 0);
             FcFx.sound(sl, g, SoundEvents.AMETHYST_BLOCK_RESONATE, 2F, 0.5F);
             FcFx.sound(sl, g, SoundEvents.GLASS_BREAK, 2F, 0.4F);

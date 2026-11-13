@@ -3,6 +3,8 @@ package com.renanpontes.isekaimahou.feature.guild.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.renanpontes.isekaimahou.client.menu.MenuTabs;
+import com.renanpontes.isekaimahou.client.menu.StatusScreen;
 import com.renanpontes.isekaimahou.core.api.Reputation;
 import com.renanpontes.isekaimahou.feature.guild.GuildContent;
 import com.renanpontes.isekaimahou.feature.guild.GuildData;
@@ -99,6 +101,19 @@ public class GuildScreen extends Screen {
         send(action, id, 0, 1);
     }
 
+    /** O botão "Mercado" coube na coluna das abas neste quadro (senão vai para a lista da Recepção). */
+    private boolean marketInColumn;
+
+    /** O módulo do mercado registrou a aba "market" no menu (B)? Sem ele o botão não aparece. */
+    private static boolean marketAvailable() {
+        return MenuTabs.get("market") != null;
+    }
+
+    /** Abre o menu (B) direto no Mercado dos jogadores (a tela da Guilda fecha; o Mercado funciona em qualquer lugar). */
+    private static void openMarket() {
+        StatusScreen.open("market");
+    }
+
     private static final ResourceLocation NONE = ResourceLocation.withDefaultNamespace("empty");
     private static final String TAB_KEY = "screen.isekai_mahou.guild.tab.";
     private static final String TIP_KEY = "screen.isekai_mahou.guild.tip.";
@@ -154,6 +169,14 @@ public class GuildScreen extends Screen {
                 g.drawString(font, shown, cx + (colW - font.width(shown)) / 2, ty + 4, GuildUi.GOLD, true);
             }
             ty += 19;
+        }
+        // Release 1.0: atalho para o Mercado dos jogadores (aba "market" do menu B), embaixo das abas. Só na Guilda
+        // (quadro de facção não é balcão de comércio) e só se o módulo do mercado existe. Em telas baixas, onde não
+        // cabe na coluna, o mesmo botão aparece na lista da Recepção.
+        marketInColumn = !factionBoard && marketAvailable() && ty + 4 + 16 <= top + panelH - 6;
+        if (marketInColumn) {
+            GuildUi.button(g, font, frame, cx, ty + 4, colW, 16, Component.translatable("screen.isekai_mahou.guild.go_market"), mx, my, true,
+                    GuildUi.BLUE, GuildScreen::openMarket);
         }
 
         // Conteúdo
@@ -289,6 +312,11 @@ public class GuildScreen extends Screen {
         GuildUi.button(g, font, frame, rx, ry, rw, 16, Component.translatable("screen.isekai_mahou.guild.go_shop"), mx, my, true, GuildUi.GOLD,
                 () -> { tab = Tab.SHOP; scroll = 0; });
         ry += 19;
+        if (!marketInColumn && marketAvailable()) {
+            GuildUi.button(g, font, frame, rx, ry, rw, 16, Component.translatable("screen.isekai_mahou.guild.go_market"), mx, my, true,
+                    GuildUi.BLUE, GuildScreen::openMarket);
+            ry += 19;
+        }
         if (!data.hasCard()) {
             boolean can = GuildUi.coins() >= GuildService.REISSUE_PRICE;
             GuildUi.button(g, font, frame, rx, ry, rw, 16, Component.translatable("screen.isekai_mahou.guild.reissue", GuildService.REISSUE_PRICE),

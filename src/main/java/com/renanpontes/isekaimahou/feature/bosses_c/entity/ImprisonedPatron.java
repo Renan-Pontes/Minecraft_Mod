@@ -11,19 +11,23 @@ import javax.annotation.Nullable;
 import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.core.Element;
+import com.renanpontes.isekaimahou.core.boss.BossCurses;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
+import com.renanpontes.isekaimahou.feature.bosses_c.polish.BossShow;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -33,6 +37,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -87,6 +92,29 @@ public class ImprisonedPatron extends ClassBossEntity {
     private int gripCd = 160;
     private int novaCd = 120;
     private int lashCd = 80;
+    /** Correntes do Pacto: recarga, aviso em andamento e os pares presos agora. */
+    private int bindCd = 260;
+    private int bindTimer;
+    private final java.util.List<Bond> bonds = new java.util.ArrayList<>();
+
+    /** Dois presos pela mesma corrente ({@code b} null = preso ao próprio Patrono). */
+    private static final class Bond {
+        final LivingEntity a;
+        @Nullable final LivingEntity b;
+        int life;
+        int close;
+
+        Bond(LivingEntity a, @Nullable LivingEntity b, int life) {
+            this.a = a;
+            this.b = b;
+            this.life = life;
+        }
+    }
+
+    private static final int BIND_WARN = 26;
+    private static final int BIND_TICKS = 180;
+    /** Folga da corrente (blocos) antes de puxar. */
+    private static final double BIND_SLACK = 7.0;
     private int swipeTimer;
     private int lashTimer;
     private float attackYaw;
@@ -262,7 +290,115 @@ public class ImprisonedPatron extends ClassBossEntity {
 
     @Override
     protected boolean isBusy() {
-        return swipeTimer > 0 || castTimer > 0 || gripTimer > 0 || novaTimer > 0 || lashTimer > 0 || novaStep >= 0;
+        return swipeTimer > 0 || castTimer > 0 || gripTimer > 0 || novaTimer > 0 || lashTimer > 0 || novaStep >= 0 || bindTimer > 0;
+    }
+
+    /**
+     * ASSINATURA — Correntes do Pacto: ele ruge e um círculo persegue cada um; quem estiver dentro quando travar fica
+     * ACORRENTADO a outro jogador (sozinho: ao próprio Patrono) por 9 s. Se os dois se afastarem, a corrente os arrasta
+     * um para o outro e queima. Ficarem JUNTOS por 2 s afrouxa e quebra a corrente.
+     */
+    private void startBind(ServerLevel level, LivingEntity target) {
+        bindTimer = BIND_WARN;
+        bindCd = 420 + random.nextInt(80);
+        action("roar");
+        playSound(SoundEvents.CHAIN_BREAK, 2.0F, 0.5F);
+        playSound(SoundEvents.WITHER_AMBIENT, 1.5F, 0.6F);
+        announce("bind");
+        hintOnce(level, "bind");
+        java.util.List<LivingEntity> foes = new java.util.ArrayList<>();
+        for (ServerPlayer p : BossKit.partyAround(this, 24)) if (isFoe(p)) foes.add(p);
+        if (foes.isEmpty() && isFoe(target)) foes.add(target);
+        java.util.List<LivingEntity> caught = new java.util.ArrayList<>();
+        int[] pending = {foes.size()};
+        for (LivingEntity e : foes) {
+            if (e instanceof ServerPlayer sp) BossKit.vignette(sp, 0x8C1F1F, 0.6F, BIND_WARN);
+            Telegraph.delayed(level, Telegraph.Shape.follow(e, 1.8F).warmup(BIND_WARN).lock(10).color(COLOR).owner(this),
+                    hits -> {
+                        if (isAlive() && hits.contains(e)) caught.add(e);
+                        if (--pending[0] == 0) bindCaught(level, caught);
+                    });
+        }
+    }
+
+    private void bindCaught(ServerLevel level, java.util.List<LivingEntity> caught) {
+        if (caught.isEmpty()) return;
+        for (int i = 0; i < caught.size(); i += 2) {
+            LivingEntity a = caught.get(i);
+            LivingEntity b = i + 1 < caught.size() ? caught.get(i + 1) : null;
+            bonds.add(new Bond(a, b, BIND_TICKS));
+            for (LivingEntity e : b == null ? java.util.List.of(a) : java.util.List.of(a, b)) {
+                BossCurses.apply(e, BossCurses.CHAINED, BIND_TICKS, 0);
+                level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, e.getX(), e.getY() + 1, e.getZ(), 12, 0.3, 0.5, 0.3, 0.05);
+                if (e instanceof ServerPlayer sp) {
+                    sp.displayClientMessage(Component.translatable(b == null ? "message.isekai_mahou.imprisoned_patron.bound_self"
+                            : "message.isekai_mahou.imprisoned_patron.bound_pair").withColor(0xFF6A5A), true);
+                }
+            }
+        }
+        playSound(SoundEvents.CHAIN_PLACE, 2.0F, 0.6F);
+        BossKit.shake(level, position(), 24, 0.8F, 10);
+    }
+
+    /** Corrente viva: desenha, puxa quem se afasta, queima e quebra se ficarem juntos. */
+    private void tickBonds(ServerLevel level) {
+        if (bonds.isEmpty()) return;
+        java.util.Iterator<Bond> it = bonds.iterator();
+        while (it.hasNext()) {
+            Bond bd = it.next();
+            LivingEntity a = bd.a;
+            LivingEntity b = bd.b;
+            Entity other = b != null ? b : this;
+            if (--bd.life <= 0 || !a.isAlive() || !other.isAlive() || a.level() != level || other.level() != level) {
+                endBond(level, bd, false);
+                it.remove();
+                continue;
+            }
+            Vec3 pa = a.position().add(0, a.getBbHeight() * 0.55, 0);
+            Vec3 pb = other.position().add(0, other.getBbHeight() * (b != null ? 0.55 : 0.4), 0);
+            double d = pa.distanceTo(pb);
+            if (tickCount % 2 == 0) {
+                BossFx.line(level, pa, pb, BossFx.dust(0x6A6A70, 0.8F), 0.7);
+                if (tickCount % 6 == 0) BossFx.line(level, pa, pb, ParticleTypes.SMALL_FLAME, 2.0);
+            }
+            if (d > BIND_SLACK) {
+                // Arrasta os dois um para o outro (o Patrono não se mexe: só o jogador vem)
+                Vec3 dir = pb.subtract(pa).normalize().scale(Math.min(0.6, 0.12 * (d - BIND_SLACK) + 0.15));
+                a.push(dir.x, 0.04, dir.z);
+                a.hurtMarked = true;
+                if (b != null) {
+                    b.push(-dir.x, 0.04, -dir.z);
+                    b.hurtMarked = true;
+                }
+                if (tickCount % 20 == 0 && d > BIND_SLACK + 2) {
+                    a.hurt(damageSources().indirectMagic(this, this), scaled(2.0F));
+                    if (b != null) b.hurt(damageSources().indirectMagic(this, this), scaled(2.0F));
+                    playSound(SoundEvents.CHAIN_HIT, 1.2F, 0.6F);
+                }
+            }
+            // Juntos (só entre jogadores) por 2 s: a corrente afrouxa e parte
+            bd.close = b != null && d < 3.0 ? bd.close + 1 : 0;
+            if (bd.close >= 40) {
+                endBond(level, bd, true);
+                it.remove();
+            }
+        }
+    }
+
+    private void endBond(ServerLevel level, Bond bd, boolean broken) {
+        BossCurses.cleanse(bd.a, BossCurses.CHAINED);
+        if (bd.b != null) BossCurses.cleanse(bd.b, BossCurses.CHAINED);
+        if (broken) {
+            Vec3 m = bd.a.position().add(bd.b != null ? bd.b.position() : bd.a.position()).scale(0.5).add(0, 1, 0);
+            level.sendParticles(ParticleTypes.CRIT, m.x, m.y, m.z, 20, 0.4, 0.4, 0.4, 0.3);
+            level.playSound(null, m.x, m.y, m.z, SoundEvents.CHAIN_BREAK, net.minecraft.sounds.SoundSource.HOSTILE, 1.5F, 1.2F);
+        }
+    }
+
+    private void clearBonds() {
+        if (level() instanceof ServerLevel level) for (Bond bd : bonds) endBond(level, bd, false);
+        bonds.clear();
+        bindTimer = 0;
     }
 
     @Override
@@ -273,7 +409,17 @@ public class ImprisonedPatron extends ClassBossEntity {
         if (gripCd > 0) gripCd--;
         if (novaCd > 0) novaCd--;
         if (lashCd > 0) lashCd--;
+        if (bindCd > 0) bindCd--;
         tickNovaRing(level);
+        tickBonds(level);
+        if (bindTimer > 0) {
+            getNavigation().stop();
+            if (target != null) faceTarget(target);
+            Vec3 hand = handPos(true);
+            level.sendParticles(BossFx.dust(COLOR, 1.2F), hand.x, hand.y, hand.z, 3, 0.2, 0.2, 0.2, 0);
+            if (--bindTimer == 0) bindTimer = 0;
+            return;
+        }
 
         if (swipeTimer > 0) {
             getNavigation().stop();
@@ -325,6 +471,10 @@ public class ImprisonedPatron extends ClassBossEntity {
         double r = leashRadius();
         if (dist <= REACH && swipeCd <= 0) {
             startSwipe(level, target, broken);
+            return;
+        }
+        if (bindCd <= 0 && bonds.isEmpty()) {
+            startBind(level, target);
             return;
         }
         if (broken >= 3 && novaCd <= 0 && dist < 7) {
@@ -407,6 +557,7 @@ public class ImprisonedPatron extends ClassBossEntity {
         level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, c.x, c.y, c.z, 15, 1.2, 0.3, 1.2, 0.03);
         playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1.6F, 0.5F);
         playSound(SoundEvents.CHAIN_HIT, 1.5F, 0.7F);
+        BossShow.impact(level, c.subtract(0, 1.2, 0), bossColor(), 2.0F); // v1.0: a garra tem peso
     }
 
     private void shootFire(ServerLevel level, LivingEntity target, int broken) {
@@ -592,6 +743,8 @@ public class ImprisonedPatron extends ClassBossEntity {
         entityData.set(DATA_CHAINS, ALL_CHAINS);
         applyRage();
         swipeTimer = castTimer = gripTimer = novaTimer = lashTimer = 0;
+        clearBonds();
+        bindCd = 260;
         novaStep = -1;
         novaCenter = null;
         swipeMark = -1;

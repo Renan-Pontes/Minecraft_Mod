@@ -15,12 +15,14 @@ import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.api.Announce;
+import com.renanpontes.isekaimahou.core.api.BossThemed;
 import com.renanpontes.isekaimahou.core.api.BossArena;
 import com.renanpontes.isekaimahou.core.api.Cutscenes;
 import com.renanpontes.isekaimahou.core.api.Places;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.BossRewards;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
+import com.renanpontes.isekaimahou.feature.bosses_g.polish.BossShow;
 import com.renanpontes.isekaimahou.core.item.GlyphScrollItem;
 import com.renanpontes.isekaimahou.glyph.CoreGlyphs;
 import com.renanpontes.isekaimahou.glyph.Glyph;
@@ -94,7 +96,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
  *       explosões não mexem, o chefe não cai do mapa) e liberada quando o chefe volta a dormir.</li>
  * </ul>
  */
-public abstract class GBossEntity extends Monster implements GeoEntity, BgBones {
+public abstract class GBossEntity extends Monster implements GeoEntity, BgBones, BossThemed {
     private static final EntityDataAccessor<Integer> DATA_INTRO = SynchedEntityData.defineId(GBossEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_PHASE = SynchedEntityData.defineId(GBossEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_AWAKE = SynchedEntityData.defineId(GBossEntity.class, EntityDataSerializers.BOOLEAN);
@@ -104,7 +106,10 @@ public abstract class GBossEntity extends Monster implements GeoEntity, BgBones 
     public static final String LAIR_PLACE_TYPE = "boss_lair";
 
     protected static final int INTRO_TICKS = 60;
-    private static final int DEATH_TICKS = 50;
+    /** v1.0: 64 (era 50) — 2,5 s de animação de morte + o corpo se desfazendo. */
+    private static final int DEATH_TICKS = 64;
+    /** v1.0: trava das falas reativas (provocação / último fôlego). */
+    private final BossShow.Voice voice = new BossShow.Voice();
     private static final double BAR_RANGE = 48.0;
     private static final double REWARD_RANGE = 48.0;
     private static final double PARTY_RANGE = 40.0;
@@ -194,6 +199,8 @@ public abstract class GBossEntity extends Monster implements GeoEntity, BgBones 
         Cutscenes.playNear(this, 40, "boss_phase", getDisplayName(),
                 Component.translatable(langKey("boss", "phase" + phase)), bossColor(), 50, null);
         announce("phase" + phase);
+        // v1.0: toda troca de fase tem a sua onda
+        BossShow.phaseBurst(level, this, bossColor());
     }
 
     protected boolean canChangePhase() {
@@ -289,6 +296,8 @@ public abstract class GBossEntity extends Monster implements GeoEntity, BgBones 
             return;
         }
         if (isAwake()) checkPhase(sl);
+        // v1.0: fala de último fôlego (uma vez por luta)
+        if (isAwake() && tickCount % 10 == 0 && voice.lastStand(this, 0.15F)) announce("last_stand");
         if (tickCount % 10 == 0) {
             updateBarPlayers(sl);
             if (!isAwake()) {
@@ -594,11 +603,34 @@ public abstract class GBossEntity extends Monster implements GeoEntity, BgBones 
     }
 
     protected void onDefeated(ServerLevel sl) {
+        if (lastActionAnim != null) stopTriggeredAnim("action", lastActionAnim);
         Telegraph.cancelAll(this);
         BossRewards.grant(this, rewardXp(), REWARD_RANGE);
         announce("death");
         bar().removeAllPlayers();
         dismissMinions(sl);
+        // v1.0: golpe final marcado + câmera da derrota (curta, não trava ninguém)
+        BossShow.deathStart(sl, this, bossColor(), DEATH_TICKS, true);
+    }
+
+    /** v1.0: último golpe disparado no controlador "action" — interrompido na morte para não cobrir a animação "death". */
+    @Nullable private String lastActionAnim;
+
+    @Override
+    public void triggerAnim(String controllerName, String animName) {
+        if ("action".equals(controllerName)) lastActionAnim = animName;
+        GeoEntity.super.triggerAnim(controllerName, animName);
+    }
+
+    /** v1.0: um jogador caiu pelas mãos do chefe — provocação curta (com trava: nunca em rajada). */
+    public void onPlayerSlain() {
+        if (level().isClientSide || isDeadOrDying() || !isAwake() || introTicks() > 0 || !voice.taunt(this)) return;
+        announce("taunt");
+    }
+
+    /** Duração da morte em ticks (o renderer usa para desfazer o corpo no fim). */
+    public int deathSpan() {
+        return DEATH_TICKS;
     }
 
     @Override
@@ -612,13 +644,14 @@ public abstract class GBossEntity extends Monster implements GeoEntity, BgBones 
         deathTime++;
         if (level() instanceof ServerLevel sl) {
             Vec3 c = position().add(0, getBbHeight() * 0.5, 0);
-            if (deathTime % 3 == 0) {
-                sl.sendParticles(BgFx.dust(bossColor(), 1.6F), c.x, c.y, c.z, 10, getBbWidth() * 0.4, getBbHeight() * 0.3,
-                        getBbWidth() * 0.4, 0.0);
+            if (deathTime % 4 == 0) {
                 sl.sendParticles(ParticleTypes.SMOKE, c.x, c.y, c.z, 4, getBbWidth() * 0.3, getBbHeight() * 0.3, getBbWidth() * 0.3, 0.01);
             }
+            // v1.0: morte em três atos (vaza, converge, estoura)
+            BossShow.deathTick(sl, this, deathTime, DEATH_TICKS, bossColor());
             if (deathTime >= DEATH_TICKS && !isRemoved()) {
-                BgFx.sphere(sl, c, getBbHeight() * 0.6, 60, BgFx.dust(bossColor(), 2.0F));
+                BossShow.deathFinale(sl, this, bossColor());
+                BgFx.sphere(sl, c, getBbHeight() * 0.6, 40, BgFx.dust(bossColor(), 2.0F));
                 sl.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y, c.z, 2, 0.3, 0.3, 0.3, 0.0);
                 sl.broadcastEntityEvent(this, (byte) 60);
                 remove(RemovalReason.KILLED);
@@ -897,5 +930,11 @@ public abstract class GBossEntity extends Monster implements GeoEntity, BgBones 
         lairRegistered = b.getBoolean("LairRegistered");
         lairId = tag.getString("Lair");
         if (bar != null) bar.setName(getDisplayName());
+    }
+
+    /** v1.3 — Música de chefe (lida no cliente): "beast" para as feras (Manticora e Falsa Hidra; o Rei Mímico tem tema próprio). */
+    @Override
+    public String musicTheme() {
+        return "beast";
     }
 }

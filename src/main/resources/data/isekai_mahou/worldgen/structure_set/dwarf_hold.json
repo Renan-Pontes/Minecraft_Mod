@@ -1,0 +1,24 @@
+{
+  "structures": [
+    {
+      "structure": "isekai_mahou:dwarf_hold",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "isekai_mahou:random_spread_multi",
+    "spacing": 48,
+    "separation": 17,
+    "salt": 1716000062,
+    "exclusion_zones": [
+      {
+        "other_set": "minecraft:ancient_cities",
+        "chunk_count": 5
+      },
+      {
+        "other_set": "minecraft:trial_chambers",
+        "chunk_count": 3
+      }
+    ]
+  }
+}

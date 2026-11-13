@@ -42,6 +42,7 @@ public class ClassRogueModule implements Module {
     public void init(IEventBus modBus) {
         RogueContent.register(modBus);
         modBus.addListener(RogueNet::register);
+        modBus.addListener(RogueFxNet::register);
         modBus.addListener(RogueGlyphs::validate);
         RogueGlyphs.register();
         RogueEvents.register();

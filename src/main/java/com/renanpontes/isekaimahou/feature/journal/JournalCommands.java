@@ -2,7 +2,9 @@ package com.renanpontes.isekaimahou.feature.journal;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.renanpontes.isekaimahou.core.MagicApi;
@@ -16,6 +18,7 @@ import com.renanpontes.isekaimahou.feature.journal.data.JournalStep;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -30,8 +33,14 @@ import net.minecraft.server.level.ServerPlayer;
  * /mahou journal guide                — chama o Espírito Guia sem recarga, voando até o alvo (cheats)
  * /mahou journal locate               — procura de novo o lugar do objetivo atual e mostra as coordenadas (cheats)
  * /mahou journal tutorial [jogadores] — o Espírito Guia mostra o tutorial de novo (cheats; não mexe nas flags)
+ * /mahou journal set <capítulo> done|clear [jogadores] — marca/zera um capítulo sem recompensas nem avisos (cheats)
+ * /mahou journal veteran [jogadores]  — simula um mundo antigo: tudo até o Dragão concluído, menos os seis capítulos
+ *                                       que a onda 5 trouxe para antes dele; o pós-final fica zerado (cheats)
  */
 final class JournalCommands {
+    /** Capítulos que, até a v1.0 final, vinham DEPOIS do Dragão (só para o comando de teste "veteran"). */
+    private static final Set<String> MOVED = Set.of("magic_biomes", "towers", "depths", "dwarf_hold", "nether_citadel", "end_library");
+
     static void register() {
         MahouCommands.extend((root, ctx) -> root.then(Commands.literal("journal")
                 .then(Commands.literal("status")
@@ -55,6 +64,22 @@ final class JournalCommands {
                     return 1;
                 }))
                 .then(MahouCommands.op("locate").executes(c -> locate(c, c.getSource().getPlayerOrException())))
+                .then(MahouCommands.op("set")
+                        .then(Commands.argument("chapter", StringArgumentType.word())
+                                .suggests((c, b) -> SharedSuggestionProvider.suggest(
+                                        JournalBook.server().chapters().stream().map(JournalChapter::id), b))
+                                .then(Commands.literal("done")
+                                        .executes(c -> set(c, List.of(c.getSource().getPlayerOrException()), true))
+                                        .then(Commands.argument("targets", EntityArgument.players())
+                                                .executes(c -> set(c, EntityArgument.getPlayers(c, "targets"), true))))
+                                .then(Commands.literal("clear")
+                                        .executes(c -> set(c, List.of(c.getSource().getPlayerOrException()), false))
+                                        .then(Commands.argument("targets", EntityArgument.players())
+                                                .executes(c -> set(c, EntityArgument.getPlayers(c, "targets"), false))))))
+                .then(MahouCommands.op("veteran")
+                        .executes(c -> veteran(c, List.of(c.getSource().getPlayerOrException())))
+                        .then(Commands.argument("targets", EntityArgument.players())
+                                .executes(c -> veteran(c, EntityArgument.getPlayers(c, "targets")))))
                 .then(MahouCommands.op("tutorial")
                         .executes(c -> tutorial(c, List.of(c.getSource().getPlayerOrException())))
                         .then(Commands.argument("targets", EntityArgument.players())
@@ -172,6 +197,43 @@ final class JournalCommands {
             c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.journal.completed", ch.title(), p.getDisplayName()), true);
         }
         return n;
+    }
+
+    /** Marca (ou zera) um capítulo da história sem recompensas — monta estados de teste. */
+    private static int set(CommandContext<CommandSourceStack> c, Collection<ServerPlayer> players, boolean done) {
+        String id = StringArgumentType.getString(c, "chapter");
+        JournalChapter ch = JournalBook.server().byId(id);
+        if (ch == null || ch.isClassRoute()) {
+            c.getSource().sendFailure(Component.translatable("command.isekai_mahou.journal.unknown_chapter", id));
+            return 0;
+        }
+        for (ServerPlayer p : players) {
+            JournalService.forceMark(p, ch, done);
+            c.getSource().sendSuccess(() -> Component.translatable(done ? "command.isekai_mahou.journal.set_done"
+                    : "command.isekai_mahou.journal.set_clear", ch.title(), p.getDisplayName()), true);
+        }
+        return players.size();
+    }
+
+    /**
+     * Simula o personagem de um mundo antigo que já venceu o Dragão: a história inteira concluída até o final, menos os
+     * capítulos que vinham depois dele e agora ficam antes; o pós-final (Abismo Infinito) zerado. Serve para conferir que
+     * ninguém fica travado: o Abismo abre e os capítulos que faltaram continuam, um por vez.
+     */
+    private static int veteran(CommandContext<CommandSourceStack> c, Collection<ServerPlayer> players) {
+        JournalBook book = JournalBook.server();
+        if (book.finaleIndex() < 0) {
+            c.getSource().sendFailure(Component.translatable("command.isekai_mahou.journal.empty"));
+            return 0;
+        }
+        for (ServerPlayer p : players) {
+            for (int i = 0; i < book.chapters().size(); i++) {
+                JournalChapter ch = book.chapters().get(i);
+                JournalService.forceMark(p, ch, i <= book.finaleIndex() && !MOVED.contains(ch.id()));
+            }
+            c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.journal.veteran", p.getDisplayName()), true);
+        }
+        return players.size();
     }
 
     private static int tutorial(CommandContext<CommandSourceStack> c, Collection<ServerPlayer> players) {

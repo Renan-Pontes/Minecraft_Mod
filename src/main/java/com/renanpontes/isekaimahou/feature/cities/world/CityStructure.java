@@ -26,12 +26,13 @@ import net.neoforged.neoforge.common.Tags;
 /**
  * Tipo de estrutura "isekai_mahou:guild_city": uma cidade murada inteira (não é jigsaw — o jigsaw não passa de 128
  * blocos e não faz muralha). Mede o terreno numa grade sobre a área da cidade em alguns pontos perto do chunk
- * sorteado, escolhe o mais plano/seco, define a altura do piso (mediana do terreno), a paleta (pelo bioma do centro
- * ou pelo reino da capital), a rotação e os portões, e entrega a planta para {@link CityPlanner}.
+ * sorteado, escolhe o mais plano/seco, define a altura do piso (mediana do terreno) e a inclinação dos terraços
+ * ({@link CityTerrace}), a paleta (pelo bioma do centro ou pelo reino da capital), a rotação e os portões, e entrega a
+ * planta para {@link CityPlanner}.
  * <pre>{"type": "isekai_mahou:guild_city", "capital": false, "size": 2, "max_slope": 36, "max_water": 0.3,
  *  "kingdom": "sahra" (opcional), ...}</pre>
  * size = anéis de quarteirões em volta da praça (2 cidade, 3 capital); max_slope = desnível tolerado (blocos entre o
- * 10º e o 90º percentil das alturas); max_water = fração de pontos sobre água tolerada; kingdom = reino da capital
+ * 10º e o 90º percentil das alturas, depois de tirar a inclinação suave que os terraços absorvem); max_water = fração de pontos sobre água tolerada; kingdom = reino da capital
  * ({@link CityKingdom}: fixa a paleta — Aldória planície, Sahra deserto, Nordheim neve — em qualquer bioma; sem ele a
  * paleta sai do bioma e o reino da cidade é o da paleta).
  */
@@ -82,9 +83,10 @@ public class CityStructure extends Structure {
         return kingdom;
     }
 
-    /** Resultado da medição do terreno num centro candidato. */
+    /** Resultado da medição do terreno num centro candidato. floorY/maxY/spread já descontam o plano inclinado
+     *  (gx, gz em blocos por bloco, eixos do mundo — ver {@link CityTerrace}). */
     private record Survey(int x, int z, int floorY, int maxY, int spread, float water, float badBiome, float score,
-                          Holder<Biome> biome) {}
+                          Holder<Biome> biome, double gx, double gz) {}
 
     @Override
     protected Optional<GenerationStub> findGenerationPoint(GenerationContext ctx) {
@@ -110,7 +112,8 @@ public class CityStructure extends Structure {
         }
         int top = ctx.heightAccessor().getMaxBuildHeight() - 48;
         int floorY = Mth.clamp(Math.max(best.floorY(), sea), ctx.heightAccessor().getMinBuildHeight() + 16, top);
-        // Limpa por cima até um pouco acima do ponto mais alto medido (morros dentro da cidade).
+        // Limpa por cima até um pouco acima do ponto mais alto medido (morros dentro da cidade), contado a partir do
+        // piso inclinado de cada coluna.
         int clearHeight = Mth.clamp(best.maxY() - floorY + 12, 28, 64);
         // Capital de reino: paleta do reino em qualquer bioma (o city_heart do molde diz o reino pela paleta).
         Holder<Biome> centerBiome = best.biome();
@@ -120,9 +123,13 @@ public class CityStructure extends Structure {
         Rotation rotation = Rotation.getRandom(random);
         int gates = capital ? (CityGeometry.GATE_S | CityGeometry.GATE_E | CityGeometry.GATE_W) : randomGates(random);
         CityFrame frame = new CityFrame(best.x(), best.z(), floorY, rotation);
+        // Piso em terraços acompanhando a inclinação geral do lugar (a praça fica plana em floorY); a parte de baixo
+        // nunca desce abaixo do nível do mar.
+        CityTerrace terrace = new CityTerrace(geo, frame, gates, CityTerrace.toMilli(best.gx()),
+                CityTerrace.toMilli(best.gz()), sea);
         return Optional.of(new GenerationStub(new BlockPos(best.x(), floorY + 1, best.z()),
-                builder -> CityPlanner.build(builder, ctx.structureTemplateManager(), geo, frame, palette, gates,
-                        clearHeight, seed)));
+                builder -> CityPlanner.build(builder, ctx.structureTemplateManager(), geo, frame, terrace, palette,
+                        gates, clearHeight, seed)));
     }
 
     /** 2 a 4 portões: os dois de um eixo sempre; os outros dois com 60% cada. */
@@ -140,6 +147,10 @@ public class CityStructure extends Structure {
      * Mede a altura do chão (ignorando a água) numa grade sobre toda a área da cidade. Água = chão abaixo do nível do
      * mar (rio, lago, oceano). Null se o centro estiver num bioma que não aceita a cidade ou se for mais água do que
      * terra.
+     * <p>v1.4: ajusta um plano (mínimos quadrados) às alturas — a água conta como o nível do mar — no mesmo formato do
+     * piso em terraços ({@link CityTerrace}: plano fora da praça), limita a inclinação a ±MAX_GRADE e mede o piso, o
+     * ponto mais alto e o desnível (spread) SOBRE o que sobra depois de tirar o plano. Assim uma encosta suave e
+     * regular vira cidade em terraços, e morro/vale de verdade continua sendo recusado.
      */
     @Nullable
     private Survey survey(GenerationContext ctx, CityGeometry geo, int cx, int cz, int sea, boolean forced) {
@@ -149,10 +160,13 @@ public class CityStructure extends Structure {
         int half = geo.towerOut;
         int total = n * n;
         int[] heights = new int[total];
+        boolean[] isWet = new boolean[total];
+        // f(deslocamento) de cada linha/coluna da grade (a mesma grade nos dois eixos).
+        int[] fs = new int[n];
+        for (int i = 0; i < n; i++) fs[i] = CityTerrace.flat1(-half + i * 2 * half / (n - 1));
         int dry = 0;
         int wet = 0;
         int bad = 0;
-        int maxY = Integer.MIN_VALUE;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 int x = cx - half + i * 2 * half / (n - 1);
@@ -160,11 +174,14 @@ public class CityStructure extends Structure {
                 // Primeiro bloco livre acima do chão sólido (a água não conta como chão).
                 int ground = ctx.chunkGenerator().getBaseHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG,
                         ctx.heightAccessor(), ctx.randomState()) - 1;
+                int k = i * n + j;
                 if (ground < sea - 1) {
                     wet++;
+                    isWet[k] = true;
+                    heights[k] = sea;
                 } else {
-                    heights[dry++] = ground;
-                    maxY = Math.max(maxY, ground);
+                    dry++;
+                    heights[k] = ground;
                 }
                 // Rio e praia cortando a área não estragam a cidade (viram fundação/ponte): não contam como ruins.
                 Holder<Biome> b = biomeAt(ctx, x, Math.max(ground, sea), z);
@@ -174,17 +191,53 @@ public class CityStructure extends Structure {
         if (dry < total / 2 && !forced) return null;
         if (dry == 0) {
             // Só no /place em pleno mar: piso no nível do mar, tudo é fundação.
-            return new Survey(cx, cz, sea, sea, 0, 1F, 0F, 40F, center);
+            return new Survey(cx, cz, sea, sea, 0, 1F, 0F, 40F, center, 0, 0);
         }
-        Arrays.sort(heights, 0, dry);
-        int p10 = heights[dry / 10];
-        int p50 = heights[dry / 2];
-        int p90 = heights[Math.min(dry - 1, dry * 9 / 10)];
+        // Plano h = a + gx·f(dx) + gz·f(dz). Na grade completa f(dx) só depende de i e f(dz) só de j (covariância
+        // cruzada zero), então os mínimos quadrados se separam em uma regressão simples por eixo.
+        double meanF = 0;
+        for (int v : fs) meanF += v;
+        meanF /= n;
+        double meanH = 0;
+        for (int v : heights) meanH += v;
+        meanH /= total;
+        double sff = 0;
+        double sxh = 0;
+        double szh = 0;
+        for (int i = 0; i < n; i++) {
+            sff += (fs[i] - meanF) * (fs[i] - meanF) * n;
+            for (int j = 0; j < n; j++) {
+                double h = heights[i * n + j] - meanH;
+                sxh += (fs[i] - meanF) * h;
+                szh += (fs[j] - meanF) * h;
+            }
+        }
+        // Limitado e arredondado igual ao valor salvo: o resíduo mede o piso que vai existir de verdade.
+        double gx = sff > 0 ? CityTerrace.toMilli(sxh / sff) / (double) CityTerrace.SCALE : 0;
+        double gz = sff > 0 ? CityTerrace.toMilli(szh / sff) / (double) CityTerrace.SCALE : 0;
+        // Resíduo (altura menos o plano) só dos pontos secos: é o desnível que sobra para cortar/aterrar.
+        int[] res = new int[dry];
+        int d = 0;
+        int maxY = Integer.MIN_VALUE;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int k = i * n + j;
+                if (isWet[k]) continue;
+                int r = (int) Math.round(heights[k] - gx * fs[i] - gz * fs[j]);
+                res[d++] = r;
+                maxY = Math.max(maxY, r);
+            }
+        }
+        Arrays.sort(res, 0, dry);
+        int p10 = res[dry / 10];
+        int p50 = res[dry / 2];
+        int p90 = res[Math.min(dry - 1, dry * 9 / 10)];
         int spread = p90 - p10;
         float water = wet / (float) total;
         float badBiome = bad / (float) total;
-        float score = spread + water * 40F + badBiome * 20F;
-        return new Survey(cx, cz, p50, maxY, spread, water, badBiome, score, center);
+        // Entre dois lugares parecidos, prefere o menos inclinado (menos degraus e muros de arrimo).
+        float score = spread + water * 40F + badBiome * 20F + (float) (Math.abs(gx) + Math.abs(gz)) * 20F;
+        return new Survey(cx, cz, p50, maxY, spread, water, badBiome, score, center, gx, gz);
     }
 
     /**

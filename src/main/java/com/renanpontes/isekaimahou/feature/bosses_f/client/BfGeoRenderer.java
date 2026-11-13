@@ -2,10 +2,15 @@ package com.renanpontes.isekaimahou.feature.bosses_f.client;
 
 import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.feature.bosses_f.entity.BfBones;
+import com.renanpontes.isekaimahou.feature.bosses_f.entity.OverworldBoss;
+import com.renanpontes.isekaimahou.feature.bosses_f.polish.BossShow;
 
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import software.bernie.geckolib.animatable.GeoAnimatable;
@@ -13,6 +18,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
+import software.bernie.geckolib.util.Color;
 
 /**
  * Renderer GeckoLib dos chefes do módulo: modelo/animações/textura pelo id, camada brilhante (_glowmask), ossos que
@@ -37,6 +43,26 @@ public class BfGeoRenderer<T extends Entity & GeoAnimatable> extends GeoEntityRe
     public int getPackedOverlay(T animatable, float u, float partialTick) {
         if (animatable instanceof LivingEntity living && living.deathTime > 0 && living.hurtTime <= 0) return OverlayTexture.NO_OVERLAY;
         return super.getPackedOverlay(animatable, u, partialTick);
+    }
+
+    /** v1.0: nos últimos ticks da morte o corpo do chefe se desfaz (1 = inteiro, 0 = sumiu). */
+    private float deathAlpha(T animatable, float partialTick) {
+        if (!(animatable instanceof OverworldBoss boss) || boss.deathTime <= 0) return 1F;
+        float left = boss.deathSpan() - (boss.deathTime + partialTick);
+        return Mth.clamp(left / BossShow.DISSOLVE_TICKS, 0F, 1F);
+    }
+
+    @Override
+    public Color getRenderColor(T animatable, float partialTick, int packedLight) {
+        float a = deathAlpha(animatable, partialTick);
+        if (a >= 1F) return super.getRenderColor(animatable, partialTick, packedLight);
+        return Color.ofRGBA(1F, 1F, 1F, a);
+    }
+
+    @Override
+    public RenderType getRenderType(T animatable, ResourceLocation texture, MultiBufferSource bufferSource, float partialTick) {
+        if (deathAlpha(animatable, partialTick) < 1F) return RenderType.entityTranslucent(texture);
+        return super.getRenderType(animatable, texture, bufferSource, partialTick);
     }
 
     static final class ToggleModel<T extends GeoAnimatable> extends DefaultedEntityGeoModel<T> {

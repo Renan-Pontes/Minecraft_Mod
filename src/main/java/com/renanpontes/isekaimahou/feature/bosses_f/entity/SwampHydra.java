@@ -390,6 +390,13 @@ public class SwampHydra extends OverworldBoss {
                 Vec3 c = modelPoint(HEAD_REST[i][0] * 0.35, 38, -22, 1.0);
                 sl.sendParticles(BfFx.dust(0xC2474A, 1.0F), c.x, c.y, c.z, 3, 0.2, 0.2, 0.2, 0);
             }
+            // v1.3 — Aviso da regeneração: nos últimos 3 s o toco pulsa como um coração (som + jorro). Queime AGORA!
+            if (regrow[i] <= 60 && regrow[i] % 20 == 0) {
+                Vec3 c = modelPoint(HEAD_REST[i][0] * 0.35, 38, -22, 1.0);
+                sl.sendParticles(BfFx.dust(0xE07A7A, 2.0F), c.x, c.y, c.z, 14, 0.35, 0.35, 0.35, 0);
+                sl.sendParticles(ParticleTypes.ITEM_SLIME, c.x, c.y, c.z, 8, 0.3, 0.3, 0.3, 0.12);
+                playSound(SoundEvents.WARDEN_HEARTBEAT, 2.5F, 0.6F + (60 - regrow[i]) / 120F);
+            }
             if (--regrow[i] <= 0) regrowSlot(sl, i);
         }
         if (waterHintCd > 0) waterHintCd--;
@@ -950,7 +957,7 @@ public class SwampHydra extends OverworldBoss {
 
     @Override
     protected int deathTicks() {
-        return 50;
+        return 64; // v1.0: 2,5 s de animação + o corpo se desfazendo
     }
 
     @Override

@@ -36,7 +36,9 @@ final class SpellCheck {
     /** Erros que o parser só emite DENTRO do laço (no glifo que falhou): achamos o culpado pelo menor prefixo. */
     private static final Set<String> LOOP_ERRORS = Set.of("unknown", "not_known", "circle", "wrong_element", "trigger_after_form",
             "trigger_not_placeable", "no_form_first", "effect_after_law", "augment_alone", "law_needs_domain", "link_first",
-            "form_needs_link", "stage_form_not_allowed", "leap_not_last", "two_forms");
+            "form_needs_link", "stage_form_not_allowed", "leap_not_last", "two_forms",
+            // v1.4: Leis de Transformação
+            "tlaw_needs_transform", "tlaw_duplicate", "tlaw_level", "tlaw_too_many");
     private static final String ERROR_PREFIX = "spell_error.isekai_mahou.";
 
     final SpellParser.Result result;

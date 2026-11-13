@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -16,8 +15,9 @@ import net.minecraft.world.entity.player.Player;
  * compartilhada (voo, habilidade, chamado do apito, troca de navegação) é exposta por esta interface,
  * usada pelos objetivos de IA, pelo pacote da tecla de habilidade e pelo cliente (HUD/renderer).
  */
-public interface FlyingMount {
+public interface FlyingMount extends RideMount {
     /** A própria entidade. */
+    @Override
     Mob asMob();
 
     /** Estado de voo (entradas do cavaleiro, inclinação visual, estado no ar). */
@@ -54,10 +54,6 @@ public interface FlyingMount {
 
     /** Id da habilidade (tradução {@code ability.isekai_mahou.<id>}). */
     String abilityId();
-
-    default Component abilityName() {
-        return Component.translatable(abilityTranslationKey(abilityId()));
-    }
 
     static String abilityTranslationKey(String id) {
         return "ability." + com.renanpontes.isekaimahou.IsekaiMahou.MODID + "." + id;

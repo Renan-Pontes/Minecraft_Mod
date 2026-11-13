@@ -49,9 +49,9 @@ import net.minecraft.world.phys.AABB;
  */
 public final class CitySweep {
     /** Mobs abaixo disto (cavernas sob a cidade) não são da conta da cidade. */
-    static final int BELOW_FLOOR = 8;
+    static final int BELOW_FLOOR = 16;
     /** Spawners abaixo disto (masmorras fundas) ficam. */
-    static final int SPAWNER_BELOW_FLOOR = 10;
+    static final int SPAWNER_BELOW_FLOOR = 18;
     /** A Pedra de Teleporte fica na praça: só procura nos chunks até esta distância do coração. */
     static final int STONE_RADIUS = 48;
     /** Marca de entidade ({@code Entity#addTag}) para outros módulos: "este mob pode ficar na cidade". */

@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -146,7 +147,7 @@ public final class CrystalGlyphs {
                 sl.sendParticles(FbFx.fade(FbFx.CRYSTAL_LIGHT, FbFx.CRYSTAL, 1.1F), le.getX() + Math.cos(a) * r, y,
                         le.getZ() + Math.sin(a) * r, 1, 0, 0, 0, 0);
             }
-            sl.sendParticles(ParticleTypes.WAX_ON, c.x, c.y, c.z, 10, 0.4, 0.6, 0.4, 0.05);
+            sl.sendParticles(Vfx.waxOn(), c.x, c.y, c.z, 10, 0.4, 0.6, 0.4, 0.05);
             FbFx.sound(sl, c, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.2F, 1.0F);
             FbFx.sound(sl, c, SoundEvents.AMETHYST_CLUSTER_PLACE, 1.0F, 0.9F);
         }
@@ -184,7 +185,7 @@ public final class CrystalGlyphs {
                 return;
             }
             le.addEffect(new MobEffectInstance(FbRegistries.PRISM_REFLECTION, stats.duration(200), 0), ctx.caster());
-            FbFx.ring(sl, le.position().add(0, 0.1, 0), ParticleTypes.END_ROD, le.getBbWidth() + 0.8, 16, 0.01);
+            FbFx.ring(sl, le.position().add(0, 0.1, 0), Vfx.endRod(), le.getBbWidth() + 0.8, 16, 0.01);
             FbFx.sound(sl, c, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.2F, 1.5F);
             FbFx.sound(sl, c, SoundEvents.BEACON_POWER_SELECT, 0.6F, 1.8F);
         }

@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import com.renanpontes.isekaimahou.feature.ritual_witch.entity.CurseBottleEntity;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -81,7 +82,7 @@ public class BottledCurseItem extends Item {
                 int dur = (int) Math.round(e.getDuration() * factor);
                 if (dur > 20) target.addEffect(new MobEffectInstance(e.getEffect(), dur, e.getAmplifier()), owner);
             }
-            level.sendParticles(ParticleTypes.WITCH, target.getX(), target.getY() + target.getBbHeight() * 0.6, target.getZ(),
+            level.sendParticles(Vfx.witch(), target.getX(), target.getY() + target.getBbHeight() * 0.6, target.getZ(),
                     4, 0.25, 0.3, 0.25, 0.02);
         }
         if (lingering) {
@@ -102,8 +103,8 @@ public class BottledCurseItem extends Item {
         level.levelEvent(2002, bottle.blockPosition(), color);
         level.sendParticles(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0xFF000000 | color), c.x, c.y + 0.3, c.z,
                 30, RADIUS * 0.35, 0.4, RADIUS * 0.35, 0.4);
-        level.sendParticles(ParticleTypes.SQUID_INK, c.x, c.y + 0.3, c.z, 12, 0.6, 0.2, 0.6, 0.05);
-        level.sendParticles(ParticleTypes.SOUL, c.x, c.y + 0.4, c.z, 5, 0.8, 0.3, 0.8, 0.02);
+        level.sendParticles(Vfx.ink(), c.x, c.y + 0.3, c.z, 12, 0.6, 0.2, 0.6, 0.05);
+        level.sendParticles(Vfx.soul(), c.x, c.y + 0.4, c.z, 5, 0.8, 0.3, 0.8, 0.02);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.WITCH_CELEBRATE, SoundSource.PLAYERS, 0.5F, 0.6F);
     }
 

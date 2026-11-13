@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "isekai_mahou:world_events_star_metal"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:world_events_star_metal_block",
+    "count": 1
+  }
+}

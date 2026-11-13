@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.feature.earth_wind;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
@@ -64,7 +65,7 @@ public final class EwFx {
             double t = i / (double) points;
             double a = phase + t * Math.PI * 4;
             double r = radius * (0.4 + 0.6 * t);
-            level.sendParticles(ParticleTypes.CLOUD, base.x + Math.cos(a) * r, base.y + t * height, base.z + Math.sin(a) * r,
+            level.sendParticles(Vfx.cloud(), base.x + Math.cos(a) * r, base.y + t * height, base.z + Math.sin(a) * r,
                     1, 0.02, 0.02, 0.02, 0.005);
             if (i % 3 == 0) {
                 level.sendParticles(ElementFx.dust(Element.WIND, 1.0F), base.x + Math.cos(a) * r, base.y + t * height,
@@ -103,7 +104,7 @@ public final class EwFx {
     /** Sopro de vento saindo do corpo de uma entidade. */
     public static void gustAt(ServerLevel level, Entity e) {
         level.sendParticles(ParticleTypes.GUST, e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 1, 0, 0, 0, 0);
-        level.sendParticles(ParticleTypes.CLOUD, e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 8,
+        level.sendParticles(Vfx.cloud(), e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 8,
                 e.getBbWidth() * 0.5, e.getBbHeight() * 0.3, e.getBbWidth() * 0.5, 0.05);
     }
 

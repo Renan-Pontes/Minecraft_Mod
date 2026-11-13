@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.feature.fusions_c.FcUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -105,7 +106,7 @@ public class IceCoffinEntity extends FcSpellEntity {
         }
         setPos(t.getX(), t.getY(), t.getZ());
         if (age() % 10 == 0) {
-            sl.sendParticles(ParticleTypes.SNOWFLAKE, getX(), getY() + coffinHeight() * 0.5, getZ(), 3, scale(), coffinHeight() * 0.4, scale(), 0.01);
+            sl.sendParticles(Vfx.snowflake(), getX(), getY() + coffinHeight() * 0.5, getZ(), 3, scale(), coffinHeight() * 0.4, scale(), 0.01);
         }
         if (lifeLeft() == 10) FcFx.sound(sl, position(), SoundEvents.GLASS_HIT, 1.2F, 0.5F);
     }

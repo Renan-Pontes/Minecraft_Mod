@@ -42,6 +42,8 @@ public class CitiesClient implements ClientModule {
     @Nullable private static CitiesNetwork.Confront confront;
     /** Tick do cliente em que a abordagem chegou (para a contagem andar entre os pacotes). */
     private static long confrontAt;
+    /** Pedido (sidequest) ativo (release 1.0; null = nenhum). */
+    @Nullable private static CitiesNetwork.QuestView quest;
 
     @Override
     public void initClient(IEventBus modBus) {
@@ -53,13 +55,16 @@ public class CitiesClient implements ClientModule {
             confront = c.guardId() < 0 ? null : c;
             confrontAt = Minecraft.getInstance().level != null ? Minecraft.getInstance().level.getGameTime() : 0;
         });
+        CitiesNetwork.questView = q -> Minecraft.getInstance().execute(() -> quest = q.active() ? q : null);
         NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) -> {
+            quest = null;
             rumor = null;
             wantedIn = List.of();
             confront = null;
         });
         ObjectiveTracker.register("cities_confront", 950, CitiesClient::confrontLines);
         ObjectiveTracker.register("cities_wanted", 900, CitiesClient::wantedLines);
+        ObjectiveTracker.register("cities_quest", 300, CitiesClient::questLines);
         ObjectiveTracker.register("cities_rumor", 250, CitiesClient::rumorLines);
     }
 
@@ -69,6 +74,17 @@ public class CitiesClient implements ClientModule {
         e.registerEntityRenderer(CitiesContent.CITY_MERCHANT.get(), CityNpcRenderer::new);
         e.registerEntityRenderer(CitiesContent.CITY_LORD.get(), CityNpcRenderer::new);
         e.registerBlockEntityRenderer(CitiesContent.CITY_HEART_BE.get(), CityHeartRenderer::new);
+    }
+
+    /** O pedido ativo: título, o passo atual, barra de progresso (caça/coleta) ou seta (lugar/volta). */
+    private static List<ObjectiveLine> questLines() {
+        CitiesNetwork.QuestView q = quest;
+        if (q == null) return List.of();
+        Component title = Component.translatable("objective.isekai_mahou.cities.quest", q.title());
+        ItemStack icon = new ItemStack(Items.WRITABLE_BOOK);
+        ObjectiveLine line = q.max() > 0 ? ObjectiveLine.progress(title, q.detail(), q.cur(), q.max(), 0xFFE9A8, icon)
+                : ObjectiveLine.of(title, q.detail(), 0xFFE9A8, icon);
+        return List.of(q.arrow() ? line.withTarget(q.pos(), ResourceKey.create(Registries.DIMENSION, q.dim())) : line);
     }
 
     private static List<ObjectiveLine> rumorLines() {

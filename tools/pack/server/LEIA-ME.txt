@@ -1,0 +1,37 @@
+﻿ISEKAI MAHOU @VERSION@ - SERVIDOR DEDICADO
+==========================================
+
+Esta pasta é o servidor pronto. Coloque ela onde quiser (ex.: C:\ServidorIsekai) e siga os passos.
+Precisa de: Windows, Java 21 instalado (procure "Temurin 21 JDK" e instale) e uns 8 GB de RAM livres.
+
+PRIMEIRA VEZ
+1) Clique duas vezes em  1_INSTALAR.bat
+   Ele baixa o NeoForge @NEO@ (precisa de internet) e instala o servidor nesta pasta.
+2) Abra o arquivo  eula.txt  e troque  eula=false  por  eula=true
+   (isso quer dizer que você aceita a licença do Minecraft: https://aka.ms/MinecraftEULA).
+3) Clique duas vezes em  2_INICIAR.bat
+   Quando aparecer "Done", o servidor está no ar. Para desligar, digite  stop  na janela preta.
+
+SEMPRE QUE FOR JOGAR
+   Só o  2_INICIAR.bat.  Ele faz um BACKUP do mundo antes de ligar (pasta "backups", guarda os 10 últimos).
+   Para fazer um backup na hora, com o servidor DESLIGADO:  BACKUP.bat
+   Para voltar um backup: desligue o servidor, apague a pasta "world" e extraia o zip escolhido aqui.
+
+SEUS AMIGOS ENTRAREM
+   - Mesma casa/rede: eles usam o IP do seu PC na rede (ex.: 192.168.0.10).
+   - Pela internet: abra a porta 25565 no roteador, ou use um programa como Radmin VPN / playit.gg
+     e passe o endereço que ele der.
+   - Todo mundo precisa do zip "Amigos" da MESMA versão do mod.
+
+ADMIN
+   - Na janela preta do servidor todo comando funciona direto.
+   - Dentro do jogo, mesmo sendo op, é preciso primeiro:  /mahou admin login <sua senha>
+     Para virar op: na janela preta digite  op SeuNick
+
+O QUE JÁ VEM AJUSTADO (server.properties)
+   - online-mode=false   -> deixa entrar quem usa TLauncher sem conta original.
+                            Qualquer um com o endereço entra: se quiser travar, digite na janela preta
+                            "whitelist on" e depois "whitelist add Nick" para cada amigo.
+   - spawn-protection=0  -> o início do mundo é uma cidade; sem isso ninguém abriria portas e baús lá.
+   - allow-flight=true   -> o mod tem voo, planar e veículos; sem isso o servidor expulsa quem voa.
+   - A memória do servidor está em  jvm_isekai.txt  (padrão 6 GB: -Xmx6G). Mude se precisar.

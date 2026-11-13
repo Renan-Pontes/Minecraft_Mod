@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.core.api.Domains;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbFx;
+import com.renanpontes.isekaimahou.feature.class_gambler.GbFxNet;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbRegistries;
 import com.renanpontes.isekaimahou.feature.class_gambler.luck.JackpotService;
 import com.renanpontes.isekaimahou.feature.class_gambler.luck.LuckBand;
@@ -214,9 +215,7 @@ public class IdleDeathDomainEntity extends Entity implements GeoEntity {
     /** JACKPOT: confete, letreiro e o Jackpot Imortal; o domínio se desfaz. */
     private void jackpot(ServerLevel sl, LivingEntity owner) {
         Vec3 c = owner.position().add(0, 1.2, 0);
-        sl.sendParticles(ParticleTypes.FIREWORK, c.x, c.y + 1, c.z, 80, radius() * 0.3, 1.5, radius() * 0.3, 0.2);
-        sl.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, c.x, c.y, c.z, 80, 1.0, 1.2, 1.0, 0.6);
-        GbFx.coins(sl, c.add(0, 1, 0), 30);
+        GbFxNet.at(sl, GbFxNet.IDLE_WIN, owner.position(), Vec3.ZERO, radius(), GbFx.GOLD, owner.getId());
         GbFx.sound(sl, c, SoundEvents.FIREWORK_ROCKET_TWINKLE, 1.2F, 1.0F);
         GbFx.sound(sl, c, SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 1.2F, 0.9F);
         Announce.send(owner, Component.translatable("announce.isekai_mahou.gambler.immortal_jackpot"), 0x4AFFB4, Announce.STYLE_ULTIMATE);

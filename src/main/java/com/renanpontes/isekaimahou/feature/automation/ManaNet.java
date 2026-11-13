@@ -82,6 +82,54 @@ public final class ManaNet {
         }
     }
 
+    // =====================================================================================
+    //  v1.5: a "bolsa" de um pedestal = Núcleo de Mana ligado (com a perda da distância) + baterias por perto
+    // =====================================================================================
+
+    /** Núcleo ligado ao pedestal em {@code pedestal}, se der para usar agora (chunk carregado, no alcance). */
+    @Nullable
+    private static WirelessMana linkedCore(Level level, BlockPos pedestal) {
+        if (!(level.getBlockEntity(pedestal) instanceof RunicPedestalBlockEntity p)) return null;
+        BlockPos core = p.corePos();
+        if (core == null || !WirelessMana.inRange(pedestal, core)) return null;
+        return WirelessMana.at(level, core);
+    }
+
+    /** Quanto mana o pedestal consegue pagar agora (núcleo já descontada a perda + baterias a até 8 blocos). */
+    public static int availableFor(Level level, BlockPos pedestal) {
+        long sum = total(batteries(level, pedestal));
+        WirelessMana core = linkedCore(level, pedestal);
+        if (core != null) {
+            int loss = WirelessMana.lossPercent(pedestal, core instanceof BlockEntity be ? be.getBlockPos() : pedestal);
+            sum += (long) core.mana() * 100 / (100 + loss);
+        }
+        return (int) Math.min(Integer.MAX_VALUE, sum);
+    }
+
+    /**
+     * Cobra {@code amount} da mesma bolsa que o pedestal usa para conjurar: primeiro o Núcleo ligado (com a perda), o
+     * resto das baterias. Só cobra se der para pagar tudo.
+     */
+    public static boolean drainFor(Level level, BlockPos pedestal, int amount) {
+        if (amount <= 0) return true;
+        List<ManaBatteryBlockEntity> list = batteries(level, pedestal);
+        WirelessMana core = linkedCore(level, pedestal);
+        int covered = 0, coreCost = 0;
+        if (core != null) {
+            int loss = WirelessMana.lossPercent(pedestal, core instanceof BlockEntity be ? be.getBlockPos() : pedestal);
+            int coreCan = (int) Math.min(Integer.MAX_VALUE, (long) core.mana() * 100 / (100 + loss));
+            covered = Math.min(amount, coreCan);
+            coreCost = Math.min(core.mana(), WirelessMana.withLoss(covered, loss));
+        }
+        if ((long) covered + total(list) < amount) return false;
+        if (covered < amount && !drain(list, amount - covered)) return false;
+        if (coreCost > 0) {
+            core.extract(coreCost);
+            core.noteUse(pedestal, coreCost);
+        }
+        return true;
+    }
+
     @Nullable
     public static ArcaneCollectorBlockEntity nearestCollector(Level level, BlockPos center) {
         List<ArcaneCollectorBlockEntity> list = scan(level, center, COLLECTOR_RANGE, ArcaneCollectorBlockEntity.class);

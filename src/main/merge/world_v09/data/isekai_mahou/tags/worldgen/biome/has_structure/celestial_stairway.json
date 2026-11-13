@@ -5,6 +5,12 @@
     "minecraft:grove",
     "minecraft:snowy_slopes",
     "minecraft:windswept_hills",
-    "minecraft:windswept_forest"
+    "minecraft:windswept_forest",
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:savanna_plateau",
+    "minecraft:windswept_savanna",
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:snowy_plains"
   ]
 }

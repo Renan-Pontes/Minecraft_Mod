@@ -91,7 +91,9 @@ final class CutsceneOverlay {
         float intro = CinematicDraw.easeOut((time - start) / 14F);
         float spacing = Mth.lerp(intro, 7F, 0.6F);
         float total = raw + spacing * (cps.length - 1);
-        float scale = Math.min(3.2F, w * 0.86F / Math.max(1F, raw + 0.6F * (cps.length - 1)));
+        // Marco da campanha: título menor (é uma crônica, não um grito de ultimate)
+        boolean story = CutsceneDirector.isStory(s.kind);
+        float scale = Math.min(story ? 2.2F : 3.2F, w * 0.86F / Math.max(1F, raw + 0.6F * (cps.length - 1)));
         float cx = w / 2F, cy = h * 0.64F;
         float halfH = 9 * scale / 2F;
 
@@ -139,10 +141,32 @@ final class CutsceneOverlay {
         if (sub.isEmpty()) return;
         float subAlpha = Mth.clamp((time - start - 5F) / 6F, 0F, 1F) * out;
         if (subAlpha <= 0.02F) return;
-        FormattedCharSequence subSeq = s.subtitle.getVisualOrderText();
-        float subScale = 1.35F;
-        float sw = font.width(subSeq) * subScale;
+        float subScale = story ? 1.1F : 1.35F;
         float sy = cy + halfH + 8;
+        // Frase comprida (narração de um marco): quebra em linhas centradas em vez de sair da tela
+        java.util.List<FormattedCharSequence> wrapped = font.split(s.subtitle, Math.max(80, (int) (w * 0.74F / subScale)));
+        if (wrapped.size() > 1) {
+            int textRgb = CinematicDraw.mix(s.rgb, 0xFFFFFF, 0.75F);
+            float widest = 0F;
+            for (FormattedCharSequence line : wrapped) widest = Math.max(widest, font.width(line) * subScale);
+            float growWide = (widest / 2F + 20F) * CinematicDraw.easeOut((time - start - 5F) / 10F);
+            CinematicDraw.fadingLine(g, cx - growWide, cx, sy - 3, 1F, s.rgb, 0.8F * subAlpha, true);
+            CinematicDraw.fadingLine(g, cx, cx + growWide, sy - 3, 1F, s.rgb, 0.8F * subAlpha, false);
+            for (int i = 0; i < wrapped.size() && i < 4; i++) {
+                FormattedCharSequence line = wrapped.get(i);
+                // cada linha surge um pouco depois da anterior (ritmo de leitura)
+                float la = subAlpha * Mth.clamp((time - start - 5F - i * 8F) / 8F, 0F, 1F);
+                if (la <= 0.02F) continue;
+                ps.pushPose();
+                ps.translate(cx - font.width(line) * subScale / 2F, sy + 1 + i * 11F * subScale, 0F);
+                ps.scale(subScale, subScale, 1F);
+                CinematicDraw.outlined(g, font, line, 0, 0, CinematicDraw.argb(textRgb, la), CinematicDraw.argb(0x000000, 0.55F * la));
+                ps.popPose();
+            }
+            return;
+        }
+        FormattedCharSequence subSeq = s.subtitle.getVisualOrderText();
+        float sw = font.width(subSeq) * subScale;
         float grow = (sw / 2F + 30F) * CinematicDraw.easeOut((time - start - 5F) / 10F);
         CinematicDraw.fadingLine(g, cx - grow, cx, sy - 3, 1F, s.rgb, 0.8F * subAlpha, true);
         CinematicDraw.fadingLine(g, cx, cx + grow, sy - 3, 1F, s.rgb, 0.8F * subAlpha, false);

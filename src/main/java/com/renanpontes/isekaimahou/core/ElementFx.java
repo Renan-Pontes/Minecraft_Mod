@@ -4,6 +4,10 @@ import javax.annotation.Nullable;
 
 import org.joml.Vector3f;
 
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
+import com.renanpontes.isekaimahou.core.boss.BossKit;
+import com.renanpontes.isekaimahou.core.fx.FxBatch;
+import com.renanpontes.isekaimahou.glyph.fx.FxBurst;
 import com.renanpontes.isekaimahou.glyph.fx.FxOptions;
 import com.renanpontes.isekaimahou.glyph.fx.SpellFxParticles;
 import com.renanpontes.isekaimahou.glyph.fx.SpellVisuals;
@@ -12,7 +16,6 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -33,6 +36,15 @@ import net.neoforged.neoforge.registries.DeferredHolder;
  * Novos: {@link #impact}, {@link #shockwave}, {@link #runeCircle}, {@link #pillar}, {@link #flash},
  * {@link #style}, {@link #glow}, {@link #sendFar}. "tier" = 0 (fraca) .. 4 (Círculo alto) / 5 (ultimate),
  * ver {@link SpellVisuals#tier}.
+ * <p>
+ * v1.3 (efeitos compostos): {@link #impact} agora manda UM pacote e o cliente monta tudo pelo preset gráfico.
+ * Novos atalhos para a linguagem visual por elemento: {@link #gather} (antecipação), {@link #nova} (explosão de
+ * ultimate), {@link #area}, {@link #aura}, {@link #beam}, {@link #portal}, {@link #domainSphere}, {@link #skyStrike},
+ * {@link #slash}, {@link #reaction} e {@link #shake} (tremor de câmera).
+ * <p>
+ * Release 1.0 (perf): os efeitos clássicos ({@link #burst}, {@link #ring}, {@link #line}, {@link #channeling},
+ * {@link #sendFar} e tudo que usa eles) entram no LOTE do tick ({@link FxBatch}): um pacote por jogador por tick, em vez
+ * de um por partícula. Anéis e linhas vão só como parâmetros e o cliente desenha pelo Preset Gráfico.
  */
 public final class ElementFx {
     /** Alcance dos efeitos grandes (clarão, onda, círculo, pilar). */
@@ -119,61 +131,27 @@ public final class ElementFx {
 
     /** Explosão de partículas num ponto. */
     public static void burst(ServerLevel level, Vec3 pos, Element e, int count, double spread) {
-        level.sendParticles(dust(e, 1.4F), pos.x, pos.y, pos.z, count, spread, spread, spread, 0.02);
-        level.sendParticles(signature(e), pos.x, pos.y, pos.z, Math.max(1, count / 2), spread, spread, spread, 0.06);
+        FxBatch.emit(level, dust(e, 1.4F), pos.x, pos.y, pos.z, count, spread, spread, spread, 0.02, false);
+        FxBatch.emit(level, signature(e), pos.x, pos.y, pos.z, Math.max(1, count / 2), spread, spread, spread, 0.06, false);
         if (count >= 8) {
-            level.sendParticles(accent(e, e.color, 1.0F), pos.x, pos.y, pos.z, Math.max(1, count / 5), spread, spread, spread, 0.12);
+            FxBatch.emit(level, accent(e, e.color, 1.0F), pos.x, pos.y, pos.z, Math.max(1, count / 5), spread, spread, spread, 0.12, false);
         }
         // Explosões grandes ganham um clarão e uma onda (são quase sempre eventos únicos: morte, invocação...)
         if (count >= 24) flash(level, pos, e.color, (float) Math.min(3.0, 0.8 + spread * 1.2));
         if (count >= 40) shockwave(level, pos, e.color, (float) Math.min(6.0, 1.2 + spread * 2.0), 12, null);
     }
 
-    /** Anel horizontal de partículas (raio em blocos). */
+    /** Anel horizontal de partículas (raio em blocos). Um item no lote: o cliente desenha os pontos. */
     public static void ring(ServerLevel level, Vec3 center, Element e, double radius, int points) {
-        ParticleOptions g = dust(e, 1.2F);
-        ParticleOptions sig = signature(e);
-        for (int i = 0; i < points; i++) {
-            double a = Math.PI * 2 * i / points;
-            double x = center.x + Math.cos(a) * radius, z = center.z + Math.sin(a) * radius;
-            level.sendParticles(g, x, center.y + 0.1, z, 1, 0.02, 0.02, 0.02, 0);
-            if (i % 3 == 0) level.sendParticles(sig, x, center.y + 0.15, z, 1, 0.05, 0.05, 0.05, 0.01);
-        }
+        FxBatch.ring(level, e, e.color, center, radius, points, 3, 1.2F, false);
     }
 
-    /** Linha de partículas entre dois pontos (feixes, encadear). Raio desenha um arco elétrico em zigue-zague. */
+    /**
+     * Linha de partículas entre dois pontos (feixes, encadear). Raio desenha um arco elétrico em zigue-zague.
+     * Um item no lote: o cliente desenha os pontos.
+     */
     public static void line(ServerLevel level, Vec3 from, Vec3 to, Element e) {
-        Vec3 d = to.subtract(from);
-        double len = d.length();
-        int steps = Math.max(2, (int) (len * 4));
-        boolean jagged = e == Element.LIGHTNING && len > 0.2;
-        ParticleOptions g = dust(e, 1.0F);
-        ParticleOptions sig = signature(e);
-        RandomSource r = level.random;
-        // Desvio lateral do zigue-zague (só no raio): pontos de controle a cada ~1.2 bloco
-        Vec3 side = jagged ? perpendicular(d) : Vec3.ZERO;
-        Vec3 up = jagged ? d.cross(side).normalize() : Vec3.ZERO;
-        double offA = 0, offB = 0, nextA = 0, nextB = 0;
-        int seg = Math.max(1, (int) (steps / Math.max(1.0, len / 1.2)));
-        for (int i = 0; i <= steps; i++) {
-            Vec3 p = from.add(d.scale(i / (double) steps));
-            if (jagged) {
-                if (i % seg == 0) {
-                    offA = nextA;
-                    offB = nextB;
-                    boolean last = i + seg > steps;
-                    nextA = last ? 0 : (r.nextDouble() - 0.5) * 0.7;
-                    nextB = last ? 0 : (r.nextDouble() - 0.5) * 0.7;
-                }
-                double f = (i % seg) / (double) seg;
-                p = p.add(side.scale(Mth.lerp(f, offA, nextA))).add(up.scale(Mth.lerp(f, offB, nextB)));
-                level.sendParticles(fx(SpellFxParticles.SPARK, lighten(e.color, 0.4F), 0.8F, 4, -1, 0), p.x, p.y, p.z, 0,
-                        d.x / len, d.y / len, d.z / len, 0.05);
-            }
-            level.sendParticles(g, p.x, p.y, p.z, 1, 0.02, 0.02, 0.02, 0);
-            if (i % 4 == 0) level.sendParticles(sig, p.x, p.y, p.z, 1, 0.03, 0.03, 0.03, 0.0);
-        }
-        if (jagged) flash(level, to, e.color, 0.7F);
+        FxBatch.line(level, e, from, to, false);
     }
 
     /**
@@ -185,13 +163,13 @@ public final class ElementFx {
         ParticleOptions g = dust(e, 1.0F);
         for (int i = 0; i < 3; i++) {
             double ang = a + i * Math.PI * 2 / 3;
-            level.sendParticles(g, caster.getX() + Math.cos(ang) * 0.9, caster.getY() + 1.0,
-                    caster.getZ() + Math.sin(ang) * 0.9, 1, 0, 0.1, 0, 0);
+            FxBatch.emit(level, g, caster.getX() + Math.cos(ang) * 0.9, caster.getY() + 1.0,
+                    caster.getZ() + Math.sin(ang) * 0.9, 1, 0, 0.1, 0, 0, false);
         }
         // Runas subindo em espiral + partícula do elemento
-        level.sendParticles(fx(SpellFxParticles.RUNE, lighten(e.color, 0.3F), 0.9F, 0, -1, 0),
-                caster.getX(), caster.getY() + 0.2, caster.getZ(), 1, 0.6, 0.1, 0.6, 0.01);
-        level.sendParticles(signature(e), caster.getX(), caster.getY() + 1.4, caster.getZ(), 1, 0.45, 0.35, 0.45, 0.02);
+        FxBatch.emit(level, fx(SpellFxParticles.RUNE, lighten(e.color, 0.3F), 0.9F, 0, -1, 0),
+                caster.getX(), caster.getY() + 0.2, caster.getZ(), 1, 0.6, 0.1, 0.6, 0.01, false);
+        FxBatch.emit(level, signature(e), caster.getX(), caster.getY() + 1.4, caster.getZ(), 1, 0.45, 0.35, 0.45, 0.02, false);
         SpellVisuals.channelCircle(level, caster, e);
     }
 
@@ -205,8 +183,8 @@ public final class ElementFx {
      * Respeita a opção "reduzir partículas" (o vanilla já respeita a opção de partículas do jogo).
      */
     public static void clientTrail(Level level, Vec3 pos, Vec3 motion, Element e, int rgb, float size, int tier) {
-        boolean reduced = reducedParticles();
-        int n = Math.max(1, (int) ((2 + tier) * size * (reduced ? 0.4F : 1.0F)));
+        boolean reduced = !FxQuality.atLeast(MahouConfig.Graphics.HIGH);
+        int n = Math.max(1, (int) ((2 + tier) * size * FxQuality.particles()));
         RandomSource r = level.random;
         ParticleOptions g = glow(rgb, (0.9F + 0.15F * tier) * size);
         ParticleOptions sig = style(e, e.color, 0.8F + 0.12F * tier);
@@ -242,29 +220,19 @@ public final class ElementFx {
 
     /** Impacto com a cor da magia ({@code rgb}); a partícula característica continua sendo a do elemento. */
     public static void impact(ServerLevel level, Vec3 pos, Element e, int rgb, int tier, @Nullable Vec3 normal) {
+        impactFx(level, pos, e, rgb, tier, normal, 1.0F);
+    }
+
+    /**
+     * Impacto montado no cliente (clarão + onda + núcleo do elemento + faíscas + detritos + assinatura da família +
+     * rescaldo; runa no chão no tier 3+, pilar no 4+). {@code size} multiplica o tamanho (1 = normal). Tier 4+ treme a
+     * câmera de quem está perto.
+     */
+    public static void impactFx(ServerLevel level, Vec3 pos, Element e, int rgb, int tier, @Nullable Vec3 normal, float size) {
         tier = Mth.clamp(tier, 0, 5);
         Vec3 n = normal == null || normal.lengthSqr() < 1.0E-4 ? new Vec3(0, 1, 0) : normal.normalize();
-        Vec3 c = pos.add(n.scale(0.1));
-        flash(level, c, rgb, 0.6F + 0.35F * tier);
-        if (tier >= 1) shockwave(level, c, rgb, 0.8F + 0.6F * tier, 8 + 2 * tier, n);
-        int count = 6 + 4 * tier;
-        double spread = 0.15 + 0.08 * tier;
-        level.sendParticles(glow(rgb, 1.2F + 0.15F * tier), c.x, c.y, c.z, count, spread, spread, spread, 0.04 + 0.01 * tier);
-        level.sendParticles(style(e, e.color, 1.0F + 0.1F * tier), c.x, c.y, c.z, count, spread, spread, spread, 0.12 + 0.04 * tier);
-        level.sendParticles(accent(e, e.color, 1.0F), c.x, c.y, c.z, Math.max(2, count / 3), spread, spread, spread, 0.15);
-        // Faíscas voando para fora da superfície
-        RandomSource r = level.random;
-        int sparks = 3 + 3 * tier;
-        ParticleOptions sp = fx(SpellFxParticles.SPARK, lighten(rgb, 0.5F), 0.8F + 0.1F * tier, 0, -1, 0);
-        for (int i = 0; i < sparks; i++) {
-            Vec3 v = new Vec3(r.nextGaussian(), r.nextGaussian(), r.nextGaussian()).normalize().add(n.scale(0.9)).normalize();
-            level.sendParticles(sp, c.x, c.y, c.z, 0, v.x, v.y, v.z, 0.25 + 0.06 * tier + r.nextDouble() * 0.15);
-        }
-        if (tier >= 3) {
-            // Runa no chão embaixo do impacto e um pilar curto nos tiers mais altos
-            if (n.y > 0.5) runeCircle(level, pos.add(0, 0.05, 0), rgb, 1.0F + 0.5F * tier, 24 + 4 * tier, tier);
-            if (tier >= 4) pillar(level, pos, rgb, 0.5F + 0.15F * tier, 3.0F + tier, 14);
-        }
+        FxBurst.send(level, FxBurst.IMPACT, e, rgb, pos, n, size, tier, -1, 0);
+        if (tier >= 4) shake(level, pos, 10 + 4 * tier * size, 0.35F * (tier - 3) * Math.min(2F, size), 10 + 2 * tier);
     }
 
     /** Clarão (raio em blocos). */
@@ -316,17 +284,134 @@ public final class ElementFx {
     }
 
     /**
-     * Envia partículas para todo jogador até {@link #FAR} blocos. Perto: caminho normal (respeita a opção de
-     * partículas); longe: "longa distância" para não perder o efeito.
+     * Envia partículas para todo jogador até {@link #FAR} blocos (entra no lote do tick). Perto: caminho normal
+     * (respeita a opção de partículas); longe: "longa distância" para não perder o efeito.
      */
     public static void sendFar(ServerLevel level, ParticleOptions p, double x, double y, double z, int count,
                                double dx, double dy, double dz, double speed) {
-        for (ServerPlayer sp : level.players()) {
-            double d2 = sp.distanceToSqr(x, y, z);
-            if (d2 > FAR * FAR) continue;
-            level.sendParticles(sp, p, d2 > 32 * 32, x, y, z, count, dx, dy, dz, speed);
-        }
+        FxBatch.emit(level, p, x, y, z, count, dx, dy, dz, speed, true);
     }
+
+    // =====================================================================================
+    //  v1.3 — efeitos compostos (montados no cliente pelo preset gráfico)
+    // =====================================================================================
+
+    /**
+     * Antecipação: partículas do elemento convergindo para a frente da mão de {@code caster} por {@code ticks}
+     * (carregar golpe forte). {@code radius} = de onde vêm (1,5–4 blocos). Termina num clarãozinho.
+     */
+    public static void gather(ServerLevel level, Entity caster, Element e, int rgb, float radius, int tier, int ticks) {
+        FxBurst.send(level, FxBurst.GATHER, e, rgb, caster.getEyePosition(), Vec3.ZERO, radius, tier, caster.getId(), ticks);
+    }
+
+    /** Antecipação num ponto fixo (céu, núcleo de uma invocação, centro de um ritual). */
+    public static void gatherAt(ServerLevel level, Vec3 pos, Element e, int rgb, float radius, int tier, int ticks) {
+        FxBurst.send(level, FxBurst.GATHER, e, rgb, pos, Vec3.ZERO, radius, tier, -1, ticks);
+    }
+
+    /**
+     * Explosão de ultimate: clarões em camadas, 3 ondas, anel vertical, pilar, detritos rente ao chão, assinatura do
+     * elemento, runa gigante e 2 s de rescaldo. Treme a câmera.
+     */
+    public static void nova(ServerLevel level, Vec3 pos, Element e, int rgb, float radius, int tier) {
+        nova(level, pos, e, rgb, radius, tier, true);
+    }
+
+    /** Nova com ou sem tremor (quem já treme a câmera por conta própria passa {@code false}). */
+    public static void nova(ServerLevel level, Vec3 pos, Element e, int rgb, float radius, int tier, boolean shake) {
+        FxBurst.send(level, FxBurst.NOVA, e, rgb, pos, Vec3.ZERO, radius, Math.max(4, tier), -1, 0);
+        if (shake) shake(level, pos, Math.max(24, radius * 4), Math.min(2.5F, 0.6F + radius * 0.12F), 24);
+    }
+
+    /** Zona no chão: decalque girando + partículas do elemento (brasas sobem, chuva cai, neve, folhas...) por {@code ticks}. */
+    public static void area(ServerLevel level, Vec3 pos, Element e, int rgb, float radius, int tier, int ticks) {
+        FxBurst.send(level, FxBurst.AREA, e, rgb, pos, Vec3.ZERO, radius, tier, -1, ticks);
+    }
+
+    /** Aura (casca de partículas) em volta de {@code target} por {@code ticks}. Segue a entidade sozinha no cliente. */
+    public static void aura(ServerLevel level, Entity target, Element e, int rgb, float size, int tier, int ticks) {
+        FxBurst.send(level, FxBurst.AURA, e, rgb, target.position(), Vec3.ZERO, size, tier, target.getId(), ticks);
+    }
+
+    /** Feixe de {@code from} até {@code to}: selo na boca, núcleo brilhante, anéis viajando, impacto no fim. */
+    public static void beam(ServerLevel level, Vec3 from, Vec3 to, Element e, int rgb, float width, int tier) {
+        FxBurst.send(level, FxBurst.BEAM, e, rgb, from, to.subtract(from), width, tier, -1, 0);
+        if (tier >= 4) shake(level, from, 16 + 4 * tier, 0.3F * (tier - 3), 10);
+    }
+
+    /** Portal / invocação: círculo girando no plano de {@code normal} com redemoinho por {@code ticks}. */
+    public static void portal(ServerLevel level, Vec3 pos, @Nullable Vec3 normal, Element e, int rgb, float radius, int tier, int ticks) {
+        Vec3 n = normal == null ? new Vec3(0, 1, 0) : normal;
+        FxBurst.send(level, FxBurst.PORTAL, e, rgb, pos, n, radius, tier, -1, ticks);
+    }
+
+    /**
+     * Expansão de domínio: a cúpula sobe do chão e fecha no topo em {@code ticks}; ao fechar, clarão de "troca de
+     * paisagem", ondas e pilar. Treme a câmera quando fecha.
+     */
+    public static void domainSphere(ServerLevel level, Vec3 center, Element e, int rgb, float radius, int ticks) {
+        int t = Mth.clamp(ticks, 8, 120);
+        FxBurst.send(level, FxBurst.DOMAIN, e, rgb, center, Vec3.ZERO, radius, 5, -1, t);
+        shake(level, center, radius * 3, 0.4F, t);
+        BossKit.schedule(level, t, () -> shake(level, center, radius * 3, 1.6F, 20));
+    }
+
+    /**
+     * Golpe do céu: círculo no céu + aviso no chão, energia juntando por {@code delay} ticks, depois pilar + impacto
+     * (+ nova no tier 4+). Só visual — o dano continua com quem chamou.
+     */
+    public static void skyStrike(ServerLevel level, Vec3 ground, Element e, int rgb, float radius, int tier, int delay) {
+        FxBurst.send(level, FxBurst.SKY_STRIKE, e, rgb, ground, Vec3.ZERO, radius, tier, -1, delay);
+        float k = tier >= 4 ? 1.4F : 0.6F;
+        if (delay <= 0) shake(level, ground, 20 + radius * 3, k, 16);
+        else BossKit.schedule(level, delay, () -> shake(level, ground, 20 + radius * 3, k, 16));
+    }
+
+    /** Corte em meia-lua na frente de {@code pos} na direção {@code dir}. */
+    public static void slash(ServerLevel level, Vec3 pos, Vec3 dir, Element e, int rgb, float length, int tier) {
+        FxBurst.send(level, FxBurst.SLASH, e, rgb, pos, dir, length, tier, -1, 0);
+    }
+
+    /** Explosão própria de cada reação elemental (Eletrocutar, Congelar, Vapor...). */
+    public static void reaction(ServerLevel level, Entity target, ElementReactions.Reaction r) {
+        reaction(level, target, r, false);
+    }
+
+    /**
+     * Explosão da reação, montada no cliente pelo preset. {@code lite} = versão enxuta (muitas reações no mesmo tick:
+     * só clarão, onda e poucas partículas).
+     */
+    public static void reaction(ServerLevel level, Entity target, ElementReactions.Reaction r, boolean lite) {
+        double up = target.getBbHeight() * 0.55;
+        reactionAt(level, target.position().add(0, up, 0), up, Math.max(0.6F, Math.min(3F, target.getBbHeight() * 0.6F)), r, lite);
+    }
+
+    /**
+     * Explosão de reação num ponto qualquer (vitrines, armadilhas). {@code toGround} = quanto o chão fica abaixo de
+     * {@code center} (o decalque e as ondas rasteiras nascem lá).
+     */
+    public static void reactionAt(ServerLevel level, Vec3 center, double toGround, float size, ElementReactions.Reaction r, boolean lite) {
+        FxBurst.send(level, FxBurst.REACTION, Element.ARCANE, r.color(), center, new Vec3(0, -Math.max(0, toGround), 0),
+                size, 2, r.ordinal(), lite ? 1 : 0);
+    }
+
+    /**
+     * Tremor de câmera (mesmo sistema dos chefes): {@code intensity} ≈ graus perto do centro (0,5 leve · 1,5 forte ·
+     * 3 máx.). Some com a distância até {@code radius}.
+     */
+    public static void shake(ServerLevel level, Vec3 pos, double radius, float intensity, int ticks) {
+        // No máx. 2 tremores por tick (uma magia de área que acerta 10 alvos não vira terremoto)
+        long now = level.getGameTime();
+        if (now != shakeTick) {
+            shakeTick = now;
+            shakesThisTick = 0;
+        }
+        if (++shakesThisTick > 2) return;
+        BossKit.shake(level, pos, radius, intensity, ticks);
+    }
+
+    private static long shakeTick = Long.MIN_VALUE;
+    private static int shakesThisTick;
 
     // =====================================================================================
     //  Sons
@@ -350,7 +435,7 @@ public final class ElementFx {
     }
 
     public static void castSound(ServerLevel level, Entity caster, Element e) {
-        level.playSound(null, caster.getX(), caster.getY(), caster.getZ(), castSoundOf(e), SoundSource.PLAYERS, 0.7F,
+        level.playSound(null, caster.getX(), caster.getY(), caster.getZ(), castSoundOf(e), SoundSource.PLAYERS, 0.3F, /* v1.0: baixo, os sons próprios (ambience) tocam por cima */
                 0.9F + level.random.nextFloat() * 0.3F);
     }
 
@@ -367,19 +452,12 @@ public final class ElementFx {
         return (r << 16) | (g << 8) | b;
     }
 
-    /** Opção de cliente "reduzir partículas" (falso se a config não carregou). */
+    /**
+     * "Poucas partículas"? Agora é o Preset Gráfico que manda: LOW e MEDIUM contam como reduzido (a opção antiga
+     * "reduzir partículas" limita o preset a MEDIUM). Para quantidades, prefira {@link FxQuality#count}.
+     */
     public static boolean reducedParticles() {
-        try {
-            return MahouConfig.REDUCED_PARTICLES.get();
-        } catch (RuntimeException ex) {
-            return false;
-        }
-    }
-
-    private static Vec3 perpendicular(Vec3 d) {
-        Vec3 s = d.cross(new Vec3(0, 1, 0));
-        if (s.lengthSqr() < 1.0E-6) s = d.cross(new Vec3(1, 0, 0));
-        return s.normalize();
+        return !FxQuality.atLeast(MahouConfig.Graphics.HIGH);
     }
 
     private ElementFx() {}

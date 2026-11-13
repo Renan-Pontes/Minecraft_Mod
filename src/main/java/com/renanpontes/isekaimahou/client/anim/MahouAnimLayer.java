@@ -24,6 +24,10 @@ final class MahouAnimLayer extends ModifierLayer<IAnimation> {
     final MirrorModifier mirror = new MirrorModifier(false);
     /** Animação tocando agora (ou a última; ver {@link #playing()}). */
     AnimLibrary.Def current;
+    /** Tick do mundo (cliente) em que {@link #current} começou — para o efeito de impacto e o limite das poses. */
+    long startTick;
+    /** O efeito de impacto desta animação já saiu. */
+    boolean cueDone;
 
     MahouAnimLayer(AbstractClientPlayer player) {
         super();

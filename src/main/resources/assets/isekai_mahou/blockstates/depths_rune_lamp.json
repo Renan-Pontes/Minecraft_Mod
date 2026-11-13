@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "isekai_mahou:block/depths_rune_lamp"
+    },
+    "lit=true": {
+      "model": "isekai_mahou:block/depths_rune_lamp_on"
+    }
+  }
+}

@@ -9,9 +9,9 @@ import com.renanpontes.isekaimahou.feature.ritual_warlock.WarlockContent;
 import com.renanpontes.isekaimahou.feature.ritual_warlock.block.RitualChalkBlock;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -192,7 +192,7 @@ public enum CirclePattern {
                     level.sendParticles(player, dust, true, p.getX() + 0.5, p.getY() + 0.15, p.getZ() + 0.5, 3, 0.25, 0.02, 0.25, 0);
                 }
                 for (BlockPos p : candles) {
-                    level.sendParticles(player, ParticleTypes.SMALL_FLAME, true, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 2, 0.05, 0.15, 0.05, 0.005);
+                    level.sendParticles(player, Vfx.smallFlame(), true, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 2, 0.05, 0.15, 0.05, 0.005);
                 }
             });
         }

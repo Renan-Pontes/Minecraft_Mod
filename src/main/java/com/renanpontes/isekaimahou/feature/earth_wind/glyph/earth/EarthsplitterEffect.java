@@ -14,8 +14,8 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -77,6 +77,12 @@ public class EarthsplitterEffect extends EffectGlyph {
         final double startY = origin.y;
 
         EwFx.sound(level, origin, SoundEvents.WARDEN_EMERGE, 1.5F, 0.5F);
+        // v1.3: a terra treme e racha numa linha de impactos de pedra ao longo da fenda
+        com.renanpontes.isekaimahou.core.ElementFx.shake(level, origin, 48, 1.8F, 40);
+        for (int i = 0; i <= 4; i++) {
+            Vec3 p = start.add(forward.scale(length * i / 4.0));
+            com.renanpontes.isekaimahou.core.ElementFx.impactFx(level, p.add(0, 0.2, 0), Element.EARTH, ctx.color(), i == 0 ? 4 : 3, null, 1.4F);
+        }
         EwFx.sound(level, origin, SoundEvents.GENERIC_EXPLODE.value(), 1.2F, 0.4F);
         EwUtil.shake(level, origin, 32, 1.6F, 40);
 
@@ -121,7 +127,7 @@ public class EarthsplitterEffect extends EffectGlyph {
             BlockState gs = EwFx.groundState(level, surface.below(depth));
             EwFx.dustPillar(level, surf, gs, 14);
             EwFx.debris(level, surf.add(0, 0.5, 0), gs, 18, 0.8);
-            level.sendParticles(ParticleTypes.LARGE_SMOKE, surf.x, surf.y, surf.z, 4, 0.6, 0.2, 0.6, 0.02);
+            level.sendParticles(Vfx.largeSmoke(), surf.x, surf.y, surf.z, 4, 0.6, 0.2, 0.6, 0.02);
             if (step % 3 == 0) {
                 EwFx.sound(level, surf, SoundEvents.DEEPSLATE_BREAK, 1.5F, 0.5F);
                 EwFx.sound(level, surf, SoundEvents.GENERIC_EXPLODE.value(), 0.5F, 0.5F + level.random.nextFloat() * 0.2F);

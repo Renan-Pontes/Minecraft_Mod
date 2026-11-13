@@ -147,6 +147,8 @@ public final class FwUtil {
     /** Pode quebrar/transformar este bloco? (proteção de spawn, modo aventura, mods de proteção, mobGriefing). */
     public static boolean canBreak(SpellContext ctx, BlockPos pos) {
         ServerLevel level = ctx.level();
+        // v1.0 r9: torre em escalada / masmorra são indestrutíveis (nem blocos temporários de magia)
+        if (com.renanpontes.isekaimahou.core.api.Destruction.wardedFor(level, pos, ctx.caster())) return false;
         if (!level.isLoaded(pos) || !level.getWorldBorder().isWithinBounds(pos)) return false;
         BlockState state = level.getBlockState(pos);
         if (state.getDestroySpeed(level, pos) < 0) return false;
@@ -165,6 +167,8 @@ public final class FwUtil {
     /** Pode colocar/alterar levemente algo aqui (água, fogo, apagar fogo, umedecer terra)? */
     public static boolean canPlace(SpellContext ctx, BlockPos pos) {
         ServerLevel level = ctx.level();
+        // v1.0 r9: torre em escalada / masmorra são indestrutíveis (nem blocos temporários de magia)
+        if (com.renanpontes.isekaimahou.core.api.Destruction.wardedFor(level, pos, ctx.caster())) return false;
         if (!level.isLoaded(pos) || !level.getWorldBorder().isWithinBounds(pos)) return false;
         LivingEntity caster = ctx.caster();
         if (caster instanceof ServerPlayer sp) {
@@ -193,9 +197,9 @@ public final class FwUtil {
     //  Partículas e sons (servidor)
     // =====================================================================================
 
-    public static DustParticleOptions dust(int rgb, float size) {
-        return new DustParticleOptions(new Vector3f(((rgb >> 16) & 255) / 255F, ((rgb >> 8) & 255) / 255F, (rgb & 255) / 255F),
-                Math.min(4F, size));
+    public static ParticleOptions dust(int rgb, float size) {
+        // v1.3: brilho fx aditivo (mesmo tamanho do pó do vanilla; respeita o preset gráfico no cliente)
+        return com.renanpontes.isekaimahou.core.ElementFx.glow(rgb, size);
     }
 
     /** Anel horizontal de partículas. */
@@ -239,7 +243,7 @@ public final class FwUtil {
     /** Lido só no cliente: config de partículas reduzidas. */
     public static boolean reducedParticles() {
         try {
-            return MahouConfig.REDUCED_PARTICLES.get();
+            return !com.renanpontes.isekaimahou.client.fx.FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         } catch (RuntimeException e) {
             return false;
         }

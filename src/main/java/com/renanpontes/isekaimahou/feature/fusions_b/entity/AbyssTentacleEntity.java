@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.feature.fusions_b.FbUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -56,7 +57,7 @@ public class AbyssTentacleEntity extends FbSpellEntity {
         t.entityData.set(COUNT, (byte) Math.max(2, Math.min(6, count)));
         t.entityData.set(SPREAD, Math.max(0.6F, target.getBbWidth() * 0.5F + 0.55F));
         sl.addFreshEntity(t);
-        sl.sendParticles(ParticleTypes.SQUID_INK, at.x, at.y + 0.2, at.z, 20, 0.8, 0.1, 0.8, 0.05);
+        sl.sendParticles(Vfx.ink(), at.x, at.y + 0.2, at.z, 20, 0.8, 0.1, 0.8, 0.05);
         sl.sendParticles(ParticleTypes.BUBBLE_POP, at.x, at.y + 0.3, at.z, 16, 0.8, 0.3, 0.8, 0.05);
         FbFx.ring(sl, at.add(0, 0.1, 0), FbFx.dust(FbFx.ABYSS_DEEP, 1.6F), 1.4, 20, 0);
         FbFx.sound(sl, at, SoundEvents.SQUID_HURT, 1.2F, 0.5F);
@@ -96,7 +97,7 @@ public class AbyssTentacleEntity extends FbSpellEntity {
         else le.setDeltaMovement(motion);
         if (tickCount % 20 == 0) {
             hit(le, water ? damage * 1.5F : damage);
-            sl.sendParticles(ParticleTypes.SQUID_INK, le.getX(), le.getY() + le.getBbHeight() * 0.4, le.getZ(), 6,
+            sl.sendParticles(Vfx.ink(), le.getX(), le.getY() + le.getBbHeight() * 0.4, le.getZ(), 6,
                     le.getBbWidth() * 0.4, le.getBbHeight() * 0.3, le.getBbWidth() * 0.4, 0.02);
             FbFx.sound(sl, le.position(), SoundEvents.SQUID_SQUIRT, 0.5F, 0.6F);
         }
@@ -104,7 +105,7 @@ public class AbyssTentacleEntity extends FbSpellEntity {
 
     @Override
     protected void onExpire(ServerLevel sl) {
-        sl.sendParticles(ParticleTypes.SQUID_INK, getX(), getY() + 0.3, getZ(), 14, 0.7, 0.2, 0.7, 0.03);
+        sl.sendParticles(Vfx.ink(), getX(), getY() + 0.3, getZ(), 14, 0.7, 0.2, 0.7, 0.03);
         FbFx.sound(sl, position(), SoundEvents.SQUID_AMBIENT, 0.8F, 0.5F);
     }
 
@@ -112,7 +113,7 @@ public class AbyssTentacleEntity extends FbSpellEntity {
     protected void clientTick() {
         if (random.nextInt(3) == 0) {
             double a = random.nextDouble() * Math.PI * 2, r = spread() * (0.6 + random.nextDouble() * 0.6);
-            level().addParticle(isInWater() ? ParticleTypes.BUBBLE : ParticleTypes.SQUID_INK,
+            level().addParticle(isInWater() ? ParticleTypes.BUBBLE : Vfx.ink(),
                     getX() + Math.cos(a) * r, getY() + 0.1, getZ() + Math.sin(a) * r, 0, 0.04, 0);
         }
     }

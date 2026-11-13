@@ -12,6 +12,8 @@ import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.core.MagicApi;
+import com.renanpontes.isekaimahou.core.MagicPath;
+import com.renanpontes.isekaimahou.core.api.Onboarding;
 import com.renanpontes.isekaimahou.core.api.Party;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.feature.afterlife.entity.CorpseEntity;
@@ -37,6 +39,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -132,6 +135,12 @@ public final class AfterlifeManager {
     private static final Set<UUID> ALLOW_DEATH = new HashSet<>();
     /** Entraram com a marca de alma e sem desafio: morrem no próximo tick. */
     private static final Set<UUID> KILL_ON_JOIN = new HashSet<>();
+    /**
+     * Última decisão de morte de cada jogador ({@link #SOUL} = virou alma; senão o motivo da morte de verdade). Fica no
+     * log do servidor e em {@code /mahou afterlife why}: quando alguém disser "não virei alma", dá para saber por quê.
+     */
+    private static final Map<UUID, String> LAST_DECISION = new HashMap<>();
+    static final String SOUL = "soul";
 
     // ============================================================================================= consultas
 
@@ -179,12 +188,35 @@ public final class AfterlifeManager {
         if (ch != null) {
             // morreu sendo alma (/kill, vazio): o desafio acaba como derrota; os itens já estão no corpo
             endChallenge(sp, ch);
+            note(sp, src, "spirit");
             return false;
         }
         ServerLevel level = sp.serverLevel();
-        if (level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return false;
+        if (level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) {
+            note(sp, src, "keep_inventory");
+            return false;
+        }
         boolean charred = isFireDeath(sp, src);
-        if (!charred && nearDeathAllowed(sp, src) && startNearDeath(sp, src)) return true;
+        String deny = charred ? "fire" : denyReason(sp, src);
+        if (deny == null) {
+            try {
+                if (startNearDeath(sp, src)) {
+                    note(sp, src, SOUL);
+                    return true;
+                }
+                deny = "no_corpse";
+            } catch (RuntimeException ex) {
+                // Nunca derruba o servidor por causa do desafio: vira morte comum (o que já foi para o corpo fica nele)
+                IsekaiMahou.LOGGER.error("[afterlife] falha ao começar À Beira da Morte de {}", sp.getGameProfile().getName(), ex);
+                Challenge broken = ACTIVE.get(id);
+                if (broken != null) endChallenge(sp, broken);
+                sp.setHealth(0F);
+                // (o que cair agora vai para o corpo do desafio, se ele chegou a existir, ou para um corpo novo)
+                note(sp, src, "error");
+                return false;
+            }
+        }
+        note(sp, src, deny);
         Spot spot = corpseSpot(sp, src);
         PENDING.put(id, new Pending(spot.level(), spot.pos(), sp.yBodyRot, charred, snapshot(sp), null));
         if (charred) {
@@ -195,30 +227,105 @@ public final class AfterlifeManager {
         return false;
     }
 
+    /** Guarda e registra no log a decisão desta morte. */
+    private static void note(ServerPlayer sp, DamageSource src, String decision) {
+        LAST_DECISION.put(sp.getUUID(), decision);
+        IsekaiMahou.LOGGER.info("[afterlife] {} caiu ({}): {}", sp.getGameProfile().getName(), src.getMsgId(),
+                SOUL.equals(decision) ? "À Beira da Morte" : "morte de verdade — " + decision);
+    }
+
+    /** Última decisão ({@link #SOUL}, um motivo, ou "none" se ainda não morreu nesta sessão). */
+    static String lastDecision(ServerPlayer sp) {
+        return LAST_DECISION.getOrDefault(sp.getUUID(), "none");
+    }
+
     private static boolean isFireDeath(ServerPlayer sp, DamageSource src) {
         if (src.is(DamageTypeTags.IS_FIRE) || src.is(DamageTypes.LAVA) || src.is(DamageTypes.HOT_FLOOR)) return true;
         if (sp.isOnFire() || sp.getRemainingFireTicks() > 0 || sp.isInLava()) return true;
         return statusSafe(sp, Statuses.Kind.BURNING);
     }
 
-    private static boolean nearDeathAllowed(ServerPlayer sp, DamageSource src) {
-        if (!AfterlifeConfig.nearDeath() || sp.isCreative() || sp.isSpectator()) return false;
-        if (src.is(DamageTypeTags.BYPASSES_INVULNERABILITY) || src.is(DamageTypes.FELL_OUT_OF_WORLD) || src.is(DamageTypes.GENERIC_KILL)
-                || src.is(DamageTypes.IN_WALL) || src.is(DamageTypes.WITHER) || src.is(DamageTypes.WITHER_SKULL)
-                || src.is(DamageTypeTags.IS_FREEZING) || src.is(DamageTypes.OUTSIDE_BORDER)) return false;
-        if (sp.hasEffect(MobEffects.WITHER) || sp.isFullyFrozen()) return false;
-        for (Statuses.Kind k : new Statuses.Kind[] {Statuses.Kind.FROZEN, Statuses.Kind.PETRIFIED, Statuses.Kind.BLEEDING, Statuses.Kind.CORRUPTED}) {
-            if (statusSafe(sp, k)) return false;
+    /**
+     * Por que esta morte NÃO vira "À Beira da Morte" (null = vira). v1.0: as regras escondidas saíram — sangrando,
+     * corrompido, congelado, definhando, {@code /kill}, dano excedente acima de 35% da vida ou "golpe sem medida" (dano de
+     * outro módulo/mod) matavam de verdade sem aviso nenhum, e com os chefes novos quase toda morte caía numa delas
+     * ("não virei alma mais"). Agora só o que o jogador consegue entender: vazio, preso na parede, fogo (Carbonizado,
+     * com título próprio) e a janela de 60 s depois de voltar. O limite de dano excedente virou opcional (config
+     * {@code overkillLimit}, desligado por padrão) e o {@code /kill} derruba como qualquer golpe (um segundo, já como
+     * alma, mata de verdade).
+     */
+    @Nullable
+    private static String denyReason(ServerPlayer sp, DamageSource src) {
+        if (!AfterlifeConfig.nearDeath()) return "disabled";
+        if (sp.isCreative() || sp.isSpectator()) return "gamemode";
+        // ainda escolhendo classe/raça: sem desafio (a tela de entrada reabre no renascimento)
+        if (inEntry(sp)) return "entry";
+        boolean killCommand = src.is(DamageTypes.GENERIC_KILL);
+        if (killCommand) {
+            if (!AfterlifeConfig.killCommand()) return "kill_command";
+        } else if (src.is(DamageTypeTags.BYPASSES_INVULNERABILITY) || src.is(DamageTypes.FELL_OUT_OF_WORLD)) {
+            return "void";
         }
+        if (src.is(DamageTypes.IN_WALL) || src.is(DamageTypes.OUTSIDE_BORDER)) return "stuck";
         ServerLevel level = sp.serverLevel();
-        if (sp.getY() < level.getMinBuildHeight() + 1) return false;
+        if (sp.getY() < level.getMinBuildHeight() + 1) return "void";
         long now = level.getGameTime();
-        if (now < data(sp).getLong("cooldown_until")) return false;
-        Hit hit = HITS.get(sp.getUUID());
-        if (hit == null || hit.tick() != now) return false; // morte sem golpe medido (comando, outro mod): de verdade
+        // onda 7 (pedido do dono): a alma volta UMA vez por vida ou por dia do Minecraft; sem a regra, vale o intervalo antigo
+        if (AfterlifeConfig.oncePerLife() ? soulSpent(sp) : now < data(sp).getLong("cooldown_until")) return "cooldown";
+        if (killCommand) return null;
         double limit = AfterlifeConfig.overkill() * sp.getMaxHealth();
+        if (limit <= 0) return null;
+        Hit hit = HITS.get(sp.getUUID());
+        // sem golpe medido neste tick (dano aplicado direto por outro módulo/mod): não há excesso para julgar
+        if (hit == null || hit.tick() != now) return null;
         if (src.is(DamageTypeTags.IS_EXPLOSION)) limit *= 0.5; // explosão grande = morte de verdade
-        return hit.damage() - hit.healthBefore() <= limit;
+        return hit.damage() - hit.healthBefore() <= limit ? null : "overkill";
+    }
+
+    /**
+     * Onda 7 — palavra do dono: "ela deveria funcionar 1 vez por vida ou por dia do minecraft; se eu ficar vivo é 1 vez
+     * por dia, mas se morrer posso usar múltiplas vezes no mesmo dia". A chance usada (ao voltar ao corpo) fica gasta
+     * até o dia do Overworld virar — ou um dia inteiro de jogo passar, para quem mexe no relógio com /time — e volta na
+     * hora numa morte de verdade ({@link #onRespawn}). true = ainda gasta.
+     */
+    static boolean soulSpent(ServerPlayer sp) {
+        CompoundTag d = data(sp);
+        if (!d.contains("soul_used_game")) return false;
+        ServerLevel clock = sp.server.overworld();
+        long game = clock.getGameTime(), usedGame = d.getLong("soul_used_game");
+        boolean newDay = Math.floorDiv(clock.getDayTime(), 24000L) != Math.floorDiv(d.getLong("soul_used_day"), 24000L);
+        if (!newDay && game >= usedGame && game - usedGame < 24000L) return true;
+        d.remove("soul_used_game");
+        d.remove("soul_used_day");
+        sp.setData(AfterlifeContent.PLAYER_DATA, d);
+        return false;
+    }
+
+    /** A cada 2 s: o dia virou e a chance voltou → uma linha na barra de ação (só para quem tinha gasto). */
+    static void tickSoulChance(ServerPlayer sp) {
+        if (!AfterlifeConfig.oncePerLife() || !data(sp).contains("soul_used_game") || isSpirit(sp) || !sp.isAlive()) return;
+        if (!soulSpent(sp)) {
+            sp.displayClientMessage(Component.translatable("message.isekai_mahou.afterlife.ready").withStyle(ChatFormatting.AQUA), true);
+        }
+    }
+
+    /** Renasceu depois de uma morte de verdade: vida nova, chance nova. */
+    static void onRespawn(ServerPlayer sp) {
+        CompoundTag d = data(sp);
+        if (!d.contains("soul_used_game") && !d.contains("cooldown_until")) return;
+        d.remove("soul_used_game");
+        d.remove("soul_used_day");
+        d.remove("cooldown_until");
+        sp.setData(AfterlifeContent.PLAYER_DATA, d);
+    }
+
+    /** Entrada no jogo em andamento (sem classe, ou montando o personagem). Só APIs antigas do núcleo. */
+    private static boolean inEntry(ServerPlayer sp) {
+        try {
+            return MagicApi.get(sp).path() == MagicPath.NONE || !Onboarding.pendingCreationSteps(sp).isEmpty();
+        } catch (RuntimeException ex) {
+            return false;
+        }
     }
 
     private static boolean statusSafe(LivingEntity e, Statuses.Kind k) {
@@ -475,7 +582,14 @@ public final class AfterlifeManager {
         // 3 s de fôlego para não cair de novo no mesmo golpe
         sp.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 60, 3, false, false, true));
         data(sp).putLong("cooldown_until", level.getGameTime() + AfterlifeConfig.cooldownTicks());
+        // a chance desta vida/deste dia foi usada (volta ao amanhecer, ou na próxima vida se ele morrer de verdade)
+        ServerLevel clock = sp.server.overworld();
+        data(sp).putLong("soul_used_game", clock.getGameTime());
+        data(sp).putLong("soul_used_day", clock.getDayTime());
         sp.setData(AfterlifeContent.PLAYER_DATA, data(sp));
+        if (AfterlifeConfig.oncePerLife()) {
+            sp.sendSystemMessage(Component.translatable("message.isekai_mahou.afterlife.spent").withStyle(ChatFormatting.GRAY));
+        }
         level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, sp.getX(), sp.getY() + 1, sp.getZ(), 40, 0.4, 0.8, 0.4, 0.3);
         level.playSound(null, sp.getX(), sp.getY(), sp.getZ(), SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 1F, 1.2F);
         Component sub = helper == null ? Component.empty()
@@ -709,6 +823,7 @@ public final class AfterlifeManager {
         PENDING.clear();
         ALLOW_DEATH.clear();
         KILL_ON_JOIN.clear();
+        LAST_DECISION.clear();
     }
 
     /** Quem passa a ver uma alma recebe a marca (para desenhá-la translúcida). */
@@ -722,6 +837,63 @@ public final class AfterlifeManager {
     static boolean test(ServerPlayer sp) {
         if (ACTIVE.containsKey(sp.getUUID()) || !sp.isAlive()) return false;
         return startNearDeath(sp, null);
+    }
+
+    /** Tipos de golpe de {@code /mahou afterlife hit}. */
+    static final List<String> TEST_HITS = List.of("mob", "boss", "fall", "fire", "kill");
+
+    /**
+     * {@code /mahou afterlife hit <tipo>}: um golpe FATAL de verdade (passa por todos os módulos, como numa luta) para
+     * conferir a decisão. Devolve a decisão ({@link #SOUL}, um motivo) ou "survived"/"busy". Zera a janela de 60 s
+     * antes (é ferramenta de teste: dá para repetir sem esperar).
+     */
+    static String testHit(ServerPlayer sp, String kind) {
+        return testHit(sp, kind, false);
+    }
+
+    /** {@code keep}: NÃO zera a chance já usada (para conferir a regra de 1 vez por vida ou por dia). */
+    static String testHit(ServerPlayer sp, String kind, boolean keep) {
+        UUID id = sp.getUUID();
+        if (ACTIVE.containsKey(id) || !sp.isAlive()) return "busy";
+        LAST_DECISION.remove(id);
+        if (!keep) {
+            CompoundTag d = data(sp);
+            d.remove("cooldown_until");
+            d.remove("soul_used_game");
+            d.remove("soul_used_day");
+            sp.setData(AfterlifeContent.PLAYER_DATA, d);
+        }
+        sp.removeEffect(MobEffects.DAMAGE_RESISTANCE);
+        sp.invulnerableTime = 0;
+        if (!kind.equals("kill")) {
+            sp.setAbsorptionAmount(0F);
+            sp.setHealth(1F);
+        }
+        switch (kind) {
+            case "mob" -> sp.hurt(sourceOf(sp, DamageTypes.MOB_ATTACK), 14F);
+            // golpe pesado de chefe: bem mais que a vida inteira de uma vez
+            case "boss" -> sp.hurt(sourceOf(sp, DamageTypes.MOB_ATTACK), sp.getMaxHealth() * 1.5F);
+            case "fall" -> sp.hurt(sp.damageSources().fall(), 14F);
+            case "fire" -> sp.hurt(sp.damageSources().onFire(), 14F);
+            case "kill" -> sp.kill();
+            default -> {
+                return "busy";
+            }
+        }
+        return LAST_DECISION.getOrDefault(id, "survived");
+    }
+
+    /** {@code /mahou afterlife revive}: termina o desafio em andamento como vitória (teste, sem o minijogo). */
+    static boolean testRevive(ServerPlayer sp) {
+        Challenge ch = ACTIVE.get(sp.getUUID());
+        if (ch == null) return false;
+        succeed(sp, ch, null);
+        return true;
+    }
+
+    /** Fonte de dano do tipo dado, sem autor (não entra na escala de dano dos mobs). */
+    private static DamageSource sourceOf(ServerPlayer sp, ResourceKey<DamageType> type) {
+        return new DamageSource(sp.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(type));
     }
 
     // ============================================================================================= util

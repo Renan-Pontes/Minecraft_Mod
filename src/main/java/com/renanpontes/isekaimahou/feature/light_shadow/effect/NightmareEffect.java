@@ -2,7 +2,7 @@ package com.renanpontes.isekaimahou.feature.light_shadow.effect;
 
 import com.renanpontes.isekaimahou.feature.light_shadow.LsFx;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -37,7 +37,7 @@ public class NightmareEffect extends MobEffect {
         float pitch = 0.5F + sl.random.nextFloat() * 0.4F;
         if (e instanceof ServerPlayer sp) sp.playNotifySound(s, SoundSource.HOSTILE, 0.9F, pitch);
         else sl.playSound(null, e.getX(), e.getY(), e.getZ(), s, SoundSource.HOSTILE, 0.5F, pitch);
-        sl.sendParticles(ParticleTypes.SCULK_SOUL, e.getX(), e.getEyeY() + 0.2, e.getZ(), 3, 0.3, 0.2, 0.3, 0.02);
+        sl.sendParticles(Vfx.sculkSoul(), e.getX(), e.getEyeY() + 0.2, e.getZ(), 3, 0.3, 0.2, 0.3, 0.02);
         sl.sendParticles(LsFx.dust(LsFx.DEEP_VIOLET, 1.3F), e.getX(), e.getEyeY(), e.getZ(), 10, 0.4, 0.3, 0.4, 0);
         return true;
     }

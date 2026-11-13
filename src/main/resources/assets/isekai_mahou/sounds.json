@@ -1,0 +1,1083 @@
+{
+  "race.form_charge": {
+    "subtitle": "subtitles.isekai_mahou.race.form_charge",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/form_charge",
+        "stream": false
+      }
+    ]
+  },
+  "race.form_burst": {
+    "subtitle": "subtitles.isekai_mahou.race.form_burst",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/form_burst",
+        "stream": false
+      }
+    ]
+  },
+  "race.form_end": {
+    "subtitle": "subtitles.isekai_mahou.race.form_end",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/form_end",
+        "stream": false
+      }
+    ]
+  },
+  "race.roar.human": {
+    "subtitle": "subtitles.isekai_mahou.race.roar",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/roar_human",
+        "stream": false
+      }
+    ]
+  },
+  "race.roar.elf": {
+    "subtitle": "subtitles.isekai_mahou.race.roar",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/roar_elf",
+        "stream": false
+      }
+    ]
+  },
+  "race.roar.dwarf": {
+    "subtitle": "subtitles.isekai_mahou.race.roar",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/roar_dwarf",
+        "stream": false
+      }
+    ]
+  },
+  "race.roar.half_orc": {
+    "subtitle": "subtitles.isekai_mahou.race.roar",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/roar_half_orc",
+        "stream": false
+      }
+    ]
+  },
+  "race.roar.demon": {
+    "subtitle": "subtitles.isekai_mahou.race.roar",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/roar_demon",
+        "stream": false
+      }
+    ]
+  },
+  "race.roar.dragonborn": {
+    "subtitle": "subtitles.isekai_mahou.race.roar",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/roar_dragonborn",
+        "stream": false
+      }
+    ]
+  },
+  "race.roar.beastfolk": {
+    "subtitle": "subtitles.isekai_mahou.race.roar",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/roar_beastfolk",
+        "stream": false
+      }
+    ]
+  },
+  "race.roar.arachnid": {
+    "subtitle": "subtitles.isekai_mahou.race.roar",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/roar_arachnid",
+        "stream": false
+      }
+    ]
+  },
+  "race.roar.phantom": {
+    "subtitle": "subtitles.isekai_mahou.race.roar",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/roar_phantom",
+        "stream": false
+      }
+    ]
+  },
+  "race.roar.angel": {
+    "subtitle": "subtitles.isekai_mahou.race.roar",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/roar_angel",
+        "stream": false
+      }
+    ]
+  },
+  "race.roar.slime": {
+    "subtitle": "subtitles.isekai_mahou.race.roar",
+    "sounds": [
+      {
+        "name": "isekai_mahou:character/roar_slime",
+        "stream": false
+      }
+    ]
+  },
+  "boss_music.elemental_guardian": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/elemental_guardian",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.abyss_sovereign": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/abyss_sovereign",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.seraph": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/seraph",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.twilight_herald": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/twilight_herald",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.primordial_dragon": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/primordial_dragon",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.lich": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/lich",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.beast": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/beast",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.mimic_king": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/mimic_king",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.hollow_king": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/hollow_king",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.ulquiorra": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/ulquiorra",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.ulquiorra_segunda_etapa": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/ulquiorra_segunda_etapa",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.barragan": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/barragan",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.grimmjow": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/grimmjow",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.las_noches": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/las_noches",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.generic_boss": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/generic_boss",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.boss_victory": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/boss_victory",
+        "stream": true
+      }
+    ]
+  },
+  "hollow.roar": {
+    "subtitle": "subtitles.isekai_mahou.hollow.roar",
+    "sounds": [
+      {
+        "name": "isekai_mahou:class_hollow/roar",
+        "stream": false
+      }
+    ]
+  },
+  "hollow.cero_charge": {
+    "subtitle": "subtitles.isekai_mahou.hollow.cero_charge",
+    "sounds": [
+      {
+        "name": "isekai_mahou:class_hollow/cero_charge",
+        "stream": false
+      }
+    ]
+  },
+  "hollow.cero_fire": {
+    "subtitle": "subtitles.isekai_mahou.hollow.cero_fire",
+    "sounds": [
+      {
+        "name": "isekai_mahou:class_hollow/cero_fire",
+        "stream": false
+      }
+    ]
+  },
+  "hollow.sonido": {
+    "subtitle": "subtitles.isekai_mahou.hollow.sonido",
+    "sounds": [
+      {
+        "name": "isekai_mahou:class_hollow/sonido",
+        "stream": false
+      }
+    ]
+  },
+  "hollow.garganta": {
+    "subtitle": "subtitles.isekai_mahou.hollow.garganta",
+    "sounds": [
+      {
+        "name": "isekai_mahou:class_hollow/garganta",
+        "stream": false
+      }
+    ]
+  },
+  "hollow.devour": {
+    "subtitle": "subtitles.isekai_mahou.hollow.devour",
+    "sounds": [
+      {
+        "name": "isekai_mahou:class_hollow/devour",
+        "stream": false
+      }
+    ]
+  },
+  "hollow.mask": {
+    "subtitle": "subtitles.isekai_mahou.hollow.mask",
+    "sounds": [
+      {
+        "name": "isekai_mahou:class_hollow/mask",
+        "stream": false
+      }
+    ]
+  },
+  "espada.sonido": {
+    "subtitle": "subtitles.isekai_mahou.espada.sonido",
+    "sounds": [
+      {
+        "name": "isekai_mahou:espada/sonido"
+      }
+    ]
+  },
+  "espada.cero_charge": {
+    "subtitle": "subtitles.isekai_mahou.espada.cero_charge",
+    "sounds": [
+      {
+        "name": "isekai_mahou:espada/cero_charge"
+      }
+    ]
+  },
+  "espada.cero_fire": {
+    "subtitle": "subtitles.isekai_mahou.espada.cero_fire",
+    "sounds": [
+      {
+        "name": "isekai_mahou:espada/cero_fire"
+      }
+    ]
+  },
+  "espada.lanza_charge": {
+    "subtitle": "subtitles.isekai_mahou.espada.lanza_charge",
+    "sounds": [
+      {
+        "name": "isekai_mahou:espada/lanza_charge"
+      }
+    ]
+  },
+  "espada.lanza_explode": {
+    "subtitle": "subtitles.isekai_mahou.espada.lanza_explode",
+    "sounds": [
+      {
+        "name": "isekai_mahou:espada/lanza_explode"
+      }
+    ]
+  },
+  "espada.release": {
+    "subtitle": "subtitles.isekai_mahou.espada.release",
+    "sounds": [
+      {
+        "name": "isekai_mahou:espada/release"
+      }
+    ]
+  },
+  "espada.respira": {
+    "subtitle": "subtitles.isekai_mahou.espada.respira",
+    "sounds": [
+      {
+        "name": "isekai_mahou:espada/respira"
+      }
+    ]
+  },
+  "espada.crumble": {
+    "subtitle": "subtitles.isekai_mahou.espada.crumble",
+    "sounds": [
+      {
+        "name": "isekai_mahou:espada/crumble"
+      }
+    ]
+  },
+  "espada.claw": {
+    "subtitle": "subtitles.isekai_mahou.espada.claw",
+    "sounds": [
+      {
+        "name": "isekai_mahou:espada/claw"
+      }
+    ]
+  },
+  "espada.roar": {
+    "subtitle": "subtitles.isekai_mahou.espada.roar",
+    "sounds": [
+      {
+        "name": "isekai_mahou:espada/roar"
+      }
+    ]
+  },
+  "espada.bala": {
+    "subtitle": "subtitles.isekai_mahou.espada.bala",
+    "sounds": [
+      {
+        "name": "isekai_mahou:espada/bala"
+      }
+    ]
+  },
+  "espada.hierro": {
+    "subtitle": "subtitles.isekai_mahou.espada.hierro",
+    "sounds": [
+      {
+        "name": "isekai_mahou:espada/hierro"
+      }
+    ]
+  },
+  "boss_music.victory_abyss_sovereign": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/victory/abyss_sovereign",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.victory_barragan": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/victory/barragan",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.victory_beast": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/victory/beast",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.victory_generic_boss": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/victory/generic_boss",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.victory_grimmjow": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/victory/grimmjow",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.victory_hollow_king": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/victory/hollow_king",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.victory_lich": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/victory/lich",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.victory_mimic_king": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/victory/mimic_king",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.victory_primordial_dragon": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/victory/primordial_dragon",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.victory_seraph": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/victory/seraph",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.victory_twilight_herald": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/victory/twilight_herald",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.victory_ulquiorra": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/victory/ulquiorra",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.victory_ulquiorra_segunda_etapa": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/victory/ulquiorra_segunda_etapa",
+        "stream": true
+      }
+    ]
+  },
+  "ambience.spell.fire.cast_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/fire_cast_s",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "ambience.spell.fire.cast_m": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/fire_cast_m",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "ambience.spell.fire.cast_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/fire_cast_l",
+        "stream": false,
+        "attenuation_distance": 56
+      }
+    ]
+  },
+  "ambience.spell.fire.impact_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/fire_impact_s",
+        "stream": false,
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "ambience.spell.fire.impact_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/fire_impact_l",
+        "stream": false,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "ambience.spell.water.cast_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/water_cast_s",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "ambience.spell.water.cast_m": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/water_cast_m",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "ambience.spell.water.cast_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/water_cast_l",
+        "stream": false,
+        "attenuation_distance": 56
+      }
+    ]
+  },
+  "ambience.spell.water.impact_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/water_impact_s",
+        "stream": false,
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "ambience.spell.water.impact_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/water_impact_l",
+        "stream": false,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "ambience.spell.earth.cast_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/earth_cast_s",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "ambience.spell.earth.cast_m": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/earth_cast_m",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "ambience.spell.earth.cast_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/earth_cast_l",
+        "stream": false,
+        "attenuation_distance": 56
+      }
+    ]
+  },
+  "ambience.spell.earth.impact_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/earth_impact_s",
+        "stream": false,
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "ambience.spell.earth.impact_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/earth_impact_l",
+        "stream": false,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "ambience.spell.wind.cast_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/wind_cast_s",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "ambience.spell.wind.cast_m": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/wind_cast_m",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "ambience.spell.wind.cast_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/wind_cast_l",
+        "stream": false,
+        "attenuation_distance": 56
+      }
+    ]
+  },
+  "ambience.spell.wind.impact_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/wind_impact_s",
+        "stream": false,
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "ambience.spell.wind.impact_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/wind_impact_l",
+        "stream": false,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "ambience.spell.light.cast_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/light_cast_s",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "ambience.spell.light.cast_m": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/light_cast_m",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "ambience.spell.light.cast_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/light_cast_l",
+        "stream": false,
+        "attenuation_distance": 56
+      }
+    ]
+  },
+  "ambience.spell.light.impact_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/light_impact_s",
+        "stream": false,
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "ambience.spell.light.impact_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/light_impact_l",
+        "stream": false,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "ambience.spell.shadow.cast_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/shadow_cast_s",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "ambience.spell.shadow.cast_m": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/shadow_cast_m",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "ambience.spell.shadow.cast_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/shadow_cast_l",
+        "stream": false,
+        "attenuation_distance": 56
+      }
+    ]
+  },
+  "ambience.spell.shadow.impact_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/shadow_impact_s",
+        "stream": false,
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "ambience.spell.shadow.impact_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/shadow_impact_l",
+        "stream": false,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "ambience.spell.lightning.cast_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/lightning_cast_s",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "ambience.spell.lightning.cast_m": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/lightning_cast_m",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "ambience.spell.lightning.cast_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/lightning_cast_l",
+        "stream": false,
+        "attenuation_distance": 56
+      }
+    ]
+  },
+  "ambience.spell.lightning.impact_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/lightning_impact_s",
+        "stream": false,
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "ambience.spell.lightning.impact_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/lightning_impact_l",
+        "stream": false,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "ambience.spell.ice.cast_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/ice_cast_s",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "ambience.spell.ice.cast_m": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/ice_cast_m",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "ambience.spell.ice.cast_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/ice_cast_l",
+        "stream": false,
+        "attenuation_distance": 56
+      }
+    ]
+  },
+  "ambience.spell.ice.impact_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/ice_impact_s",
+        "stream": false,
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "ambience.spell.ice.impact_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/ice_impact_l",
+        "stream": false,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "ambience.spell.nature.cast_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/nature_cast_s",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "ambience.spell.nature.cast_m": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/nature_cast_m",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "ambience.spell.nature.cast_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/nature_cast_l",
+        "stream": false,
+        "attenuation_distance": 56
+      }
+    ]
+  },
+  "ambience.spell.nature.impact_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/nature_impact_s",
+        "stream": false,
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "ambience.spell.nature.impact_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/nature_impact_l",
+        "stream": false,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "ambience.spell.arcane.cast_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/arcane_cast_s",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "ambience.spell.arcane.cast_m": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/arcane_cast_m",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "ambience.spell.arcane.cast_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_cast",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/arcane_cast_l",
+        "stream": false,
+        "attenuation_distance": 56
+      }
+    ]
+  },
+  "ambience.spell.arcane.impact_s": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/arcane_impact_s",
+        "stream": false,
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "ambience.spell.arcane.impact_l": {
+    "subtitle": "subtitles.isekai_mahou.ambience.spell_impact",
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/spell/arcane_impact_l",
+        "stream": false,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "ambience.music.dungeon": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/music/dungeon",
+        "stream": true
+      }
+    ]
+  },
+  "ambience.music.citadel": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/music/citadel",
+        "stream": true
+      }
+    ]
+  },
+  "ambience.music.library": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/music/library",
+        "stream": true
+      }
+    ]
+  },
+  "ambience.music.tower": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/music/tower",
+        "stream": true
+      }
+    ]
+  },
+  "ambience.music.city": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/music/city",
+        "stream": true
+      }
+    ]
+  },
+  "ambience.music.abyss": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/music/abyss",
+        "stream": true
+      }
+    ]
+  },
+  "ambience.music.home": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:ambience/music/home",
+        "stream": true
+      }
+    ]
+  },
+  "boss_music.flying_carpet": {
+    "sounds": [
+      {
+        "name": "isekai_mahou:music/flying_carpet",
+        "stream": true
+      }
+    ]
+  }
+}

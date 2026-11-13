@@ -3763,6 +3763,67 @@
         "glyph_tier": 4,
         "legend_scrolls": 1
       }
+    },
+    {
+      "id": "class_hollowfied",
+      "path": "hollowfied",
+      "order": 16,
+      "color": "#E6DFCF",
+      "intro": true,
+      "icon": [
+        "minecraft:bone_block"
+      ],
+      "steps": [
+        {
+          "id": "devour",
+          "condition": {
+            "type": "counter",
+            "key": "hollow.souls_total",
+            "min": 20
+          },
+          "xp": 60,
+          "icon": "minecraft:bone"
+        },
+        {
+          "id": "gillian",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank.hollowfied",
+            "min": 1
+          },
+          "xp": 150,
+          "icon": "minecraft:bone_block"
+        },
+        {
+          "id": "garganta",
+          "condition": {
+            "type": "visit",
+            "dimension": "isekai_mahou:hollow_world"
+          },
+          "xp": 200,
+          "icon": "minecraft:ender_eye"
+        },
+        {
+          "id": "vasto",
+          "condition": {
+            "type": "counter",
+            "key": "ritual_rank.hollowfied",
+            "min": 3
+          },
+          "xp": 400,
+          "icon": "minecraft:skeleton_skull"
+        },
+        {
+          "id": "arrancar",
+          "condition": {
+            "type": "counter",
+            "key": "hollow.release",
+            "min": 1
+          },
+          "xp": 800,
+          "icon": "minecraft:wither_skeleton_skull"
+        }
+      ]
     }
   ]
 }

@@ -59,7 +59,7 @@ public class ResidentNpc extends SettlementNpc {
         boolean female = variant() % 2 == 1;
         return switch (style()) {
             case DESERT -> female ? FEMALE_D : MALE_D;
-            case NORDIC -> female ? FEMALE_N : MALE_N;
+            case NORDIC, DWARVEN -> female ? FEMALE_N : MALE_N;
             default -> female ? FEMALE_K : MALE_K;
         };
     }
@@ -85,6 +85,11 @@ public class ResidentNpc extends SettlementNpc {
     protected Component ambientLine(Player near) {
         if (style() == SettlementStyle.NORDIC && random.nextInt(4) == 0) return line("resident.nordic", 3);
         if (style() == SettlementStyle.DESERT && random.nextInt(4) == 0) return line("resident.desert", 3);
+        // onda 5: falas dos estilos novos
+        if (style() == SettlementStyle.ORIENTAL && random.nextInt(4) == 0) return line("resident.oriental", 3);
+        if (style() == SettlementStyle.ELVEN && random.nextInt(4) == 0) return line("resident.elven", 3);
+        if (style() == SettlementStyle.GOTHIC && random.nextInt(4) == 0) return line("resident.gothic", 3);
+        if (style() == SettlementStyle.DWARVEN && random.nextInt(4) == 0) return line("resident.dwarven", 3);
         return super.ambientLine(near);
     }
 

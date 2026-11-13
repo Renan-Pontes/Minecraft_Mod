@@ -1,0 +1,35 @@
+{
+  "glyph.isekai_mahou.quarry": "Pedreira",
+  "glyph.isekai_mahou.quarry.desc": "Escava uma área quadrada (7×7) camada por camada, indo descendo e lembrando onde parou. Quebra alguns blocos por vez (Amplificar: mais) e paga mana por bloco conforme a dureza. Os itens vão para o Coletor Arcano/baús do pedestal (na mão: para você). Nunca quebra baús, rocha-mãe nem áreas protegidas. Para 48 camadas abaixo (Estender: mais fundo; Persistente: até o fundo do mundo) ou na rocha-mãe. Filtro do pedestal: escava só aquele bloco (com Inverter: tudo menos ele).",
+  "glyph.isekai_mahou.lumberjack": "Lenhador",
+  "glyph.isekai_mahou.lumberjack.desc": "Derruba árvores inteiras da área (tronco, galhos e folhas naturais) e replanta uma muda na base. A muda vem do filtro do pedestal (na mão: da mão secundária), das próprias folhas ou dos baús. 1 árvore por vez (Amplificar: mais). Casas de madeira sem folhas naturais ficam em pé.",
+  "glyph.isekai_mahou.arcane_fishing": "Pesca Arcana",
+  "glyph.isekai_mahou.arcane_fishing.desc": "Pesca na água da área (precisa de 6+ blocos de fonte) com a sorte de um pescador: peixes e alguns achados. Cada lago dá peixe a cada 4 s. Amplificar: mais tentativas; Fortuna: Sorte do Mar III.",
+  "glyph.isekai_mahou.illuminate": "Iluminar",
+  "glyph.isekai_mahou.illuminate.desc": "Coloca tochas (ou outra luz do seu inventário/dos baús do pedestal) nos pontos escuros da área, espaçadas, para monstros não nascerem. Filtro do pedestal / mão secundária: usa só aquela luz.",
+
+  "glyph.isekai_mahou.on_ripe": "Ao Amadurecer",
+  "glyph.isekai_mahou.on_ripe.desc": "Gatilho de pedestal: só conjura quando há plantação madura na área. Na mão: a magia só sai se houver algo maduro perto de você.",
+  "glyph.isekai_mahou.on_empty": "Ao Esvaziar",
+  "glyph.isekai_mahou.on_empty.desc": "Gatilho de pedestal: só conjura quando há terra arada (ou areia das almas) vazia na área. Ótimo com Semear.",
+  "glyph.isekai_mahou.on_items": "Com Itens no Chão",
+  "glyph.isekai_mahou.on_items.desc": "Gatilho de pedestal: só conjura quando há itens soltos na área. Ótimo com Recolher e Forja Arcana.",
+  "glyph.isekai_mahou.on_work": "Quando Houver Trabalho",
+  "glyph.isekai_mahou.on_work.desc": "Gatilho de pedestal: só conjura quando algum efeito da magia tem o que fazer (a Pedreira não chegou ao fundo, há árvore, água, ponto escuro, planta madura, terra vazia, itens...). Economiza mana.",
+  "glyph.isekai_mahou.on_night": "Ao Anoitecer",
+  "glyph.isekai_mahou.on_night.desc": "Gatilho de pedestal: só conjura enquanto for noite (nunca no Nether/End).",
+  "glyph.isekai_mahou.on_day": "Ao Amanhecer",
+  "glyph.isekai_mahou.on_day.desc": "Gatilho de pedestal: só conjura enquanto for dia (nunca no Nether/End).",
+  "glyph.isekai_mahou.on_monsters": "Com Monstros Perto",
+  "glyph.isekai_mahou.on_monsters.desc": "Gatilho de pedestal: só conjura quando há um monstro na área. Para torres de defesa e fazendas de monstros.",
+
+  "message.isekai_mahou.auto_glyphs.condition_not_met": "⌛ Condição não cumprida: %s",
+  "message.isekai_mahou.auto_glyphs.quarry_progress": "⛏ Pedreira: camada Y %s · %s blocos · +%s mana",
+  "message.isekai_mahou.auto_glyphs.quarry_done": "⛏ A Pedreira chegou ao fundo (camada Y %s).",
+  "message.isekai_mahou.auto_glyphs.no_work_mana": "Sem mana para continuar o trabalho.",
+  "message.isekai_mahou.auto_glyphs.no_sapling": "Sem muda para replantar.",
+  "message.isekai_mahou.auto_glyphs.fishing_no_water": "Precisa de pelo menos %s blocos de água parada para pescar.",
+  "message.isekai_mahou.auto_glyphs.no_lights": "Sem tochas (ou outra luz) para iluminar.",
+
+  "command.isekai_mahou.auto_glyphs.granted": "Glifos de fazenda aprendidos (%s): %s"
+}

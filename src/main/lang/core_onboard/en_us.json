@@ -36,5 +36,6 @@
   "command.isekai_mahou.travel.cooldown_reset": "Menu travel cooldown reset",
   "command.isekai_mahou.travel.header": "Travel destinations (%s) — menu cooldown: %s",
   "command.isekai_mahou.travel.line": "stone %s · menu %s",
-  "command.isekai_mahou.travel.discovered": "%s destination(s) discovered"
+  "command.isekai_mahou.travel.discovered": "%s destination(s) discovered",
+  "command.isekai_mahou.onboarding.status": "%s — class: %s · pending steps: %s · protected: %s"
 }

@@ -287,6 +287,29 @@ public final class OnboardPayloads {
         public Type<? extends CustomPacketPayload> type() { return TYPE; }
     }
 
+    /**
+     * v1.0 — "cutucão" da entrada no jogo (S→C, a cada 2 s enquanto a criação do personagem está pendente): se o
+     * cliente estiver sem tela nenhuma, ele responde com {@link EntryResume} e o servidor reabre a tela certa.
+     */
+    public record EntryNudge() implements CustomPacketPayload {
+        public static final EntryNudge INSTANCE = new EntryNudge();
+        public static final Type<EntryNudge> TYPE = new Type<>(IsekaiMahou.id("core_onboard_entry_nudge"));
+        public static final StreamCodec<FriendlyByteBuf, EntryNudge> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    }
+
+    /** v1.0 — resposta ao cutucão (C→S): "estou sem tela; reabra a criação do personagem". */
+    public record EntryResume() implements CustomPacketPayload {
+        public static final EntryResume INSTANCE = new EntryResume();
+        public static final Type<EntryResume> TYPE = new Type<>(IsekaiMahou.id("core_onboard_entry_resume"));
+        public static final StreamCodec<FriendlyByteBuf, EntryResume> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    }
+
     // =====================================================================================
     //  Registro
     // =====================================================================================
@@ -308,6 +331,11 @@ public final class OnboardPayloads {
                 (p, c) -> com.renanpontes.isekaimahou.client.onboard.OnboardClientHandlers.travelOutcome(p));
         r.playToClient(TravelFx.TYPE, TravelFx.STREAM_CODEC,
                 (p, c) -> com.renanpontes.isekaimahou.client.onboard.OnboardClientHandlers.travelFx(p));
+
+        r.playToClient(EntryNudge.TYPE, EntryNudge.STREAM_CODEC,
+                (p, c) -> com.renanpontes.isekaimahou.client.onboard.OnboardClientHandlers.entryNudge());
+        r.playToServer(EntryResume.TYPE, EntryResume.STREAM_CODEC,
+                (p, c) -> withPlayer(c, EntryGuard::onResume));
 
         r.playToServer(DialogueDone.TYPE, DialogueDone.STREAM_CODEC,
                 (p, c) -> withPlayer(c, sp -> DialogueService.onDone(sp, p.id(), p.skipped())));

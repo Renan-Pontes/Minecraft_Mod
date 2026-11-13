@@ -10,8 +10,8 @@ import com.renanpontes.isekaimahou.feature.ritual_witch.WitchRecipe;
 import com.renanpontes.isekaimahou.feature.ritual_witch.WitchRecipes;
 import com.renanpontes.isekaimahou.network.ClientMagic;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -64,8 +64,8 @@ public class WitchRecipePageItem extends Item {
             }
         }
         WitchProgress.learn(sp, recipe.id(), true);
-        sp.serverLevel().sendParticles(ParticleTypes.ENCHANT, sp.getX(), sp.getY() + 1.5, sp.getZ(), 20, 0.4, 0.3, 0.4, 0.6);
-        sp.serverLevel().sendParticles(ParticleTypes.WITCH, sp.getX(), sp.getY() + 1.2, sp.getZ(), 6, 0.3, 0.3, 0.3, 0.02);
+        sp.serverLevel().sendParticles(Vfx.enchant(), sp.getX(), sp.getY() + 1.5, sp.getZ(), 20, 0.4, 0.3, 0.4, 0.6);
+        sp.serverLevel().sendParticles(Vfx.witch(), sp.getX(), sp.getY() + 1.2, sp.getZ(), 6, 0.3, 0.3, 0.3, 0.02);
         stack.consume(1, player);
         return InteractionResultHolder.consume(stack);
     }

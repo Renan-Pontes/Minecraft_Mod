@@ -57,6 +57,12 @@ public final class BossArena {
         return info(BossArenaService.engage(boss, center, radius));
     }
 
+    /** Move a arena de um chefe em luta (novo centro/raio) sem liberar nem avisar de novo. */
+    @Nullable
+    public static Info move(LivingEntity boss, Vec3 center, double radius) {
+        return info(BossArenaService.move(boss, center, radius));
+    }
+
     /** Libera já, sem esperar os 30 s (ex.: chefe "foge" de propósito numa fase). */
     public static boolean release(Entity boss) {
         return BossArenaService.release(boss.getUUID());

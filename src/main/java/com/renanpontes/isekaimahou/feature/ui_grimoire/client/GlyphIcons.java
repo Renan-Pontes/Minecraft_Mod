@@ -18,11 +18,15 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.FormGlyph;
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphKind;
+import com.renanpontes.isekaimahou.glyph.GlyphMastery;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.LinkGlyph;
+import com.renanpontes.isekaimahou.glyph.MasteryMutations;
 import com.renanpontes.isekaimahou.glyph.MoveTrigger;
 import com.renanpontes.isekaimahou.glyph.SpellCost;
 import com.renanpontes.isekaimahou.glyph.SpellRecipe;
+import com.renanpontes.isekaimahou.glyph.TransformLawGlyph;
+import com.renanpontes.isekaimahou.glyph.TransformTargets;
 import com.renanpontes.isekaimahou.glyph.TriggerGlyph;
 
 import net.minecraft.ChatFormatting;
@@ -80,6 +84,7 @@ public final class GlyphIcons {
 
     /** Nome do tipo do glifo ("Ligação" para as ligações, que tecnicamente são gatilhos). */
     public static MutableComponent kindName(Glyph g) {
+        if (g instanceof TransformLawGlyph) return Component.translatable("glyph_kind.isekai_mahou.transform_law");
         return isLink(g) ? Component.translatable("screen.isekai_mahou.glyph.kind.link") : kindName(g.kind());
     }
 
@@ -280,6 +285,11 @@ public final class GlyphIcons {
 
     /** Como o glifo é obtido (pelo tier/origem). */
     public static Component source(Glyph glyph) {
+        if (glyph instanceof TransformLawGlyph tl) {
+            return tl.minLevel() > 1
+                    ? Component.translatable("screen.isekai_mahou.glyph.source.tlaw_level", glyph.minCircle(), tl.minLevel())
+                    : Component.translatable("screen.isekai_mahou.glyph.source.tlaw", glyph.minCircle());
+        }
         if (glyph.origin() != null) {
             return Component.translatable("screen.isekai_mahou.glyph.source.origin", glyph.origin().displayName());
         }
@@ -345,8 +355,9 @@ public final class GlyphIcons {
             lines.add(Component.translatable("screen.isekai_mahou.glyph.min_circle", glyph.minCircle())
                     .withStyle(data.circle() >= glyph.minCircle() ? ChatFormatting.GRAY : ChatFormatting.RED));
         }
-        if (extended) lines.addAll(details(glyph));
+        if (extended || glyph instanceof TransformLawGlyph) lines.addAll(details(glyph));
         lines.add(glyph.description().withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_AQUA));
+        if (known) lines.addAll(masteryLines(glyph, data, extended));
         if (isLesson(glyph, data)) lines.add(lessonLine(glyph, data).withColor(LESSON_COLOR & 0xFFFFFF));
         if (!known) {
             lines.add(Component.translatable("screen.isekai_mahou.glyph.unknown").withStyle(ChatFormatting.DARK_GRAY));
@@ -357,21 +368,153 @@ public final class GlyphIcons {
         return lines;
     }
 
+    // =====================================================================================
+    //  Maestria por glifo (release 1.0)
+    // =====================================================================================
+
+    /**
+     * Cor da maestria pelo nível: I–III lilás apagado, IV–VI azul, VII–IX violeta, X–XIX dourado; depois do X (maestria
+     * infinita): 20+ azul cósmico, 35+ verde profano, 100+ carmim.
+     */
+    public static int masteryColor(int level) {
+        if (level >= MasteryMutations.SINGULAR) return 0xFFFF5A7A;
+        if (level >= MasteryMutations.ELDRITCH) return 0xFF7CFFB0;
+        if (level >= MasteryMutations.COSMIC) return 0xFF6FE8FF;
+        return level >= GlyphMastery.MAX_LEVEL ? Gfx.GOLD : level >= 7 ? 0xFFC58CFF : level >= 4 ? 0xFF7FB8FF : 0xFF9A8FC0;
+    }
+
+    /**
+     * Fração 0..1 para a barrinha da coleção: até o X é o caminho inteiro I→X; depois do X a barra mostra só o nível
+     * atual (enche e recomeça a cada nível, na cor da faixa).
+     */
+    public static float masteryFraction(int xp) {
+        int level = GlyphMastery.level(xp);
+        if (level >= GlyphMastery.MAX_LEVEL) return GlyphMastery.progress(xp);
+        return (level - 1 + GlyphMastery.progress(xp)) / (GlyphMastery.MAX_LEVEL - 1);
+    }
+
+    /**
+     * Barrinha fina de maestria embaixo de um ícone de glifo (caminho I→X, cor pelo nível). Só aparece depois do
+     * primeiro uso de verdade — a grade continua limpa para quem ainda não treinou nada.
+     */
+    public static void masteryBar(GuiGraphics g, MagicData data, Glyph glyph, int x, int y, int size) {
+        int xp = data.glyphXp(glyph.id());
+        if (xp <= 0 || !data.knowsGlyph(glyph.id())) return;
+        int fill = Math.max(1, Math.round(size * masteryFraction(xp)));
+        // depois do X o fundo da barra fica dourado apagado (a barra "dá voltas" a cada nível)
+        g.fill(x, y + size + 1, x + size, y + size + 2, GlyphMastery.level(xp) >= GlyphMastery.MAX_LEVEL ? 0x90806020 : 0x70000000);
+        g.fill(x, y + size + 1, x + fill, y + size + 2, masteryColor(GlyphMastery.level(xp)));
+    }
+
+    /** "−6% de custo · +4,5% de efeito" do nível dado (efeito só para glifos de EFEITO); null no nível I. */
+    public static MutableComponent masteryBonus(Glyph glyph, int level) {
+        if (level <= 1) return null;
+        String cost = String.format(java.util.Locale.ROOT, level > GlyphMastery.MAX_LEVEL ? "%.1f" : "%.0f",
+                GlyphMastery.costDiscount(level) * 100F);
+        MutableComponent c = Component.translatable("screen.isekai_mahou.glyph.mastery.cost", cost);
+        if (glyph.kind() == GlyphKind.EFFECT) {
+            String power = String.format(java.util.Locale.ROOT, "%.1f", (GlyphMastery.powerMult(level) - 1F) * 100F);
+            c.append(" · ").append(Component.translatable("screen.isekai_mahou.glyph.mastery.power", power));
+        }
+        return c;
+    }
+
+    /** "Rumo ao nível XII: 1,2k/11,7k" (ou "máxima" no teto do número salvo). */
+    public static MutableComponent masteryProgressText(int xp) {
+        int level = GlyphMastery.level(xp);
+        if (level >= GlyphMastery.LEVEL_CAP) return Component.translatable("screen.isekai_mahou.glyph.mastery.maxed");
+        int from = GlyphMastery.xpForLevel(level), to = GlyphMastery.xpForLevel(level + 1);
+        return Component.translatable("screen.isekai_mahou.glyph.mastery.next", GlyphMastery.roman(level + 1),
+                GlyphMastery.compact((long) xp - from), GlyphMastery.compact((long) to - from));
+    }
+
+    /**
+     * Linhas das MUTAÇÕES (maestria infinita): as já despertas (nomes) e a PRÓXIMA como mistério — "Próxima mutação no
+     * nível XVIII: ???" + uma dica vaga. Vazio para aumentos/gatilhos/leis. {@code full} = também a descrição de cada
+     * mutação desperta (painel de detalhes); senão só os nomes numa linha.
+     */
+    public static List<Component> mutationLines(Glyph glyph, int level, boolean full) {
+        List<Component> lines = new ArrayList<>();
+        if (MasteryMutations.mutations(glyph).isEmpty()) return lines;
+        List<MasteryMutations.Mut> on = MasteryMutations.active(glyph, level);
+        if (!on.isEmpty()) {
+            if (full) {
+                lines.add(Component.translatable("screen.isekai_mahou.glyph.mutations", on.size()).withColor(0xC58CFF));
+                for (MasteryMutations.Mut m : on) {
+                    lines.add(Component.literal("✦ ").append(m.displayName()).withColor(0xE0C8FF)
+                            .append(Component.literal(" — ").withStyle(ChatFormatting.DARK_GRAY))
+                            .append(m.description().withStyle(ChatFormatting.GRAY)));
+                }
+            } else {
+                MutableComponent names = Component.empty();
+                for (int i = 0; i < on.size(); i++) {
+                    if (i > 0) names.append(", ");
+                    names.append(on.get(i).displayName());
+                }
+                lines.add(Component.literal("✦ ").append(names).withColor(0xC58CFF));
+            }
+        }
+        MasteryMutations.Mut next = MasteryMutations.next(glyph, level);
+        if (next != null) {
+            lines.add(Component.translatable("screen.isekai_mahou.glyph.mutation_next", GlyphMastery.roman(next.level()))
+                    .withStyle(ChatFormatting.DARK_PURPLE)
+                    .append(Component.literal(" ").append(next.hint().withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_GRAY))));
+        }
+        return lines;
+    }
+
+    /** Linhas de maestria da dica de um glifo CONHECIDO: nível + progresso, bônus atuais e (dica longa) como evoluir. */
+    public static List<Component> masteryLines(Glyph glyph, MagicData data, boolean extended) {
+        List<Component> lines = new ArrayList<>();
+        int xp = data.glyphXp(glyph.id());
+        int level = GlyphMastery.level(xp);
+        int color = masteryColor(level) & 0xFFFFFF;
+        MutableComponent head = Component.translatable("screen.isekai_mahou.glyph.mastery", GlyphMastery.roman(level)).withColor(color);
+        if (level >= GlyphMastery.LEVEL_CAP) {
+            head.append(Component.literal(" ").append(Component.translatable("screen.isekai_mahou.glyph.mastery.max")));
+        } else {
+            int from = GlyphMastery.xpForLevel(level), to = GlyphMastery.xpForLevel(level + 1);
+            head.append(Component.literal("  " + GlyphMastery.compact((long) xp - from) + "/"
+                    + GlyphMastery.compact((long) to - from)).withStyle(ChatFormatting.DARK_GRAY));
+        }
+        lines.add(head);
+        MutableComponent bonus = masteryBonus(glyph, level);
+        if (bonus != null) lines.add(bonus.withColor(Gfx.GOOD & 0xFFFFFF));
+        // Mutações: na dica curta só a partir do X (antes disso é cedo demais para falar delas)
+        if (extended || level >= GlyphMastery.MAX_LEVEL) lines.addAll(mutationLines(glyph, level, false));
+        if (extended && level < GlyphMastery.MAX_LEVEL) {
+            lines.add(Component.translatable("screen.isekai_mahou.glyph.mastery.how").withStyle(ChatFormatting.DARK_GRAY));
+        }
+        return lines;
+    }
+
     /** Detalhes técnicos por tipo (forma: tempos, estágios; ligação: onde o próximo estágio nasce...). */
     public static List<Component> details(Glyph glyph) {
         List<Component> lines = new ArrayList<>();
+        if (glyph instanceof TransformLawGlyph tl) {
+            // v1.4: Lei de Transformação — bônus (verde), preço (vermelho) e onde vai
+            lines.add(Component.literal("✔ ").append(tl.boon()).withColor(0x7CE08A));
+            lines.add(Component.literal("✖ ").append(tl.price()).withColor(0xFF7070));
+            if (tl.minLevel() > 1) {
+                lines.add(Component.translatable("screen.isekai_mahou.glyph.tlaw_min_level", tl.minLevel()).withColor(Gfx.GOLD & 0xFFFFFF));
+            }
+            lines.add(Component.translatable("screen.isekai_mahou.glyph.tlaw_rule").withColor(kindColor(GlyphKind.LAW) & 0xFFFFFF));
+            return lines;
+        }
         if (glyph instanceof FormGlyph f) {
             if (f.baseCastTicks() > 0) lines.add(Component.translatable("screen.isekai_mahou.glyph.cast_time", Gfx.seconds(f.baseCastTicks())).withStyle(ChatFormatting.GRAY));
             else lines.add(Component.translatable("screen.isekai_mahou.glyph.instant").withStyle(ChatFormatting.GRAY));
             lines.add(Component.translatable("screen.isekai_mahou.glyph.base_cooldown", Gfx.seconds(f.baseCooldown())).withStyle(ChatFormatting.GRAY));
             if (f.isUltimate()) lines.add(Component.translatable("screen.isekai_mahou.glyph.ultimate").withColor(Gfx.GOLD & 0xFFFFFF));
             if (f.acceptsLaws()) lines.add(Component.translatable("screen.isekai_mahou.glyph.accepts_laws").withColor(kindColor(GlyphKind.LAW) & 0xFFFFFF));
+            if (f.acceptsTransformLaws()) lines.add(Component.translatable("screen.isekai_mahou.glyph.accepts_tlaws").withColor(kindColor(GlyphKind.LAW) & 0xFFFFFF));
             if (f.isPersistent()) lines.add(Component.translatable("screen.isekai_mahou.glyph.persistent").withStyle(ChatFormatting.GRAY));
             boolean stage = f.stageable() && !f.isUltimate() && !f.acceptsLaws();
             lines.add(Component.translatable(stage ? "screen.isekai_mahou.glyph.stageable" : "screen.isekai_mahou.glyph.first_stage_only")
                     .withColor(stage ? GlyphArt.kindColor(GlyphKind.TRIGGER, true) & 0xFFFFFF : 0x9A93AD));
         } else if (glyph instanceof EffectGlyph e) {
             if (e.isBeneficial()) lines.add(Component.translatable("screen.isekai_mahou.glyph.beneficial").withStyle(ChatFormatting.GREEN));
+            if (TransformTargets.isEffect(e.id())) lines.add(Component.translatable("screen.isekai_mahou.glyph.accepts_tlaws").withColor(kindColor(GlyphKind.LAW) & 0xFFFFFF));
             if (e.wantsBlocks()) lines.add(Component.translatable("screen.isekai_mahou.glyph.blocks").withStyle(ChatFormatting.GRAY));
         } else if (glyph instanceof AugmentGlyph a) {
             if (a.castTicksBonus() > 0) lines.add(Component.translatable("screen.isekai_mahou.glyph.cast_bonus", Gfx.seconds(a.castTicksBonus())).withStyle(ChatFormatting.GRAY));
@@ -432,6 +575,38 @@ public final class GlyphIcons {
     /** Elemento da magia (v1.0: sempre dos glifos — mesma regra do núcleo). */
     public static Element elementOf(SpellRecipe r) {
         return r == null || r.isEmpty() ? Element.ARCANE : SpellCost.primaryElement(r);
+    }
+
+    // ------------------------------------------------------------------ v1.4: glifos aposentados
+    private static java.util.Set<ResourceLocation> savedCache = java.util.Set.of();
+    private static int savedStamp = Integer.MIN_VALUE;
+    private static MagicData savedData;
+
+    /**
+     * O glifo aparece nas listas do Grimório? Aposentados ({@link Glyph#isHidden()}) só aparecem se o jogador ainda os
+     * usa numa magia salva (slots de todos os loadouts, biblioteca, predefinições) ou no rascunho aberto.
+     */
+    public static boolean listed(Glyph gl, MagicData d) {
+        if (!gl.isHidden()) return true;
+        return savedIds(d).contains(gl.id()) || GrimoireDraft.glyphs.contains(gl.id());
+    }
+
+    /** Ids de glifo usados nas magias salvas do jogador (cache por sincronização). */
+    public static java.util.Set<ResourceLocation> savedIds(MagicData d) {
+        int stamp = com.renanpontes.isekaimahou.network.ClientMagic.syncVersion;
+        if (stamp == savedStamp && d == savedData) return savedCache;
+        java.util.Set<ResourceLocation> out = new java.util.HashSet<>();
+        for (int l = 0; l < d.loadoutCount(); l++) {
+            for (int s = 0; s < Progression.SLOTS; s++) {
+                for (SpellRecipe r : d.peekSlot(l, s).all().values()) if (r != null) out.addAll(r.glyphs());
+            }
+        }
+        for (SpellRecipe r : d.library()) if (r != null) out.addAll(r.glyphs());
+        for (com.renanpontes.isekaimahou.glyph.SpellPreset p : d.presets()) if (p != null && p.recipe() != null) out.addAll(p.recipe().glyphs());
+        savedCache = out;
+        savedStamp = stamp;
+        savedData = d;
+        return out;
     }
 
     private GlyphIcons() {}

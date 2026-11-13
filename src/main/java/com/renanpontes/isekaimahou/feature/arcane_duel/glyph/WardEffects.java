@@ -17,8 +17,8 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 import com.renanpontes.isekaimahou.network.CorePayloads;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -82,7 +82,7 @@ public final class WardEffects {
                 cleansed++;
             }
             DuelFx.attach(level, DuelFxEntity.HEX_WARD, le, le.getBbWidth() * 0.5F + 0.75F, ticks, DuelFx.HEX, le.getBbHeight());
-            level.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 12, 0.5, 0.6, 0.5, 0.04);
+            level.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 12, 0.5, 0.6, 0.5, 0.04);
             DuelFx.sound(level, c, SoundEvents.BEACON_POWER_SELECT, 0.8F, 1.5F);
             DuelFx.sound(level, c, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.0F, 1.1F);
             if (cleansed > 0) DuelFx.sound(level, c, SoundEvents.ZOMBIE_VILLAGER_CURE, 0.3F, 1.8F);
@@ -117,8 +117,8 @@ public final class WardEffects {
             int ticks = stats.duration(80);
             le.addEffect(new MobEffectInstance(DuelRegistry.INDESTRUCTIBLE, ticks, 0, false, true), ctx.caster());
             DuelFx.attach(level, DuelFxEntity.AEGIS, le, le.getBbWidth() * 0.5F + 0.9F, ticks, DuelFx.GOLD, le.getBbHeight());
-            level.sendParticles(ParticleTypes.WAX_ON, c.x, c.y, c.z, 20, 0.5, 0.7, 0.5, 0.1);
-            level.sendParticles(ParticleTypes.END_ROD, c.x, c.y + 1, c.z, 16, 0.3, 1.2, 0.3, 0.03);
+            level.sendParticles(Vfx.waxOn(), c.x, c.y, c.z, 20, 0.5, 0.7, 0.5, 0.1);
+            level.sendParticles(Vfx.endRod(), c.x, c.y + 1, c.z, 16, 0.3, 1.2, 0.3, 0.03);
             DuelFx.sound(level, c, SoundEvents.BEACON_ACTIVATE, 1.0F, 1.6F);
             DuelFx.sound(level, c, SoundEvents.ANVIL_LAND, 0.4F, 1.8F);
             DuelFx.sound(level, c, SoundEvents.BELL_BLOCK, 0.9F, 1.3F);
@@ -176,7 +176,7 @@ public final class WardEffects {
             if (now < lock && !DuelUtil.isCreative(sp)) {
                 DuelUtil.actionbar(sp, Component.translatable("message.isekai_mahou.arcane_duel.time_walk.recovering",
                         (lock - now + 19) / 20), ChatFormatting.GRAY);
-                level.sendParticles(ParticleTypes.SMOKE, c.x, c.y + 0.6, c.z, 10, 0.3, 0.3, 0.3, 0.01);
+                level.sendParticles(Vfx.smoke(), c.x, c.y + 0.6, c.z, 10, 0.3, 0.3, 0.3, 0.01);
                 return;
             }
             pd.putLong(LOCK, now + OWN_COOLDOWN);
@@ -200,7 +200,7 @@ public final class WardEffects {
         private static void clock(ServerLevel level, LivingEntity e, int life) {
             Vec3 c = DuelFx.center(e);
             DuelFx.attach(level, DuelFxEntity.CLOCK, e, 2.8F, life, DuelFx.TIME, e.getBbHeight());
-            level.sendParticles(ParticleTypes.REVERSE_PORTAL, c.x, c.y, c.z, 60, 1.2, 1.0, 1.2, 0.05);
+            level.sendParticles(Vfx.reversePortal(), c.x, c.y, c.z, 60, 1.2, 1.0, 1.2, 0.05);
             DuelFx.sound(level, c, SoundEvents.BELL_RESONATE, 1.0F, 0.7F);
             DuelFx.sound(level, c, SoundEvents.BEACON_POWER_SELECT, 1.0F, 0.6F);
             DuelFx.sound(level, c, SoundEvents.ENCHANTMENT_TABLE_USE, 1.0F, 0.5F);

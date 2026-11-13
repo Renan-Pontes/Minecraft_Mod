@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
 import com.renanpontes.isekaimahou.feature.bosses_c.BossesCRegistry;
+import com.renanpontes.isekaimahou.feature.bosses_c.polish.BossShow;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -310,6 +311,7 @@ public class CorruptedWitch extends ClassBossEntity {
             level.sendParticles(BossFx.dust(POOL_COLOR, 1.8F), c.x, c.y + 0.4, c.z, 30, r * 0.4, 0.3, r * 0.4, 0);
             level.sendParticles(ParticleTypes.SPLASH, c.x, c.y + 0.3, c.z, 40, r * 0.4, 0.2, r * 0.4, 0.2);
             level.sendParticles(ParticleTypes.WITCH, c.x, c.y + 0.6, c.z, 15, r * 0.3, 0.4, r * 0.3, 0.05);
+            BossShow.impact(level, c, POOL_COLOR, r * 0.5F); // v1.0: o estouro da poça tem peso
             level.playSound(null, c.x, c.y, c.z, SoundEvents.SPLASH_POTION_BREAK, SoundSource.HOSTILE, 1.2F, 0.6F);
             level.playSound(null, c.x, c.y, c.z, SoundEvents.BUBBLE_COLUMN_UPWARDS_INSIDE, SoundSource.HOSTILE, 1.0F, 0.8F);
         });

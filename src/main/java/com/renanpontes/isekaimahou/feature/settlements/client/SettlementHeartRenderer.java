@@ -77,6 +77,10 @@ public class SettlementHeartRenderer implements BlockEntityRenderer<SettlementHe
         return switch (s) {
             case DESERT -> new int[] {255, 196, 90, 255, 245, 210, 255, 215, 120};
             case NORDIC -> new int[] {180, 230, 255, 245, 255, 255, 205, 240, 255};
+            case ORIENTAL -> new int[] {255, 110, 100, 255, 225, 220, 255, 190, 205};
+            case ELVEN -> new int[] {130, 235, 150, 235, 255, 225, 190, 255, 170};
+            case GOTHIC -> new int[] {170, 120, 245, 225, 210, 255, 90, 225, 235};
+            case DWARVEN -> new int[] {255, 150, 60, 255, 225, 180, 255, 190, 90};
             default -> new int[] {110, 160, 255, 220, 235, 255, 255, 220, 120};
         };
     }

@@ -1,4 +1,7 @@
 {
   "command.isekai_mahou.spellfx.demo": "Effects showcase: %s, tier %s",
-  "command.isekai_mahou.spellfx.bad_element": "Unknown element."
+  "command.isekai_mahou.spellfx.bad_element": "Unknown element.",
+  "command.isekai_mahou.spellfx.bad_kind": "Unknown effect kind. Use: %s",
+  "command.isekai_mahou.spellfx.bad_reaction": "Unknown reaction.",
+  "command.isekai_mahou.spellfx.reaction": "Reactions showcase: %s effect(s)"
 }

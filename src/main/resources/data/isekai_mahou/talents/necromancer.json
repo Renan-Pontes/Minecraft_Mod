@@ -1,0 +1,874 @@
+{
+  "layout": 2,
+  "branches": [
+    {
+      "id": "bones",
+      "color": "D8D2B8"
+    },
+    {
+      "id": "death",
+      "color": "4A8A8A"
+    },
+    {
+      "id": "beyond",
+      "color": "7C5BD0"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "bone_craft",
+      "branch": 0,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:bone",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "marrow",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:golden_apple",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 1.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "legion",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:bone",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "attack_order",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:name_tag",
+      "effects": [
+        {
+          "stat": "summon_mark",
+          "amount": 0.08
+        }
+      ]
+    },
+    {
+      "id": "grave_armor",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:iron_chestplate",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.armor",
+          "amount": 0.4,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "bone_lord",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:bone",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.02
+        },
+        {
+          "stat": "damage_resist",
+          "amount": 0.006
+        }
+      ]
+    },
+    {
+      "id": "horde",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:bone",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "bone_guard"
+      ]
+    },
+    {
+      "id": "bone_guard",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:lead",
+      "effects": [
+        {
+          "stat": "summon_bond",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "horde"
+      ]
+    },
+    {
+      "id": "sharpened_bones",
+      "branch": 0,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:dragon_head",
+      "effects": [
+        {
+          "stat": "boss_damage",
+          "amount": 0.012
+        }
+      ]
+    },
+    {
+      "id": "tribute_of_the_dead",
+      "branch": 0,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:sculk_catalyst",
+      "effects": [
+        {
+          "stat": "summon_lifesteal",
+          "amount": 0.04
+        }
+      ]
+    },
+    {
+      "id": "arise",
+      "branch": 0,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:blaze_rod",
+      "effects": [
+        {
+          "stat": "kill_fury",
+          "amount": 0.08
+        },
+        {
+          "stat": "charge_on_kill",
+          "amount": 3.0
+        }
+      ]
+    },
+    {
+      "id": "mastery_bones",
+      "branch": 0,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.006
+        }
+      ]
+    },
+    {
+      "id": "tomb_chill",
+      "branch": 1,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "isekai_mahou:essence_shadow",
+      "effects": [
+        {
+          "stat": "spell_damage.shadow",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "rot",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:wither_rose",
+      "effects": [
+        {
+          "stat": "on_hit.wither",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "reap",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:iron_axe",
+      "effects": [
+        {
+          "stat": "execute",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "chilling_touch",
+      "branch": 1,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:snowball",
+      "effects": [
+        {
+          "stat": "on_hit.chill",
+          "amount": 0.15
+        },
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "dusk",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:clock",
+      "effects": [
+        {
+          "stat": "night_power",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "death_mark",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:spyglass",
+      "effects": [
+        {
+          "stat": "crit_chance",
+          "amount": 0.01
+        },
+        {
+          "stat": "execute",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "swift_reaping",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:compass",
+      "effects": [
+        {
+          "stat": "kill_cdr",
+          "amount": 1.5
+        }
+      ],
+      "exclusive": [
+        "mercy_stroke"
+      ]
+    },
+    {
+      "id": "mercy_stroke",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:iron_axe",
+      "effects": [
+        {
+          "stat": "execute",
+          "amount": 0.15
+        }
+      ],
+      "exclusive": [
+        "swift_reaping"
+      ]
+    },
+    {
+      "id": "shroud",
+      "branch": 1,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:enchanted_book",
+      "effects": [
+        {
+          "stat": "spell_damage_all",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "omen",
+      "branch": 1,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:fire_charge",
+      "effects": [
+        {
+          "stat": "crit_fury",
+          "amount": 0.06
+        },
+        {
+          "stat": "crit_mana",
+          "amount": 3.0
+        }
+      ]
+    },
+    {
+      "id": "deaths_scythe",
+      "branch": 1,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:netherite_axe",
+      "effects": [
+        {
+          "stat": "cull",
+          "amount": 0.1
+        },
+        {
+          "stat": "kill_burst",
+          "amount": 0.15
+        }
+      ]
+    },
+    {
+      "id": "mastery_death",
+      "branch": 1,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "all_damage",
+          "amount": 0.004
+        }
+      ]
+    },
+    {
+      "id": "soul_sip",
+      "branch": 2,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:ghast_tear",
+      "effects": [
+        {
+          "stat": "lifesteal",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "soul_harvest",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "mana_on_kill",
+          "amount": 2.0
+        }
+      ]
+    },
+    {
+      "id": "cold_blood",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:ender_eye",
+      "effects": [
+        {
+          "stat": "magic_resist",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "half_dead",
+      "branch": 2,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:turtle_helmet",
+      "effects": [
+        {
+          "stat": "low_health_resist",
+          "amount": 0.07
+        },
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 2.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "phylactery",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:lapis_lazuli",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 8.0,
+          "op": "add_value"
+        },
+        {
+          "attribute": "isekai_mahou:mana_regen",
+          "amount": 0.01,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "undying",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:totem_of_undying",
+      "effects": [
+        {
+          "stat": "second_wind",
+          "amount": 2.0
+        },
+        {
+          "stat": "heal_on_kill",
+          "amount": 0.3
+        }
+      ]
+    },
+    {
+      "id": "tomb_skin",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:diamond_chestplate",
+      "effects": [
+        {
+          "stat": "full_health_resist",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "soul_feast"
+      ]
+    },
+    {
+      "id": "soul_feast",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:glistering_melon_slice",
+      "effects": [
+        {
+          "stat": "heal_on_kill",
+          "amount": 2.5
+        }
+      ],
+      "exclusive": [
+        "tomb_skin"
+      ]
+    },
+    {
+      "id": "veil",
+      "branch": 2,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:phantom_membrane",
+      "effects": [
+        {
+          "stat": "dodge",
+          "amount": 0.008
+        }
+      ]
+    },
+    {
+      "id": "beyond_the_grave",
+      "branch": 2,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:beacon",
+      "effects": [
+        {
+          "stat": "ult_power",
+          "amount": 0.1
+        },
+        {
+          "stat": "cast_ward",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "true_phylactery",
+      "branch": 2,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:totem_of_undying",
+      "effects": [
+        {
+          "stat": "cheat_death",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "id": "mastery_beyond",
+      "branch": 2,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 0.5,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "eternal_cold",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "necromancer_lichborn",
+      "icon": "isekai_mahou:essence_shadow",
+      "effects": [
+        {
+          "stat": "spell_damage.shadow",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "kept_soul",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "necromancer_lichborn",
+      "icon": "minecraft:lapis_lazuli",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 15.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "gaze_of_death",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "necromancer_lichborn",
+      "icon": "minecraft:poisonous_potato",
+      "effects": [
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.05
+        },
+        {
+          "stat": "on_hit.chill",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "lich_crown",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "necromancer_lichborn",
+      "icon": "minecraft:glowstone",
+      "effects": [
+        {
+          "stat": "surge",
+          "amount": 0.03
+        },
+        {
+          "stat": "cast_refund",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "recruits",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "necromancer_gravelord",
+      "icon": "minecraft:bone",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "war_banner",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "necromancer_gravelord",
+      "icon": "minecraft:golden_apple",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 2.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "funeral_march",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "necromancer_gravelord",
+      "icon": "minecraft:name_tag",
+      "effects": [
+        {
+          "stat": "summon_mark",
+          "amount": 0.08
+        },
+        {
+          "stat": "kill_speed",
+          "amount": 1.5
+        }
+      ]
+    },
+    {
+      "id": "shadow_monarch",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "necromancer_gravelord",
+      "icon": "minecraft:beacon",
+      "effects": [
+        {
+          "stat": "ult_power",
+          "amount": 0.2
+        },
+        {
+          "stat": "kill_fury",
+          "amount": 0.06
+        }
+      ]
+    }
+  ],
+  "subclasses": [
+    {
+      "id": "necromancer_lichborn",
+      "color": "4AC8C8",
+      "icon": "minecraft:wither_skeleton_skull",
+      "effects": [
+        {
+          "stat": "spell_damage.shadow",
+          "amount": 0.12
+        },
+        {
+          "stat": "second_wind",
+          "amount": 8.0
+        },
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 100.0,
+          "op": "add_value"
+        },
+        {
+          "stat": "echo",
+          "amount": 0.15
+        },
+        {
+          "stat": "high_mana_power",
+          "amount": 0.12
+        }
+      ]
+    },
+    {
+      "id": "necromancer_gravelord",
+      "color": "D8D2B8",
+      "icon": "minecraft:skeleton_skull",
+      "effects": [
+        {
+          "stat": "summon_damage",
+          "amount": 0.25
+        },
+        {
+          "stat": "heal_on_kill",
+          "amount": 2.0
+        },
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 6.0,
+          "op": "add_value"
+        },
+        {
+          "stat": "summon_bond",
+          "amount": 0.15
+        },
+        {
+          "stat": "summon_lifesteal",
+          "amount": 0.1
+        }
+      ]
+    }
+  ]
+}

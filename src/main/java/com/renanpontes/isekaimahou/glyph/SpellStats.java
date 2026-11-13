@@ -53,6 +53,12 @@ public final class SpellStats {
     public boolean fortune;     // Fortuna (Quebrar/Colher)
     public boolean silkTouch;   // Toque Suave (Quebrar)
 
+    // ---------- Maestria (release 1.0; o SpellParser preenche a partir do MagicData de quem conjura) ----------
+    /** Nível de maestria (1..10) do glifo dono destes stats (forma ou efeito). 1 = sem maestria (mobs, pedestais). */
+    public int masteryLevel = 1;
+    /** Multiplicador de poder pela maestria do EFEITO dono destes stats (1 = nenhum). Entra em {@link #power()}. */
+    public float masteryPower = 1.0F;
+
     /** Aumentos de módulos (id do aumento -> quantas vezes). */
     public final Map<ResourceLocation, Integer> custom = new HashMap<>();
 
@@ -85,7 +91,7 @@ public final class SpellStats {
         float p = 1.0F + 0.4F * amplify + 0.3F * charge;
         if (concentrate) p *= 1.3F;
         if (overload) p *= 1.4F;
-        return Math.max(0.25F, p);
+        return Math.max(0.25F, p) * masteryPower;
     }
 
     /** Raio final de uma área com base no raio padrão da forma/efeito. */
@@ -126,6 +132,7 @@ public final class SpellStats {
         s.ghost = ghost; s.arc = arc; s.sensitive = sensitive; s.enemiesOnly = enemiesOnly;
         s.alliesOnly = alliesOnly; s.inverted = inverted; s.charge = charge; s.channel = channel;
         s.silent = silent; s.fortune = fortune; s.silkTouch = silkTouch;
+        s.masteryLevel = masteryLevel; s.masteryPower = masteryPower;
         s.custom.putAll(custom);
         return s;
     }

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CAC",
+    "ANA",
+    "CSC"
+  ],
+  "key": {
+    "C": {
+      "item": "isekai_mahou:mana_crystal_block"
+    },
+    "A": {
+      "item": "isekai_mahou:abyss_shard"
+    },
+    "S": {
+      "item": "minecraft:nether_star"
+    },
+    "N": {
+      "item": "isekai_mahou:greater_mana_necklace"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:grand_mana_necklace",
+    "count": 1
+  }
+}

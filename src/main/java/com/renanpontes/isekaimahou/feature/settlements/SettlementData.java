@@ -66,6 +66,33 @@ public class SettlementData extends SavedData {
 
     private final Map<String, Settlement> cities = new LinkedHashMap<>();
     private final Map<UUID, Oath> oaths = new HashMap<>();
+    /** v1.4: ataques de monstros às cidades fundadas (liga/desliga: /mahou city raids on|off). */
+    public boolean raidsEnabled = true;
+    /**
+     * Onda 7 — CALENDÁRIO DAS CIDADES: o dia que as cidades usam ({@link SettlementService#day}) nunca anda para trás.
+     * Antes era o relógio do mundo dividido por um dia; um "/time set day" voltava a contagem para o dia 0 e a cidade
+     * travava (conta do dia, fim do festival e dos enfeites, invasões... tudo esperando o dia antigo voltar).
+     * {@code calDay} = dia das cidades; {@code calTime} = relógio do mundo na última leitura (-1 = ainda não leu).
+     */
+    private long calDay, calTime = -1;
+
+    /**
+     * O dia das cidades agora. Relógio andando para a frente (natural, dormir, /time add): soma os dias que passaram.
+     * Relógio voltando (/time set): não desconta nada; se voltou da noite para o dia, conta como um amanhecer.
+     */
+    public long day(long now) {
+        if (calTime < 0) {
+            // primeira leitura (mundo antigo): começa do maior dia que as cidades já viram
+            calDay = now / 24000L;
+            for (Settlement s : cities.values()) calDay = Math.max(calDay, Math.max(s.lastDay, s.paceDay));
+        } else if (now > calTime) {
+            calDay += now / 24000L - calTime / 24000L;
+        } else if (now < calTime && Math.floorMod(calTime, 24000L) >= 12000L && Math.floorMod(now, 24000L) < 12000L) {
+            calDay++;
+        }
+        calTime = now;
+        return calDay;
+    }
 
     public static SettlementData get(MinecraftServer server) {
         ServerLevel overworld = server.overworld();
@@ -139,6 +166,11 @@ public class SettlementData extends SavedData {
                 // chave inválida: o juramento se perde (o jogador pode fazer de novo)
             }
         }
+        d.raidsEnabled = !tag.contains("RaidsEnabled") || tag.getBoolean("RaidsEnabled");
+        if (tag.contains("CalTime")) {
+            d.calDay = tag.getLong("CalDay");
+            d.calTime = tag.getLong("CalTime");
+        }
         return d;
     }
 
@@ -150,6 +182,11 @@ public class SettlementData extends SavedData {
         CompoundTag o = new CompoundTag();
         oaths.forEach((u, oath) -> o.put(u.toString(), oath.save()));
         tag.put("Oaths", o);
+        tag.putBoolean("RaidsEnabled", raidsEnabled);
+        if (calTime >= 0) {
+            tag.putLong("CalDay", calDay);
+            tag.putLong("CalTime", calTime);
+        }
         return tag;
     }
 

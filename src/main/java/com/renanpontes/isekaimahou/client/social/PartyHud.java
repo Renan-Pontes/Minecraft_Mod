@@ -21,6 +21,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * HUD de grupo: um cartão por membro (rosto, nome, nível, barra de vida e do recurso da classe) na coluna da esquerda,
@@ -119,13 +120,24 @@ public class PartyHud implements LayeredDraw.Layer {
         int nameColor = !m.online() ? 0xFF6E6880 : leader ? MahouUi.GOLD_PALE : MahouUi.TEXT;
         String lvl = m.online() && m.level() > 0 ? String.valueOf(m.level()) : "";
         int lvlW = lvl.isEmpty() ? 0 : Math.round(font.width(lvl) * 0.75F) + 2;
-        int nameMax = Math.round((W - 18 - lvlW) / 0.75F);
+        // Release 1.0 — marcador dos amigos: seta para onde o membro está + distância (vale para quem está fora da
+        // visão: a posição vem do servidor). Só de longe, para o cartão continuar limpo.
+        Vec3 where = sameDim && mc.player != null ? PartyMarkers.where(mc, m.id(), 1F) : null;
+        int dist = where == null ? 0 : (int) Math.sqrt(where.distanceToSqr(mc.player.position()));
+        String distText = dist > 12 ? dist + "m" : "";
+        int dirW = distText.isEmpty() ? 0 : Math.round(font.width(distText) * 0.6F) + 10;
+        int nameMax = Math.round((W - 18 - lvlW - dirW) / 0.75F);
         g.pose().pushPose();
         g.pose().translate(x + 15, y + 2, 0);
         g.pose().scale(0.75F, 0.75F, 1F);
         g.drawString(font, MahouUi.fit(font, Component.literal(m.name()), nameMax), 0, 0, nameColor, false);
         g.pose().popPose();
         if (!lvl.isEmpty()) MahouUi.smallText(g, font, Component.literal(lvl), x + W - lvlW, y + 2, 0.75F, 0xFFD9A8FF, false);
+        if (dirW > 0) {
+            int dx = x + W - lvlW - dirW;
+            PartyMarkers.arrow(g, dx + 3, y + 5, PartyMarkers.bearing(mc, where), MahouUi.alpha(0xFF7CFF8A, alpha));
+            MahouUi.smallText(g, font, Component.literal(distText), dx + 8, y + 3, 0.6F, 0xFFB8E8C0, false);
+        }
 
         if (!m.online()) {
             MahouUi.smallText(g, font, Component.translatable("hud.isekai_mahou.party.offline"), x + 15, y + 10, 0.65F, 0xFF6E6880, false);
@@ -145,9 +157,6 @@ public class PartyHud implements LayeredDraw.Layer {
         }
         if (!sameDim) {
             MahouUi.smallText(g, font, Component.translatable("hud.isekai_mahou.party.elsewhere"), x + W - 30, y + 10, 0.5F, 0xFFB8B0C8, false);
-        } else if (p != null && mc.player != null) {
-            int dist = (int) Math.sqrt(p.distanceToSqr(mc.player));
-            if (dist > 24) MahouUi.smallText(g, font, Component.literal(dist + "m"), x + W - 16, y + 10, 0.5F, 0xFFB8B0C8, false);
         }
     }
 }

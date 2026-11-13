@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.client.GlyphArt;
 import com.renanpontes.isekaimahou.client.menu.MenuTab;
 import com.renanpontes.isekaimahou.client.menu.StatusScreen;
@@ -14,7 +13,6 @@ import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.MagicPath;
-import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.core.Progression;
 import com.renanpontes.isekaimahou.core.api.Reputation;
 import com.renanpontes.isekaimahou.core.api.TrialsApi;
@@ -39,7 +37,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
  * Aba "Status" do menu B: a "Janela de Status" estilo isekai.
@@ -79,12 +76,10 @@ public class StatusWindowTab implements MenuTab {
         }
     }
 
-    /** Área clicável de um interruptor da seção "Interface" (posição do último quadro, já com a rolagem). */
-    private record Toggle(int x, int y, int w, int h, ModConfigSpec.BooleanValue option) {}
-
     private final Column left = new Column();
     private final Column right = new Column();
-    private final List<Toggle> toggles = new ArrayList<>();
+    /** Área clicável da linha "Opções da interface" (posição do último quadro, já com a rolagem), ou null. */
+    private int[] settingsRect;
     private List<Component> tooltip;
     private int mouseX, mouseY;
     /** v1.1: Status simples por padrão (o essencial); "Ver mais detalhes" mostra atributos, evolução, estatísticas... */
@@ -116,16 +111,12 @@ public class StatusWindowTab implements MenuTab {
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, details ? 1.2F : 0.9F));
             return true;
         }
-        for (Toggle t : toggles) {
-            if (mx < t.x() || mx >= t.x() + t.w() || my < t.y() || my >= t.y() + t.h()) continue;
-            boolean on = !HudDraw.config(t.option());
-            try {
-                t.option().set(on);
-                t.option().save();
-            } catch (RuntimeException e) {
-                IsekaiMahou.LOGGER.warn("Não foi possível salvar a opção da interface", e);
-            }
-            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, on ? 1.2F : 0.9F));
+        if (settingsRect != null && mx >= settingsRect[0] && mx < settingsRect[0] + settingsRect[2]
+                && my >= settingsRect[1] && my < settingsRect[1] + settingsRect[3]) {
+            // v1.0 RELEASE: as opções moram no menu do Minecraft (Opções → Isekai Mahou); aqui é só o atalho
+            Minecraft mc = Minecraft.getInstance();
+            mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            MahouSettings.open(mc.screen);
             return true;
         }
         return false;
@@ -149,7 +140,7 @@ public class StatusWindowTab implements MenuTab {
         Font font = mc.font;
         MagicData d = ClientMagic.data();
         tooltip = null;
-        toggles.clear();
+        settingsRect = null;
         moreRect = null;
         mouseX = mx;
         mouseY = my;
@@ -404,14 +395,10 @@ public class StatusWindowTab implements MenuTab {
         yy = reputationSection(g, font, player, cx, yy, cw);
         yy += 4;
 
-        // Interface: liga/desliga o Olho Analítico, as barras de vida flutuantes e os avisos da v0.8 sem sair do jogo
+        // Interface — v1.0 RELEASE: "Deixe isso no menu do Minecraft, não do mod". Os interruptores saíram daqui;
+        // fica só um atalho para a tela de opções (a mesma de Opções → Isekai Mahou e Mods → Config)
         yy = sectionHeader(g, font, Component.translatable("screen.isekai_mahou.status_window.interface"), cx, yy, cw, HudDraw.SYS_BORDER);
-        yy = toggleRow(g, font, cx, yy, cw, "target_info", MahouConfig.SHOW_TARGET_INFO);
-        yy = toggleRow(g, font, cx, yy, cw, "health_bars", MahouConfig.FLOATING_HEALTH_BARS);
-        yy = toggleRow(g, font, cx, yy, cw, "status_icons", MahouConfig.SHOW_STATUS_ICONS);
-        yy = toggleRow(g, font, cx, yy, cw, "reaction_text", MahouConfig.SHOW_REACTION_TEXT);
-        yy = toggleRow(g, font, cx, yy, cw, "stack", MahouConfig.SHOW_STACK);
-        yy = toggleRow(g, font, cx, yy, cw, "reputation_toasts", MahouConfig.REPUTATION_TOASTS);
+        yy = settingsRow(g, font, cx, yy, cw);
         return yy;
     }
 
@@ -533,26 +520,20 @@ public class StatusWindowTab implements MenuTab {
         return y + 17;
     }
 
-    /** Linha com um interruptor LIGADO/DESLIGADO (clique alterna e salva a config do cliente). */
-    private int toggleRow(GuiGraphics g, Font font, int x, int y, int w, String key, ModConfigSpec.BooleanValue option) {
-        boolean on = HudDraw.config(option);
-        Component state = Component.translatable(on ? "screen.isekai_mahou.status_window.toggle.on" : "screen.isekai_mahou.status_window.toggle.off");
-        int sw = font.width(state) + 8;
-        int px = x + w - sw, py = y - 1;
-        boolean hot = left.contains(mouseX, mouseY) && mouseX >= x && mouseX < x + w && mouseY >= py && mouseY < py + 10;
-        int c = on ? 0xFF7CFF8A : 0xFF7A8494;
-        g.fill(px, py, px + sw, py + 10, HudDraw.fade(c, hot ? 0.32F : 0.16F));
-        g.renderOutline(px, py, sw, 10, HudDraw.fade(c, hot ? 1F : 0.75F));
-        g.drawString(font, state, px + 4, py + 1, on ? 0xFFDFFFE4 : 0xFFB0B8C8, false);
-        Component label = HudDraw.tr("screen.isekai_mahou.status_window.toggle." + key);
-        g.drawString(font, HudDraw.ellipsize(font, label, w - sw - 4), x, y, hot ? 0xFFFFFFFF : HudDraw.SYS_TEXT, false);
+    /** Atalho "Opções do mod" (abre a tela de opções do menu do Minecraft; voltar retorna para este menu). */
+    private int settingsRow(GuiGraphics g, Font font, int x, int y, int w) {
+        Component label = Component.translatable("screen.isekai_mahou.status_window.settings");
+        boolean hot = left.contains(mouseX, mouseY) && mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + 13;
+        int c = hot ? HudDraw.SYS_TEXT : HudDraw.fade(HudDraw.SYS_BORDER, 0.9F);
+        g.fill(x, y, x + w, y + 13, HudDraw.fade(HudDraw.SYS_BORDER, hot ? 0.3F : 0.14F));
+        g.renderOutline(x, y, w, 13, c);
+        net.minecraft.util.FormattedCharSequence shown = HudDraw.ellipsize(font, label, w - 8);
+        g.drawString(font, shown, x + (w - font.width(shown)) / 2, y + 3, hot ? 0xFFFFFFFF : HudDraw.SYS_TEXT, false);
         // Só é clicável a parte visível da coluna (a rolagem pode esconder a linha)
-        if (py + 10 > left.y && py < left.y + left.h) toggles.add(new Toggle(x, py, w, 10, option));
-        hover(left, x, py, w, 10, List.of(
-                label.copy().withStyle(ChatFormatting.AQUA),
-                HudDraw.tr("screen.isekai_mahou.status_window.toggle." + key + ".desc").withStyle(ChatFormatting.GRAY),
-                Component.translatable("screen.isekai_mahou.status_window.toggle.click").withStyle(ChatFormatting.DARK_AQUA)));
-        return y + ROW + 1;
+        if (y + 13 > left.y && y < left.y + left.h) settingsRect = new int[] {x, y, w, 13};
+        hover(left, x, y, w, 13, List.of(label.copy().withStyle(ChatFormatting.AQUA),
+                Component.translatable("screen.isekai_mahou.status_window.settings.desc").withStyle(ChatFormatting.GRAY)));
+        return y + 17;
     }
 
     /** XP guardado no limite do Círculo (vira níveis depois da Ascensão). */

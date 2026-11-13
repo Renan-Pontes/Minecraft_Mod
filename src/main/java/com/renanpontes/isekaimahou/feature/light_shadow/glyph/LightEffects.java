@@ -18,6 +18,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -58,7 +59,7 @@ public final class LightEffects {
                 // Dobro no total: mortos-vivos já levam ×1,5 de Luz pelo núcleo (ElementReactions)
                 dmg *= LsUtil.isUndead(target) ? 2.0F / 1.5F : 2.0F;
                 target.igniteForSeconds(3);
-                level.sendParticles(ParticleTypes.SOUL, target.getX(), target.getY() + target.getBbHeight() * 0.6, target.getZ(), 6, 0.25, 0.3, 0.25, 0.03);
+                level.sendParticles(Vfx.soul(), target.getX(), target.getY() + target.getBbHeight() * 0.6, target.getZ(), 6, 0.25, 0.3, 0.25, 0.03);
             }
             ctx.damage(target, dmg, stats, null);
             LsFx.sound(level, target.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.4F, 0.8F);
@@ -86,7 +87,7 @@ public final class LightEffects {
             if (ctx.isAlly(target)) {
                 ctx.heal(le, 6.0F, stats);
                 LsFx.spiral(level, le, LsFx.dust(LsFx.WHITE_GOLD, 0.9F), 18, le.getBbWidth() * 0.7 + 0.3);
-                level.sendParticles(ParticleTypes.HAPPY_VILLAGER, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 8, 0.35, 0.4, 0.35, 0);
+                level.sendParticles(Vfx.happy(), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 8, 0.35, 0.4, 0.35, 0);
                 LsFx.sound(level, le.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.6F);
             } else {
                 ctx.damage(target, LsUtil.isUnholy(target) ? 8.0F : 4.0F, stats, null);
@@ -119,7 +120,7 @@ public final class LightEffects {
                 LsFx.sound(ctx.level(), le.position(), SoundEvents.BEACON_POWER_SELECT, 0.6F, 1.8F);
             } else {
                 ctx.status(le, MobEffects.WITHER, 120, amp - 1, stats);
-                ctx.level().sendParticles(ParticleTypes.SMOKE, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 12, 0.3, 0.4, 0.3, 0.02);
+                ctx.level().sendParticles(Vfx.smoke(), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 12, 0.3, 0.4, 0.3, 0.02);
             }
         }
     }
@@ -212,7 +213,7 @@ public final class LightEffects {
             } else if (LsUtil.isUnholy(le)) {
                 ctx.damage(le, 4.0F, stats, null);
             }
-            level.sendParticles(ParticleTypes.END_ROD, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 6 + removed * 4, 0.3, 0.5, 0.3, 0.05);
+            level.sendParticles(Vfx.endRod(), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 6 + removed * 4, 0.3, 0.5, 0.3, 0.05);
             LsFx.sound(level, le.position(), removed > 0 ? SoundEvents.ZOMBIE_VILLAGER_CURE : SoundEvents.AMETHYST_BLOCK_CHIME, 0.6F, 1.5F);
         }
     }
@@ -243,7 +244,7 @@ public final class LightEffects {
             } else {
                 ctx.status(le, MobEffects.WEAKNESS, 300, amp, stats);
                 ctx.status(le, MobEffects.MOVEMENT_SLOWDOWN, 300, amp, stats);
-                level.sendParticles(ParticleTypes.SMOKE, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 10, 0.3, 0.4, 0.3, 0.02);
+                level.sendParticles(Vfx.smoke(), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 10, 0.3, 0.4, 0.3, 0.02);
             }
         }
     }
@@ -288,7 +289,7 @@ public final class LightEffects {
                         || bm instanceof MossBlock) && bm.isValidBonemealTarget(level, p, st)
                         && level.random.nextFloat() < 0.6F * stats.power()) {
                     bm.performBonemeal(level, level.random, p.immutable(), st);
-                    level.sendParticles(ParticleTypes.HAPPY_VILLAGER, p.getX() + 0.5, p.getY() + 0.8, p.getZ() + 0.5, 4, 0.3, 0.3, 0.3, 0);
+                    level.sendParticles(Vfx.happy(), p.getX() + 0.5, p.getY() + 0.8, p.getZ() + 0.5, 4, 0.3, 0.3, 0.3, 0);
                     grown++;
                 }
             }
@@ -394,8 +395,8 @@ public final class LightEffects {
             if (LsUtil.isUnholy(target)) {
                 LsFx.skyRay(level, target.position(), 10 + target.getBbHeight(), 2.2F, LsFx.WHITE_GOLD);
                 ctx.damage(target, 20.0F, stats, null);
-                level.sendParticles(ParticleTypes.SOUL, target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 20, 0.3, 0.6, 0.3, 0.08);
-                level.sendParticles(ParticleTypes.SCULK_SOUL, target.getX(), target.getY() + target.getBbHeight(), target.getZ(), 8, 0.2, 0.2, 0.2, 0.1);
+                level.sendParticles(Vfx.soul(), target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 20, 0.3, 0.6, 0.3, 0.08);
+                level.sendParticles(Vfx.sculkSoul(), target.getX(), target.getY() + target.getBbHeight(), target.getZ(), 8, 0.2, 0.2, 0.2, 0.1);
                 LsFx.sound(level, target.position(), SoundEvents.ZOMBIE_VILLAGER_CURE, 1.0F, 1.6F);
                 LsFx.sound(level, target.position(), SoundEvents.BEACON_DEACTIVATE, 1.0F, 2.0F);
             } else {
@@ -437,7 +438,7 @@ public final class LightEffects {
                     if (next == null) break;
                     hit.add(next.getUUID());
                     LsFx.line(level, LsFx.mid(from), LsFx.mid(next), LsFx.dust(color, 1.1F), 5);
-                    level.sendParticles(ParticleTypes.END_ROD, next.getX(), next.getY() + next.getBbHeight() * 0.5, next.getZ(), 4, 0.2, 0.2, 0.2, 0.05);
+                    level.sendParticles(Vfx.endRod(), next.getX(), next.getY() + next.getBbHeight() * 0.5, next.getZ(), 4, 0.2, 0.2, 0.2, 0.05);
                     ctx.damage(next, j == 0 ? 4.0F : 3.0F, stats, null);
                     LsFx.sound(level, next.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.2F + 0.2F * b);
                     from = next;
@@ -526,13 +527,17 @@ public final class LightEffects {
             if (ctx.isAlly(target)) {
                 ctx.status(le, LsRegistries.RESURRECTION_GRACE, 1200, 0, stats);
                 LsFx.skyRay(level, le.position(), 12, 1.8F, LsFx.WHITE_GOLD);
-                level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 40, 0.4, 0.6, 0.4, 0.3);
+                // v1.3: céu se abre sobre o aliado (círculo + pilar) e uma aura dourada fica um tempo
+                com.renanpontes.isekaimahou.core.ElementFx.skyStrike(level, le.position(), Element.LIGHT, LsFx.WHITE_GOLD, 1.6F, 5, 0);
+                com.renanpontes.isekaimahou.core.ElementFx.aura(level, le, Element.LIGHT, LsFx.WHITE_GOLD, 1.0F, 4, 120);
+                level.sendParticles(Vfx.totem(), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 40, 0.4, 0.6, 0.4, 0.3);
                 LsFx.sound(level, le.position(), SoundEvents.BEACON_ACTIVATE, 1.0F, 1.5F);
                 LsFx.sound(level, le.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 1.2F, 0.8F);
             } else if (LsUtil.isUnholy(target)) {
                 LsFx.skyRay(level, le.position(), 12, 2.4F, LsFx.WHITE_GOLD);
+                com.renanpontes.isekaimahou.core.ElementFx.skyStrike(level, le.position(), Element.LIGHT, LsFx.WHITE_GOLD, 2.2F, 5, 0);
                 ctx.damage(le, 30.0F, stats, null);
-                level.sendParticles(ParticleTypes.SOUL, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 30, 0.4, 0.7, 0.4, 0.1);
+                level.sendParticles(Vfx.soul(), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 30, 0.4, 0.7, 0.4, 0.1);
                 LsFx.sound(level, le.position(), SoundEvents.ZOMBIE_VILLAGER_CURE, 1.2F, 1.2F);
             }
         }

@@ -11,6 +11,7 @@ import org.joml.Vector3f;
 
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.feature.class_smith.SmithFx;
+import com.renanpontes.isekaimahou.feature.class_smith.SmithFxNet;
 import com.renanpontes.isekaimahou.feature.class_smith.SmithRegistries;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
@@ -340,8 +341,7 @@ public class SmithBladeEntity extends Entity {
         } else if (impact != null) {
             impact.onEntity(this, e);
         }
-        sl.sendParticles(ParticleTypes.CRIT, c.x, c.y, c.z, 8, 0.25, 0.3, 0.25, 0.3);
-        sl.sendParticles(SmithFx.spark(color()), c.x, c.y, c.z, 6, 0.2, 0.2, 0.2, 0.05);
+        SmithFxNet.at(sl, SmithFxNet.BLADE_HIT, c, dir(), 1F, color(), e.getId());
         SmithFx.sound(sl, c, SoundEvents.TRIDENT_HIT, 0.7F, 1.1F + sl.random.nextFloat() * 0.3F);
     }
 
@@ -379,12 +379,7 @@ public class SmithBladeEntity extends Entity {
         ctx.impact(at, dir(), null);
         int c = color();
         sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-        sl.sendParticles(ParticleTypes.FLASH, at.x, at.y, at.z, 2, 0, 0, 0, 0);
-        sl.sendParticles(SmithFx.dust(c, 2.0F), at.x, at.y, at.z, 70, r * 0.45, r * 0.45, r * 0.45, 0);
-        sl.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 40, 0.2, 0.2, 0.2, 0.45);
-        sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, 30, r * 0.3, r * 0.3, r * 0.3, 0.3);
-        SmithFx.ring(sl, at, r, SmithFx.dust(c, 1.6F), 48);
-        SmithFx.ring(sl, at.add(0, 0.4, 0), r * 0.6, SmithFx.dust(0xFFFFFF, 1.2F), 32);
+        SmithFxNet.at(sl, SmithFxNet.BROKEN_PHANTASM, at, dir(), (float) r, c, getId());
         SmithFx.sound(sl, at, SoundEvents.GENERIC_EXPLODE.value(), 1.6F, 0.9F);
         SmithFx.sound(sl, at, SoundEvents.GLASS_BREAK, 1.2F, 0.6F);
         SmithFx.sound(sl, at, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.9F, 1.3F);
@@ -437,8 +432,7 @@ public class SmithBladeEntity extends Entity {
     private void caught(ServerLevel sl, Vec3 at) {
         if (!ended && ctx != null) ctx.end(at, forward);
         ended = true;
-        sl.sendParticles(SmithFx.dust(color(), 1.1F), at.x, at.y, at.z, 10, 0.25, 0.25, 0.25, 0);
-        sl.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 4, 0.2, 0.2, 0.2, 0.03);
+        SmithFxNet.at(sl, SmithFxNet.BLADE_CAUGHT, at, Vec3.ZERO, 1F, color(), getId());
         SmithFx.sound(sl, at, SoundEvents.ARMOR_EQUIP_IRON.value(), 0.6F, 1.4F);
         discard();
     }

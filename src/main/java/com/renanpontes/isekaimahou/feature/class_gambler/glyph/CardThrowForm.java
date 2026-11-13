@@ -2,6 +2,7 @@ package com.renanpontes.isekaimahou.feature.class_gambler.glyph;
 
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbFx;
+import com.renanpontes.isekaimahou.feature.class_gambler.GbFxNet;
 import com.renanpontes.isekaimahou.feature.class_gambler.entity.ThrownCardEntity;
 import com.renanpontes.isekaimahou.glyph.CoreGlyphs;
 import com.renanpontes.isekaimahou.glyph.FormGlyph;
@@ -78,6 +79,6 @@ public class CardThrowForm extends FormGlyph {
         if (!ctx.hasOrigin()) caster.swing(InteractionHand.MAIN_HAND, true);
         GbFx.sound(level, from, SoundEvents.BOOK_PAGE_TURN, 0.9F, 1.7F);
         GbFx.sound(level, from, SoundEvents.PLAYER_ATTACK_SWEEP, 0.5F, 1.9F);
-        level.sendParticles(GbFx.dust(ctx.color() & 0xFFFFFF, 1.0F), from.x, from.y, from.z, 6, 0.1, 0.1, 0.1, 0);
+        GbFxNet.at(level, GbFxNet.CARD_FAN, from, look, 1F, ctx.color() & 0xFFFFFF, caster.getId());
     }
 }

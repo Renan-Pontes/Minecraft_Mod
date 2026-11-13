@@ -19,10 +19,15 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-/** Menu do Pedestal Rúnico: 1 espaço de Pergaminho de Magia, configuração por botões e o inventário do jogador. */
+/**
+ * Menu do Pedestal Rúnico: espaço do Pergaminho de Magia, espaço de FILTRO (v1.5), configuração por botões e o
+ * inventário do jogador.
+ */
 public class RunicPedestalMenu extends AbstractContainerMenu {
     // Posições na tela (iguais à textura gui/automation_pedestal.png)
-    public static final int SCROLL_X = 18, SCROLL_Y = 34, INV_X = 8, INV_Y = 154, HOTBAR_Y = 212;
+    public static final int SCROLL_X = 9, SCROLL_Y = 20, FILTER_X = 30, FILTER_Y = 20, INV_X = 8, INV_Y = 154, HOTBAR_Y = 212;
+    /** Primeiro índice do inventário do jogador na lista de espaços do menu. */
+    private static final int INV_START = RunicPedestalBlockEntity.SLOTS, INV_END = INV_START + 36;
 
     private final Container container;
     private final ContainerData data;
@@ -31,7 +36,8 @@ public class RunicPedestalMenu extends AbstractContainerMenu {
 
     /** Cliente. */
     public RunicPedestalMenu(int id, Inventory inventory, RegistryFriendlyByteBuf buf) {
-        this(id, inventory, new SimpleContainer(1), new SimpleContainerData(RunicPedestalBlockEntity.D_COUNT), null, buf.readBlockPos());
+        this(id, inventory, new SimpleContainer(RunicPedestalBlockEntity.SLOTS), new SimpleContainerData(RunicPedestalBlockEntity.D_COUNT),
+                null, buf.readBlockPos());
     }
 
     /** Servidor. */
@@ -46,13 +52,25 @@ public class RunicPedestalMenu extends AbstractContainerMenu {
         this.data = data;
         this.pedestal = pedestal;
         this.pos = pos;
-        checkContainerSize(container, 1);
+        checkContainerSize(container, RunicPedestalBlockEntity.SLOTS);
         checkContainerDataCount(data, RunicPedestalBlockEntity.D_COUNT);
         container.startOpen(inventory.player);
-        addSlot(new Slot(container, 0, SCROLL_X, SCROLL_Y) {
+        addSlot(new Slot(container, RunicPedestalBlockEntity.SLOT_SCROLL, SCROLL_X, SCROLL_Y) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(CoreRegistries.SPELL_SCROLL.get());
+            }
+
+            @Override
+            public int getMaxStackSize() {
+                return 1;
+            }
+        });
+        // v1.5: filtro (1 item qualquer, menos pergaminho): ex. a semente que "Semear" deve plantar
+        addSlot(new Slot(container, RunicPedestalBlockEntity.SLOT_FILTER, FILTER_X, FILTER_Y) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return !stack.is(CoreRegistries.SPELL_SCROLL.get());
             }
 
             @Override
@@ -80,6 +98,11 @@ public class RunicPedestalMenu extends AbstractContainerMenu {
     public int batteries() { return data.get(RunicPedestalBlockEntity.D_BATTERIES); }
     public int timer() { return data.get(RunicPedestalBlockEntity.D_TIMER); }
     public boolean powered() { return data.get(RunicPedestalBlockEntity.D_POWERED) != 0; }
+    public boolean enabled() { return data.get(RunicPedestalBlockEntity.D_ENABLED) != 0; }
+    /** Estado da ligação com o Núcleo ({@code RunicPedestalBlockEntity.CORE_*}). */
+    public int coreState() { return data.get(RunicPedestalBlockEntity.D_CORE); }
+    public int coreLoss() { return data.get(RunicPedestalBlockEntity.D_CORE_LOSS); }
+    public int coreDistance() { return data.get(RunicPedestalBlockEntity.D_CORE_DIST); }
 
     public Element element() {
         Element[] v = Element.values();
@@ -95,7 +118,8 @@ public class RunicPedestalMenu extends AbstractContainerMenu {
         return ((data.get(hi) & 0xFFFF) << 16) | (data.get(lo) & 0xFFFF);
     }
 
-    public boolean hasScroll() { return !slots.get(0).getItem().isEmpty(); }
+    public boolean hasScroll() { return !slots.get(RunicPedestalBlockEntity.SLOT_SCROLL).getItem().isEmpty(); }
+    public ItemStack filterItem() { return slots.get(RunicPedestalBlockEntity.SLOT_FILTER).getItem(); }
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
@@ -110,13 +134,16 @@ public class RunicPedestalMenu extends AbstractContainerMenu {
         if (!slot.hasItem()) return ItemStack.EMPTY;
         ItemStack stack = slot.getItem();
         ItemStack copy = stack.copy();
-        if (index == 0) {
-            if (!moveItemStackTo(stack, 1, slots.size(), true)) return ItemStack.EMPTY;
-        } else if (stack.is(CoreRegistries.SPELL_SCROLL.get()) && !slots.get(0).hasItem()) {
-            if (!moveItemStackTo(stack, 0, 1, false)) return ItemStack.EMPTY;
-        } else if (index < 28) {
-            if (!moveItemStackTo(stack, 28, slots.size(), false)) return ItemStack.EMPTY;
-        } else if (!moveItemStackTo(stack, 1, 28, false)) {
+        // Shift+clique só leva PERGAMINHOS ao pedestal (o filtro é escolhido à mão, para não engolir itens sem querer)
+        if (index < INV_START) {
+            if (!moveItemStackTo(stack, INV_START, slots.size(), true)) return ItemStack.EMPTY;
+        } else if (stack.is(CoreRegistries.SPELL_SCROLL.get()) && !slots.get(RunicPedestalBlockEntity.SLOT_SCROLL).hasItem()) {
+            if (!moveItemStackTo(stack, RunicPedestalBlockEntity.SLOT_SCROLL, RunicPedestalBlockEntity.SLOT_SCROLL + 1, false)) {
+                return ItemStack.EMPTY;
+            }
+        } else if (index < INV_END - 9) {
+            if (!moveItemStackTo(stack, INV_END - 9, slots.size(), false)) return ItemStack.EMPTY;
+        } else if (!moveItemStackTo(stack, INV_START, INV_END - 9, false)) {
             return ItemStack.EMPTY;
         }
         if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY);

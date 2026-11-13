@@ -32,6 +32,10 @@ import net.minecraft.world.entity.player.Player;
  * devolve a ROTA DA CLASSE do jogador (capítulos com {@code "path"}), que anda em paralelo com a história, com o seu
  * próprio capítulo "em andamento". Capítulos sem nenhum passo obrigatório que exista neste jogo (módulo ausente) são
  * descartados na leitura — a história nunca trava nem mostra páginas vazias.
+ * <p>
+ * v1.0 (onda 5): "o Dragão é o fim". O capítulo com {@code "finale"} fecha a história; o que vem DEPOIS dele (o capítulo
+ * secreto do Abismo Infinito) depende só do final, não dos capítulos anteriores — assim, quem já tinha vencido o Dragão
+ * num mundo antigo não fica travado quando uma versão nova põe capítulos antes do final ({@link #state}).
  */
 public final class JournalBook {
     public static final JournalBook EMPTY = new JournalBook(List.of(), Map.of(), "[]");
@@ -46,6 +50,8 @@ public final class JournalBook {
     private final String json;
     private final Set<ResourceLocation> dimensions;
     private final Set<ResourceLocation> placed;
+    /** Posição do capítulo final (o Dragão) na história, ou -1 se o livro não tem final. */
+    private final int finaleIndex;
 
     private JournalBook(List<JournalChapter> chapters, Map<String, List<JournalChapter>> classTracks, String json) {
         this.chapters = chapters;
@@ -61,6 +67,14 @@ public final class JournalBook {
         }
         this.dimensions = Collections.unmodifiableSet(dims);
         this.placed = Collections.unmodifiableSet(blocks);
+        int fin = -1;
+        for (int i = 0; i < chapters.size(); i++) {
+            if (chapters.get(i).finale()) {
+                fin = i;
+                break;
+            }
+        }
+        this.finaleIndex = fin;
     }
 
     /** História principal (sem os capítulos de classe), em ordem. */
@@ -127,9 +141,28 @@ public final class JournalBook {
      * Concluído (marcador), em andamento (TODOS os anteriores concluídos) ou bloqueado — na história principal. Exigir
      * todos os anteriores (e não só o imediatamente anterior) mantém um único capítulo em andamento quando uma versão
      * nova insere capítulos no meio da história de um mundo antigo.
+     * <p>
+     * Exceção (onda 5): um capítulo DEPOIS do final só depende do final (e dos pós-finais antes dele). Quem já venceu o
+     * Dragão vê o Abismo Infinito aberto mesmo com capítulos antigos por fazer — esses continuam abrindo um a um, em
+     * ordem, como "o que faltou ver" ({@link #active} aponta para eles primeiro).
      */
     public State state(int index, MagicData d) {
+        if (finaleIndex >= 0 && index > finaleIndex) {
+            if (d.hasFlag(chapters.get(index).doneFlag())) return State.DONE;
+            for (int i = finaleIndex; i < index; i++) {
+                if (!d.hasFlag(chapters.get(i).doneFlag())) return State.LOCKED;
+            }
+            return State.ACTIVE;
+        }
         return state(chapters, index, d);
+    }
+
+    /** Posição do capítulo final na história (-1 = o livro não tem final). */
+    public int finaleIndex() { return finaleIndex; }
+
+    /** O jogador já concluiu o final da história? (livro sem final = false) */
+    public boolean finaleDone(MagicData d) {
+        return finaleIndex >= 0 && d.hasFlag(chapters.get(finaleIndex).doneFlag());
     }
 
     /** Estado na trilha informada (a história ou a rota de uma classe). */
@@ -144,15 +177,36 @@ public final class JournalBook {
 
     /** Estado de um capítulo de qualquer trilha. */
     public State stateOf(JournalChapter chapter, MagicData d) {
-        List<JournalChapter> track = chapter.isClassRoute() ? classTracks.getOrDefault(chapter.path(), List.of()) : chapters;
+        if (!chapter.isClassRoute()) {
+            int i = chapters.indexOf(chapter);
+            return i < 0 ? State.LOCKED : state(i, d);
+        }
+        List<JournalChapter> track = classTracks.getOrDefault(chapter.path(), List.of());
         int i = track.indexOf(chapter);
         return i < 0 ? State.LOCKED : state(track, i, d);
     }
 
-    /** Capítulo em andamento da história (o primeiro não concluído), ou null se todos foram concluídos. */
+    /**
+     * Capítulo em andamento da história (o primeiro não concluído), ou null se todos foram concluídos. É o "capítulo
+     * atual": o do rastreador, do Espírito Guia e do "Seu próximo passo". Sempre está ACTIVE (todos os anteriores foram
+     * concluídos); depois do final pode haver um segundo capítulo aberto — o pós-final — que anda sozinho.
+     */
     @Nullable
     public JournalChapter active(MagicData d) {
         return firstOpen(chapters, d);
+    }
+
+    /**
+     * Capítulo pós-final em andamento (o Abismo Infinito), ou null — antes do final, ou com tudo concluído. Quando não
+     * sobrou capítulo antigo por fazer é o mesmo que {@link #active}.
+     */
+    @Nullable
+    public JournalChapter epilogueActive(MagicData d) {
+        if (!finaleDone(d)) return null;
+        for (int i = finaleIndex + 1; i < chapters.size(); i++) {
+            if (!d.hasFlag(chapters.get(i).doneFlag())) return chapters.get(i);
+        }
+        return null;
     }
 
     /** Capítulo em andamento da rota da classe do jogador, ou null (sem rota ou rota completa). */

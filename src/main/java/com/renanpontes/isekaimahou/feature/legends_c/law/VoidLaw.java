@@ -10,7 +10,7 @@ import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.feature.legends_c.LcFx;
 import com.renanpontes.isekaimahou.feature.legends_c.entity.VoidFieldEntity;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -59,8 +59,8 @@ public class VoidLaw implements Domains.LawHandler {
         Statuses.apply(e, Statuses.Kind.STUNNED, 1, age < 60 ? 22 : 20, d.owner(), 1F);
         ServerLevel l = d.level();
         Vec3 head = e.getEyePosition();
-        l.sendParticles(ParticleTypes.ENCHANT, head.x, head.y + 0.3, head.z, 24, 0.5, 0.5, 0.5, 0.6);
-        l.sendParticles(ParticleTypes.END_ROD, head.x, head.y + 0.2, head.z, 4, 0.4, 0.3, 0.4, 0.02);
+        l.sendParticles(Vfx.enchant(), head.x, head.y + 0.3, head.z, 24, 0.5, 0.5, 0.5, 0.6);
+        l.sendParticles(Vfx.endRod(), head.x, head.y + 0.2, head.z, 4, 0.4, 0.3, 0.4, 0.02);
         if (e instanceof ServerPlayer sp) {
             Long last = MSG.get(sp.getUUID());
             if (last == null || l.getGameTime() - last > 60) {

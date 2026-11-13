@@ -89,6 +89,16 @@ public final class SpellParser {
      * @param data      dados do jogador para checar glifos conhecidos/Círculo/limites (null = mob/criativo: não checa)
      */
     public static Result parse(SpellRecipe recipe, Element element, MagicData data) {
+        return parse(recipe, element, data, data);
+    }
+
+    /**
+     * Igual a {@link #parse(SpellRecipe, Element, MagicData)}, com a fonte da MAESTRIA separada das checagens:
+     * {@code data} decide o que é checado (null = não checa conhecimento/Círculo/limites — criativo, magias guardadas
+     * em entidades) e {@code mastery} dá os níveis de maestria por glifo ({@link GlyphMastery}: desconto de custo e
+     * poder dos efeitos). {@code mastery} null = sem maestria (mobs, pedestais, lendas).
+     */
+    public static Result parse(SpellRecipe recipe, Element element, @Nullable MagicData data, @Nullable MagicData mastery) {
         if (recipe == null || recipe.isEmpty()) return Result.fail("empty");
         // Resolve os glifos antes: o primário depende de TODOS eles
         List<Glyph> resolved = new ArrayList<>(recipe.glyphs().size());
@@ -120,8 +130,15 @@ public final class SpellParser {
 
         // Aumentos vão para: -1 = a forma do estágio atual; k = o efeito k do estágio atual
         int costTarget = -1;
+        // Maestria: desconto médio ponderado pelo custo de cada glifo (só glifos que custam mana)
+        float masteryWeight = 0F, masteryOff = 0F;
         for (Glyph g : resolved) {
             ResourceLocation id = g.id();
+            int mastered = GlyphMastery.level(mastery, id);
+            if (g.cost() > 0) {
+                masteryWeight += g.cost();
+                masteryOff += g.cost() * GlyphMastery.costDiscount(mastered);
+            }
 
             if (data != null) {
                 if (!data.knowsGlyph(id)) return Result.fail("not_known", g.displayName());
@@ -148,6 +165,8 @@ public final class SpellParser {
                                     : Result.fail("link_needs_form", stages.get(stages.size() - 2).linkOut.displayName());
                         }
                         if (cur.effects.isEmpty()) return Result.fail("stage_no_effect", stages.size());
+                        // Release 1.0: formas que não disparam estágios (Transformação) não aceitam ligações
+                        if (!cur.form.allowsLinks()) return Result.fail("form_no_links", cur.form.displayName());
                         cur.linkOut = link;
                         cur.glyphs++;
                         cur.fixedCost += g.cost();
@@ -179,6 +198,7 @@ public final class SpellParser {
                     cur.form = f;
                     cur.glyphs++;
                     cur.formCost += g.cost();
+                    cur.formStats.masteryLevel = mastered;
                     current = cur.formStats;
                     costTarget = -1;
                 }
@@ -188,6 +208,8 @@ public final class SpellParser {
                     if (cur.form == null) return Result.fail("no_form_first");
                     if (!laws.isEmpty()) return Result.fail("effect_after_law");
                     SpellStats s = new SpellStats();
+                    s.masteryLevel = mastered;
+                    s.masteryPower = GlyphMastery.powerMult(mastered);
                     cur.effects.add(new ParsedSpell.EffectEntry((EffectGlyph) g, s));
                     cur.effectCosts.add(g.cost());
                     cur.glyphs++;
@@ -209,7 +231,22 @@ public final class SpellParser {
                     // Leis só no FIM da receita (depois do último estágio/Saltar) e só se a forma do estágio 0
                     // aceita leis: elas valem para o estágio 0 (o Domínio), mesmo com estágios ligados depois
                     if (awaitingForm) return Result.fail("link_needs_form", stages.get(stages.size() - 2).linkOut.displayName());
-                    if (stages.get(0).form == null || !stages.get(0).form.acceptsLaws()) {
+                    if (g instanceof TransformLawGlyph tl) {
+                        // v1.4: Lei de Transformação — o estágio 0 precisa transformar quem conjura (forma ou efeito
+                        // registrado em TransformTargets); limite de leis pelo Círculo/nível; sem repetir
+                        StageDraft s0 = stages.get(0);
+                        if (s0.form == null || !TransformTargets.isTransformation(s0.form, s0.effects)) {
+                            return Result.fail("tlaw_needs_transform", g.displayName());
+                        }
+                        if (laws.contains(tl)) return Result.fail("tlaw_duplicate", g.displayName());
+                        if (data != null) {
+                            if (data.level() < tl.minLevel()) return Result.fail("tlaw_level", g.displayName(), tl.minLevel());
+                            int n = 1;
+                            for (LawGlyph l : laws) if (l instanceof TransformLawGlyph) n++;
+                            int max = TransformTargets.maxLaws(data.level(), data.circle());
+                            if (n > max) return Result.fail("tlaw_too_many", n, max);
+                        }
+                    } else if (stages.get(0).form == null || !stages.get(0).form.acceptsLaws()) {
                         return Result.fail("law_needs_domain", g.displayName());
                     }
                     laws.add((LawGlyph) g);
@@ -274,6 +311,8 @@ public final class SpellParser {
             cost = Math.round(cost * 1.5F);
             mult *= 1.5F;
         }
+        // release 1.0 — Maestria: desconto só na MANA paga (o custo base — XP, recarga, anúncio — não muda)
+        if (masteryWeight > 0F && masteryOff > 0F) mult *= 1.0F - masteryOff / masteryWeight;
         // v1.0 — custo por cópia (ver SpellCost) e a escala ×3 da inflação de números
         float scale = mult * SpellCost.COST_SCALE;
         int circle = data != null ? data.circle() : SpellCost.MOB_CIRCLE;
@@ -309,7 +348,8 @@ public final class SpellParser {
         int castTicks = first.form.baseCastTicks() + extraCastTicks + Math.max(0, (cost - 80) / 4);
         if (efficient) castTicks = Math.round(castTicks * 1.5F) + 5;
         if (instant) castTicks = 0;
-        int cooldown = first.form.baseCooldown() + cost / 3;
+        // onda 5: a forma pode mexer na própria recarga pelos aumentos dela (padrão ×1)
+        int cooldown = Math.max(0, Math.round((first.form.baseCooldown() + cost / 3) * first.form.cooldownMult(first.formStats)));
 
         // Monta de trás para frente: cada estágio aponta para o seguinte
         ParsedSpell built = null;

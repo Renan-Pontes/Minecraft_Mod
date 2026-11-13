@@ -36,6 +36,7 @@ import net.neoforged.neoforge.client.gui.ModListScreen;
  * trocados por {@link RuneButton}s com os MESMOS destinos (o clique chama o botão original: avisos de multijogador,
  * Realms, banimento... iguais). Fundo animado ({@link TitleSky}) sobre o panorama, logo desenhado ({@link TitleLogo}),
  * frase aleatória, versões embaixo e um atalho para o menu clássico.
+ * v1.0 RELEASE: uma dica de jogo ({@link GameTips}) embaixo, entre os botões e o rodapé.
  */
 public class MahouTitleScreen extends TitleScreen {
     private static final int SPLASHES = 16;
@@ -47,6 +48,9 @@ public class MahouTitleScreen extends TitleScreen {
     private long openedAt;
     private float logoScale = 3F;
     private int logoTop = 20;
+    /** Base da última fileira de botões e largura do rodapé da esquerda (a dica de jogo cabe entre eles). */
+    private int buttonsBottom;
+    private int footerWidth;
     @Nullable
     private Component splash;
 
@@ -68,6 +72,7 @@ public class MahouTitleScreen extends TitleScreen {
         logoTop = Math.max(14, height / 4 - TitleLogo.height(logoScale) + 8);
         int by = Math.max(height / 4 + 40, logoTop + TitleLogo.height(logoScale) + 14);
         by = Math.min(by, height - 4 * 24 - 34);
+        buttonsBottom = by + 72 + 20;
 
         Button single = null, multi = null, realms = null, mods = null, options = null, quit = null, lang = null, access = null;
         for (GuiEventListener l : new ArrayList<>(children())) {
@@ -167,6 +172,10 @@ public class MahouTitleScreen extends TitleScreen {
         TitleLogo.render(g, font, width, logoTop, logoScale, uiFade, seconds);
         renderSplash(g, seconds, uiFade);
         renderFooter(g, uiFade);
+        // Dica de jogo: centrada, acima da linha do copyright, sem encostar nas versões do canto esquerdo
+        int tipBottom = height - 14;
+        GameTips.draw(g, font, width / 2, tipBottom, Math.min(340, width - 2 * (footerWidth + 12)),
+                Math.min(3, (tipBottom - buttonsBottom - 4) / 10), uiFade, false);
         // Aviso de versão de testes do NeoForge / atualização (o vanilla chama aqui também)
         net.neoforged.neoforge.client.ClientHooks.renderMainMenu(this, g, font, width, height, Mth.ceil(uiFade * 255F) << 24);
 
@@ -207,6 +216,8 @@ public class MahouTitleScreen extends TitleScreen {
                 Component.translatable("title.isekai_mahou.footer.minecraft", SharedConstants.getCurrentVersion().getName()),
                 Component.translatable("title.isekai_mahou.footer.version", modVersion));
         int y = height - 10;
+        footerWidth = 0;
+        for (Component line : lines) footerWidth = Math.max(footerWidth, font.width(line));
         for (int i = 0; i < lines.size(); i++) {
             int color = i == lines.size() - 1 ? MahouUi.GOLD : MahouUi.TEXT_DIM;
             g.drawString(font, lines.get(i), 3, y, MahouUi.alpha(color, al), true);

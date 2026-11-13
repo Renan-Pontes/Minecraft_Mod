@@ -398,6 +398,15 @@ public class WyvernKing extends OverworldBoss {
             Telegraph.Shape seg = Telegraph.Shape.line(a, b, 3.2F).warmup(warm).color(Telegraph.WARNING).owner(this).noRunes();
             if (k == 0) seg.castName(attackName("dive"));
             Telegraph.delayed(sl, seg, hits -> diveSegment(sl, hits, dmg));
+            // v1.3 — Bombardeio: o rastro do mergulho fica carregado e solta raios logo depois que ele passa
+            // (fase 1: a cada 3 segmentos; depois a cada 2). Marca azul pequena = saia do rastro, não fique atrás dele.
+            int every = phase() >= 1 ? 2 : 3;
+            if (k % every == every - 1) {
+                Vec3 spot = b;
+                float boltDmg = scaled(7.0F);
+                Telegraph.delayed(sl, Telegraph.Shape.circle(spot, 2.0F).warmup(warm + 14).color(BOLT).owner(this).noRunes(),
+                        hits -> strike(sl, spot, hits, boltDmg, 1));
+            }
         }
         move = M_DIVE_WIND;
         moveTimer = DIVE_WIND;

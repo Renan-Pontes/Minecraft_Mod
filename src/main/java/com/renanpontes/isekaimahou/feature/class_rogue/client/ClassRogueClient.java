@@ -37,6 +37,7 @@ public class ClassRogueClient implements ClientModule {
     @Override
     public void initClient(IEventBus modBus) {
         modBus.addListener(ClassRogueClient::renderers);
+        RogueFxClient.init();
         RogueArmorItem.renderFactory = item -> new GeoRenderProvider() {
             @Override
             public <T extends LivingEntity> HumanoidModel<?> getGeoArmorRenderer(@Nullable T entity, ItemStack stack,

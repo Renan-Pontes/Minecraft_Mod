@@ -13,8 +13,10 @@ import com.renanpontes.isekaimahou.feature.settlements.entity.MerchantNpc;
 import com.renanpontes.isekaimahou.feature.settlements.entity.MilitiaNpc;
 import com.renanpontes.isekaimahou.feature.settlements.entity.ResidentNpc;
 import com.renanpontes.isekaimahou.feature.settlements.entity.SiteSign;
+import com.renanpontes.isekaimahou.feature.settlements.entity.TraderNpc;
 import com.renanpontes.isekaimahou.feature.settlements.item.FoundingCharterItem;
 import com.renanpontes.isekaimahou.feature.settlements.item.OathSealItem;
+import com.renanpontes.isekaimahou.feature.settlements.item.SkyCoreItem;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
@@ -55,6 +57,9 @@ public final class SettlementsContent {
             () -> new FoundingCharterItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
     public static final DeferredItem<OathSealItem> OATH_SEAL = ITEMS.register("oath_seal",
             () -> new OathSealItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+    // onda 7 (sky_island): o custo de fundar numa Ilha Celeste (SkyLand) — consumido junto com a Carta
+    public static final DeferredItem<SkyCoreItem> SKY_CORE = ITEMS.register("sky_core",
+            () -> new SkyCoreItem(new Item.Properties().stacksTo(16).rarity(Rarity.RARE)));
 
     // ---------------- Entidades ----------------
     public static final Supplier<EntityType<BuilderNpc>> BUILDER = ENTITIES.register("settlement_builder",
@@ -75,6 +80,10 @@ public final class SettlementsContent {
     public static final Supplier<EntityType<CityChampion>> CHAMPION = ENTITIES.register("city_champion",
             () -> EntityType.Builder.<CityChampion>of(CityChampion::new, MobCategory.MISC)
                     .sized(0.9F, 2.6F).eyeHeight(2.25F).clientTrackingRange(10).fireImmune().build("city_champion"));
+    // onda 6 (city_trades): comerciante de ofício (ferreiro, curandeiro, escriba...) — um tipo só, o ofício vai no NPC
+    public static final Supplier<EntityType<TraderNpc>> TRADER = ENTITIES.register("settlement_tradesman",
+            () -> EntityType.Builder.<TraderNpc>of(TraderNpc::new, MobCategory.MISC)
+                    .sized(0.6F, 1.8F).eyeHeight(1.62F).clientTrackingRange(10).build("settlement_tradesman"));
     public static final Supplier<EntityType<SiteSign>> SITE_SIGN = ENTITIES.register("settlement_site_sign",
             () -> EntityType.Builder.<SiteSign>of(SiteSign::new, MobCategory.MISC)
                     .sized(0.5F, 0.5F).clientTrackingRange(8).updateInterval(20).noSummon().build("settlement_site_sign"));
@@ -89,6 +98,8 @@ public final class SettlementsContent {
             () -> new DeferredSpawnEggItem(MERCHANT, 0x7A5636, 0xFFD86B, new Item.Properties()));
     public static final DeferredItem<DeferredSpawnEggItem> MILITIA_EGG = ITEMS.register("settlement_militia_spawn_egg",
             () -> new DeferredSpawnEggItem(MILITIA, 0x6A7686, 0xC9433A, new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> TRADER_EGG = ITEMS.register("settlement_tradesman_spawn_egg",
+            () -> new DeferredSpawnEggItem(TRADER, 0x5A4632, 0xD9824A, new Item.Properties()));
     public static final DeferredItem<DeferredSpawnEggItem> CHAMPION_EGG = ITEMS.register("city_champion_spawn_egg",
             () -> new DeferredSpawnEggItem(CHAMPION, 0xD8DEE6, 0xE8B84A, new Item.Properties()));
 
@@ -107,12 +118,14 @@ public final class SettlementsContent {
         e.put(GUARD.get(), GuardNpc.createAttributes().build());
         e.put(MERCHANT.get(), MerchantNpc.createAttributes().build());
         e.put(MILITIA.get(), MilitiaNpc.createAttributes().build());
+        e.put(TRADER.get(), MerchantNpc.createAttributes().build());
         e.put(CHAMPION.get(), CityChampion.createAttributes().build());
     }
 
     private static void creativeTabs(BuildCreativeModeTabContentsEvent e) {
         if (e.getTabKey() == CoreRegistries.TAB_WORLD.getKey()) {
             e.accept(FOUNDING_CHARTER.get());
+            e.accept(SKY_CORE.get());
             e.accept(OATH_SEAL.get());
         } else if (e.getTabKey() == CoreRegistries.TAB_CREATURES.getKey()) {
             e.accept(BUILDER_EGG.get());
@@ -120,6 +133,7 @@ public final class SettlementsContent {
             e.accept(GUARD_EGG.get());
             e.accept(MERCHANT_EGG.get());
             e.accept(MILITIA_EGG.get());
+            e.accept(TRADER_EGG.get());
             e.accept(CHAMPION_EGG.get());
         }
     }

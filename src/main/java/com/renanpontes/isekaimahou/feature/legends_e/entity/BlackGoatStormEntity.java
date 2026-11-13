@@ -11,7 +11,7 @@ import com.renanpontes.isekaimahou.feature.legends_e.LeUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -86,14 +86,14 @@ public class BlackGoatStormEntity extends LeSpellEntity {
             if (age % 20 == 10) LeFx.sound(level, c, SoundEvents.GOAT_SCREAMING_AMBIENT, 1.8F, 0.4F + age / 100F);
             if (age % 2 == 0) {
                 double a = age * 0.35, r = area * (0.4 + 0.5 * random.nextDouble());
-                LeFx.send(level, ParticleTypes.SQUID_INK, c.x + Math.cos(a) * r, c.y + 1 + random.nextDouble() * 4, c.z + Math.sin(a) * r,
+                LeFx.send(level, Vfx.ink(), c.x + Math.cos(a) * r, c.y + 1 + random.nextDouble() * 4, c.z + Math.sin(a) * r,
                         2, 0.4, 0.4, 0.4, 0.02);
             }
         }
         if (age == SACRIFICE) sacrifice(level, ctx, c, area);
         if (age == BIRTH) birth(level, ctx, c, area);
         if (age > SACRIFICE && age < BIRTH + 20 && age % 2 == 0) {
-            LeFx.send(level, ParticleTypes.SCULK_SOUL, c.x, c.y + 0.3, c.z, 3, area * 0.3, 0.1, area * 0.3, 0.05);
+            LeFx.send(level, Vfx.sculkSoul(), c.x, c.y + 0.3, c.z, 3, area * 0.3, 0.1, area * 0.3, 0.05);
         }
         if (age >= LIFE) discard();
     }
@@ -139,7 +139,7 @@ public class BlackGoatStormEntity extends LeSpellEntity {
                     LeFx.send(level, LeFx.dust(0x2A0A3A, 1.6F), q.x, q.y, q.z, 2, 0.1, 0.1, 0.1, 0);
                 }
                 LeFx.send(level, LeFx.fade(0x5AFF3A, 0x000000, 1.3F), from, 20, 0.4, 0.02);
-                LeFx.send(level, ParticleTypes.SCULK_SOUL, from, 4, 0.3, 0.05);
+                LeFx.send(level, Vfx.sculkSoul(), from, 4, 0.3, 0.05);
                 if (LeUtil.execute(ctx, e, s, this)) sacrificed++;
             } else if (LeUtil.isFoe(ctx, e)) {
                 ctx.damage(e, 14F, s, this);
@@ -170,7 +170,7 @@ public class BlackGoatStormEntity extends LeSpellEntity {
             DarkYoungEntity.summon(ctx, c.add(Math.cos(a) * r, 0.5, Math.sin(a) * r), power, DarkYoungEntity.LIFE);
         }
         LeFx.sound(level, c, SoundEvents.WARDEN_DIG, 3.0F, 0.5F);
-        LeFx.send(level, ParticleTypes.SQUID_INK, c.x, c.y + 0.5, c.z, 80, 2.5, 0.5, 2.5, 0.2);
+        LeFx.send(level, Vfx.ink(), c.x, c.y + 0.5, c.z, 80, 2.5, 0.5, 2.5, 0.2);
     }
 
     /** 0..1: força do vento (cresce, segura e some depois do sacrifício). */

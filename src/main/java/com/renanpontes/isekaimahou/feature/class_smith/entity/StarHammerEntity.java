@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.feature.class_smith.SmithFx;
+import com.renanpontes.isekaimahou.feature.class_smith.SmithFxNet;
 import com.renanpontes.isekaimahou.feature.class_smith.SmithRegistries;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
@@ -109,13 +110,8 @@ public class StarHammerEntity extends Entity implements GeoEntity {
         ctx.impact(c, new Vec3(0, -1, 0), null);
         int color = color();
         sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, c.x, c.y + 0.5, c.z, 1, 0, 0, 0, 0);
-        sl.sendParticles(ParticleTypes.LAVA, c.x, c.y + 0.4, c.z, 20, r * 0.4, 0.2, r * 0.4, 0);
-        sl.sendParticles(ParticleTypes.FLAME, c.x, c.y + 0.2, c.z, 50, r * 0.5, 0.1, r * 0.5, 0.06);
-        sl.sendParticles(SmithFx.spark(color), c.x, c.y + 1.0, c.z, 60, r * 0.4, 0.6, r * 0.4, 0.25);
-        SmithFx.ring(sl, c.add(0, 0.15, 0), r, SmithFx.dust(color, 1.6F), 56);
-        SmithFx.ring(sl, c.add(0, 0.15, 0), r * 0.6, SmithFx.dust(SmithFx.MOLTEN, 1.4F), 40);
-        SmithFx.ring(sl, c.add(0, 0.15, 0), r + 1.0, ParticleTypes.CAMPFIRE_COSY_SMOKE, 30);
-        SmithFx.groundBurst(sl, c, 50);
+        // cratera, brasas, anéis de choque e fumaça: coreografia do cliente
+        SmithFxNet.at(sl, SmithFxNet.STAR_IMPACT, c, Vec3.ZERO, r, color, getId(), last ? 1 : 0);
         SmithFx.sound(sl, c, SoundEvents.ANVIL_LAND, 2.0F, 0.5F);
         SmithFx.sound(sl, c, SoundEvents.GENERIC_EXPLODE.value(), 1.4F, 0.7F + 0.1F * index);
         if (last) SmithFx.sound(sl, c, SoundEvents.LIGHTNING_BOLT_THUNDER, 1.0F, 0.8F);

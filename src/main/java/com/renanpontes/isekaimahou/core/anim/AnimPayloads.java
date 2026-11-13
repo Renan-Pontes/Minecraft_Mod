@@ -56,5 +56,28 @@ public final class AnimPayloads {
         public Type<? extends CustomPacketPayload> type() { return TYPE; }
     }
 
+    /** C→S (v1.0): o jogador apertou ({@code down}) ou soltou a tecla de bloqueio. O servidor valida ({@link GuardService}). */
+    public record Guard(boolean down) implements CustomPacketPayload {
+        public static final Type<Guard> TYPE = new Type<>(IsekaiMahou.id("anim_guard"));
+        public static final StreamCodec<ByteBuf, Guard> STREAM_CODEC =
+                StreamCodec.composite(ByteBufCodecs.BOOL, Guard::down, Guard::new);
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    }
+
+    /**
+     * S→C (v1.0): resposta do bloqueio só para o próprio jogador — {@link GuardService#FX_END} (o servidor recusou ou
+     * encerrou a guarda) ou {@link GuardService#FX_PARRY} (aparo: clarão curto).
+     */
+    public record GuardFx(byte kind) implements CustomPacketPayload {
+        public static final Type<GuardFx> TYPE = new Type<>(IsekaiMahou.id("anim_guard_fx"));
+        public static final StreamCodec<ByteBuf, GuardFx> STREAM_CODEC =
+                StreamCodec.composite(ByteBufCodecs.BYTE, GuardFx::kind, GuardFx::new);
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    }
+
     private AnimPayloads() {}
 }

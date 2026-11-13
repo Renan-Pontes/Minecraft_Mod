@@ -6,6 +6,7 @@ import com.renanpontes.isekaimahou.feature.ritual_witch.WitchHeat;
 import com.renanpontes.isekaimahou.feature.ritual_witch.WitchRecipes;
 import com.renanpontes.isekaimahou.feature.ritual_witch.item.RitualSpoonItem;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ColorParticleOption;
@@ -241,7 +242,7 @@ public class WitchCauldronBlock extends BaseEntityBlock {
         switch (be.phase()) {
             case EMPTY -> {
                 if (heat != WitchHeat.NONE && random.nextInt(4) == 0) {
-                    level.addParticle(ParticleTypes.SMOKE, x0 + 0.3 + random.nextDouble() * 0.4, surf, z0 + 0.3 + random.nextDouble() * 0.4, 0, 0.02, 0);
+                    level.addParticle(Vfx.smoke(), x0 + 0.3 + random.nextDouble() * 0.4, surf, z0 + 0.3 + random.nextDouble() * 0.4, 0, 0.02, 0);
                 }
             }
             case WATER, BREWING -> {
@@ -257,7 +258,7 @@ public class WitchCauldronBlock extends BaseEntityBlock {
                             x0 + 0.25 + random.nextDouble() * 0.5, surf + 0.05, z0 + 0.25 + random.nextDouble() * 0.5, 0, 0, 0);
                 }
                 if (heat == WitchHeat.HIGH && random.nextInt(3) == 0) {
-                    level.addParticle(ParticleTypes.CLOUD, x0 + 0.3 + random.nextDouble() * 0.4, surf + 0.1,
+                    level.addParticle(Vfx.cloud(), x0 + 0.3 + random.nextDouble() * 0.4, surf + 0.1,
                             z0 + 0.3 + random.nextDouble() * 0.4, 0, 0.03, 0);
                 }
                 if (random.nextInt(14 - heat.ordinal() * 3) == 0) {
@@ -271,7 +272,7 @@ public class WitchCauldronBlock extends BaseEntityBlock {
                             x0 + 0.25 + random.nextDouble() * 0.5, surf + 0.05, z0 + 0.25 + random.nextDouble() * 0.5, 0, 0, 0);
                 }
                 if (random.nextInt(5) == 0) {
-                    level.addParticle(ParticleTypes.WITCH, x0 + 0.3 + random.nextDouble() * 0.4, surf + 0.2,
+                    level.addParticle(Vfx.witch(), x0 + 0.3 + random.nextDouble() * 0.4, surf + 0.2,
                             z0 + 0.3 + random.nextDouble() * 0.4, 0, 0.02, 0);
                 }
                 if (random.nextInt(60) == 0) {

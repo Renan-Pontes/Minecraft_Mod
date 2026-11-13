@@ -16,7 +16,7 @@ import com.renanpontes.isekaimahou.feature.fusions_d.FdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -74,7 +74,7 @@ public final class SoulBurn {
                 && !target.hasEffect(FdRegistries.SOUL_BURN)) return;
         BURNS.put(target.getUUID(), new Burn(ctx, FdUtil.hitStats(stats), stats.power(), ticks, spread || (old != null && old.spread)));
         ServerLevel sl = ctx.level();
-        sl.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 24,
+        sl.sendParticles(Vfx.soulFlame(), target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 24,
                 target.getBbWidth() * 0.5, target.getBbHeight() * 0.4, target.getBbWidth() * 0.5, 0.06);
         FdFx.sound(sl, target.position(), SoundEvents.SOUL_ESCAPE.value(), 1.4F, 0.7F);
     }
@@ -97,7 +97,7 @@ public final class SoulBurn {
             }
             b.age++;
             if (b.age % 4 == 0) {
-                b.level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, le.getX(), le.getY() + le.getBbHeight() * 0.4, le.getZ(), 3,
+                b.level.sendParticles(Vfx.soulFlame(), le.getX(), le.getY() + le.getBbHeight() * 0.4, le.getZ(), 3,
                         le.getBbWidth() * 0.4, le.getBbHeight() * 0.3, le.getBbWidth() * 0.4, 0.02);
             }
             if (b.age % 20 != 0) continue;
@@ -118,7 +118,7 @@ public final class SoulBurn {
         }
         le.invulnerableTime = 0;
         b.ctx.damage(le, amount, b.hit, null);
-        b.level.sendParticles(ParticleTypes.SOUL, le.getX(), le.getY() + le.getBbHeight(), le.getZ(), 2, 0.2, 0.1, 0.2, 0.03);
+        b.level.sendParticles(Vfx.soul(), le.getX(), le.getY() + le.getBbHeight(), le.getZ(), 2, 0.2, 0.1, 0.2, 0.03);
         FdFx.sound(b.level, le.position(), SoundEvents.SOUL_SAND_BREAK, 0.8F, 0.6F);
     }
 
@@ -127,15 +127,15 @@ public final class SoulBurn {
         Burn b = BURNS.remove(dead.getUUID());
         if (b == null || b.spread || dead.level() != b.level) return;
         Vec3 c = FdUtil.center(dead);
-        b.level.sendParticles(ParticleTypes.SOUL, c.x, c.y, c.z, 20, 0.3, 0.4, 0.3, 0.08);
-        b.level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, c.x, c.y, c.z, 40, 0.4, 0.5, 0.4, 0.2);
+        b.level.sendParticles(Vfx.soul(), c.x, c.y, c.z, 20, 0.3, 0.4, 0.3, 0.08);
+        b.level.sendParticles(Vfx.soulFlame(), c.x, c.y, c.z, 40, 0.4, 0.5, 0.4, 0.2);
         FdFx.sound(b.level, c, SoundEvents.SOUL_ESCAPE.value(), 2F, 0.5F);
         int n = 0;
         SpellStats stats = new SpellStats();
         stats.amplify = Math.round((b.power - 1F) / 0.4F);
         for (LivingEntity next : b.ctx.enemiesAround(c, 5.5)) {
             if (next == dead || FdUtil.untouchable(next)) continue;
-            FdFx.line(b.level, c, FdUtil.center(next), ParticleTypes.SOUL_FIRE_FLAME, 3);
+            FdFx.line(b.level, c, FdUtil.center(next), Vfx.soulFlame(), 3);
             ignite(b.ctx, next, 100, stats, true);
             if (++n >= 2) break;
         }

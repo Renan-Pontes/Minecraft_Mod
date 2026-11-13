@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.feature.class_smith.glyph;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.feature.class_smith.SmithFx;
+import com.renanpontes.isekaimahou.feature.class_smith.SmithFxNet;
 import com.renanpontes.isekaimahou.feature.class_smith.entity.SmithBladeEntity;
 import com.renanpontes.isekaimahou.feature.class_smith.forge.BladeMaterial;
 import com.renanpontes.isekaimahou.feature.class_smith.forge.ForgedBlade;
@@ -103,7 +104,7 @@ public class CaladbolgForm extends FormGlyph {
             Vec3 q = eye.add(look.scale(1.0 + k * 0.35)).add(side.scale(Math.cos(a) * 0.5)).add(up.scale(Math.sin(a) * 0.5));
             sl.sendParticles(SmithFx.dust(color, 1.0F), q.x, q.y, q.z, 1, 0, 0, 0, 0);
         }
-        sl.sendParticles(ParticleTypes.SONIC_BOOM, eye.x + look.x * 1.5, eye.y + look.y * 1.5, eye.z + look.z * 1.5, 1, 0, 0, 0, 0);
+        SmithFxNet.at(sl, SmithFxNet.CALADBOLG, eye, look, 1F, color, caster.getId());
         SmithFx.sound(sl, eye, SoundEvents.CROSSBOW_SHOOT, 1.2F, 0.5F);
         SmithFx.sound(sl, eye, SoundEvents.TRIDENT_RIPTIDE_3, 1.0F, 1.2F);
         if (!s.silent) Announce.send(caster, Component.translatable("announce.isekai_mahou.smith_caladbolg"), color, Announce.STYLE_SPELL);

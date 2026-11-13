@@ -27,6 +27,8 @@ public final class DestructionRules {
 
     private static volatile GameRules.Key<GameRules.BooleanValue> rule;
     private static final List<BiPredicate<ServerLevel, BlockPos>> PROTECTIONS = new CopyOnWriteArrayList<>();
+    /** v1.0 r9: áreas "indestrutíveis" (torre em escalada, masmorra) — nem destruição, nem blocos temporários de magia. */
+    private static final List<BiPredicate<ServerLevel, BlockPos>> WARDS = new CopyOnWriteArrayList<>();
 
     /**
      * Registra a regra {@code mahouSpellDestruction} (padrão ligada). Chamado UMA vez na thread principal (setup comum),
@@ -75,13 +77,34 @@ public final class DestructionRules {
         return st.hasBlockEntity() && !MahouConfig.DESTRUCTION_BLOCK_ENTITIES.get();
     }
 
-    /** Área protegida: lugar seguro ({@code Places}) ou uma proteção registrada por módulo. */
+    /**
+     * Área protegida: só as proteções registradas por módulo (arena de chefe DURANTE a luta etc.). v1.3.2: cidades e
+     * outras zonas seguras não são mais indestrutíveis — a zona segura só impede monstros de nascer.
+     */
     public static boolean areaProtected(ServerLevel level, BlockPos pos) {
-        if (PlaceData.safeAt(level, pos)) return true;
         return customProtected(level, pos);
     }
 
+    /** Área indestrutível (ver {@link #addWard}). Falha num predicado = protegido. */
+    public static boolean warded(ServerLevel level, BlockPos pos) {
+        if (level == null || pos == null) return false;
+        for (BiPredicate<ServerLevel, BlockPos> p : WARDS) {
+            try {
+                if (p.test(level, pos)) return true;
+            } catch (RuntimeException ex) {
+                IsekaiMahou.LOGGER.error("[destruction] proteção (ward) falhou em {}", pos, ex);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void addWard(BiPredicate<ServerLevel, BlockPos> p) {
+        if (p != null) WARDS.add(p);
+    }
+
     static boolean customProtected(ServerLevel level, BlockPos pos) {
+        if (!WARDS.isEmpty() && warded(level, pos)) return true;
         for (BiPredicate<ServerLevel, BlockPos> p : PROTECTIONS) {
             try {
                 if (p.test(level, pos)) return true;
@@ -95,7 +118,7 @@ public final class DestructionRules {
     }
 
     static boolean hasCustomProtections() {
-        return !PROTECTIONS.isEmpty();
+        return !PROTECTIONS.isEmpty() || !WARDS.isEmpty();
     }
 
     public static void addProtection(BiPredicate<ServerLevel, BlockPos> p) {

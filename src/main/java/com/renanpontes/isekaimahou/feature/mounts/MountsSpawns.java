@@ -40,6 +40,18 @@ public final class MountsSpawns {
         e.register(MountsRegistries.WYVERN.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (type, level, reason, pos, rnd) -> level.getDifficulty() != Difficulty.PEACEFUL && wyvern(type, level, reason, pos, rnd),
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        // v1.0: Dragão Terrestre solto nas savanas e planícies (poucos, só na superfície)
+        e.register(MountsRegistries.LAND_DRAKE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                (type, level, reason, pos, rnd) -> solidGround(level, pos) && notCrowded(type, level, reason, pos, 3)
+                        && (!natural(reason) || atSurface(level, pos)),
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        // Pesadelo e Cervo da Aurora não nascem soltos: só pelas Rédeas (e ovos/comandos)
+        e.register(MountsRegistries.NIGHTMARE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                (type, level, reason, pos, rnd) -> !natural(reason) && solidGround(level, pos),
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        e.register(MountsRegistries.AURORA_STAG.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                (type, level, reason, pos, rnd) -> !natural(reason) && solidGround(level, pos),
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 
     private static boolean wyvern(EntityType<? extends Mob> type, ServerLevelAccessor level, MobSpawnType reason, BlockPos pos, RandomSource rnd) {

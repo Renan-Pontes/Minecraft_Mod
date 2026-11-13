@@ -6,7 +6,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 import com.renanpontes.isekaimahou.glyph.entity.SpellProjectileEntity;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -93,7 +93,7 @@ public class SpellTurretEntity extends SpellFormEntity implements GeoEntity {
         triggerAnim("action", "shoot");
         ElementFx.burst(level, from, element(), 8, 0.15);
         if (accentElement() != element()) ElementFx.burst(level, from, accentElement(), 5, 0.15);
-        level.sendParticles(ParticleTypes.END_ROD, from.x, from.y, from.z, 4, 0.1, 0.1, 0.1, 0.05);
+        level.sendParticles(Vfx.endRod(), from.x, from.y, from.z, 4, 0.1, 0.1, 0.1, 0.05);
         level.playSound(null, from.x, from.y, from.z, ElementFx.castSoundOf(element()), SoundSource.PLAYERS, 0.6F, 1.3F);
         level.playSound(null, from.x, from.y, from.z, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 0.5F, 1.6F);
     }

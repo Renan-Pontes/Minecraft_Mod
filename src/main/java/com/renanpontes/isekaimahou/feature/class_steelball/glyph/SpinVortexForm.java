@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.feature.class_steelball.glyph;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbFx;
+import com.renanpontes.isekaimahou.feature.class_steelball.SbFxNet;
 import com.renanpontes.isekaimahou.feature.class_steelball.entity.SpinVortexEntity;
 import com.renanpontes.isekaimahou.glyph.FormGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
@@ -81,7 +82,7 @@ public class SpinVortexForm extends FormGlyph {
         boolean golden = s.custom(SbGlyphs.GOLDEN) > 0;
         SpinVortexEntity v = SpinVortexEntity.create(ctx, at, s.radius(BASE_RADIUS), s.duration(BASE_LIFE), golden);
         level.addFreshEntity(v);
-        SbFx.spinRing(level, at.add(0, 0.2, 0), golden ? SbFx.GOLD : SbFx.STEEL, s.radius(BASE_RADIUS), 24);
+        SbFxNet.at(level, SbFxNet.VORTEX, at, Vec3.ZERO, s.radius(BASE_RADIUS), golden ? SbFx.GOLD : SbFx.STEEL, -1);
         SbFx.sound(level, at, SoundEvents.ANVIL_LAND, 0.5F, 1.4F);
         SbFx.sound(level, at, SoundEvents.TRIDENT_RIPTIDE_2.value(), 0.8F, 1.2F);
     }

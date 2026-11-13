@@ -133,5 +133,7 @@
 
   "command.isekai_mahou.bosses_d.bad_element": "Elemento desconhecido: %s",
   "command.isekai_mahou.bosses_d.spawn_failed": "Não foi possível invocar o chefe aqui.",
-  "command.isekai_mahou.bosses_d.spawned": "%s de %s (rank %s) invocado."
+  "command.isekai_mahou.bosses_d.spawned": "%s de %s (rank %s) invocado.",
+  "announce.isekai_mahou.trial_avatar.taunt": "Ainda não é digno. Levante-se e tente de novo.",
+  "announce.isekai_mahou.trial_avatar.last_stand": "Quase... mostre-me o golpe final!"
 }

@@ -10,8 +10,8 @@ import javax.annotation.Nullable;
 import com.renanpontes.isekaimahou.core.Progression;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -118,7 +118,7 @@ public class KodamaEntity extends PathfinderMob implements OwnableEntity {
         super.tick();
         if (level().isClientSide) {
             if (random.nextInt(8) == 0) {
-                level().addParticle(ParticleTypes.SPORE_BLOSSOM_AIR, getX(), getY() + 0.5, getZ(), 0, 0.01, 0);
+                level().addParticle(Vfx.sporeAir(), getX(), getY() + 0.5, getZ(), 0, 0.01, 0);
             }
             return;
         }
@@ -143,7 +143,7 @@ public class KodamaEntity extends PathfinderMob implements OwnableEntity {
                 && sl.getGameTime() - lastDefend > 60 && attacker.distanceToSqr(this) < 10 * 10 && !isAlliedTo(attacker)) {
             lastDefend = sl.getGameTime();
             Statuses.apply(attacker, Statuses.Kind.ROOTED, 1, 30, o, 1F);
-            sl.sendParticles(ParticleTypes.COMPOSTER, attacker.getX(), attacker.getY() + 0.2, attacker.getZ(), 12, 0.4, 0.1, 0.4, 0.02);
+            sl.sendParticles(Vfx.composter(), attacker.getX(), attacker.getY() + 0.2, attacker.getZ(), 12, 0.4, 0.1, 0.4, 0.02);
             rattle(sl);
         }
     }
@@ -165,8 +165,8 @@ public class KodamaEntity extends PathfinderMob implements OwnableEntity {
         float amount = heal * Progression.HEAL_SCALE * (nearTrees(sl) ? 2F : 1F);
         worst.heal(amount);
         worst.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 0, false, true), o);
-        sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, worst.getX(), worst.getY() + worst.getBbHeight() * 0.6, worst.getZ(), 6, 0.3, 0.3, 0.3, 0);
-        sl.sendParticles(ParticleTypes.SPORE_BLOSSOM_AIR, getX(), getY() + 0.6, getZ(), 4, 0.2, 0.2, 0.2, 0);
+        sl.sendParticles(Vfx.happy(), worst.getX(), worst.getY() + worst.getBbHeight() * 0.6, worst.getZ(), 6, 0.3, 0.3, 0.3, 0);
+        sl.sendParticles(Vfx.sporeAir(), getX(), getY() + 0.6, getZ(), 4, 0.2, 0.2, 0.2, 0);
         rattle(sl);
     }
 
@@ -184,8 +184,8 @@ public class KodamaEntity extends PathfinderMob implements OwnableEntity {
     }
 
     private void poof(ServerLevel sl) {
-        sl.sendParticles(ParticleTypes.SPORE_BLOSSOM_AIR, getX(), getY() + 0.4, getZ(), 12, 0.25, 0.3, 0.25, 0.02);
-        sl.sendParticles(ParticleTypes.WHITE_ASH, getX(), getY() + 0.4, getZ(), 10, 0.25, 0.3, 0.25, 0.02);
+        sl.sendParticles(Vfx.sporeAir(), getX(), getY() + 0.4, getZ(), 12, 0.25, 0.3, 0.25, 0.02);
+        sl.sendParticles(Vfx.whiteAsh(), getX(), getY() + 0.4, getZ(), 10, 0.25, 0.3, 0.25, 0.02);
         discard();
     }
 

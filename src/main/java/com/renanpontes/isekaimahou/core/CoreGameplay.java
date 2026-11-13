@@ -92,7 +92,7 @@ public final class CoreGameplay {
     /** Escolha na tela inicial: só vale enquanto o jogador está sem classe. Entrega kit e glifos iniciais. */
     public static void choosePath(ServerPlayer player, MagicPath path) {
         MagicData d = MagicApi.get(player);
-        if (path == MagicPath.NONE || d.path() != MagicPath.NONE) return;
+        if (!path.pickableAtStart() || d.path() != MagicPath.NONE) return;
         d.setPath(path);
         for (String g : CoreGlyphs.starter(path.category())) MagicApi.learnGlyphSilently(player, IsekaiMahou.id(g));
         if (!d.hasFlag("kit_given")) {
@@ -225,8 +225,9 @@ public final class CoreGameplay {
             case 2 -> {
                 if (recipe.isEmpty()) return;
                 boolean free = player.getAbilities().instabuild;
-                if (!free && player.getInventory().countItem(Items.PAPER) < 1) {
-                    player.displayClientMessage(Component.translatable("message.isekai_mahou.need_paper").withStyle(ChatFormatting.RED), true);
+                // v1.0: fora do criativo o pergaminho barato (1 papel) acabou; agora é o Pergaminho de Receita (arcana_items), caro
+                if (!free) {
+                    player.displayClientMessage(Component.translatable("screen.isekai_mahou.grimoire.write_scroll.no_paper").withStyle(ChatFormatting.RED), true);
                     return;
                 }
                 if (!free) player.getInventory().clearOrCountMatchingItems(s -> s.is(Items.PAPER), 1, player.inventoryMenu.getCraftSlots());

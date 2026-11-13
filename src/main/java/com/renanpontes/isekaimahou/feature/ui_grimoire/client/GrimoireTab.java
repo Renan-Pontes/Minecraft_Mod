@@ -17,6 +17,7 @@ import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.Progression;
 import com.renanpontes.isekaimahou.core.api.Legends;
+import com.renanpontes.isekaimahou.feature.transform_laws.TransformForge;
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphKind;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
@@ -70,6 +71,8 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
     private static final int CHANT_MIN_TICKS = 10;
     private static final int LINK_COLOR = GlyphArt.kindColor(GlyphKind.TRIGGER, true);
     private static final int MODE_ACCENT = 0xFF8A6FD0;
+    /** Violeta da forja de transformações (glifo Transformação e o selo). */
+    private static final int TF_COLOR = 0xFFB98CFF;
     /** Largura do seletor compacto de loadout ("1 ▾"), usado quando as caixinhas não cabem. */
     private static final int LOADOUT_DROP_W = 21;
 
@@ -101,6 +104,9 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
     // direita
     private int destY, headY, boxY, boxH, statusY, fieldsY, colorY, btnY;
     private int colorW, hueX, hueW;
+    /** Botões do círculo mágico da magia (forma, símbolo, cor), logo depois da barra de matiz. */
+    private int circX;
+    private static final int CIRC_STEP = 14;
     private final ProgramView program = new ProgramView();
     private final BreakdownView breakdown = new BreakdownView();
 
@@ -112,6 +118,9 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
 
     private final HotZones zones = new HotZones();
     private final Picker picker = new Picker();
+    /** Onda 9: editor de transformações (glifo Transformação) — ocupa a aba inteira enquanto aberto. */
+    private GrimoireTransform.Panel tfPanel;
+    private boolean tfWasOpen;
     private List<Glyph> palette = List.of();
     private String paletteStamp = "";
     private SpellCheck check;
@@ -210,9 +219,11 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
         chantBox.setTooltip(Tooltip.create(tr("chant.tip")));
         widgets.add(screen.addTabWidget(chantBox));
 
-        colorW = Math.max(60, E * 48 / 100);
+        colorW = Math.max(100, E * 48 / 100);
         hueX = ex + 16;
-        hueW = Math.max(10, colorW - 16);
+        // os 3 botões do círculo mágico ficam no fim da faixa de cor; a barra de matiz usa o resto
+        circX = ex + colorW - 3 * CIRC_STEP + 2;
+        hueW = Math.max(10, circX - 6 - hueX);
 
         // ---- botões: Salvar (com rótulo) + 4 ações com ícone (rótulo quando cabe)
         int saveW = Mth.clamp(E * 36 / 100, 82, 120); // largura mínima que cabe "Salvar no slot" inteiro
@@ -234,6 +245,38 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
         palScroll.set(GrimoireDraft.paletteScroll);
         updateButtons();
         updatePresetWidgets();
+        tfPanel = GrimoireTransform.newPanel();
+        if (tfPanel != null) tfPanel.layout(x, y, w, h);
+        tfWasOpen = GrimoireTransform.isOpen();
+        hideForTransform();
+    }
+
+    /** Onda 9: com o editor de transformações aberto, os widgets do Grimório somem (não recebem clique nem foco). */
+    private void hideForTransform() {
+        if (!GrimoireTransform.isOpen() || tfPanel == null) return;
+        for (AbstractWidget wd : widgets) wd.visible = false;
+        if (screen.getFocused() instanceof AbstractWidget) screen.setFocused(null);
+    }
+
+    /** Abre o editor de transformações por cima do Grimório (glifo Transformação da paleta, selo da situação). */
+    private void openTransform() {
+        if (tfPanel == null) return;
+        GrimoireTransform.setOpen(true);
+        tfWasOpen = true;
+        picker.close();
+        pressPalette = null;
+        draggingPalette = false;
+        hideForTransform();
+        Gfx.sound(SoundEvents.BOOK_PAGE_TURN, 0.85F, 0.7F);
+    }
+
+    /** O editor abriu/fechou (ex.: botão "◂ Grimório"): os widgets acompanham. */
+    private void syncTransform() {
+        boolean open = GrimoireTransform.isOpen() && tfPanel != null;
+        if (open == tfWasOpen) return;
+        tfWasOpen = open;
+        if (open) hideForTransform();
+        else updateWidgetVisibility();
     }
 
     private RuneButton addButton(RuneButton b) {
@@ -269,6 +312,7 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
         presets.tick();
         updateButtons();
         updatePresetWidgets();
+        hideForTransform();
     }
 
     /** Análise do rascunho, recalculada só quando a receita ou os dados mudam (o elemento vem dos glifos). */
@@ -301,7 +345,7 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
 
     private static boolean hasPaper() {
         Minecraft mc = Minecraft.getInstance();
-        return mc.player != null && (mc.player.getAbilities().instabuild || mc.player.getInventory().countItem(Items.PAPER) > 0);
+        return mc.player != null && mc.player.getAbilities().instabuild; // v1.0: só no criativo (survival usa o Pergaminho de Receita)
     }
 
     private void updateButtons() {
@@ -361,21 +405,33 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
 
     private void refreshPalette(MagicData d) {
         String lang = Minecraft.getInstance().getLanguageManager().getSelected();
+        boolean tf = GrimoireTransform.shown(d);
         String stamp = ClientMagic.syncVersion + "|" + d.glyphs().size() + "|" + GrimoireDraft.kindFilter + "|"
-                + GrimoireDraft.elementFilter + "|" + GrimoireDraft.search + "|" + lang;
+                + GrimoireDraft.elementFilter + "|" + GrimoireDraft.search + "|" + lang + "|" + tf;
         if (stamp.equals(paletteStamp)) return;
         paletteStamp = stamp;
         String q = Gfx.norm(GrimoireDraft.search.trim());
         List<Glyph> list = new ArrayList<>();
         for (ResourceLocation id : d.glyphs()) {
             Glyph gl = GlyphRegistry.get(id);
-            if (gl == null || !usable(gl, d)) continue;
+            if (gl == null || !usable(gl, d) || !GlyphIcons.listed(gl, d)) continue;
             if (GrimoireDraft.kindFilter != null && gl.kind() != GrimoireDraft.kindFilter) continue;
             if (!GrimoireDraft.elementFilter.isEmpty() && !GrimoireDraft.elementFilter.contains(elementKey(gl))) continue;
             if (!q.isEmpty() && !matches(gl, q)) continue;
             list.add(gl);
         }
         list.sort(GlyphIcons.ORDER);
+        // Onda 9: o glifo Transformação fica fixo no começo da paleta para quem pode moldar transformações — mesmo sem
+        // conhecê-lo (moldar nunca exigiu o glifo; só conjurá-lo como magia é que pede aprender, no Círculo 5)
+        Glyph tfGlyph = GlyphRegistry.get(TransformForge.FORM_ID);
+        if (tf && tfGlyph != null) {
+            list.removeIf(gl -> gl.id().equals(TransformForge.FORM_ID));
+            if ((GrimoireDraft.kindFilter == null || GrimoireDraft.kindFilter == tfGlyph.kind())
+                    && (GrimoireDraft.elementFilter.isEmpty() || GrimoireDraft.elementFilter.contains(elementKey(tfGlyph)))
+                    && (q.isEmpty() || matches(tfGlyph, q) || Gfx.norm(tr("transform.search").getString()).contains(q))) {
+                list.add(0, tfGlyph);
+            }
+        }
         palette = list;
         if (GrimoireDraft.selected == null || palette.stream().noneMatch(g -> g.id().equals(GrimoireDraft.selected))) {
             GrimoireDraft.selected = palette.isEmpty() ? null : palette.get(0).id();
@@ -416,7 +472,7 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
         int c = 0;
         for (ResourceLocation id : d.glyphs()) {
             Glyph gl = GlyphRegistry.get(id);
-            if (gl == null || !usable(gl, d)) continue;
+            if (gl == null || !usable(gl, d) || !GlyphIcons.listed(gl, d)) continue;
             if (kind != null && gl.kind() != kind) continue;
             if (key != null && !key.equals(elementKey(gl))) continue;
             c++;
@@ -503,7 +559,23 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
             UiToast.error(tr("palette.empty"));
             return;
         }
+        if (isTransformTile(palette.get(i))) {
+            openTransform();
+            return;
+        }
         addGlyph(palette.get(i));
+    }
+
+    /** O glifo é o Transformação com o editor ligado (clique abre o editor em vez de pôr na magia)? */
+    private boolean isTransformTile(Glyph gl) {
+        return tfPanel != null && gl != null && gl.id().equals(TransformForge.FORM_ID) && GrimoireTransform.shown(ClientMagic.data());
+    }
+
+    /** Arrastar o glifo Transformação para o programa: só quem o conhece monta uma magia com ele. */
+    private boolean canPlaceTransform(Glyph gl) {
+        if (!gl.id().equals(TransformForge.FORM_ID) || ClientMagic.data().knowsGlyph(gl.id())) return true;
+        UiToast.error(tr("transform.need_known", TransformForge.MIN_CIRCLE));
+        return false;
     }
 
     private void setMode(GrimoireDraft.Mode mode) {
@@ -706,6 +778,14 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
         mouseX = mx;
         mouseY = my;
         zones.clear();
+        syncTransform();
+        if (GrimoireTransform.isOpen() && tfPanel != null) {
+            // Onda 9: o editor de transformações toma a aba inteira
+            List<Component> tip = tfPanel.render(g, mx, my);
+            UiToast.render(g, x + w / 2, y + h - 18, w);
+            if (tip != null && !tip.isEmpty()) g.renderTooltip(Gfx.font(), GlyphIcons.wrap(tip, 220), mx, my);
+            return;
+        }
         MagicData d = ClientMagic.data();
         refreshPalette(d);
         SpellCheck c = check(d);
@@ -751,6 +831,7 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
             wd.visible = !picker.isOpen() || !picker.intersects(wd.getX(), wd.getY(), wd.getWidth(), wd.getHeight());
         }
         updatePresetWidgets();
+        hideForTransform();
     }
 
     // ------------------------------------------------------------------ esquerda
@@ -836,13 +917,17 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
             int py = gridTop + 2 + (i / palCols) * CELL - off + 1;
             if (py + ICON < gridTop || py > gridTop + palScroll.h) continue;
             boolean hov = Gfx.in(mx, my, px - 1, py - 1, ICON + 2, ICON + 2) && palScroll.over(mx, my) && !draggingChip && !draggingPalette;
+            boolean tfTile = isTransformTile(gl);
             int flags = (hov ? GlyphIcons.HOVER : 0)
                     | (gl.id().equals(GrimoireDraft.selected) ? GlyphIcons.SELECTED : 0)
-                    | (d.circle() < gl.minCircle() ? GlyphIcons.LOCKED : 0)
+                    | (d.circle() < gl.minCircle() && !tfTile ? GlyphIcons.LOCKED : 0)
                     | (wouldExceedElements(gl, el, c, allowed) ? GlyphIcons.WARN : 0)
                     | (GlyphIcons.isLesson(gl, d) ? GlyphIcons.LESSON : 0)
                     | (draggingPalette && gl == pressPalette ? GlyphIcons.DIM : 0);
             GlyphIcons.draw(g, gl, px, py, ICON, flags);
+            // moldura violeta: este glifo abre o editor de transformações (com os Votos)
+            if (tfTile) Gfx.frame(g, px - 1, py - 1, ICON + 2, ICON + 2, TF_COLOR);
+            if (d.knowsGlyph(gl.id())) GlyphIcons.masteryBar(g, d, gl, px, py, ICON);
             zones.addClipped(px - 1, py - 1, ICON + 2, ICON + 2, palScroll.x, palScroll.y, palScroll.w, palScroll.h,
                     null, () -> paletteTip(gl, d, el, c));
         }
@@ -896,6 +981,15 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
     }
 
     private List<Component> paletteTip(Glyph gl, MagicData d, Element el, SpellCheck c) {
+        if (isTransformTile(gl)) {
+            List<Component> t = new ArrayList<>();
+            t.add(tr("transform.tile").withColor(TF_COLOR & 0xFFFFFF).withStyle(ChatFormatting.BOLD));
+            t.add(tr("transform.tile.tip").withStyle(ChatFormatting.GRAY));
+            t.add(tr(d.knowsGlyph(gl.id()) ? "transform.tile.cast" : "transform.tile.cast_locked", TransformForge.MIN_CIRCLE)
+                    .withStyle(ChatFormatting.DARK_GRAY));
+            t.add(tr("transform.tile.click").withStyle(ChatFormatting.DARK_GRAY));
+            return t;
+        }
         List<Component> lines = GlyphIcons.tooltip(gl, d, true);
         if (gl.origin() == null && gl.element() != Element.ARCANE && !el.canUseGlyphOf(gl.element()) && !c.extras.contains(gl.element())) {
             int allowed = SpellCheck.allowedExtras(el, c.maxElements);
@@ -1291,6 +1385,18 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
                 zones.add(cx, sy, font.width(u), 10, null, () -> List.of(tr("stat.ultimate.tip")));
             }
         }
+        // Release 1.0: Transformação montada — o selo abre o resumo (o que ganha, o que custa, duração, recarga)
+        if (TransformForge.isForge(sp)) {
+            Component u = tr("stat.transform_badge");
+            if (cx + font.width(u) <= ex + E) {
+                g.drawString(font, u, cx, sy + 1, 0xFFB98CFF, false);
+                zones.add(cx, sy, font.width(u), 10, bb -> openTransform(), () -> {
+                    List<Component> t = new ArrayList<>(TransformForge.summary(sp, true));
+                    t.add(tr("stat.transform.tip").withStyle(ChatFormatting.DARK_GRAY));
+                    return t;
+                });
+            }
+        }
         List<Component> warns = warnings(d, el, sp);
         Component line2;
         int col2;
@@ -1351,6 +1457,11 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
         List<Component> t = new ArrayList<>();
         t.add(tr("stat.mana").withStyle(ChatFormatting.BOLD));
         t.add(tr("stat.mana.tip", ClientMagic.maxMana).withStyle(ChatFormatting.GRAY));
+        // Maestria: quanto do custo os glifos treinados já tiraram (já está no número mostrado)
+        float mastery = com.renanpontes.isekaimahou.glyph.GlyphMastery.spellDiscount(ClientMagic.data(), GrimoireDraft.glyphs);
+        if (mastery >= 0.005F) {
+            t.add(tr("stat.mana.mastery", String.format(java.util.Locale.ROOT, "%.1f", mastery * 100F)).withColor(Gfx.GOOD & 0xFFFFFF));
+        }
         SpellBreakdown b = breakdown.breakdown(sp);
         if (b != null) t.addAll(b.lines());
         t.add(tr(GrimoireDraft.details ? "stat.close_details" : "stat.open_details").withStyle(ChatFormatting.DARK_GRAY));
@@ -1406,6 +1517,7 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
             g.fill(mk, hy - 1, mk + 1, hy + 7, 0xFFFFFFFF);
         });
         zones.add(hueX, hy - 2, hueW, 10, null, () -> List.of(tr("color.hue")));
+        renderCircleButtons(g, eff, mx, my);
 
         // selos de elemento da magia + custo extra
         int sx = ex + colorW + 8;
@@ -1438,6 +1550,127 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
             sx += extraW;
         }
         zones.add(x0 - 1, colorY - 1, Math.max(14, sx - x0 + 1), 14, null, () -> sealsTip(el, c));
+    }
+
+    // ------------------------------------------------------------------ círculo mágico da magia
+    /** Cor efetiva do círculo: a escolhida para o círculo, ou a cor da magia. */
+    private static int circleColor(int spellArgb) {
+        return GrimoireDraft.circle.color() >= 0 ? Gfx.opaque(GrimoireDraft.circle.color()) : spellArgb;
+    }
+
+    /** Forma, símbolo e cor do círculo de conjuração DESTA magia + prévia girando ao passar o mouse. */
+    private void renderCircleButtons(GuiGraphics g, int spellArgb, int mx, int my) {
+        var st = GrimoireDraft.circle;
+        int cc = circleColor(spellArgb);
+        boolean any = false;
+        for (int i = 0; i < 3; i++) {
+            int bx = circX + i * CIRC_STEP;
+            boolean hov = Gfx.in(mx, my, bx, colorY, 12, 12) && !picker.isOpen();
+            any |= hov;
+            MahouUi.roundRect(g, bx, colorY, 12, 12, 0xFF2A2140, 0xFF15101F);
+            MahouUi.roundOutline(g, bx, colorY, 12, 12, hov ? 0xFFFFFFFF : Gfx.FRAME);
+            if (i == 0) CircleArt.shapeIcon(g, st.shape(), cc, bx, colorY, 12);
+            else if (i == 1) CircleArt.symbolIcon(g, st.symbol(), Gfx.lighten(cc, 0.25F), bx + 1, colorY + 1, 10);
+            else {
+                Gfx.circle(g, bx + 6, colorY + 6, 4, cc);
+                if (st.color() < 0) Gfx.small(g, "A", bx + 4.5F, colorY + 3.5F, Gfx.luminance(cc) > 0.6F ? 0xFF000000 : 0xFFFFFFFF, 0.75F);
+            }
+            final int which = i;
+            zones.add(bx, colorY, 12, 12, b -> circleClick(which, b, spellArgb, bx), () -> circleTip(which));
+        }
+        // prévia: aparece ao passar o mouse nos botões ou com uma das listas deles aberta
+        if (any || (picker.isOpen() && circlePickerOpen)) {
+            int ps = 60;
+            int px = Math.max(ex, circX - ps - 6);
+            int py = colorY - ps - 4;
+            g.pose().pushPose();
+            g.pose().translate(0, 0, 300);
+            MahouUi.roundRect(g, px, py, ps, ps, 0xF4221A34, 0xF4100C18);
+            MahouUi.roundOutline(g, px, py, ps, ps, MahouUi.GOLD_DIM);
+            float ang = (net.minecraft.Util.getMillis() % 12000L) / 12000F * Mth.TWO_PI;
+            CircleArt.draw(g, st, cc, px + ps / 2F, py + ps / 2F, ps / 2F - 4, ang);
+            g.pose().popPose();
+        } else if (!picker.isOpen()) {
+            circlePickerOpen = false;
+        }
+    }
+
+    /** true enquanto a lista aberta é uma das três do círculo mágico (mantém a prévia visível). */
+    private boolean circlePickerOpen;
+
+    private void circleClick(int which, int button, int spellArgb, int bx) {
+        var st = GrimoireDraft.circle;
+        if (button == 1) {
+            // botão direito: volta ao padrão
+            setCircle(which == 0 ? st.withShape(0) : which == 1 ? st.withSymbol(0) : st.withColor(-1));
+            return;
+        }
+        int cc = circleColor(spellArgb);
+        List<Picker.Option> opts = new ArrayList<>();
+        if (which == 0) {
+            for (int s = 0; s <= com.renanpontes.isekaimahou.glyph.CircleStyle.SHAPES; s++) {
+                final int fs = s;
+                Component label = com.renanpontes.isekaimahou.glyph.CircleStyle.shapeName(s);
+                opts.add(new Picker.Option((gg, ix, iy, sz) -> CircleArt.shapeIcon(gg, fs, cc, ix, iy, sz), label, null, cc, true,
+                        st.shape() == s, () -> setCircle(GrimoireDraft.circle.withShape(fs)), () -> List.of(label)));
+            }
+        } else if (which == 1) {
+            for (int s = 0; s <= com.renanpontes.isekaimahou.glyph.CircleStyle.SYMBOLS; s++) {
+                final int fs = s;
+                Component label = com.renanpontes.isekaimahou.glyph.CircleStyle.symbolName(s);
+                opts.add(new Picker.Option((gg, ix, iy, sz) -> CircleArt.symbolIcon(gg, fs, Gfx.lighten(cc, 0.25F), ix, iy, sz), label, null, cc, true,
+                        st.symbol() == s, () -> setCircle(GrimoireDraft.circle.withSymbol(fs)), () -> List.of(label)));
+            }
+        } else {
+            opts.add(new Picker.Option((gg, ix, iy, sz) -> swatch(gg, spellArgb, true, ix, iy, sz), tr("circle.color.auto_short"), Component.literal("A"),
+                    spellArgb, true, st.color() < 0, () -> setCircle(GrimoireDraft.circle.withColor(-1)), () -> List.of(tr("circle.color.auto"))));
+            for (Element e : Element.values()) {
+                int rgb = e.color;
+                opts.add(new Picker.Option((gg, ix, iy, sz) -> swatch(gg, e.argb(), false, ix, iy, sz), Component.literal(e.displayName().getString()),
+                        null, e.argb(), true, st.color() == rgb, () -> setCircle(GrimoireDraft.circle.withColor(rgb)),
+                        () -> List.of(tr("color.element", e.displayName()))));
+            }
+            // algumas cores que nenhum elemento tem
+            int[] extra = {0xFFFFFF, 0xFFD86B, 0xE23B4E, 0x1B1B2A};
+            String[] keys = {"white", "gold", "crimson", "black"};
+            for (int i = 0; i < extra.length; i++) {
+                int rgb = extra[i];
+                Component label = tr("circle.color." + keys[i]);
+                opts.add(new Picker.Option((gg, ix, iy, sz) -> swatch(gg, Gfx.opaque(rgb), false, ix, iy, sz), label, null, Gfx.opaque(rgb), true,
+                        st.color() == rgb, () -> setCircle(GrimoireDraft.circle.withColor(rgb)), () -> List.of(label)));
+            }
+        }
+        circlePickerOpen = true;
+        picker.toggle(bx, colorY, 12, 12, true, x, x + w, listTop, colorY - 2,
+                tr(which == 0 ? "circle.pick_shape" : which == 1 ? "circle.pick_symbol" : "circle.pick_color"), opts);
+    }
+
+    private List<Component> circleTip(int which) {
+        var st = GrimoireDraft.circle;
+        List<Component> t = new ArrayList<>();
+        t.add(tr("circle.title").withStyle(ChatFormatting.BOLD));
+        Component value = which == 0 ? com.renanpontes.isekaimahou.glyph.CircleStyle.shapeName(st.shape())
+                : which == 1 ? com.renanpontes.isekaimahou.glyph.CircleStyle.symbolName(st.symbol())
+                : st.color() < 0 ? tr("circle.color.auto") : Component.literal(String.format("#%06X", st.color())).withColor(st.color());
+        t.add(tr(which == 0 ? "circle.shape" : which == 1 ? "circle.symbol" : "circle.color", value).withStyle(ChatFormatting.GRAY));
+        t.add(tr("circle.click").withStyle(ChatFormatting.DARK_GRAY));
+        return t;
+    }
+
+    private void setCircle(com.renanpontes.isekaimahou.glyph.CircleStyle c) {
+        if (c.equals(GrimoireDraft.circle)) return;
+        GrimoireDraft.setCircle(c);
+        Gfx.sound(SoundEvents.AMETHYST_CLUSTER_PLACE, 1.6F, 0.4F);
+    }
+
+    /** Roda do mouse em cima dos botões de forma/símbolo: troca na hora (a prévia mostra). */
+    private boolean scrollCircle(double mx, double my, double sy) {
+        if (!Gfx.in(mx, my, circX, colorY, 2 * CIRC_STEP - 2, 12)) return false;
+        var st = GrimoireDraft.circle;
+        int dir = sy > 0 ? -1 : 1;
+        if (mx < circX + CIRC_STEP) setCircle(st.withShape(Math.floorMod(st.shape() + dir, com.renanpontes.isekaimahou.glyph.CircleStyle.SHAPES + 1)));
+        else setCircle(st.withSymbol(Math.floorMod(st.symbol() + dir, com.renanpontes.isekaimahou.glyph.CircleStyle.SYMBOLS + 1)));
+        return true;
     }
 
     private List<Component> sealsTip(Element el, SpellCheck c) {
@@ -1495,6 +1728,11 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
     public boolean mouseClicked(double mx, double my, int button) {
         // Clique fora das caixas de texto tira o foco delas
         screen.setFocused(null);
+        if (GrimoireTransform.isOpen() && tfPanel != null) {
+            boolean used = tfPanel.mouseClicked(mx, my, button);
+            syncTransform();
+            return used;
+        }
         if (picker.isOpen()) {
             if (picker.contains(mx, my)) zones.click(mx, my, button);
             else picker.close();
@@ -1543,6 +1781,7 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
 
     @Override
     public boolean mouseDragged(double mx, double my, int button, double dx, double dy) {
+        if (GrimoireTransform.isOpen() && tfPanel != null) return false;
         if (palScroll.drag(my) || presets.scroll.drag(my) || library.libScroll.drag(my) || library.legendScroll.drag(my)
                 || program.scroll.drag(my) || breakdown.scroll.drag(my)) return true;
         if (draggingHue) {
@@ -1565,6 +1804,11 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
     public boolean mouseReleased(double mx, double my, int button) {
         // Botão clicado com o mouse não fica com o foco: senão Espaço o repetiria e a tecla do menu não fecharia
         if (screen.getFocused() instanceof RuneButton) screen.setFocused(null);
+        if (GrimoireTransform.isOpen() && tfPanel != null) {
+            pressPalette = null;
+            pressChip = -1;
+            return false;
+        }
         boolean handled = palScroll.release() | presets.scroll.release() | library.libScroll.release() | library.legendScroll.release()
                 | program.scroll.release() | breakdown.scroll.release();
         if (draggingHue) {
@@ -1596,12 +1840,14 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
             Glyph gl = pressPalette;
             if (draggingPalette) {
                 if (GrimoireDraft.details) {
-                    if (breakdown.over(mx, my)) addGlyph(gl); // nos Detalhes, soltar = adicionar no fim
-                } else if (program.over(mx, my)) {
+                    if (breakdown.over(mx, my) && canPlaceTransform(gl)) addGlyph(gl); // nos Detalhes, soltar = adicionar no fim
+                } else if (program.over(mx, my) && canPlaceTransform(gl)) {
                     insertGlyph(gl, program.insertionAt(mx, my)[2]);
                 }
             } else if (paletteAt(mx, my) == gl) {
-                addGlyph(gl);
+                // Onda 9: clicar no glifo Transformação abre o editor de transformações (arrastar põe na magia)
+                if (isTransformTile(gl)) openTransform();
+                else addGlyph(gl);
             }
             pressPalette = null;
             draggingPalette = false;
@@ -1612,7 +1858,9 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
 
     @Override
     public boolean mouseScrolled(double mx, double my, double sx, double sy) {
+        if (GrimoireTransform.isOpen() && tfPanel != null) return tfPanel.mouseScrolled(mx, my, sy);
         if (picker.isOpen()) return true;
+        if (scrollCircle(mx, my, sy)) return true;
         if (GrimoireDraft.details ? breakdown.scroll.scroll(mx, my, sy, 20) : program.scroll.scroll(mx, my, sy, 20)) return true;
         return switch (GrimoireDraft.mode) {
             case GLYPHS -> palScroll.scroll(mx, my, sy, CELL);
@@ -1624,6 +1872,20 @@ public class GrimoireTab implements MenuTab, LibraryPanel.Host, PresetPanel.Host
 
     @Override
     public boolean keyPressed(int key, int scan, int modifiers) {
+        if (GrimoireTransform.isOpen() && tfPanel != null) {
+            // no editor de transformações: Backspace volta ao Grimório; a tecla do menu fecha
+            if (key == GLFW.GLFW_KEY_BACKSPACE) {
+                GrimoireTransform.close();
+                syncTransform();
+                Gfx.sound(SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.6F);
+                return true;
+            }
+            if (CoreKeys.MENU.matches(key, scan)) {
+                screen.onClose();
+                return true;
+            }
+            return false;
+        }
         if (picker.isOpen() && key == GLFW.GLFW_KEY_ESCAPE) {
             picker.close();
             return true;

@@ -17,6 +17,7 @@ import com.renanpontes.isekaimahou.feature.legends_a.LegendsARegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -302,7 +303,7 @@ public class ConjuredBladeEntity extends Entity {
             if (!st.isAir()) {
                 sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, st), at.x, at.y, at.z, 12, 0.2, 0.15, 0.2, 0.12);
             }
-            sl.sendParticles(ParticleTypes.CRIT, at.x, at.y + 0.1, at.z, 6, 0.15, 0.1, 0.15, 0.2);
+            sl.sendParticles(Vfx.crit(), at.x, at.y + 0.1, at.z, 6, 0.15, 0.1, 0.15, 0.2);
             LegendFx.sound(sl, at, SoundEvents.TRIDENT_HIT_GROUND, 0.8F, 0.9F + random.nextFloat() * 0.3F);
             stuckTicks = fieldCenter != null ? 50 : 60;
             setMode(STUCK);
@@ -367,7 +368,7 @@ public class ConjuredBladeEntity extends Entity {
             target.push(d.x * 0.35, 0.12, d.z * 0.35);
             target.hurtMarked = true;
         }
-        sl.sendParticles(ParticleTypes.ENCHANTED_HIT, at.x, at.y, at.z, 10, 0.2, 0.2, 0.2, 0.25);
+        sl.sendParticles(Vfx.magicCrit(), at.x, at.y, at.z, 10, 0.2, 0.2, 0.2, 0.25);
         sl.sendParticles(LegendFx.dust(color(), 1.2F), at.x, at.y, at.z, 8, 0.25, 0.25, 0.25, 0);
         LegendFx.sound(sl, at, SoundEvents.TRIDENT_HIT, 0.7F, 0.8F + random.nextFloat() * 0.4F);
     }
@@ -378,7 +379,7 @@ public class ConjuredBladeEntity extends Entity {
             Vec3 p = position();
             BlockState st = sl.getBlockState(BlockPos.containing(p.x, p.y - 0.3, p.z));
             if (!st.isAir()) sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, st), p.x, p.y + 0.1, p.z, 14, 0.25, 0.1, 0.25, 0.15);
-            sl.sendParticles(ParticleTypes.CRIT, p.x, p.y + 0.6, p.z, 5, 0.1, 0.4, 0.1, 0.1);
+            sl.sendParticles(Vfx.crit(), p.x, p.y + 0.6, p.z, 5, 0.1, 0.4, 0.1, 0.1);
             for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, new AABB(p, p).inflate(1.1, 1.6, 1.1), this::canStrike)) {
                 e.invulnerableTime = 0;
                 ctx.damage(e, damage * 0.4F, stats, this);

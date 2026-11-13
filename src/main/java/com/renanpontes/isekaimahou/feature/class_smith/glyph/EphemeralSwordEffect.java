@@ -5,6 +5,7 @@ import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.feature.class_smith.SmithFx;
+import com.renanpontes.isekaimahou.feature.class_smith.SmithFxNet;
 import com.renanpontes.isekaimahou.feature.class_smith.entity.SmithBladeEntity;
 import com.renanpontes.isekaimahou.feature.class_smith.forge.BladeMaterial;
 import com.renanpontes.isekaimahou.feature.class_smith.forge.ForgedBlade;
@@ -74,8 +75,7 @@ public class EphemeralSwordEffect extends EffectGlyph {
         } else {
             blast(ctx, stats, le, el, tc);
         }
-        sl.sendParticles(SmithFx.dust(color, 1.4F), above.x, above.y, above.z, 20, 0.3, 0.5, 0.3, 0);
-        sl.sendParticles(ParticleTypes.ENCHANT, above.x, above.y, above.z, 20, 0.4, 0.6, 0.4, 0.8);
+        SmithFxNet.at(sl, SmithFxNet.EPHEMERAL, above, Vec3.ZERO, 1F, color, -1);
         SmithFx.sound(sl, above, SoundEvents.EVOKER_PREPARE_ATTACK, 0.8F, 1.6F);
     }
 
@@ -92,9 +92,8 @@ public class EphemeralSwordEffect extends EffectGlyph {
         }
         ElementFx.burst(sl, at, el, 40, r * 0.5);
         ElementFx.ring(sl, at, el, r, 36);
-        sl.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y, at.z, 2, 0.3, 0.3, 0.3, 0);
-        sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.GLASS.defaultBlockState()), at.x, at.y, at.z, 30, 0.4, 0.4, 0.4, 0.2);
-        sl.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 16, 0.3, 0.3, 0.3, 0.25);
+        sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.GLASS.defaultBlockState()), at.x, at.y, at.z, 12, 0.4, 0.4, 0.4, 0.2);
+        SmithFxNet.at(sl, SmithFxNet.EPHEMERAL_BLAST, at, Vec3.ZERO, r, el.color, main.getId());
         SmithFx.sound(sl, at, SoundEvents.GENERIC_EXPLODE.value(), 1.0F, 1.2F);
         SmithFx.sound(sl, at, SoundEvents.GLASS_BREAK, 1.2F, 0.8F);
         SmithFx.sound(sl, at, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.0F, 0.6F);

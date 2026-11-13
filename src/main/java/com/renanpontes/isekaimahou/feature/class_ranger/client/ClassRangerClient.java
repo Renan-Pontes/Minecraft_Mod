@@ -32,6 +32,7 @@ public class ClassRangerClient implements ClientModule {
     @Override
     public void initClient(IEventBus modBus) {
         RangerArmorItem.renderFactory = RangerArmorRenderer.Provider::new;
+        RangerFxClient.init();
         modBus.addListener(ClassRangerClient::renderers);
         modBus.addListener(ClassRangerClient::setup);
         MenuTabs.register(TAB_ID, 86, Component.translatable("screen.isekai_mahou.class_ranger.tab"), RangerTrailTab::new);

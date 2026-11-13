@@ -29,7 +29,6 @@ import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -40,7 +39,9 @@ public class IsekaiMahouClient {
     private static final boolean[] slotDown = new boolean[Progression.SLOTS];
 
     public IsekaiMahouClient(IEventBus modBus, ModContainer container) {
-        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        // v1.3: o botão "Config" da lista de mods abre o Modo do PC (que tem "Todas as opções" para a tela padrão)
+        container.registerExtensionPoint(IConfigScreenFactory.class,
+                (IConfigScreenFactory) (mod, parent) -> new com.renanpontes.isekaimahou.client.perf.PerfScreen(parent));
         modBus.addListener(IsekaiMahouClient::keys);
         modBus.addListener(IsekaiMahouClient::layers);
         modBus.addListener(IsekaiMahouClient::renderers);
@@ -85,6 +86,7 @@ public class IsekaiMahouClient {
         com.renanpontes.isekaimahou.client.anim.MahouAnimsClient.init(modBus, container); // animações de combate
         // v1.1: filtro do chat, aba "Avisos", Guia de Viagem e menu progressivo
         com.renanpontes.isekaimahou.client.notify.NotifyCoreClient.init();
+        com.renanpontes.isekaimahou.client.perf.PerfClient.init(); // v1.3: Modo do PC + sugestão do 1º início
         ClientModules.initAll(modBus);
         com.renanpontes.isekaimahou.client.notify.NotifyCoreClient.afterModules();
     }

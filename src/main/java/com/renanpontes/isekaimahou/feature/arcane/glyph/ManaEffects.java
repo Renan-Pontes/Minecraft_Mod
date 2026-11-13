@@ -18,10 +18,12 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -82,7 +84,7 @@ public final class ManaEffects {
                     had = true;
                 }
                 if (had) {
-                    level.sendParticles(ParticleTypes.ENCHANTED_HIT, c.x, c.y, c.z, 25, r * 0.6, r * 0.6, r * 0.6, 0.3);
+                    level.sendParticles(Vfx.magicCrit(), c.x, c.y, c.z, 25, r * 0.6, r * 0.6, r * 0.6, 0.3);
                     ArcaneUtil.sound(level, c, SoundEvents.GLASS_BREAK, 1.0F, 0.8F);
                 }
                 return;
@@ -91,7 +93,7 @@ public final class ManaEffects {
             int amp = Mth.clamp(stats.amplify + 1, 0, 4);
             le.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, stats.duration(400), amp, false, true), ctx.caster());
             ArcaneUtil.sphere(level, c, r, ArcaneUtil.dust(ctx, 0.9F), 42);
-            level.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 6, r * 0.5, r * 0.5, r * 0.5, 0.01);
+            level.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 6, r * 0.5, r * 0.5, r * 0.5, 0.01);
             ArcaneUtil.sound(level, c, SoundEvents.BEACON_ACTIVATE, 0.5F, 1.7F);
             ArcaneUtil.sound(level, c, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 1.2F);
         }
@@ -120,7 +122,7 @@ public final class ManaEffects {
             Vec3 c = ArcaneUtil.center(le);
             if (stats.inverted) {
                 if (le.removeEffect(ArcaneRegistries.REFLECT)) {
-                    level.sendParticles(ParticleTypes.ENCHANTED_HIT, c.x, c.y, c.z, 16, 0.4, 0.5, 0.4, 0.2);
+                    level.sendParticles(Vfx.magicCrit(), c.x, c.y, c.z, 16, 0.4, 0.5, 0.4, 0.2);
                     ArcaneUtil.sound(level, c, SoundEvents.GLASS_BREAK, 0.8F, 1.2F);
                 }
                 return;
@@ -183,10 +185,10 @@ public final class ManaEffects {
 
         private static void stream(SpellContext ctx, LivingEntity from, LivingEntity to) {
             ServerLevel level = ctx.level();
-            DustParticleOptions blue = ArcaneUtil.dust(MANA_BLUE, 1.0F);
+            ParticleOptions blue = ArcaneUtil.dust(MANA_BLUE, 1.0F);
             if (from != null) ArcaneUtil.line(level, ArcaneUtil.center(from), ArcaneUtil.center(to), blue, 0.5);
             Vec3 c = ArcaneUtil.center(to);
-            level.sendParticles(ParticleTypes.ENCHANT, c.x, c.y + 0.5, c.z, 20, 0.4, 0.5, 0.4, 0.6);
+            level.sendParticles(Vfx.enchant(), c.x, c.y + 0.5, c.z, 20, 0.4, 0.5, 0.4, 0.6);
             ArcaneUtil.sound(level, c, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.6F);
         }
     }
@@ -233,7 +235,7 @@ public final class ManaEffects {
             if (c != null) {
                 Vec3 to = ArcaneUtil.center(c);
                 ArcaneUtil.line(level, from, to, ArcaneUtil.dust(MANA_BLUE, 0.9F), 0.4);
-                level.sendParticles(ParticleTypes.ENCHANT, to.x, to.y + 0.6, to.z, 16, 0.3, 0.4, 0.3, 0.8);
+                level.sendParticles(Vfx.enchant(), to.x, to.y + 0.6, to.z, 16, 0.3, 0.4, 0.3, 0.8);
             }
             level.sendParticles(ArcaneUtil.dust(0x2A4F9A, 1.3F), from.x, from.y, from.z, 14, 0.3, 0.4, 0.3, 0);
             ArcaneUtil.sound(level, from, SoundEvents.ENCHANTMENT_TABLE_USE, 1.0F, 0.6F);
@@ -278,7 +280,7 @@ public final class ManaEffects {
             Vec3 c = ArcaneUtil.center(target);
             ArcaneUtil.sphere(level, c, target.getBbWidth() * 0.5 + 0.6, ArcaneUtil.dust(ctx, 1.0F), 30);
             if (removed + spells > 0) {
-                level.sendParticles(ParticleTypes.ENCHANTED_HIT, c.x, c.y, c.z, 20, 0.4, 0.5, 0.4, 0.3);
+                level.sendParticles(Vfx.magicCrit(), c.x, c.y, c.z, 20, 0.4, 0.5, 0.4, 0.3);
                 ArcaneUtil.sound(level, c, SoundEvents.BEACON_DEACTIVATE, 0.8F, 1.5F);
             }
         }
@@ -374,7 +376,7 @@ public final class ManaEffects {
             int n = SpellStack.counterNear(level, center, radius, ctx.caster(), power(ctx, stats));
             for (LivingEntity e : ctx.enemiesAround(center, radius)) counter(ctx, e, stats);
             ArcaneUtil.destroyHostileMagic(ctx, center, radius);
-            DustParticleOptions dust = ArcaneUtil.dust(ctx, 1.2F);
+            ParticleOptions dust = ArcaneUtil.dust(ctx, 1.2F);
             for (int i = 1; i <= 3; i++) {
                 double r = radius * i / 3.0;
                 ArcaneUtil.ring(level, center.add(0, -0.6, 0), r, dust, (int) Math.min(96, 12 * r));
@@ -394,8 +396,8 @@ public final class ManaEffects {
             h = h.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : h.normalize();
             Vec3 right = new Vec3(-h.z, 0, h.x);
             Vec3 up = new Vec3(0, 1, 0);
-            DustParticleOptions edge = ArcaneUtil.dust(0xE8F0FF, 1.0F);
-            DustParticleOptions rune = ArcaneUtil.dust(0xB98CFF, 0.8F);
+            ParticleOptions edge = ArcaneUtil.dust(0xE8F0FF, 1.0F);
+            ParticleOptions rune = ArcaneUtil.dust(0xB98CFF, 0.8F);
             for (int k = 0; k < 6; k++) {
                 double a0 = Math.PI / 3 * k, a1 = Math.PI / 3 * (k + 1);
                 Vec3 p0 = c.add(right.scale(Math.cos(a0) * size)).add(up.scale(Math.sin(a0) * size));
@@ -410,8 +412,8 @@ public final class ManaEffects {
                 int n = (int) (16 * size);
                 level.sendParticles(violet, c.x, c.y, c.z, n, size * 0.45, size * 0.45, size * 0.45, 0.3);
                 level.sendParticles(clear, c.x, c.y, c.z, n / 2, size * 0.45, size * 0.45, size * 0.45, 0.3);
-                level.sendParticles(ParticleTypes.ENCHANTED_HIT, c.x, c.y, c.z, n, size * 0.4, size * 0.4, size * 0.4, 0.5);
-                level.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 6, size * 0.3, size * 0.3, size * 0.3, 0.15);
+                level.sendParticles(Vfx.magicCrit(), c.x, c.y, c.z, n, size * 0.4, size * 0.4, size * 0.4, 0.5);
+                level.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 6, size * 0.3, size * 0.3, size * 0.3, 0.15);
                 ArcaneUtil.sound(level, c, SoundEvents.GLASS_BREAK, 1.2F, 0.7F);
                 ArcaneUtil.sound(level, c, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.0F, 1.2F);
             });

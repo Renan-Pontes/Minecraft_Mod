@@ -1,5 +1,7 @@
 package com.renanpontes.isekaimahou.feature.class_gunslinger.glyph;
 
+import com.renanpontes.isekaimahou.core.anim.MahouAnims;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GgoState;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GsFx;
+import com.renanpontes.isekaimahou.feature.class_gunslinger.GsFxNet;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GsNetwork;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GsTechniques;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GunCombat;
@@ -169,6 +172,7 @@ public final class GgoForms {
                 default -> 220F;
             };
             PhotonSlashEntity.spawn(level, eye.add(look.scale(0.3)).subtract(0, 0.25, 0), look, roll, reach * 0.75F, rgb, 6);
+            GsFxNet.at(level, GsFxNet.PHOTON_SLASH, eye.add(look.scale(0.5)).subtract(0, 0.25, 0), look, reach, rgb, caster.getId(), (int) roll + 360);
             caster.swing(index % 2 == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, true);
             GsFx.sound(level, eye, SoundEvents.PLAYER_ATTACK_SWEEP, 0.9F, 1.6F + 0.1F * index);
             GsFx.sound(level, eye, SoundEvents.BEACON_DEACTIVATE, 0.5F, 2.0F);
@@ -179,8 +183,7 @@ public final class GgoForms {
                 e.invulnerableTime = 0;
                 ctx.resolveOnEntity(e, caster);
                 Vec3 c = e.position().add(0, e.getBbHeight() * 0.5, 0);
-                level.sendParticles(GsFx.dust(rgb, 1.1F), c.x, c.y, c.z, 8, 0.25, 0.3, 0.25, 0);
-                level.sendParticles(ParticleTypes.SWEEP_ATTACK, c.x, c.y, c.z, 1, 0, 0, 0, 0);
+                GsFxNet.at(level, GsFxNet.PHOTON_HIT, c, look, 1F, rgb, e.getId());
                 if (caster instanceof ServerPlayer sp) MagicApi.addCounter(sp, GsTechniques.PHOTON_HITS, 1);
             }
             // corta as balas/flechas que estão no arco
@@ -415,15 +418,7 @@ public final class GgoForms {
             GgoState.startCamo(caster, ticks);
             GgoState.dropAggro(caster, 32);
             // o manto se fecha dos pés à cabeça
-            for (int i = 0; i < 6; i++) {
-                final double y = caster.getBbHeight() * i / 5.0;
-                SpellScheduler.schedule(1 + i, () -> {
-                    if (caster.isRemoved()) return;
-                    Vec3 c = caster.position().add(0, y, 0);
-                    GsFx.ring(level, c, caster.getBbWidth() * 0.9 + 0.2, 12, GsFx.dust(0xD8F0FF, 0.6F));
-                    level.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, 2, 0.2, 0.05, 0.2, 0.02);
-                });
-            }
+            GsFxNet.on(caster, GsFxNet.CAMO, Vec3.ZERO, 1F, 0xD8F0FF, 0);
             GsFx.sound(level, caster.position(), SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.2F);
             GsFx.sound(level, caster.position(), SoundEvents.BEACON_DEACTIVATE, 0.6F, 1.8F);
             if (!ctx.spell().effects().isEmpty()) ctx.resolveOnSelf();
@@ -472,12 +467,7 @@ public final class GgoForms {
             Vec3 chest = caster.getEyePosition().add(look.scale(0.6)).subtract(0, 0.35, 0);
             Vec3 right = look.cross(new Vec3(0, 1, 0));
             right = right.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : right.normalize();
-            for (int i = -3; i <= 3; i++) {
-                Vec3 v = chest.add(0, i * 0.08, 0);
-                Vec3 h = chest.add(0, 0.08, 0).add(right.scale(i * 0.05));
-                level.sendParticles(GsFx.dust(RED_CORE, 0.6F), v.x, v.y, v.z, 1, 0, 0, 0, 0);
-                if (Math.abs(i) <= 2) level.sendParticles(GsFx.dust(RED_CORE, 0.6F), h.x, h.y, h.z, 1, 0, 0, 0, 0);
-            }
+            if (!silent) GsFxNet.at(level, GsFxNet.BLACK_STAR_CHARGE, chest, look, 1F, RED_CORE, caster.getId());
             if (!silent) GsFx.sound(level, chest, SoundEvents.BELL_RESONATE, 0.7F, 0.5F);
             GsTechniques.callout(caster, GsTechniques.key("black_star"),
                     Component.translatable("callout.isekai_mahou.gunslinger.black_star.sub"), RED_CORE);
@@ -495,10 +485,7 @@ public final class GgoForms {
             Vec3 from = GsFx.muzzle(caster, look, 1);
             Vec3 stop = end[0] == null ? eye.add(look.scale(RANGE)) : end[0];
             if (!hits.isEmpty()) stop = hits.get(0).at();
-            GsFx.tracer(level, from, stop, BLACK, 1.4F);
-            GsFx.tracer(level, from, stop, RED_CORE, 0.5F);
-            level.sendParticles(ParticleTypes.FLASH, from.x, from.y, from.z, 1, 0, 0, 0, 0);
-            level.sendParticles(ParticleTypes.SMOKE, from.x, from.y, from.z, 6, 0.05, 0.05, 0.05, 0.02);
+            GsFxNet.at(level, GsFxNet.BLACK_STAR, from, stop, 1F, RED_CORE, hits.isEmpty() ? -1 : hits.get(0).target().getId());
             if (silent) {
                 GsFx.sound(level, from, SoundEvents.ARROW_SHOOT, 0.4F, 0.5F);
             } else {
@@ -602,11 +589,7 @@ public final class GgoForms {
                 if (caster instanceof ServerPlayer sp) GunCombat.onBulletHit(sp, h.target(), h.head());
             }
             // estrondo: onda de choque no cano, rastro grosso e o eco
-            level.sendParticles(ParticleTypes.SONIC_BOOM, from.x, from.y, from.z, 1, 0, 0, 0, 0);
-            GsFx.ring(level, from, 1.2, 18, GsFx.dust(0xE8F8FF, 1.2F));
-            GsFx.tracer(level, from, stop, rgb, 1.8F);
-            GsFx.tracer(level, from, stop, 0xFFFFFF, 0.6F);
-            level.sendParticles(ParticleTypes.CLOUD, from.x, from.y, from.z, 10, 0.2, 0.2, 0.2, 0.08);
+            GsFxNet.at(level, GsFxNet.ANTI_MATERIEL, from, stop, 1F, rgb, caster.getId());
             GsFx.sound(level, from, SoundEvents.GENERIC_EXPLODE.value(), 1.2F, 0.6F);
             GsFx.sound(level, from, SoundEvents.TRIDENT_THUNDER.value(), 0.8F, 1.6F);
             GsFx.sound(level, from, SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 1.0F, 0.5F);
@@ -674,6 +657,7 @@ public final class GgoForms {
             GsFx.sound(level, caster.position(), SoundEvents.BEACON_ACTIVATE, 1.0F, 1.6F);
             GsFx.sound(level, caster.position(), SoundEvents.TRIDENT_RIPTIDE_3.value(), 0.8F, 1.5F);
             if (caster instanceof ServerPlayer sp) GsNetwork.anim(sp, GsNetwork.DRAW, 0, PHOTON_CORE);
+            GsFxNet.on(caster, GsFxNet.STARBURST_START, Vec3.ZERO, 1F, PHOTON, 0);
             LivingEntity[] target = {first};
             int slashRgb = PhotonSwordForm.color(ctx);
             for (int i = 0; i < HITS; i++) {
@@ -713,7 +697,10 @@ public final class GgoForms {
                 holder[0] = target;
                 if (target == null) return;
             }
-            if (k > 0 && k % 4 == 0) blink(caster, target, k / 4);
+            if (k > 0 && k % 4 == 0) {
+                blink(caster, target, k / 4);
+                MahouAnims.play(caster, "spin_slash");
+            }
             Vec3 eye = caster.getEyePosition();
             Vec3 dir = target.getEyePosition().subtract(eye);
             dir = dir.lengthSqr() < 1.0E-4 ? caster.getLookAngle() : dir.normalize();
@@ -723,6 +710,8 @@ public final class GgoForms {
             if (k % 2 == 0) {
                 PhotonSlashEntity.spawn(level, eye.add(dir.scale(0.4)).subtract(0, 0.2, 0), dir, (k % 4 == 0 ? 25F : -30F) + k * 11F,
                         last ? 3.0F : 2.2F, slashRgb, 5);
+                GsFxNet.at(level, GsFxNet.PHOTON_SLASH, eye.add(dir.scale(0.5)).subtract(0, 0.2, 0), dir, last ? 3.0F : 2.2F, slashRgb,
+                        caster.getId(), (int) ((k % 4 == 0 ? 25F : -30F) + k * 11F) + 360);
                 GsFx.sound(level, eye, SoundEvents.PLAYER_ATTACK_SWEEP, 0.9F, 1.4F + 0.04F * k);
                 caster.swing(InteractionHand.MAIN_HAND, true);
             } else {
@@ -733,18 +722,14 @@ public final class GgoForms {
             }
             target.invulnerableTime = 0;
             ctx.copy(ctx.powerMult() * power).resolveOnEntity(target, caster);
-            level.sendParticles(GsFx.dust(k % 2 == 0 ? slashRgb : PHOTON_CORE, 1.2F), c.x, c.y, c.z, 6, 0.25, 0.3, 0.25, 0);
-            level.sendParticles(ParticleTypes.CRIT, c.x, c.y, c.z, 6, 0.2, 0.3, 0.2, 0.3);
+            GsFxNet.at(level, GsFxNet.STARBURST_HIT, c, dir, 1F, k % 2 == 0 ? slashRgb : PHOTON_CORE, target.getId(), k);
             if (caster instanceof ServerPlayer sp) {
                 MagicApi.addCounter(sp, GsTechniques.PHOTON_HITS, 1);
                 sp.displayClientMessage(Component.translatable("message.isekai_mahou.gunslinger.burst_count", k + 1, HITS)
                         .withColor(k % 2 == 0 ? slashRgb : PHOTON_CORE), true);
             }
             if (last) {
-                level.sendParticles(ParticleTypes.FLASH, c.x, c.y, c.z, 1, 0, 0, 0, 0);
-                level.sendParticles(ParticleTypes.FIREWORK, c.x, c.y, c.z, 40, 0.4, 0.5, 0.4, 0.25);
-                level.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 20, 0.5, 0.5, 0.5, 0.15);
-                GsFx.sound(level, c, SoundEvents.FIREWORK_ROCKET_TWINKLE, 1.2F, 1.0F);
+                GsFxNet.at(level, GsFxNet.STARBURST_FINISH, c, dir, 1F, PHOTON_CORE, target.getId());
                 GsFx.sound(level, c, SoundEvents.GENERIC_EXPLODE.value(), 0.7F, 1.4F);
             }
         }
@@ -763,8 +748,7 @@ public final class GgoForms {
             if (caster instanceof ServerPlayer sp) sp.teleportTo(sp.serverLevel(), dest.x, dest.y, dest.z, yaw, sp.getXRot());
             else caster.teleportTo(dest.x, dest.y, dest.z);
             if (caster.level() instanceof ServerLevel sl) {
-                sl.sendParticles(GsFx.dust(PHOTON_CORE, 1.0F), old.x, old.y + 1, old.z, 10, 0.2, 0.5, 0.2, 0);
-                sl.sendParticles(ParticleTypes.END_ROD, dest.x, dest.y + 1, dest.z, 6, 0.2, 0.4, 0.2, 0.05);
+                GsFxNet.at(sl, GsFxNet.BLINK, old, dest, 1F, PHOTON_CORE, caster.getId());
                 GsFx.sound(sl, dest, SoundEvents.ENDERMAN_TELEPORT, 0.4F, 1.8F + 0.05F * turn);
             }
         }

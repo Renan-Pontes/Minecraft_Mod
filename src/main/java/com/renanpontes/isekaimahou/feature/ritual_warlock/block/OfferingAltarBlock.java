@@ -8,9 +8,9 @@ import com.renanpontes.isekaimahou.feature.ritual_warlock.entity.PatronEntity;
 import com.renanpontes.isekaimahou.feature.ritual_warlock.ritual.PactRitual;
 import com.renanpontes.isekaimahou.feature.ritual_warlock.ritual.PatronKind;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -118,7 +118,7 @@ public class OfferingAltarBlock extends BaseEntityBlock {
             altar.setOffering(stack.copyWithCount(1));
             if (!player.getAbilities().instabuild) stack.shrink(1);
             sl.playSound(null, pos, SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.BLOCKS, 0.8F, 0.7F);
-            sl.sendParticles(ParticleTypes.SOUL, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, 6, 0.2, 0.1, 0.2, 0.01);
+            sl.sendParticles(Vfx.soul(), pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, 6, 0.2, 0.1, 0.2, 0.01);
             player.displayClientMessage(Component.translatable("message.isekai_mahou.warlock.offering_placed", kind.displayName()), true);
         }
         return ItemInteractionResult.sidedSuccess(level.isClientSide);
@@ -163,13 +163,13 @@ public class OfferingAltarBlock extends BaseEntityBlock {
         double x = pos.getX() + 0.5, y = pos.getY() + TOP, z = pos.getZ() + 0.5;
         if (altar.isActiveClient()) {
             if (random.nextInt(2) == 0) {
-                level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, x + (random.nextDouble() - 0.5) * 0.8, y + 0.05,
+                level.addParticle(Vfx.soulFlame(), x + (random.nextDouble() - 0.5) * 0.8, y + 0.05,
                         z + (random.nextDouble() - 0.5) * 0.8, 0, 0.03, 0);
             }
         } else if (!altar.getOffering().isEmpty() && random.nextInt(3) == 0) {
-            level.addParticle(ParticleTypes.ENCHANT, x, y + 0.6, z, (random.nextDouble() - 0.5) * 1.5, -0.4, (random.nextDouble() - 0.5) * 1.5);
+            level.addParticle(Vfx.enchant(), x, y + 0.6, z, (random.nextDouble() - 0.5) * 1.5, -0.4, (random.nextDouble() - 0.5) * 1.5);
         } else if (random.nextInt(8) == 0) {
-            level.addParticle(ParticleTypes.SMOKE, x + (random.nextDouble() - 0.5) * 0.6, y + 0.05, z + (random.nextDouble() - 0.5) * 0.6, 0, 0.01, 0);
+            level.addParticle(Vfx.smoke(), x + (random.nextDouble() - 0.5) * 0.6, y + 0.05, z + (random.nextDouble() - 0.5) * 0.6, 0, 0.01, 0);
         }
     }
 

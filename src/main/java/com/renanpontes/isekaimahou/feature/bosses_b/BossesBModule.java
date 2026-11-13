@@ -5,16 +5,19 @@ import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementReactions;
 import com.renanpontes.isekaimahou.feature.bosses_b.entity.AbyssSovereign;
+import com.renanpontes.isekaimahou.feature.bosses_b.entity.BbBoss;
 import com.renanpontes.isekaimahou.feature.bosses_b.entity.Seraph;
 import com.renanpontes.isekaimahou.feature.bosses_b.entity.TwilightHerald;
 import com.renanpontes.isekaimahou.feature.bosses_b.item.TwilightHeartItem;
 import com.renanpontes.isekaimahou.module.Module;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.CreativeModeTab;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 
 /**
  * Modulo "bosses_b": os chefes de Luz, Sombra e o chefe final.
@@ -45,6 +48,10 @@ public class BossesBModule implements Module {
         // Bônus permanentes do Coração do Crepúsculo sobrevivem à morte (o vanilla descarta modificadores ao renascer).
         NeoForge.EVENT_BUS.addListener(TwilightHeartItem::onRespawn);
         NeoForge.EVENT_BUS.addListener(TwilightHeartItem::onLogin);
+        // v1.0: o chefe provoca quando derruba um jogador (a fala tem trava no próprio chefe)
+        NeoForge.EVENT_BUS.addListener((LivingDeathEvent e) -> {
+            if (e.getEntity() instanceof ServerPlayer && e.getSource().getEntity() instanceof BbBoss b) b.onPlayerSlain();
+        });
 
         // Resistências elementais: cada guardião resiste ao próprio elemento e é fraco ao oposto.
         ElementReactions.setMultiplier(IsekaiMahou.id("abyss_sovereign"), Element.SHADOW, 0.25F);

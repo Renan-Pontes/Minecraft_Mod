@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.feature.origins_b.entity;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.feature.origins_b.ObFx;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -90,7 +91,7 @@ public class BoneWarriorEntity extends ObSummonEntity {
             double ang = a + i * Math.PI;
             level.sendParticles(ObFx.bone(), getX() + Math.cos(ang) * 0.7, getY() + h, getZ() + Math.sin(ang) * 0.7, 1, 0, 0, 0, 0);
         }
-        level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, getX(), getY() + h, getZ(), 1, 0.2, 0.05, 0.2, 0.01);
+        level.sendParticles(Vfx.soulFlame(), getX(), getY() + h, getZ(), 1, 0.2, 0.05, 0.2, 0.01);
         if (ticksLeft % 5 == 0) level.playSound(null, getX(), getY(), getZ(), SoundEvents.BONE_BLOCK_PLACE, getSoundSource(), 0.7F, 1.2F);
         if (ticksLeft == 2) level.playSound(null, getX(), getY(), getZ(), SoundEvents.SKELETON_AMBIENT, getSoundSource(), 1.0F, 0.8F);
     }
@@ -139,7 +140,7 @@ public class BoneWarriorEntity extends ObSummonEntity {
     @Override
     protected void dissolveFx(ServerLevel level) {
         ObFx.boneBurst(level, position().add(0, 1.0, 0), 18, 0.35);
-        level.sendParticles(ParticleTypes.SOUL, getX(), getY() + 1.0, getZ(), 4, 0.2, 0.4, 0.2, 0.03);
+        level.sendParticles(Vfx.soul(), getX(), getY() + 1.0, getZ(), 4, 0.2, 0.4, 0.2, 0.03);
         level.playSound(null, getX(), getY(), getZ(), SoundEvents.SKELETON_DEATH, getSoundSource(), 0.7F, 1.1F);
         level.playSound(null, getX(), getY(), getZ(), SoundEvents.BONE_BLOCK_BREAK, getSoundSource(), 1.0F, 0.9F);
     }

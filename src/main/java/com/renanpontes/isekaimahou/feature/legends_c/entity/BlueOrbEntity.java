@@ -14,8 +14,8 @@ import com.renanpontes.isekaimahou.feature.legends_c.LcUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -146,7 +146,7 @@ public class BlueOrbEntity extends LcEntity {
             if (LcUtil.behindWall(l, c, e, owner)) continue;
             ctx.damage(e, damage, stats, this);
             e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 3, false, false, false));
-            l.sendParticles(ParticleTypes.CRIT, e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 6, 0.2, 0.2, 0.2, 0.3);
+            l.sendParticles(Vfx.crit(), e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 6, 0.2, 0.2, 0.2, 0.3);
         }
     }
 

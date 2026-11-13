@@ -21,7 +21,8 @@ import net.minecraft.server.level.ServerPlayer;
 /**
  * {@code /mahou shinigami} (qualquer jogador): estado da classe e do próximo rank. Com cheats: {@code rank <0-5>} (dá as
  * recompensas que faltam), {@code archetype <id>} (troca o arquétipo e ensina o glifo), {@code feats} (completa os
- * feitos do próximo rank), {@code inner} (entra/sai do Mundo Interior na hora).
+ * feitos do próximo rank), {@code inner} (entra/sai do Mundo Interior na hora), {@code shikai} (libera/sela a Shikai sem
+ * precisar usar a espada) e {@code forge} (release 1.0: estado dos espaços de receita da Shikai e da Bankai).
  */
 public final class ShinigamiCommands {
     static void register() {
@@ -79,12 +80,35 @@ public final class ShinigamiCommands {
                     c.getSource().sendSuccess(() -> Shinigami.msg("cmd_feats", Shinigami.roman(next.number())), false);
                     return 1;
                 }))
+                .then(MahouCommands.op("shikai").executes(c -> {
+                    Release.toggleShikai(c.getSource().getPlayerOrException(), net.minecraft.world.InteractionHand.MAIN_HAND);
+                    return 1;
+                }))
+                .then(MahouCommands.op("forge").executes(c -> {
+                    ServerPlayer sp = c.getSource().getPlayerOrException();
+                    for (String slot : new String[] {ReleaseForge.SHIKAI, ReleaseForge.BANKAI}) forgeLine(sp, slot);
+                    return 1;
+                }))
                 .then(MahouCommands.op("inner").executes(c -> {
                     ServerPlayer sp = c.getSource().getPlayerOrException();
                     if (InnerWorld.is(sp.level())) InnerWorld.leave(sp);
                     else InnerWorld.enter(sp);
                     return 1;
                 }))));
+    }
+
+    /** Uma linha por espaço de receita: se dá para moldar, a receita escolhida e se ela está valendo agora. */
+    private static void forgeLine(ServerPlayer sp, String slot) {
+        com.renanpontes.isekaimahou.glyph.SpellRecipe r = ReleaseForge.recipe(sp, slot);
+        Component recipe = r == null ? Component.translatable("screen.isekai_mahou.release_forge.none")
+                : r.name().isEmpty() ? Component.translatable("screen.isekai_mahou.tforge.unnamed") : Component.literal(r.name());
+        sp.sendSystemMessage(Component.translatable("message.isekai_mahou.release_forge.debug",
+                Component.translatable("screen.isekai_mahou.tforge.slot." + slot), yesNo(ReleaseForge.canShape(MagicApi.get(sp))), recipe,
+                yesNo(ReleaseForge.active(sp, slot))).withStyle(ChatFormatting.GRAY));
+    }
+
+    private static Component yesNo(boolean b) {
+        return Component.translatable(b ? "gui.yes" : "gui.no").withStyle(b ? ChatFormatting.GREEN : ChatFormatting.RED);
     }
 
     private static int status(ServerPlayer sp) {

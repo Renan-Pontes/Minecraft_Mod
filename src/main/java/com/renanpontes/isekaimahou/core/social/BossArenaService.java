@@ -155,6 +155,24 @@ public final class BossArenaService {
 
     /** Sela com centro/raio dados (center null = automático; radius ≤ 0 = automático). */
     @Nullable
+    /**
+     * v1.3.2: muda o centro/raio da arena de um chefe EM LUTA sem liberar (sem "arena liberada"/"selada" no meio da luta):
+     * ex.: Ulquiorra leva a luta para o terraço da cúpula. Sem arena ainda = sela normalmente.
+     */
+    public static Arena move(LivingEntity boss, Vec3 center, double radius) {
+        if (!(boss.level() instanceof ServerLevel level)) return null;
+        Arena old = ARENAS.get(boss.getUUID());
+        if (old == null) return engage(boss, center, radius);
+        int now = level.getServer().getTickCount();
+        hideBounds(level.getServer(), old);
+        Arena a = new Arena(boss, center, Mth.clamp(radius, MIN_RADIUS, MAX_RADIUS), now);
+        ARENAS.put(boss.getUUID(), a);
+        if (!BossKit.isTrialBoss(boss)) showBounds(level.getServer(), a);
+        burst(level, a);
+        SocialSync.markAllStates();
+        return a;
+    }
+
     public static Arena engage(LivingEntity boss, @Nullable Vec3 center, double radius) {
         if (!(boss.level() instanceof ServerLevel level) || !boss.isAlive() || boss instanceof Player) return null;
         int now = level.getServer().getTickCount();
@@ -235,9 +253,25 @@ public final class BossArenaService {
         return new ArrayList<>(ARENAS.values());
     }
 
-    /** Protegido agora: arena de chefe (luta ou os 30 s depois) ou área sempre protegida. */
+    /**
+     * Protegido agora: arena de chefe (luta ou os 30 s depois). v1.3.2: templos/hubs/palácios de chefe ({@link StructureGuard})
+     * só ficam inquebráveis enquanto houver uma luta de chefe ali perto — fora da luta voltam ao normal.
+     */
     public static boolean isProtected(ServerLevel level, BlockPos pos) {
-        return at(level, pos) != null || StructureGuard.isProtected(level, pos);
+        if (ARENAS.isEmpty()) return false;
+        if (at(level, pos) != null) return true;
+        return fightNear(level, pos) && StructureGuard.isProtected(level, pos);
+    }
+
+    /** Há uma arena de chefe ativa nesta dimensão a até (raio + 96) blocos? */
+    private static boolean fightNear(Level level, BlockPos pos) {
+        for (Arena a : ARENAS.values()) {
+            if (!a.dim.equals(level.dimension())) continue;
+            double r = a.radius + 96;
+            double dx = a.center.x - pos.getX(), dz = a.center.z - pos.getZ();
+            if (dx * dx + dz * dz <= r * r) return true;
+        }
+        return false;
     }
 
     /** Libera já (sem esperar os 30 s). Devolve false se não havia arena. */
@@ -291,7 +325,17 @@ public final class BossArenaService {
             double reach = a.radius * 1.5 + 16;
             if (p.distanceToSqr(a.center) <= reach * reach) return true;
         }
-        return boss.getLastHurtByMob() instanceof Player && boss.tickCount - boss.getLastHurtByMobTimestamp() < 200;
+        if (boss.getLastHurtByMob() instanceof Player && boss.tickCount - boss.getLastHurtByMobTimestamp() < 200) return true;
+        // v1.3.2: o chefe (ou golpes/invocações creditados a ele) acertou um jogador há pouco
+        if (boss.getLastHurtMob() instanceof Player && boss.tickCount - boss.getLastHurtMobTimestamp() < 200) return true;
+        // v1.3.2: jogador vivo (sobrevivência) DENTRO da arena = a luta continua (mesmo só contra as invocações)
+        if (boss.level() instanceof ServerLevel sl) {
+            double r2 = a.radius * a.radius;
+            for (ServerPlayer p : sl.players()) {
+                if (p.isAlive() && !p.isSpectator() && !p.isCreative() && p.distanceToSqr(a.center) <= r2) return true;
+            }
+        }
+        return false;
     }
 
     private static void startRelease(ServerLevel level, Arena a, int now, boolean victory) {

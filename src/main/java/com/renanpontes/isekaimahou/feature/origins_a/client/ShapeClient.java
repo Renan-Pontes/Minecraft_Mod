@@ -5,15 +5,16 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.feature.origins_a.shape.Shape;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
@@ -287,7 +288,7 @@ public final class ShapeClient {
         if (mc.level == null || mc.player == null || mc.isPaused()) return;
         // Manequins: passos, asas, ataques; e partículas da Fera Elemental
         Iterator<Map.Entry<Integer, State>> it = STATES.entrySet().iterator();
-        boolean reduced = MahouConfig.REDUCED_PARTICLES.get();
+        boolean reduced = !FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         while (it.hasNext()) {
             Map.Entry<Integer, State> en = it.next();
             Entity ent = mc.level.getEntity(en.getKey());
@@ -333,7 +334,7 @@ public final class ShapeClient {
             v = new Vec3(v.x + look.x * 0.2, Math.max(v.y, 0.0) + 0.5, v.z + look.z * 0.2);
             lp.playSound(SoundEvents.PHANTOM_FLAP, 0.7F, 1.5F);
             for (int i = 0; i < 6; i++) {
-                lp.level().addParticle(ParticleTypes.CLOUD, lp.getX(), lp.getY(), lp.getZ(),
+                lp.level().addParticle(Vfx.cloud(), lp.getX(), lp.getY(), lp.getZ(),
                         (lp.getRandom().nextDouble() - 0.5) * 0.2, -0.1, (lp.getRandom().nextDouble() - 0.5) * 0.2);
             }
         }

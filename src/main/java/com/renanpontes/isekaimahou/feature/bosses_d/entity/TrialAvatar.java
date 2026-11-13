@@ -21,10 +21,12 @@ import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.core.api.Cutscenes;
 import com.renanpontes.isekaimahou.core.api.TrialsApi;
+import com.renanpontes.isekaimahou.core.boss.BossCurses;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.BossRewards;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
 import com.renanpontes.isekaimahou.feature.bosses_d.entity.kit.AvatarKit;
+import com.renanpontes.isekaimahou.feature.bosses_d.polish.BossShow;
 import com.renanpontes.isekaimahou.feature.bosses_d.entity.kit.AvatarKits;
 
 import net.minecraft.core.BlockPos;
@@ -141,6 +143,8 @@ public class TrialAvatar extends Monster implements GeoEntity {
     private int moveTick;
     private int globalCooldown = 30;
     private boolean introDone;
+    /** v1.0: trava das falas reativas (provocação / último fôlego). */
+    private final BossShow.Voice voice = new BossShow.Voice();
     private int introTicks = -1;
     private int transitionTicks;
     @Nullable private Vec3 home;
@@ -525,7 +529,13 @@ public class TrialAvatar extends Monster implements GeoEntity {
             return;
         }
         if (tickCount % 20 == 0) lateIntros(sl);
+        // Arena protegida viva enquanto a luta durar
+        if (tickCount % 40 == 0) BossKit.keepArena(this, 48);
         checkPhase(sl);
+        // v1.0: fala de último fôlego (uma vez por luta, fora das transições)
+        if (tickCount % 10 == 0 && transitionTicks <= 0 && voice.lastStand(this, 0.15F)) {
+            Announce.send(this, keyed("announce.isekai_mahou.trial_avatar.last_stand"), rgb(), Announce.STYLE_BOSS);
+        }
         if (transitionTicks > 0) {
             tickTransition(sl);
             return;
@@ -606,6 +616,7 @@ public class TrialAvatar extends Monster implements GeoEntity {
         }
         Announce.send(this, getName().copy().withColor(rgb()), rgb(), Announce.STYLE_BOSS);
         sl.playSound(null, getX(), getY(), getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.HOSTILE, 2.0F, 0.6F);
+        BossKit.sealArena(this);
     }
 
     private void introFx(ServerLevel sl, int t) {
@@ -684,6 +695,8 @@ public class TrialAvatar extends Monster implements GeoEntity {
                 f.hurtMarked = true;
             }
             BossKit.shake(sl, position(), 32, 1.6F, 20);
+            BossKit.flashNear(sl, position(), 40, rgb(), 0.45F, 14);
+            elementCurse(sl);
         }
         transitionTicks--;
         if (transitionTicks == 0) {
@@ -691,6 +704,37 @@ public class TrialAvatar extends Monster implements GeoEntity {
             // Abertura de cada fase: fase 2 invoca/assinatura, fase 3 o golpe máximo
             if (phase() >= 3) forcedNext = ultimateMove();
             else forcedNext = signatureMove();
+        }
+    }
+
+    /**
+     * v1.3: na virada de fase o Avatar solta a MALDIÇÃO do elemento (as mesmas dos guardiões), por alguns segundos:
+     * Fogo derrete a armadura, Água afoga, Sombra sussurra, Arcano desacelera o tempo, Terra racha o chão,
+     * Vento lança ao céu e Luz ofusca quem estiver olhando para ele.
+     */
+    private void elementCurse(ServerLevel sl) {
+        Element e = element();
+        int ticks = 60 + 20 * phase();
+        if (e.matches(Element.EARTH)) {
+            BossKit.crackFloor(sl, position(), 8, 7, 100);
+            BossKit.debris(sl, position(), 5, 20);
+        }
+        for (LivingEntity f : foesNear(position(), 24)) {
+            if (e.matches(Element.FIRE)) BossCurses.apply(f, BossCurses.SCORCHED, ticks, 0);
+            if (e.matches(Element.WATER)) BossCurses.apply(f, BossCurses.DROWNING, ticks / 2, 0);
+            if (e.matches(Element.SHADOW)) BossCurses.apply(f, BossCurses.WHISPERS, ticks, 0);
+            if (e == Element.ARCANE) BossCurses.apply(f, BossCurses.TIME_SLOW, ticks, 0);
+            if (e.matches(Element.EARTH)) f.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                    net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, ticks, 1), this);
+            if (e.matches(Element.WIND)) {
+                f.setDeltaMovement(f.getDeltaMovement().add(0, 1.0, 0));
+                f.hurtMarked = true;
+            }
+            if (e.matches(Element.LIGHT) && f instanceof ServerPlayer sp
+                    && sp.getViewVector(1F).dot(position().add(0, 1.8, 0).subtract(sp.getEyePosition()).normalize()) > 0.42) {
+                sp.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.BLINDNESS, 50, 0), this);
+                BossKit.flash(sp, 0xFFFFFF, 0.9F, 30);
+            }
         }
     }
 
@@ -1274,7 +1318,7 @@ public class TrialAvatar extends Monster implements GeoEntity {
 
     private static boolean reducedParticles() {
         try {
-            return MahouConfig.REDUCED_PARTICLES.get();
+            return !com.renanpontes.isekaimahou.client.fx.FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         } catch (RuntimeException e) {
             return false;
         }
@@ -1301,6 +1345,14 @@ public class TrialAvatar extends Monster implements GeoEntity {
         BossRewards.grant(this, 80 + 60 * rank(), 48);
         Announce.send(this, Component.translatable("announce.isekai_mahou.trial_avatar.defeated", getName()), rgb(), Announce.STYLE_BOSS);
         sl.playSound(null, getX(), getY(), getZ(), SoundEvents.BEACON_DEACTIVATE, SoundSource.HOSTILE, 2.0F, 0.6F);
+        // v1.0: golpe final marcado + câmera da derrota (curta, não trava ninguém)
+        BossShow.deathStart(sl, this, rgb(), DEATH_TICKS, true);
+    }
+
+    /** v1.0: um jogador caiu pelas mãos do Avatar — provocação curta (com trava: nunca em rajada). */
+    public void onPlayerSlain() {
+        if (level().isClientSide || isDeadOrDying() || !introDone || !voice.taunt(this)) return;
+        Announce.send(this, keyed("announce.isekai_mahou.trial_avatar.taunt"), rgb(), Announce.STYLE_BOSS);
     }
 
     @Override

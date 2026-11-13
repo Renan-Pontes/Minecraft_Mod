@@ -1,0 +1,282 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "isekai_mahou:block/renown_board_side",
+    "front": "isekai_mahou:block/renown_board_front",
+    "side": "isekai_mahou:block/renown_board_side"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        6.5
+      ],
+      "to": [
+        3,
+        16,
+        9.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        0,
+        6.5
+      ],
+      "to": [
+        15,
+        16,
+        9.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            3,
+            16
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        2,
+        7
+      ],
+      "to": [
+        16,
+        16,
+        9
+      ],
+      "faces": {
+        "north": {
+          "texture": "#front",
+          "uv": [
+            0,
+            1,
+            16,
+            15
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            14
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            7,
+            0,
+            9,
+            14
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            7,
+            0,
+            9,
+            14
+          ]
+        },
+        "up": {
+          "texture": "#side",
+          "uv": [
+            0,
+            7,
+            16,
+            9
+          ]
+        },
+        "down": {
+          "texture": "#side",
+          "uv": [
+            0,
+            7,
+            16,
+            9
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        -0.5,
+        15.5,
+        6
+      ],
+      "to": [
+        16.5,
+        17,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#side",
+          "uv": [
+            0,
+            5,
+            16,
+            9
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            0,
+            5,
+            16,
+            9
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            5,
+            16,
+            9
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            5,
+            16,
+            9
+          ]
+        },
+        "up": {
+          "texture": "#side",
+          "uv": [
+            0,
+            5,
+            16,
+            9
+          ]
+        },
+        "down": {
+          "texture": "#side",
+          "uv": [
+            0,
+            5,
+            16,
+            9
+          ]
+        }
+      }
+    }
+  ]
+}

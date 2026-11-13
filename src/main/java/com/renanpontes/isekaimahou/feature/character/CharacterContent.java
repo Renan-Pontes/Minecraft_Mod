@@ -6,9 +6,12 @@ import java.util.function.Supplier;
 
 import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.core.CoreRegistries;
+import com.renanpontes.isekaimahou.feature.character.block.NewBeginningsAltarBlock;
 import com.renanpontes.isekaimahou.feature.character.block.ReincarnationAltarBlock;
 import com.renanpontes.isekaimahou.feature.character.item.RaceRelicItem;
 
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -32,7 +35,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 /**
- * Registros do módulo: dados da raça, o Altar da Reencarnação e os efeitos (MobEffect) das skills raciais.
+ * Registros do módulo: dados da raça, o Altar da Reencarnação, o Altar do Recomeço (release 1.0), as partículas de
+ * assinatura das raças e os efeitos (MobEffect) das skills raciais.
  * v1.0: os 6 atributos da v0.9 ({@code isekai_mahou:strength}...) SAÍRAM (o jogador desistiu dos status).
  */
 public final class CharacterContent {
@@ -51,6 +55,30 @@ public final class CharacterContent {
                     .lightLevel(s -> 11).noOcclusion().pushReaction(PushReaction.BLOCK));
     public static final DeferredItem<BlockItem> ALTAR_ITEM = ITEMS.registerSimpleBlockItem("reincarnation_altar", ALTAR,
             new Item.Properties().rarity(Rarity.EPIC));
+
+    /** release 1.0 — Altar do Recomeço: devolve os pontos de talento e desfaz a especialização ({@link Reincarnation}). */
+    public static final DeferredBlock<NewBeginningsAltarBlock> RENEWAL_ALTAR = BLOCKS.registerBlock("new_beginnings_altar",
+            NewBeginningsAltarBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN)
+                    .strength(4.0F, 1200.0F).requiresCorrectToolForDrops().sound(SoundType.CALCITE)
+                    .lightLevel(s -> 11).noOcclusion().pushReaction(PushReaction.BLOCK));
+    public static final DeferredItem<BlockItem> RENEWAL_ALTAR_ITEM = ITEMS.registerSimpleBlockItem("new_beginnings_altar",
+            RENEWAL_ALTAR, new Item.Properties().rarity(Rarity.EPIC));
+
+    // =====================================================================================
+    //  release 1.0 — partícula própria de cada raça (a "assinatura" das Transformações: pena, runa, brasa, teia...).
+    //  Só o tipo é registrado aqui; o desenho/movimento é do cliente (client/RaceMoteParticle).
+    // =====================================================================================
+    public static final DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister.create(Registries.PARTICLE_TYPE, IsekaiMahou.MODID);
+    private static final Map<Race, DeferredHolder<ParticleType<?>, SimpleParticleType>> MOTES = new EnumMap<>(Race.class);
+
+    static {
+        for (Race r : Race.ALL) MOTES.put(r, PARTICLES.register("race_mote_" + r.id, () -> new SimpleParticleType(false)));
+    }
+
+    /** Partícula de assinatura da raça {@code r} ({@code isekai_mahou:race_mote_<id>}). */
+    public static SimpleParticleType mote(Race r) {
+        return MOTES.get(r).get();
+    }
 
     // =====================================================================================
     //  Relíquias Raciais (a única forma de outra raça aprender as skills raciais)
@@ -121,6 +149,7 @@ public final class CharacterContent {
 
     // =====================================================================================
     //  v1.0.1: Transformações raciais (nível de raça V, {@link RaceForms}). Um efeito por raça, SEMPRE amplificador 0;
+    //  v1.3: TODAS as formas crescem (atributo de escala: o corpo fica maior e mais temível);
     //  os atributos somem sozinhos quando o efeito acaba (fim do tempo, leite, morte). O comportamento extra (voo,
     //  auras, golpe da forma) está em RaceForms.
     // =====================================================================================
@@ -147,11 +176,13 @@ public final class CharacterContent {
                 e.addAttributeModifier(CoreRegistries.SPELL_POWER, IsekaiMahou.id(p + "power"), 0.25, add);
                 e.addAttributeModifier(Attributes.MOVEMENT_SPEED, IsekaiMahou.id(p + "move"), 0.10, total);
                 e.addAttributeModifier(Attributes.MAX_HEALTH, IsekaiMahou.id(p + "health"), 10.0, add);
+                e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.10, base);
             }
             case ELF -> {
                 e.addAttributeModifier(Attributes.MOVEMENT_SPEED, IsekaiMahou.id(p + "move"), 0.15, total);
                 e.addAttributeModifier(CoreRegistries.MANA_REGEN, IsekaiMahou.id(p + "regen"), 0.5, base);
                 e.addAttributeModifier(CoreRegistries.SPELL_POWER, IsekaiMahou.id(p + "power"), 0.15, add);
+                e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.10, base);
             }
             case DWARF -> {
                 e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.45, base);
@@ -167,7 +198,7 @@ public final class CharacterContent {
                 e.addAttributeModifier(Attributes.ATTACK_SPEED, IsekaiMahou.id(p + "speed"), 0.25, total);
                 e.addAttributeModifier(Attributes.MOVEMENT_SPEED, IsekaiMahou.id(p + "move"), 0.15, total);
                 e.addAttributeModifier(Attributes.KNOCKBACK_RESISTANCE, IsekaiMahou.id(p + "steady"), 0.5, add);
-                e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.12, base);
+                e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.35, base);
             }
             case BEASTFOLK -> {
                 e.addAttributeModifier(Attributes.MOVEMENT_SPEED, IsekaiMahou.id(p + "move"), 0.35, total);
@@ -175,33 +206,39 @@ public final class CharacterContent {
                 e.addAttributeModifier(Attributes.ATTACK_DAMAGE, IsekaiMahou.id(p + "damage"), 0.20, total);
                 e.addAttributeModifier(Attributes.JUMP_STRENGTH, IsekaiMahou.id(p + "jump"), 0.30, base);
                 e.addAttributeModifier(Attributes.SAFE_FALL_DISTANCE, IsekaiMahou.id(p + "fall"), 10.0, add);
+                e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.25, base);
             }
             case DEMON -> {
                 e.addAttributeModifier(Attributes.ATTACK_DAMAGE, IsekaiMahou.id(p + "damage"), 0.30, total);
                 e.addAttributeModifier(CoreRegistries.SPELL_POWER, IsekaiMahou.id(p + "power"), 0.20, add);
                 e.addAttributeModifier(Attributes.MOVEMENT_SPEED, IsekaiMahou.id(p + "move"), 0.10, total);
+                e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.25, base);
             }
             case DRAGONBORN -> {
                 e.addAttributeModifier(Attributes.ARMOR, IsekaiMahou.id(p + "armor"), 8.0, add);
                 e.addAttributeModifier(Attributes.ARMOR_TOUGHNESS, IsekaiMahou.id(p + "toughness"), 4.0, add);
                 e.addAttributeModifier(Attributes.ATTACK_DAMAGE, IsekaiMahou.id(p + "damage"), 0.25, total);
-                e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.15, base);
+                e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.30, base);
             }
             case ARACHNID -> {
                 e.addAttributeModifier(Attributes.MOVEMENT_SPEED, IsekaiMahou.id(p + "move"), 0.20, total);
                 e.addAttributeModifier(Attributes.ATTACK_SPEED, IsekaiMahou.id(p + "speed"), 0.20, total);
                 e.addAttributeModifier(Attributes.SAFE_FALL_DISTANCE, IsekaiMahou.id(p + "fall"), 12.0, add);
+                e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.15, base);
             }
             case PHANTOM -> {
                 e.addAttributeModifier(Attributes.SAFE_FALL_DISTANCE, IsekaiMahou.id(p + "fall"), 64.0, add);
                 e.addAttributeModifier(CoreRegistries.SPELL_POWER, IsekaiMahou.id(p + "power"), 0.15, add);
+                e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.12, base);
             }
             case ANGEL -> {
                 e.addAttributeModifier(CoreRegistries.SPELL_POWER, IsekaiMahou.id(p + "power"), 0.20, add);
                 e.addAttributeModifier(Attributes.MAX_HEALTH, IsekaiMahou.id(p + "health"), 8.0, add);
+                e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.15, base);
             }
             case SLIME -> {
-                e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.6, base);
+                // v1.7 Despertar do Lorde Demônio (Rimuru): forma humanoide — cresce pouco (era +60% no Rei Slime)
+                e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.15, base);
                 e.addAttributeModifier(Attributes.MAX_HEALTH, IsekaiMahou.id(p + "health"), 20.0, add);
                 e.addAttributeModifier(Attributes.KNOCKBACK_RESISTANCE, IsekaiMahou.id(p + "steady"), 1.0, add);
                 e.addAttributeModifier(Attributes.JUMP_STRENGTH, IsekaiMahou.id(p + "jump"), 0.40, base);
@@ -228,9 +265,11 @@ public final class CharacterContent {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         EFFECTS.register(modBus);
+        PARTICLES.register(modBus);
         modBus.addListener((BuildCreativeModeTabContentsEvent e) -> {
             if (e.getTabKey() == CoreRegistries.TAB_RITUALS.getKey()) {
                 e.accept(ALTAR_ITEM.get());
+                e.accept(RENEWAL_ALTAR_ITEM.get());
                 for (Race r : Race.ALL) e.accept(relic(r).get());
             }
         });

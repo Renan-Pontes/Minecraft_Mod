@@ -7,6 +7,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -40,7 +41,7 @@ public class ImpulseEffect extends EffectGlyph {
         }
         Vec3 behind = target.position().add(0, target.getBbHeight() * 0.5, 0).subtract(dir.scale(0.6));
         for (int i = 0; i < 8; i++) {
-            EwFx.moving(level, ParticleTypes.CLOUD, behind, dir.scale(-0.25).add(
+            EwFx.moving(level, Vfx.cloud(), behind, dir.scale(-0.25).add(
                     (level.random.nextDouble() - 0.5) * 0.15, (level.random.nextDouble() - 0.5) * 0.15, (level.random.nextDouble() - 0.5) * 0.15));
         }
         level.sendParticles(ParticleTypes.GUST_EMITTER_SMALL, behind.x, behind.y, behind.z, 1, 0, 0, 0, 0);

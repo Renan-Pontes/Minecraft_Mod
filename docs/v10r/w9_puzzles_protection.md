@@ -1,0 +1,186 @@
+**REPORT — job "puzzles + protection" (WAVE 9)**
+
+Owner's request (2026-11-13): "more puzzles that need reasoning, some very hard" and "the tower must be indestructible while someone is climbing it, and the dungeon while someone is descending". Follow-up: "multiplos puzzles", meaning many puzzles per tower and dungeon, chained, with no type repeating back to back.
+
+`bash tools/check-tree.sh puzzles` ended "COMPILOU OK (all)" after all my edits. A later re-run was blocked by another agent's half-edited `feature/legends_g` files; those errors are not in files I touched. Nothing was run in game.
+
+---
+
+## 1. Eight reasoning puzzles ("Enigmas")
+
+**How they work**
+- They extend the existing Rune Seal (`depths_puzzle_core`), so no new block, texture or model was needed.
+- A Seal whose block-entity NBT has the key `Enigma` stops guessing its puzzle from nearby pieces. Instead it runs an `EnigmaRun`, which builds its own pieces from a seed.
+- All puzzle logic lives in pure-Java generators under `enigma/logic/`, with no Minecraft imports, so it can be tested on its own.
+- A puzzle's answers and layout are rebuilt from `seed + tier` whenever its chunk loads. Only the play state (lights, barrels, typed digits) is saved in NBT.
+
+**Puzzle area**
+- The area is 9 wide × 7 deep, in front of the Seal, which faces into it.
+- Coordinates: `u` runs 0..8 to the player's right, `v` runs 1..7 inward, `h` is height with −1 being the floor. These follow the Seal's facing, so the area works with any structure rotation.
+- The row the Seal sits on (`v = 0`) stays a walkway.
+
+**Controls (same for all eight)**
+- Right-click the Seal: shows the rule plus any extra info.
+- Sneak + right-click the Seal: buys a hint.
+  - Tier 1: free.
+  - Tier 2: 3 vanilla XP levels.
+  - Tier 3: 5 vanilla XP levels.
+  - Creative mode: free.
+- Button on top of the Seal: resets the puzzle at any time, so nobody can softlock.
+- Clicks on puzzle pieces are routed server-side through a high-priority `RightClickBlock` listener (`EnigmaEvents`). Barrels and bookshelves therefore never open a menu, and the off-hand cannot place a block on a piece.
+
+**Results**
+- **Wrong answer:**
+  - magic damage of 2 + 2×tier, capped so it never kills;
+  - at tiers 2–3, a small mob wave at the entrance row (tier 2: 2 zombies, skeletons or spiders; tier 3: 3 of vindicator, stray, zombie or skeleton);
+  - a 3-second lockout.
+- **Solved:**
+  - XP of 150, 320 or 650 by tier;
+  - counters: `puzzle.solved`, `puzzle.enigma`, and `puzzle.enigma.hard` for tier 3;
+  - flag: `depths.puzzle`;
+  - a loot chest on the entrance row: `chests/depths_puzzle` for tiers 1–2, `chests/depths_puzzle_deep` for tier 3.
+  - Rewards go to every non-spectator within 6 blocks of the area, so party members all get them.
+
+**Solvability tests**
+- Harness: `build/enigmatest/EnigmaTest.java`, outside the source tree.
+- 300 seeds × 3 tiers × 8 puzzles: 0 failures.
+- Cost per generation at tier 3: Sokoban about 26 ms (cached), everything else under 2 ms.
+
+| # | id | Rules | Tiers (1 / 2 / 3) | How solvability is guaranteed | Reset | Hint |
+|---|---|---|---|---|---|---|
+| 1 | `lights` Twin Runes | Lights Out on the floor (Rune Lamps). Touching one flips it and its 4 neighbours; light them all. | 3×3 / 4×4 / 5×5, with at least 2 / 4 / 7 random presses | Starts from all-lit and applies a random set of presses (each press undoes itself). `verify()` replays them. | Restores the start state | Highlights a cell that belongs to a solution (original solution XOR presses made so far) |
+| 2 | `pattern` Oracle Rows | Rows of 7 lamps on the floor; each row follows from the previous ones by one rule. Build the next row on Rune Plates, then press the pedestal button. | Rotate or invert / growing shift, invert+rotate, mirror+rotate / XOR of the last two rows, cellular rules 90 and 150, row XOR rotated row. 3 / 3 / 4 rows shown. | Rejects any instance where a rule from **any** tier fits the shown rows but predicts a different answer | Clears the answer row | Fixes one answer cell |
+| 3 | `path` Path of Colours | 5×6–7 concrete floor. Step one orthogonal cell at a time following a colour cycle, from the first row to the last. Skipping a cell, a wrong colour, or entering from the side sends you back to the entrance (tiers 2–3 also deal 2–3 damage). Each player has their own progress. | 3 colours, legend shown / 4 colours, legend shown, many dead-end decoys / 4 colours, **no legend**, only the first 3 path cells carry candles | The path is drawn first; a BFS over (cell, cycle index) confirms the last row is reachable | Clears progress | Lights 3 more candles along the path |
+| 4 | `crates` Weight Stones (Sokoban) | Right-click a barrel while standing next to it to push it away; get every barrel onto a plate. 1-high ring wall, 2-high basalt pillars. | 5×5 interior, 2 barrels, at least 4 pushes / 6×5, 2 barrels, at least 8 / 7×5, 3 barrels, at least 12 (measured 12–17) | Generated by legal reverse pulls from the solved state, then a forward BFS confirms it is solvable and measures the minimum pushes | Puts barrels back; any player standing on a barrel's start cell is moved out | Next push of an optimal solution (marked with particles), or "stuck — reset" if no solution is left |
+| 5 | `statues` Statues of Truth (knights and knaves) | Faithful statues always tell the truth, Traitors always lie, one statue guards the Key. Touch a statue to hear its sentence; pull the lever of the Key's guardian. | 2 / 3 / 4 statues; tier 3 adds counting and "or" sentences | Brute-forces every (nature × key holder) world; the Key holder must be the same in every consistent world. At tiers 2–3, no single sentence may settle it alone (100% of tested seeds). Verified fallback puzzle included. | Levers go back down | Reveals one statue's nature where that is certain, otherwise "the Key is not with X" |
+| 6 | `cipher` Rune Cipher | Runes ᚠᚢᚦᚨᚱᚲᚷᚹ each hide a distinct digit 1–9. Signed tablets spread across the area give equations with no words (`ᚠ + ᚢ = ᚦ`, `ᚱ × ᚲ = 24`, `ᚠ > ᚢ`…). The lock shows a number; touch the runes that spell it. | 3 runes, 3-digit code / 4 runes, 4 digits / 5 runes, 5 digits, **no direct values** | Clues are added only if they cut candidates, until exactly one assignment remains among all permutations of 1..9; `verify()` re-checks | Clears typed runes | Reveals one rune's value |
+| 7 | `binary` Treasurer's Levers | Raised levers add their weights (I, II, IV, VIII… from right to left). Match the Roman number on the Seal, then press the button. | 4 levers, weight signs shown / 6 levers, no weight signs / 7 levers, and the target is a Roman sum ("XC − XXXVII") | Every number from 1 to 2ⁿ−1 has exactly one binary form; `verify()` evaluates the Roman expression | Levers go down (revealed ones stay) | Sets one lever correctly |
+| 8 | `beam` Mirror Beam | A beam from a sea lantern travels across a 7×6 grid. Right-click the Light Mirrors to rotate them and lead the beam to the crystal lamp. | 2 turns, 1 decoy mirror / 3 turns, 2 decoys, 2 pillars / 5 turns, 3 decoys, 3 pillars | The path is drawn first with the right mirror types and checked with `trace()`. The starting scramble must miss the target and have at least tier+1 path mirrors wrong. | Restores the scramble | Turns one path mirror to its correct position |
+
+**Hard puzzles:** `statues` tier 3, `cipher` tier 3, `crates` tier 3, `pattern` tier 3, and `lights` tier 3 at 5×5.
+
+## 2. Where the puzzles appear (placement density)
+
+**Selection and variety**
+- Types are never picked at random independently. Each structure shuffles the 8 types with its own seed and hands them out by slot, so no type repeats within a tower or within a dungeon.
+- **Chains:** the second puzzle of a pair stays sealed until the first is solved. Solving the first unseals the second and gives every player nearby one of the second puzzle's hints for free (the "clue" from the first).
+
+**Challenge Towers** (built at runtime when a floor wakes, so this also works in towers that already exist in saved worlds, as long as that floor isn't cleared yet)
+
+| Floor | Before | Now |
+|---|---|---|
+| 2 (Hall of Runes) | Row of rune levers | 2 chained enigmas, tier 1 → tier 2. The old rune levers become wall and the hall sign is rewritten. |
+| 4 (treasure) | 1 wave | Wave first, then a tier 2 enigma wakes. The floor only clears once it is solved. |
+| 5 (Hall of Runes) | Rune levers | 2 chained enigmas, tier 2 → tier 3 |
+| 7 (elite) | 3 elite waves | Waves first, then a tier 3 enigma |
+
+- That is 6 enigmas per tower, all of different types.
+- The floor HUD shows `Floor N · Enigmas x/y`.
+- **Where the area goes:**
+  - First choice: the south half of the room (Seal next to the Floor Core).
+  - Second puzzle: the north half.
+  - Otherwise: east or west, if clear.
+- If no 9×8 area is clear (for example the flooded lower floors of the sunken tower), that floor keeps its old challenge.
+
+**Layered Dungeon** (`tools/gen/depths.py`, which now regenerates only the floor templates)
+- Each of the 4 floors now has **2 dead-end enigma rooms**, the corner rooms (2,0) and (0,2).
+- Each room has a single door and is attached to the maze last, so the puzzle never blocks the route.
+- Tiers by floor: floor 1 = 1 → 1, floor 2 = 1 → 2, floor 3 = 2 → 3, floor 4 = 3 → 3.
+- Each floor's pair is chained (`Chain: depths_f<n>`).
+- Slots 0–7 give **all 8 types once per dungeon**.
+- The classic puzzle room stays, so each dungeon has 8 enigmas + 4 classic puzzles = **12 puzzles**.
+- The floor now has 5 ordinary rooms (spawner, treasure, puzzle, trap, special); one spawner room and the ambush room were dropped to make space.
+- Only newly generated chunks get the new floor templates.
+
+## 3. Indestructible towers and dungeon (`feature/towers/RunWard.java`)
+
+**When protection is on**
+- **Towers:** the whole structure box (tag `isekai_mahou:towers`) while the summit is **not conquered**, i.e. for the whole climb. This keeps the meaning of the existing wall protection and adds the new hooks. After the conquest the tower is breakable again, as before.
+- **Layered Dungeon:** every piece (surface ruin, 4 floors, lair), **always on**. It has no "conquered" state, and always-on closes the gap of someone tunnelling in from outside while nobody is inside.
+
+**What is blocked inside the protected area** (creative-mode players are exempt from everything below, for debugging)
+- **Breaking** (`BreakEvent`): allowed only for decor without collision (torches, cobwebs, lichen, rails), decorated pots, candles, `*_cluster` and `*_bud` crystals, and monster spawners. Never allowed for enigma or classic puzzle pieces, signs, levers, buttons or pressure plates.
+- **Placing** (`EntityPlaceEvent`, from any entity): only non-redstone torches are allowed. No pillaring, bridging, ladders or scaffolding. Endermen cannot place blocks.
+- **Explosions** (`Detonate`): affected blocks in the area are removed from the list. This covers creepers, TNT, spells, the Volatile affix and bosses.
+- **Mobs:** mob griefing is vetoed for any mob standing in the area (endermen, door-breaking zombies, Wither and similar). The mod's own arena bosses are exempt so their temporary effects keep working.
+- **`LivingDestroyBlockEvent`:** cancelled (Wither, dragon, ravager).
+- **Fluids:** `FluidPlaceBlockEvent` is cancelled (lava + water making cobblestone or obsidian, lava starting fire).
+- **Items:** buckets, flint and steel and fire charges are blocked, both on blocks and in the air.
+
+**The mod's own spells**
+- New core API: `Destruction.addWard / warded / wardedFor` in `core/api/Destruction.java`, backed by `DestructionRules`.
+- Wards count as custom protections, so `Destruction.*` (sphere, crater, line…), the `DestructionQueue` and every `Destruction.protectedAt` caller respect them. That covers LbUtil, TerrainShaper, black hole, planet core, fusion beam, blue orb and farm tools.
+- Spell helpers that place or swap blocks, including temporary earth walls and ice, now refuse inside wards:
+  - `EwUtil.canEdit`
+  - `FwUtil.canBreak` / `canPlace`
+  - `FaUtil.canBreak` / `canPlace`
+  - `AutoArea.mayEdit`
+  - `WorldEffects.mayBreak`
+- Player spells that break blocks already fire `BreakEvent`, so those are covered too.
+- **Still allowed:** levers, buttons, mirrors, barrels and every other enigma interaction (using a block is not breaking it). Torches for light.
+- **Performance:** structure boxes are cached per chunk for 1 minute; each per-block test is a box check plus one map lookup for the conquered state.
+
+## 4. Files
+
+**New**
+- `feature/depths/puzzle/enigma/`:
+  - `Frame`, `EnigmaType`, `Enigma`, `EnigmaRun`, `EnigmaEvents`, `EnigmaPlacer`
+  - `LightsEnigma`, `PatternEnigma`, `PathEnigma`, `CratesEnigma`, `StatuesEnigma`, `CipherEnigma`, `BinaryEnigma`, `BeamEnigma`
+- `feature/depths/puzzle/enigma/logic/`: `LightsLogic`, `PatternLogic`, `PathLogic`, `CratesLogic`, `StatuesLogic`, `CipherLogic`, `BinaryLogic`, `BeamLogic`
+- `feature/towers/TowerEnigmas.java`, `feature/towers/RunWard.java`
+- `src/main/lang/enigmas/{pt_br,en_us}.json` (117 keys; generated by `build/enigmatest/enigma_lang.py`, which is a scratch file outside the tree)
+- This report
+
+**Edited**
+- `feature/depths/puzzle/PuzzleCoreBlockEntity.java`: Enigma hook, `forEachLoaded`, `enigmaAt`, `label`; classic scans skip enigma pieces.
+- `feature/depths/DepthsModule.java`: registers the router.
+- `feature/depths/DepthsCommands.java`: `puzzle enigma …` commands.
+- `feature/towers/block/FloorCoreBlockEntity.java`: enigma floors, wave-then-enigma phase, HUD, NBT.
+- `feature/towers/TwEvents.java`: old break and explosion handlers replaced by `RunWard`.
+- `core/api/Destruction.java`, `core/status/DestructionRules.java`: wards.
+- Spell helpers: `earth_wind/EwUtil.java`, `fire_water/FwUtil.java`, `fusions_a/FaUtil.java`, `automation/glyph/AutoArea.java`, `arcane/glyph/WorldEffects.java`.
+- `tools/gen/depths.py`: dead-end enigma rooms.
+- Regenerated: `structure/depths_dungeon/floor{1..4}_{a,b}.nbt` (only these).
+
+## 5. In-game test commands (after `/mahou admin login`)
+
+1. `/mahou depths puzzle enigma all 1` builds all 8 puzzles side by side in front of you; repeat with `2` and `3`. Each one: right-click the Seal (rule), sneak + right-click (hint), press the button on the Seal (reset).
+2. `/mahou depths puzzle enigma <lights|pattern|path|crates|statues|cipher|binary|beam> [1-3]` builds a single one.
+3. `/mahou depths puzzle enigma chain`: the right-hand puzzle is sealed until the left one is solved, then it receives a free hint.
+4. `/mahou depths puzzle enigma hint` gives a free hint on the nearest puzzle; `… enigma reset` resets it; `/mahou depths puzzle solve` force-solves the nearest Seal, classic or enigma.
+5. Wrong answers in survival at tier 2–3: damage that never kills, mobs at the entrance row, 3 s lockout.
+6. Towers: `/mahou towers tp stone` (new chunks are not needed). Then:
+   - Go to floor 2 (`/mahou towers floor` clears floor 1).
+   - Two Seals appear in the south and north halves, the old rune row becomes wall, and the sign changes.
+   - Floors 4 and 7: the enigma wakes after the last wave.
+7. Protection in a tower (survival): try to break walls, place blocks, pour a bucket, light TNT or a creeper, cast earth or explosion spells. The action-bar message reads "Ancient magic guards this place…". Torches can still be placed, and cobwebs and pots broken. In creative everything works.
+8. Dungeon (new chunks only): `/mahou depths tp 1` … `4` and find the two corner dead-end rooms with Seals (rooms (2,0) and (0,2) of each floor). Protection is the same as in towers.
+
+## 6. Not verified / known limits
+
+- **Nothing was run in game.** These rely on assumptions I could not check:
+  - the mirror/frame direction mapping;
+  - floor-mounted lever and button orientation;
+  - standing sign rotation;
+  - runic Unicode glyphs ᚠ… rendering through Minecraft's Unifont fallback (if they show as boxes, swap `CipherLogic.RUNES` for letters);
+  - barrels not opening a GUI when the server cancels the click.
+- Old dungeons keep their old layout because only new chunks get the new floors. Towers get enigmas even in existing worlds, unless the floor is already cleared.
+- **Tower areas are found at runtime.** If a tower room is rotated or cluttered in an unexpected way, that floor falls back to its old challenge. On the sunken tower's flooded floor 2 that fallback is expected.
+- **Protection gaps:**
+  - Fire spreading in from outside (no NeoForge event; bookshelves inside can still burn).
+  - Ender pearls and flight into upper floors (unchanged).
+  - Spells that call `setBlock` directly without the helpers listed above.
+  - Creative casters' `Destruction` spells are also blocked inside wards (the queue has no caster check per ward).
+- Spawners stay breakable in the dungeon on purpose (a normal dungeon interaction that doesn't skip any route).
+- The Path puzzle trusts `onGround`. With high jump boosts a player can briefly be airborne over a wrong cell, but landing on any cell that isn't the next valid one fails, so skipping cells is not possible.
+- A punishment wave's mobs are ordinary vanilla mobs, not tagged as tower mobs, so they don't count toward tower waves.
+
+## PEDIDOS
+
+1. **integration** (`docs/ARCHITECTURE.md`):
+   - NBT key `Enigma` on `depths_puzzle_core` (`Type`, `Tier`, `U0`, `Slot`, `Chain`, `Role`, `Locked`);
+   - API `Destruction.addWard/warded/wardedFor`;
+   - counters `puzzle.enigma`, `puzzle.enigma.hard`;
+   - hint `depths_enigma`.
+2. **journal:** `depths.puzzle` and `towers.puzzle` text could mention the new enigmas. Not changed, because those lang files are generated by `depths.py` / `towers.py`.
+3. **Coordinator:** if `towers.py` or `depths.py` are re-run in full later, nothing of mine is lost: tower enigmas are code-only, and the dungeon rooms are in `depths.py`. My lang keys live in `src/main/lang/enigmas/`.

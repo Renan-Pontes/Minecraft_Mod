@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.glyph.ParsedSpell;
@@ -228,11 +229,7 @@ public final class LeUtil {
 
     /** Config de cliente "partículas reduzidas" (só chame no cliente; no servidor devolve false). */
     public static boolean reducedParticles() {
-        try {
-            return MahouConfig.REDUCED_PARTICLES.get();
-        } catch (RuntimeException e) {
-            return false;
-        }
+        return !FxQuality.atLeast(MahouConfig.Graphics.HIGH);
     }
 
     private LeUtil() {}

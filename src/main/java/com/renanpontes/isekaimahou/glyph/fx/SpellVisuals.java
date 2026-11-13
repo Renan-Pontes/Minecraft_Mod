@@ -11,6 +11,8 @@ import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.event.SpellCastEvent;
+import com.renanpontes.isekaimahou.glyph.CircleStyle;
+import com.renanpontes.isekaimahou.glyph.GlyphMastery;
 import com.renanpontes.isekaimahou.glyph.ParsedSpell;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellParser;
@@ -30,6 +32,9 @@ import net.neoforged.neoforge.common.util.FakePlayer;
  * <p>
  * Tier visual ({@link #tier}): 0 = magia fraca (sutil) .. 4 = Círculo alto, 5 = ultimate (círculos em camadas,
  * círculo no céu, pilar de luz).
+ * <p>
+ * release 1.0: o círculo usa a forma/símbolo/cor escolhidos NA RECEITA ({@link CircleStyle}) e fica mais rico com a
+ * maestria dos glifos da magia ({@link GlyphMastery#visualTier}: selo interno, círculo maior, camada extra).
  */
 public final class SpellVisuals {
     /** Raio do círculo aos pés por tier. */
@@ -41,7 +46,7 @@ public final class SpellVisuals {
     private static final Map<Integer, Long> LAST_SENT = new HashMap<>();
     private static final Map<UUID, Cached> CACHE = new HashMap<>();
 
-    private record Cached(SpellRecipe recipe, int tier, int rgb, boolean directional) {}
+    private record Cached(SpellRecipe recipe, int tier, int rgb, boolean directional, int mastery, long stamp) {}
 
     // =====================================================================================
     //  Tier
@@ -57,6 +62,8 @@ public final class SpellVisuals {
         int ct = cost < 20 ? 0 : cost < 45 ? 1 : cost < 80 ? 2 : cost < 130 ? 3 : 4;
         int t = Math.max(g - 1, ct);
         if (power >= 1.5F) t++;
+        // Maestria alta nos glifos da magia: o visual sobe um degrau (sem chegar ao tremor do tier 4)
+        if (t < 3 && GlyphMastery.visualTier(spell) >= 2) t++;
         return Math.max(0, Math.min(4, t));
     }
 
@@ -85,31 +92,49 @@ public final class SpellVisuals {
         int tier = 1;
         int rgb = e.color;
         boolean directional = true;
+        CircleStyle style = CircleStyle.DEFAULT;
+        int mastery = 0;
         if (caster instanceof ServerPlayer sp && !(caster instanceof FakePlayer)) {
             Cached c = cached(sp, e);
             if (c != null) {
                 tier = c.tier;
                 rgb = c.rgb;
                 directional = c.directional;
+                style = c.recipe.circle();
+                mastery = c.mastery;
             }
         }
         int ka = SpellFxParticles.FLAG_KEEPALIVE;
-        float r = radius(tier);
-        ElementFx.castCircle(level, caster, rgb, r, KEEPALIVE_LIFE,
-                SpellFxParticles.flags(tier, SpellFxParticles.MODE_GROUND, tier <= 0 ? 3 : 0) | ka);
-        if (tier >= 3) {
-            ElementFx.castCircle(level, caster, ElementFx.lighten(rgb, 0.3F), r * 0.55F, KEEPALIVE_LIFE,
+        // círculo mágico DA MAGIA: cor/forma/símbolo escolhidos na receita valem para o círculo dos pés e o da mão
+        int crgb = style.rgb(rgb);
+        int sf = style.flags();
+        float r = radius(tier) * (1F + 0.06F * mastery);
+        ElementFx.castCircle(level, caster, crgb, r, KEEPALIVE_LIFE,
+                SpellFxParticles.flags(tier, SpellFxParticles.MODE_GROUND, tier <= 0 ? 3 : 0) | ka | sf);
+        if (tier >= 3 || mastery >= 1) {
+            ElementFx.castCircle(level, caster, ElementFx.lighten(crgb, 0.3F), r * 0.55F, KEEPALIVE_LIFE,
                     SpellFxParticles.flags(tier, SpellFxParticles.MODE_GROUND, 1) | ka | SpellFxParticles.FLAG_REVERSE);
         }
         if (tier >= 2 && directional) {
-            ElementFx.castCircle(level, caster, rgb, 0.45F + 0.1F * tier, KEEPALIVE_LIFE,
-                    SpellFxParticles.flags(tier, SpellFxParticles.MODE_FRONT, tier >= 4 ? 0 : 3) | ka);
+            ElementFx.castCircle(level, caster, crgb, 0.45F + 0.1F * tier, KEEPALIVE_LIFE,
+                    SpellFxParticles.flags(tier, SpellFxParticles.MODE_FRONT, tier >= 4 ? 0 : 3) | ka | sf);
         }
         if (tier >= 5) {
-            ElementFx.castCircle(level, caster, rgb, r * 1.4F, KEEPALIVE_LIFE,
+            ElementFx.castCircle(level, caster, crgb, r * 1.4F, KEEPALIVE_LIFE,
                     SpellFxParticles.flags(tier, SpellFxParticles.MODE_GROUND, 2) | ka | SpellFxParticles.FLAG_REVERSE);
-            ElementFx.castCircle(level, caster, rgb, r * 1.6F, KEEPALIVE_LIFE,
+            ElementFx.castCircle(level, caster, crgb, r * 1.6F, KEEPALIVE_LIFE,
                     SpellFxParticles.flags(tier, SpellFxParticles.MODE_SKY, 0) | ka);
+        } else if (mastery >= 3) {
+            // todos os glifos principais no nível X: a camada externa que antes só os ultimates tinham
+            ElementFx.castCircle(level, caster, crgb, r * 1.4F, KEEPALIVE_LIFE,
+                    SpellFxParticles.flags(tier, SpellFxParticles.MODE_GROUND, 2) | ka | SpellFxParticles.FLAG_REVERSE);
+        }
+        // v1.3 — antecipação: energia do elemento convergindo para a mão enquanto segura (mais forte = mais longe/denso)
+        if (tier >= 1) {
+            ElementFx.gather(level, caster, e, rgb, 1.2F + 0.45F * tier, tier, KEEPALIVE_EVERY);
+            if (tier >= 4 && caster.tickCount % 20 < KEEPALIVE_EVERY) {
+                ElementFx.shake(level, caster.position(), 12 + 4 * tier, 0.12F * tier, 20);
+            }
         }
     }
 
@@ -125,11 +150,14 @@ public final class SpellVisuals {
         SpellRecipe recipe = data == null ? null : data.channelRecipe;
         if (recipe == null) return null;
         Cached c = CACHE.get(sp.getUUID());
-        if (c != null && c.recipe.equals(recipe)) return c;
-        SpellParser.Result r = SpellParser.parse(recipe, e, null);
+        long now = sp.serverLevel().getGameTime();
+        // a maestria muda devagar: o cache vale 10 s para a mesma receita
+        if (c != null && c.recipe.equals(recipe) && now >= c.stamp && now - c.stamp < 200) return c;
+        SpellParser.Result r = SpellParser.parse(recipe, e, null, data);
         ParsedSpell spell = r.ok() ? r.spell() : null;
         int rgb = recipe.color() >= 0 ? recipe.color() & 0xFFFFFF : (spell != null && spell.primary() != null ? spell.primary().color : e.color);
-        c = new Cached(recipe, tier(spell, 1.0F), rgb, spell == null || spell.form() == null || spell.form().stageable());
+        c = new Cached(recipe, tier(spell, 1.0F), rgb, spell == null || spell.form() == null || spell.form().stageable(),
+                GlyphMastery.visualTier(spell), now);
         if (CACHE.size() > 256) CACHE.clear();
         CACHE.put(sp.getUUID(), c);
         return c;
@@ -150,7 +178,12 @@ public final class SpellVisuals {
         if (spell.formStats().silent && tier < 5) return;
         int rgb = ctx.color() & 0xFFFFFF;
         boolean directional = spell.form() != null && spell.form().stageable();
-        float r = radius(tier);
+        // círculo mágico da receita + maestria (magia de mob/pedestal: estilo padrão e maestria 0)
+        CircleStyle style = ctx.recipe() != null ? ctx.recipe().circle() : CircleStyle.DEFAULT;
+        int mastery = GlyphMastery.visualTier(spell);
+        int crgb = style.rgb(rgb);
+        int sf = style.flags();
+        float r = radius(tier) * (1F + 0.06F * mastery);
         int life = 12 + 2 * tier;
         int rel = SpellFxParticles.FLAG_RELEASE;
 
@@ -159,37 +192,43 @@ public final class SpellVisuals {
             if (tier < 1) return;
             Vec3 o = ctx.eyePos();
             Vec3 d = ctx.look();
-            ElementFx.sendFar(level, ElementFx.fx(SpellFxParticles.CIRCLE, rgb, 0.5F + 0.12F * tier, life, -1,
-                    SpellFxParticles.flags(tier, SpellFxParticles.MODE_NORMAL, tier >= 3 ? 0 : 3) | rel),
+            ElementFx.sendFar(level, ElementFx.fx(SpellFxParticles.CIRCLE, crgb, 0.5F + 0.12F * tier, life, -1,
+                    SpellFxParticles.flags(tier, SpellFxParticles.MODE_NORMAL, tier >= 3 ? 0 : 3) | rel | sf),
                     o.x, o.y, o.z, 0, d.x, d.y, d.z, 1.0);
             return;
         }
 
-        ElementFx.castCircle(level, caster, rgb, r, life, SpellFxParticles.flags(tier, SpellFxParticles.MODE_GROUND, tier <= 1 ? 3 : 0) | rel);
+        ElementFx.castCircle(level, caster, crgb, r, life,
+                SpellFxParticles.flags(tier, SpellFxParticles.MODE_GROUND, tier <= 1 ? 3 : 0) | rel | sf);
         if (directional && tier >= 1) {
-            ElementFx.castCircle(level, caster, rgb, 0.45F + 0.12F * tier, life,
-                    SpellFxParticles.flags(tier, SpellFxParticles.MODE_FRONT, tier >= 3 ? 0 : 3) | rel);
+            ElementFx.castCircle(level, caster, crgb, 0.45F + 0.12F * tier, life,
+                    SpellFxParticles.flags(tier, SpellFxParticles.MODE_FRONT, tier >= 3 ? 0 : 3) | rel | sf);
         }
         Vec3 chest = caster.position().add(0, caster.getBbHeight() * 0.55, 0);
-        if (tier >= 3) {
-            ElementFx.castCircle(level, caster, ElementFx.lighten(rgb, 0.3F), r * 0.55F, life,
+        if (tier >= 3 || mastery >= 1) {
+            ElementFx.castCircle(level, caster, ElementFx.lighten(crgb, 0.3F), r * 0.55F, life,
                     SpellFxParticles.flags(tier, SpellFxParticles.MODE_GROUND, 1) | rel | SpellFxParticles.FLAG_REVERSE);
         }
+        // Maestria alta em magia comum: uma onda curta no chão; tudo no X: anel de runas ao redor
+        if (mastery >= 2 && tier < 4) ElementFx.shockwave(level, caster.position().add(0, 0.1, 0), crgb, r * 1.5F, 12, null);
+        if (mastery >= 3 && tier < 5) ElementFx.runeCircle(level, caster.position().add(0, 0.04, 0), crgb, r * 1.7F, 26, 2);
         if (tier >= 4) {
             ElementFx.shockwave(level, caster.position().add(0, 0.1, 0), rgb, r * 1.8F, 14, null);
             ElementFx.flash(level, chest, rgb, 1.2F + 0.3F * tier);
+            if (tier == 4) ElementFx.shake(level, caster.position(), 20, 0.5F, 12);
         }
         if (tier >= 5) {
             // Ultimate: três camadas no chão, círculo no céu, pilar de luz e uma onda enorme
-            ElementFx.castCircle(level, caster, rgb, r * 1.45F, 40, SpellFxParticles.flags(tier, SpellFxParticles.MODE_GROUND, 2) | rel);
-            ElementFx.castCircle(level, caster, rgb, r * 1.7F, 50, SpellFxParticles.flags(tier, SpellFxParticles.MODE_SKY, 0) | rel);
-            ElementFx.castCircle(level, caster, ElementFx.lighten(rgb, 0.35F), r, 50,
+            ElementFx.castCircle(level, caster, crgb, r * 1.45F, 40, SpellFxParticles.flags(tier, SpellFxParticles.MODE_GROUND, 2) | rel);
+            ElementFx.castCircle(level, caster, crgb, r * 1.7F, 50, SpellFxParticles.flags(tier, SpellFxParticles.MODE_SKY, 0) | rel | sf);
+            ElementFx.castCircle(level, caster, ElementFx.lighten(crgb, 0.35F), r, 50,
                     SpellFxParticles.flags(tier, SpellFxParticles.MODE_SKY, 1) | rel | SpellFxParticles.FLAG_REVERSE);
             ElementFx.pillar(level, caster.position(), rgb, 1.3F, 14.0F, 30);
             ElementFx.shockwave(level, caster.position().add(0, 0.15, 0), rgb, 10.0F, 22, null);
             ElementFx.runeCircle(level, caster.position().add(0, 0.04, 0), rgb, r * 2.2F, 60, 5);
             Element el = ctx.element() != null ? ctx.element() : Element.ARCANE;
-            level.sendParticles(ElementFx.style(el, 1.4F), chest.x, chest.y, chest.z, 40, 1.6, 1.0, 1.6, 0.25);
+            // v1.3: a liberação do ultimate é uma nova do elemento (montada no cliente pelo preset) + tremor
+            ElementFx.nova(level, caster.position().add(0, 0.1, 0), el, rgb, r * 1.6F, 5);
         }
     }
 

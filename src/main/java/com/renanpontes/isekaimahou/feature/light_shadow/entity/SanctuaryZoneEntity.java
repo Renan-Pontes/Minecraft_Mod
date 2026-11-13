@@ -4,6 +4,7 @@ import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.feature.light_shadow.LsFx;
 import com.renanpontes.isekaimahou.feature.light_shadow.LsUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -24,7 +25,7 @@ public class SanctuaryZoneEntity extends HolyZoneEntity {
     protected void onStart(ServerLevel level) {
         LsFx.sound(level, position(), SoundEvents.BEACON_POWER_SELECT, 1.0F, 1.5F);
         LsFx.sound(level, position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 1.2F, 1.2F);
-        LsFx.ring(level, position().add(0, 0.1, 0), radius(), ParticleTypes.END_ROD, 40);
+        LsFx.ring(level, position().add(0, 0.1, 0), radius(), Vfx.endRod(), 40);
     }
 
     @Override
@@ -54,7 +55,7 @@ public class SanctuaryZoneEntity extends HolyZoneEntity {
     protected void clientTick() {
         Level lv = level();
         float r = radius();
-        boolean reduced = MahouConfig.REDUCED_PARTICLES.get();
+        boolean reduced = !com.renanpontes.isekaimahou.client.fx.FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         // Dois anéis girando em sentidos opostos (círculo mágico) e luz subindo do chão
         if (tickCount % 2 == 0) {
             int pts = reduced ? 14 : 32;

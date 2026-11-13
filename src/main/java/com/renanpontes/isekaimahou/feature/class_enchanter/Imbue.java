@@ -1,5 +1,7 @@
 package com.renanpontes.isekaimahou.feature.class_enchanter;
 
+import com.renanpontes.isekaimahou.feature.class_enchanter.EnchFxNet;
+
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.api.Statuses;
@@ -42,7 +44,8 @@ public final class Imbue {
     public static void ambient(ServerLevel level, LivingEntity e) {
         Element el = element(e);
         Vec3 hand = handPos(e);
-        level.sendParticles(EnchFx.dust(el.color, 0.8F), hand.x, hand.y, hand.z, 3, 0.08, 0.08, 0.08, 0);
+        // circuitos rúnicos acesos na manopla por 1 s (cliente)
+        EnchFxNet.at(level, EnchFxNet.IMBUE_GLOW, hand, Vec3.ZERO, 1F, el.color, e.getId());
         if (e.tickCount % 24 == 0) level.sendParticles(ElementFx.signature(el), hand.x, hand.y, hand.z, 1, 0.05, 0.05, 0.05, 0.01);
     }
 
@@ -67,7 +70,7 @@ public final class Imbue {
         e.setAmount(e.getAmount() + bonus);
         touch(target, attacker, el, lvl);
         Vec3 c = EnchFx.center(target);
-        level.sendParticles(EnchFx.dust(el.color, 1.1F), c.x, c.y, c.z, 8, 0.3, 0.3, 0.3, 0);
+        EnchFxNet.at(level, EnchFxNet.IMBUE_HIT, c, c.subtract(EnchFx.center(attacker)), 1F, el.color, target.getId());
         level.sendParticles(ElementFx.signature(el), c.x, c.y, c.z, 3, 0.25, 0.25, 0.25, 0.02);
     }
 

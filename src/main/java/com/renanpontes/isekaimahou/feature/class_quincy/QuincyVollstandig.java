@@ -15,6 +15,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -32,6 +33,9 @@ import net.minecraft.world.phys.Vec3;
  * fica com Resistência I, engole projéteis a 6 blocos (curando um pouco) e, a cada segundo, uma saraivada cai da
  * auréola sobre até 4 inimigos (+1 por Dividir) num raio de 18, cada flecha com os efeitos da magia.
  * Estado só em memória; ao acabar (ou morrer/sair) a gravidade volta ao normal.
+ * <p>
+ * Release 1.0: a forma tem um espaço de receita de Transformação ({@link QuincyForge}) — a receita escolhida pelo jogador
+ * entra por cima quando as asas abrem e sai quando elas se desfazem. Sem receita, nada muda.
  */
 public final class QuincyVollstandig {
     public static final ResourceLocation GRAVITY = IsekaiMahou.id("quincy_vollstandig_gravity");
@@ -76,6 +80,8 @@ public final class QuincyVollstandig {
         QuincyFx.pillar(level, caster.position(), 8.0, 120);
         QuincyFx.sound(level, caster.position(), SoundEvents.BEACON_POWER_SELECT, 1.2F, 0.9F);
         QuincyFx.sound(level, caster.position(), SoundEvents.ELYTRA_FLYING, 0.5F, 1.6F);
+        // a receita moldada pelo jogador (se houver) entra por cima do Vollständig
+        if (caster instanceof ServerPlayer sp) QuincyForge.begin(sp, duration);
     }
 
     public static boolean active(Entity e) {
@@ -151,6 +157,7 @@ public final class QuincyVollstandig {
     }
 
     private static void finish(ServerLevel level, LivingEntity caster) {
+        if (caster instanceof ServerPlayer sp) QuincyForge.end(sp);
         QuincyFxNet.form(caster, QuincyFxNet.FORM_NONE, 0);
         AttributeInstance g = caster.getAttribute(Attributes.GRAVITY);
         if (g != null) g.removeModifier(GRAVITY);

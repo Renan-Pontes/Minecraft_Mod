@@ -15,6 +15,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -128,7 +129,7 @@ public class SlashStormEffect extends EffectGlyph {
         float len = t.getBbWidth() + 1.6F + rnd.nextFloat();
         LbFx.slash(sl, c, dir, len, WHITE, 6, 0.09F + 0.03F * Math.max(0, stats.amplify));
         LbFx.send(sl, ParticleTypes.SWEEP_ATTACK, c, 1, 0.1, 0);
-        LbFx.send(sl, ParticleTypes.CRIT, c, 4, 0.25, 0.2);
+        LbFx.send(sl, Vfx.crit(), c, 4, 0.25, 0.2);
 
         // Corte "invisível": sem empurrão (guarda e devolve o movimento) e sem tempo de invulnerabilidade
         Vec3 motion = t.getDeltaMovement();

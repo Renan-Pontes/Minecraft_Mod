@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueContent;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueFx;
+import com.renanpontes.isekaimahou.feature.class_rogue.RogueFxNet;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -144,8 +145,7 @@ public class RogueAfterimageEntity extends Entity {
         if (orbitTarget != null && level() instanceof ServerLevel sl) {
             Vec3 from = position().add(0, 1, 0);
             Vec3 to = RogueFx.center(orbitTarget);
-            RogueFx.line(sl, from, to, RogueFx.dust(color(), 1.0F), 0.35);
-            sl.sendParticles(ParticleTypes.SWEEP_ATTACK, to.x, to.y, to.z, 1, 0, 0, 0, 0);
+            RogueFxNet.at(sl, RogueFxNet.LUNGE, from, to, 1F, color(), getId());
         }
         setPose(POSE_STRIKE);
         orbitTarget = null;

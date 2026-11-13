@@ -12,11 +12,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.renanpontes.isekaimahou.feature.legends_e.LeNet;
 import com.renanpontes.isekaimahou.feature.legends_e.LeUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -94,9 +94,9 @@ public final class LeFxClient {
                 int n = reduced ? 1 : 3;
                 for (int i = 0; i < n; i++) {
                     double s = fx.size * 0.6;
-                    level.addParticle(ParticleTypes.LARGE_SMOKE, h.x + (level.random.nextDouble() - 0.5) * s, h.y + (level.random.nextDouble() - 0.5) * s,
+                    level.addParticle(Vfx.largeSmoke(), h.x + (level.random.nextDouble() - 0.5) * s, h.y + (level.random.nextDouble() - 0.5) * s,
                             h.z + (level.random.nextDouble() - 0.5) * s, 0, 0.02, 0);
-                    level.addParticle(ParticleTypes.FLAME, h.x, h.y, h.z, (level.random.nextDouble() - 0.5) * 0.2, 0.05, (level.random.nextDouble() - 0.5) * 0.2);
+                    level.addParticle(Vfx.flame(), h.x, h.y, h.z, (level.random.nextDouble() - 0.5) * 0.2, 0.05, (level.random.nextDouble() - 0.5) * 0.2);
                 }
             }
             if (fx.age >= fx.life()) it.remove();

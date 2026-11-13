@@ -6,6 +6,7 @@ import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueCombat;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueFx;
+import com.renanpontes.isekaimahou.feature.class_rogue.RogueFxNet;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueTechniques;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
@@ -63,8 +64,7 @@ public class AssassinClawEffect extends EffectGlyph {
             Vec3 c = RogueFx.center(le);
             if (RogueTechniques.execute(le, ctx.damageSource(null))) {
                 caster.heal(caster.getMaxHealth() * 0.15F);
-                sl.sendParticles(RogueFx.dust(RogueFx.BLOOD, 2.0F), c.x, c.y, c.z, 40, 0.3, 0.4, 0.3, 0.1);
-                sl.sendParticles(ParticleTypes.DAMAGE_INDICATOR, c.x, c.y, c.z, 10, 0.3, 0.3, 0.3, 0.2);
+                RogueFxNet.at(sl, RogueFxNet.HEART, c, Vec3.ZERO, 1F, RogueFx.BLOOD, le.getId());
                 sl.sendParticles(ParticleTypes.HEART, caster.getX(), caster.getY() + 2.1, caster.getZ(), 3, 0.3, 0.1, 0.3, 0);
                 RogueFx.sound(sl, c, SoundEvents.PLAYER_ATTACK_CRIT, 1.2F, 0.5F);
                 RogueFx.sound(sl, c, SoundEvents.WARDEN_HEARTBEAT, 1.2F, 0.6F);
@@ -83,16 +83,7 @@ public class AssassinClawEffect extends EffectGlyph {
         Vec3 flat = new Vec3(to.x, 0, to.z);
         if (flat.lengthSqr() < 1.0E-4) flat = new Vec3(0, 0, 1);
         flat = flat.normalize();
-        Vec3 side = new Vec3(-flat.z, 0, flat.x);
-        for (int k = -1; k <= 1; k++) {
-            Vec3 off = side.scale(k * 0.18);
-            for (int i = 0; i <= 8; i++) {
-                float t = i / 8F;
-                Vec3 p = c.add(off).add(side.scale((t - 0.5) * 0.9)).add(0, (0.5 - t) * 0.9, 0);
-                sl.sendParticles(RogueFx.dust(i % 3 == 0 ? 0xFFFFFF : RogueFx.BLOOD, 0.9F), p.x, p.y, p.z, 1, 0, 0, 0, 0);
-            }
-        }
-        sl.sendParticles(ParticleTypes.SWEEP_ATTACK, c.x, c.y, c.z, 1, 0, 0, 0, 0);
+        RogueFxNet.at(sl, RogueFxNet.CLAW, c, flat, 1F, RogueFx.BLOOD, le.getId());
         RogueFx.sound(sl, c, SoundEvents.PHANTOM_BITE, 1.0F, 1.2F + Mth.nextFloat(sl.random, 0F, 0.2F));
         RogueFx.sound(sl, c, SoundEvents.PLAYER_ATTACK_SWEEP, 0.8F, 1.5F);
     }

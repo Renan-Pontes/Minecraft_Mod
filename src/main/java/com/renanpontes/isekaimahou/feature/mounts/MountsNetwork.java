@@ -1,7 +1,8 @@
 package com.renanpontes.isekaimahou.feature.mounts;
 
 import com.renanpontes.isekaimahou.IsekaiMahou;
-import com.renanpontes.isekaimahou.feature.mounts.entity.FlyingMount;
+import com.renanpontes.isekaimahou.core.MagicApi;
+import com.renanpontes.isekaimahou.feature.mounts.entity.RideMount;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -27,8 +28,9 @@ public final class MountsNetwork {
     static void register(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar r = event.registrar("mounts-1");
         r.playToServer(MountAbility.TYPE, MountAbility.STREAM_CODEC, (p, c) -> {
-            if (c.player() instanceof ServerPlayer sp && sp.getControlledVehicle() instanceof FlyingMount mount) {
-                mount.tryAbility(sp);
+            if (c.player() instanceof ServerPlayer sp && sp.getControlledVehicle() instanceof RideMount mount
+                    && mount.tryAbility(sp) && MagicApi.get(sp).counter("feat.mount_ability") == 0) {
+                MagicApi.addCounter(sp, "feat.mount_ability", 1);
             }
         });
     }

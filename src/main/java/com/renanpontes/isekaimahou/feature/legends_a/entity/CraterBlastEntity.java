@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.feature.legends_a.entity;
 import com.renanpontes.isekaimahou.feature.legends_a.LegendFx;
 import com.renanpontes.isekaimahou.feature.legends_a.LegendsARegistry;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -80,7 +81,7 @@ public class CraterBlastEntity extends Entity {
             double ring = R * (0.6 + t * 0.25);
             for (int i = 0; i < 24; i++) {
                 double a = Math.PI * 2 * i / 24 + t * 0.1;
-                LegendFx.far(sl, ParticleTypes.POOF, c.x + Math.cos(a) * ring, c.y + 0.3, c.z + Math.sin(a) * ring, 1,
+                LegendFx.far(sl, Vfx.poof(), c.x + Math.cos(a) * ring, c.y + 0.3, c.z + Math.sin(a) * ring, 1,
                         0.2, 0.1, 0.2, 0.05);
             }
         }
@@ -88,7 +89,7 @@ public class CraterBlastEntity extends Entity {
             float h = H * Math.min(1F, t / 25F);
             for (int i = 0; i < 6; i++) {
                 double y = c.y + random.nextDouble() * h;
-                LegendFx.far(sl, ParticleTypes.FLAME, c.x, y, c.z, 3, R * 0.18, 0.4, R * 0.18, 0.06);
+                LegendFx.far(sl, Vfx.flame(), c.x, y, c.z, 3, R * 0.18, 0.4, R * 0.18, 0.06);
             }
             LegendFx.far(sl, ParticleTypes.LAVA, c.x, c.y + 1, c.z, 3, R * 0.3, 0.5, R * 0.3, 0);
             LegendFx.far(sl, ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, c.x, c.y + h * 0.5, c.z, 2, R * 0.25, h * 0.3, R * 0.25, 0.02);
@@ -102,7 +103,7 @@ public class CraterBlastEntity extends Entity {
                 LegendFx.far(sl, ParticleTypes.CAMPFIRE_COSY_SMOKE, c.x + Math.cos(a) * d, c.y + H + (random.nextDouble() - 0.3) * R * 0.5,
                         c.z + Math.sin(a) * d, 1, 0.3, 0.3, 0.3, 0.01);
             }
-            LegendFx.far(sl, ParticleTypes.LARGE_SMOKE, c.x, c.y + H, c.z, 4, rr * 0.5, R * 0.2, rr * 0.5, 0.02);
+            LegendFx.far(sl, Vfx.largeSmoke(), c.x, c.y + H, c.z, 4, rr * 0.5, R * 0.2, rr * 0.5, 0.02);
         }
     }
 
@@ -112,7 +113,7 @@ public class CraterBlastEntity extends Entity {
         Vec3 c = position();
         double a = random.nextDouble() * Math.PI * 2;
         double d = R * (0.3 + random.nextDouble());
-        level().addParticle(ParticleTypes.FLAME, c.x + Math.cos(a) * d, c.y + 0.2, c.z + Math.sin(a) * d, 0, 0.08, 0);
+        level().addParticle(Vfx.flame(), c.x + Math.cos(a) * d, c.y + 0.2, c.z + Math.sin(a) * d, 0, 0.08, 0);
     }
 
     @Override

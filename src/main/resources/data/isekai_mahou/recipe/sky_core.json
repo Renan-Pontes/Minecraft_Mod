@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " F ",
+    "AMA",
+    " F "
+  ],
+  "key": {
+    "F": {
+      "item": "minecraft:feather"
+    },
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:sky_core",
+    "count": 1
+  }
+}

@@ -1,0 +1,57 @@
+﻿MUSICAS DOS CHEFES
+==================
+
+1. Jogue UMA musica (mp3, m4a, wav, ogg...) dentro da pasta do chefe.
+   Nao precisa renomear o arquivo.
+2. Avise o Claude: "coloquei as musicas". Ele converte, poe no mod e faz a versao nova.
+
+Pasta vazia = o chefe usa a musica original do mod.
+A intro longa e cortada: o chefe faz a ENTRADA durante a intro e acorda no momento em que a musica explode.
+O final de cada musica vira a vinheta de vitoria daquele chefe.
+
+PASTAS
+  ulquiorra                  Ulquiorra (1a fase e Murcielago)
+  ulquiorra_segunda_etapa    Ulquiorra - Segunda Etapa
+  barragan                   Barragan
+  grimmjow                   Grimmjow
+  hollow_king                Rei Hollow (Hueco Mundo)
+  las_noches                 Ambiente dentro do palacio Las Noches
+  flying_carpet              Musica tocando enquanto voa no Tapete Voador
+  elemental_guardian         Guardioes Elementais
+  abyss_sovereign            Soberano do Abismo
+  seraph                     Serafim
+  twilight_herald            Arauto do Crepusculo
+  primordial_dragon          Dragao Primordial
+  lich                       Lich da Cripta
+  beast                      Feras: Hidra, Basilisco, Wyvern, Manticora, Colosso
+  mimic_king                 Rei Mimico
+  generic_boss               Qualquer outro chefe
+  boss_victory               Vinheta de vitoria padrao (opcional: cada musica ja gera a sua pelo proprio final)
+
+PASTAS DE CADA CHEFE (opcional)
+Com musica: aquele chefe toca a dele. Vazia: ele toca o tema da familia (lista de cima).
+  ignis                      Ignis (guardiao do fogo)
+  tide_guardian              Mare (guardiao da agua)
+  zephyr                     Zefiro (guardiao do vento)
+  primordial_golem           Golem Primordial (guardiao da terra)
+  renegade_archmage          Arquimago Renegado
+  corrupted_witch            Bruxa Corrompida
+  imprisoned_patron          Patrono Aprisionado
+  corrupted_ent              Ent Corrompido
+  trial_avatar               Avatar Elemental (provacoes)
+  swamp_hydra                Hidra do Pantano
+  wyvern_king                Wyvern Rei dos Picos
+  desert_basilisk            Basilisco do Deserto
+  ruin_colossus              Colosso das Ruinas
+  false_hydra                Falsa Hidra
+  manticore                  Manticora
+  king_slime                 Rei Slime
+  goblin_king                Rei Goblin
+  orc_lord                   Lorde Orc
+  minotaur                   Minotauro
+  depths_worm_king           Verme-Rei das Profundezas
+  star_devourer              Devorador de Estrelas
+  sand_empress               Imperatriz das Areias
+  thorn_queen                Rainha dos Espinhos
+  demon_lord                 Lorde Demonio (Cidadela do Nether)
+  tower_kobold_lord          Lorde Kobold do Pinaculo

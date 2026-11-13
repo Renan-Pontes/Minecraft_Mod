@@ -1,0 +1,153 @@
+{
+  "chapters": [
+    {
+      "id": "magic_biomes",
+      "order": 21,
+      "color": "#5FD8EA",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:luminous_crystal_cluster",
+        "isekai_mahou:luminous_leaves",
+        "isekai_mahou:astral_crystal_cluster"
+      ],
+      "steps": [
+        {
+          "id": "explore",
+          "condition": {
+            "type": "flag_prefix",
+            "prefix": "magic_biomes.visit.",
+            "min": 1
+          },
+          "xp": 150,
+          "icon": "isekai_mahou:luminous_crystal_cluster",
+          "locate": {
+            "dimension": "minecraft:overworld",
+            "any": [
+              {
+                "biome": "isekai_mahou:crystal_forest",
+                "unless": {
+                  "type": "flag",
+                  "flag": "magic_biomes.visit.crystal_forest"
+                }
+              },
+              {
+                "biome": "isekai_mahou:haunted_swamp",
+                "unless": {
+                  "type": "flag",
+                  "flag": "magic_biomes.visit.haunted_swamp"
+                }
+              },
+              {
+                "biome": "isekai_mahou:twilight_grove",
+                "unless": {
+                  "type": "flag",
+                  "flag": "magic_biomes.visit.twilight_grove"
+                }
+              },
+              {
+                "biome": "isekai_mahou:crystal_cavern",
+                "unless": {
+                  "type": "flag",
+                  "flag": "magic_biomes.visit.crystal_cavern"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "crystal_forest",
+          "condition": {
+            "type": "flag",
+            "flag": "magic_biomes.visit.crystal_forest"
+          },
+          "optional": true,
+          "xp": 80,
+          "icon": "isekai_mahou:luminous_leaves",
+          "locate": {
+            "biome": "isekai_mahou:crystal_forest",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "haunted_swamp",
+          "condition": {
+            "type": "flag",
+            "flag": "magic_biomes.visit.haunted_swamp"
+          },
+          "optional": true,
+          "xp": 80,
+          "icon": "minecraft:soul_lantern",
+          "locate": {
+            "biome": "isekai_mahou:haunted_swamp",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "twilight_grove",
+          "condition": {
+            "type": "flag",
+            "flag": "magic_biomes.visit.twilight_grove"
+          },
+          "optional": true,
+          "xp": 80,
+          "icon": "isekai_mahou:astral_crystal_cluster",
+          "locate": {
+            "biome": "isekai_mahou:twilight_grove",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "crystal_cavern",
+          "condition": {
+            "type": "flag",
+            "flag": "magic_biomes.visit.crystal_cavern"
+          },
+          "optional": true,
+          "xp": 80,
+          "icon": "isekai_mahou:luminous_crystal_cluster",
+          "locate": {
+            "biome": "isekai_mahou:crystal_cavern",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "ember_crystal_wastes",
+          "condition": {
+            "type": "flag",
+            "flag": "magic_biomes.visit.ember_crystal_wastes"
+          },
+          "xp": 80,
+          "icon": "isekai_mahou:ember_crystal_cluster",
+          "locate": {
+            "biome": "isekai_mahou:ember_crystal_wastes",
+            "dimension": "minecraft:the_nether"
+          },
+          "optional": true
+        },
+        {
+          "id": "astral_gardens",
+          "condition": {
+            "type": "flag",
+            "flag": "magic_biomes.visit.astral_gardens"
+          },
+          "xp": 80,
+          "icon": "minecraft:amethyst_block",
+          "locate": {
+            "biome": "isekai_mahou:astral_gardens",
+            "dimension": "minecraft:the_end"
+          },
+          "optional": true
+        }
+      ],
+      "rewards": {
+        "xp": 500,
+        "items": [
+          {
+            "id": "isekai_mahou:luminous_crystal_block",
+            "count": 8
+          }
+        ]
+      }
+    }
+  ]
+}

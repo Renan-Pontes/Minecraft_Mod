@@ -7,10 +7,10 @@ import org.joml.Vector3f;
 import com.mojang.serialization.MapCodec;
 import com.renanpontes.isekaimahou.feature.ritual_druid.DruidContent;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -127,11 +127,11 @@ public class HeartTreeCoreBlock extends BaseEntityBlock {
                     0, 0.02, 0);
         }
         if (random.nextInt(Math.max(2, 10 - stage)) == 0) {
-            level.addParticle(ParticleTypes.HAPPY_VILLAGER, x + (random.nextDouble() - 0.5) * 3, pos.getY() + 0.1,
+            level.addParticle(Vfx.happy(), x + (random.nextDouble() - 0.5) * 3, pos.getY() + 0.1,
                     z + (random.nextDouble() - 0.5) * 3, 0, 0.05, 0);
         }
         if (stage >= 5 && random.nextInt(6) == 0) {
-            level.addParticle(ParticleTypes.END_ROD, x + (random.nextDouble() - 0.5), y + 0.6, z + (random.nextDouble() - 0.5),
+            level.addParticle(Vfx.endRod(), x + (random.nextDouble() - 0.5), y + 0.6, z + (random.nextDouble() - 0.5),
                     0, 0.04, 0);
         }
     }

@@ -28,6 +28,7 @@ public final class UxCoreClient {
         TitleHook.init();
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(VanillaTutorialOff::onLogin);
         MeditationPose.init();
+        PeaceClient.init(modBus);
 
         // Coluna de avisos da esquerda-centro: reputação primeiro, recompensas embaixo
         HudLayout.reserve(HudLayout.Region.TOASTS, ReputationNotices.RESERVE_ID, ReputationNotices::columnHeight);

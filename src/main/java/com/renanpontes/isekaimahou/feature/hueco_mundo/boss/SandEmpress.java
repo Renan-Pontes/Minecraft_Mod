@@ -1,7 +1,10 @@
 package com.renanpontes.isekaimahou.feature.hueco_mundo.boss;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -41,13 +44,15 @@ import net.minecraft.world.phys.Vec3;
  *       areia sob cada jogador), <b>Redemoinho</b> (puxa para o centro e mói quem chega lá).</li>
  *   <li>Fase 2 (55%): <b>Ressurreição — Tubarão das Dunas</b>: ganha a barbatana; MERGULHA na areia e persegue um jogador
  *       (círculo que segue e trava) até emergir mordendo.</li>
+ *   <li>v1.3 — <b>Maremoto das Dunas</b> (fase 2+): gira a espada, a areia sobe em espiral e uma MURALHA de areia e
+ *       água varre a arena na direção do alvo; só a brecha marcada em verde salva.</li>
  *   <li>Fase 3 (25%): <b>Tempestade Real</b>: tempestade de areia (cegueira curta) e Marés em cruz que giram.</li>
  * </ul>
  */
 public class SandEmpress extends HmBoss {
     private static final EntityDataAccessor<Boolean> DATA_DIVING = SynchedEntityData.defineId(SandEmpress.class, EntityDataSerializers.BOOLEAN);
     private static final int SAND = 0xE8D7A8, TIDE = 0x3FA7C9;
-    private int busy, slashCd = 20, waveCd = 60, cascadeCd = 120, whirlCd = 200, diveCd = 60, stormCd = 60, crossCd = 100;
+    private int busy, slashCd = 20, waveCd = 60, cascadeCd = 120, whirlCd = 200, diveCd = 60, stormCd = 60, crossCd = 100, tsunamiCd = 80;
 
     public SandEmpress(EntityType<? extends SandEmpress> type, Level level) {
         super(type, level);
@@ -84,7 +89,7 @@ public class SandEmpress extends HmBoss {
 
     @Override
     protected List<String> actionAnimations() {
-        return List.of("slash", "wave", "cascade", "whirl", "dive", "emerge", "storm", "resurrect");
+        return List.of("slash", "wave", "cascade", "whirl", "dive", "emerge", "storm", "resurrect", "tsunami");
     }
 
     @Override
@@ -163,12 +168,15 @@ public class SandEmpress extends HmBoss {
         if (diveCd > 0) diveCd--;
         if (stormCd > 0) stormCd--;
         if (crossCd > 0) crossCd--;
+        if (tsunamiCd > 0) tsunamiCd--;
         if (target == null) return;
         double d = distanceTo(target);
         if (phase() >= 2 && stormCd == 0) {
             storm(sl);
         } else if (phase() >= 2 && crossCd == 0) {
             tideCross(sl);
+        } else if (phase() >= 1 && tsunamiCd == 0 && hasLineOfSight(target)) {
+            tsunami(sl, target);
         } else if (phase() >= 1 && diveCd == 0) {
             dive(sl, target);
         } else if (whirlCd == 0) {
@@ -359,6 +367,88 @@ public class SandEmpress extends HmBoss {
             });
         }
         hintOnce("cross");
+    }
+
+    /**
+     * Maremoto das Dunas: antecipação (1,2 s: areia e água sobem em espiral em volta dela, o chão marca a faixa inteira
+     * e três círculos verdes mostram a brecha), a muralha corre 20 blocos (1 bloco/tick) e arremessa quem não estiver na
+     * brecha; no fim a onda quebra em espuma e a areia molhada cai devagar.
+     */
+    private void tsunami(ServerLevel sl, LivingEntity t) {
+        tsunamiCd = 300;
+        busy = 50;
+        action("tsunami");
+        Vec3 dir = t.position().subtract(position()).multiply(1, 0, 1);
+        if (dir.lengthSqr() < 0.01) dir = Vec3.directionFromRotation(0, getYRot());
+        final Vec3 fwd = dir.normalize(), side = new Vec3(-fwd.z, 0, fwd.x), from = position();
+        holdYaw(yawTo(t.position()));
+        final double gap = (random.nextDouble() - 0.5) * 10, half = 8.5, len = 20;
+        Telegraph.show(sl, Telegraph.Shape.line(from, from.add(fwd.scale(len)), (float) (half * 2)).warmup(24).color(TIDE).owner(this).noRunes());
+        for (int i = 1; i <= 3; i++) Telegraph.safe(sl, from.add(fwd.scale(i * 6)).add(side.scale(gap)), 2.2F, 46);
+        BlockParticleOption dust = new BlockParticleOption(ParticleTypes.FALLING_DUST, HmRegistries.HOLLOW_SAND.get().defaultBlockState());
+        BlockParticleOption chunk = new BlockParticleOption(ParticleTypes.BLOCK, HmRegistries.HOLLOW_SAND.get().defaultBlockState());
+        for (int k = 0; k < 24; k += 3) {
+            final int tick = k;
+            BossKit.schedule(sl, k, () -> {
+                if (!isAlive()) return;
+                double a = tick * 0.5, r = 2.4 - tick * 0.05;
+                for (int i = 0; i < 6; i++) {
+                    double ang = a + i * Math.PI / 3, y = 0.3 + i * 0.5;
+                    if (i % 2 == 0) {
+                        sl.sendParticles(dust, getX() + Math.cos(ang) * r, getY() + y, getZ() + Math.sin(ang) * r, 2, 0.05, 0.05, 0.05, 0);
+                    } else {
+                        sl.sendParticles(HmFx.dust(TIDE, 1.4F), getX() + Math.cos(ang) * r, getY() + y, getZ() + Math.sin(ang) * r, 2, 0.05, 0.05, 0.05, 0);
+                    }
+                }
+                if (tick % 9 == 0) playSound(SoundEvents.ELDER_GUARDIAN_AMBIENT, 1.4F, 0.6F + tick * 0.02F);
+            });
+        }
+        float dmg = scaled(16F);
+        Set<UUID> hit = new HashSet<>();
+        for (int k = 0; k <= 20; k += 2) {
+            final double front = 1.5 + k;
+            final boolean first = k == 0, last = k == 20;
+            BossKit.schedule(sl, 24 + k, () -> {
+                if (!isAlive()) return;
+                Vec3 base = from.add(fwd.scale(front));
+                for (double s = -half; s <= half; s += 2.5) {
+                    if (Math.abs(s - gap) < 2.2) continue;
+                    Vec3 p = base.add(side.scale(s));
+                    sl.sendParticles(chunk, p.x, p.y + 1.2, p.z, 6, 0.6, 1.0, 0.6, 0.1);
+                    sl.sendParticles(ParticleTypes.SPLASH, p.x, p.y + 2.6, p.z, 4, 0.6, 0.3, 0.6, 0.2);
+                }
+                for (ServerPlayer pl : BossKit.partyAround(this, 34)) {
+                    if (!isFoe(pl) || hit.contains(pl.getUUID())) continue;
+                    Vec3 rel = pl.position().subtract(from);
+                    double along = rel.dot(fwd), across = rel.dot(side);
+                    if (along < front - 2.0 || along > front + 0.8 || Math.abs(across) > half || Math.abs(across - gap) < 2.2) continue;
+                    hit.add(pl.getUUID());
+                    pl.hurt(damageSources().indirectMagic(this, this), dmg);
+                    pl.setDeltaMovement(pl.getDeltaMovement().add(fwd.x * 1.4, 0.55, fwd.z * 1.4));
+                    pl.hurtMarked = true;
+                    pl.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 30, 0), this);
+                    pl.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1), this);
+                }
+                if (first) {
+                    playSound(SoundEvents.PLAYER_SPLASH_HIGH_SPEED, 2.0F, 0.5F);
+                    playSound(SoundEvents.GENERIC_EXPLODE.value(), 1.0F, 0.7F);
+                    sl.sendParticles(ParticleTypes.FLASH, from.x, from.y + 1, from.z, 1, 0, 0, 0, 0);
+                    BossKit.shake(sl, from, 30, 1.6F, 26);
+                }
+                if (last) {
+                    // A onda quebra: espuma alta e areia molhada caindo.
+                    Vec3 end = from.add(fwd.scale(front));
+                    sl.sendParticles(ParticleTypes.SPLASH, end.x, end.y + 3, end.z, 60, half * 0.6, 1.5, half * 0.6, 0.4);
+                    sl.sendParticles(ParticleTypes.CLOUD, end.x, end.y + 1, end.z, 20, half * 0.5, 0.5, half * 0.5, 0.05);
+                    playSound(SoundEvents.GENERIC_SPLASH, 2.0F, 0.6F);
+                    for (int w = 5; w <= 40; w += 7) {
+                        BossKit.schedule(sl, w, () -> sl.sendParticles(dust, end.x, end.y + 5, end.z, 14, half * 0.6, 1.0, half * 0.6, 0));
+                    }
+                }
+            });
+        }
+        announce("tsunami");
+        hintOnce("tsunami");
     }
 
     private void sandBurst(ServerLevel sl, Vec3 at, int n) {

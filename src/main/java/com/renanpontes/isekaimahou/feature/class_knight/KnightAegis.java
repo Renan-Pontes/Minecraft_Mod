@@ -63,7 +63,8 @@ public final class KnightAegis {
         p.stats = stats;
         Vec3 c = KnightFx.center(target);
         level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.POLISHED_DEEPSLATE.defaultBlockState()),
-                c.x, c.y, c.z, 30, 0.6, 0.6, 0.6, 0.1);
+                c.x, c.y, c.z, 10, 0.6, 0.6, 0.6, 0.1);
+        KnightFxNet.on(target, KnightFxNet.AEGIS_UP, Vec3.ZERO, 1F, KnightFx.GOLD, p.plates);
         KnightFx.sound(level, c, SoundEvents.IRON_GOLEM_REPAIR, 1.0F, 1.2F);
         KnightFx.sound(level, c, SoundEvents.BEACON_POWER_SELECT, 0.6F, 1.6F);
         if (target instanceof ServerPlayer sp) {
@@ -103,7 +104,7 @@ public final class KnightAegis {
         Vec3 c = KnightFx.center(e);
         level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.CHISELED_DEEPSLATE.defaultBlockState()),
                 c.x, c.y, c.z, 20, 0.4, 0.4, 0.4, 0.15);
-        level.sendParticles(KnightFx.dust(KnightFx.GOLD, 1.2F), c.x, c.y, c.z, 12, 0.5, 0.5, 0.5, 0);
+        KnightFxNet.on(e, KnightFxNet.AEGIS_HIT, Vec3.ZERO, 1F, KnightFx.GOLD, p.plates);
         KnightFx.sound(level, c, SoundEvents.SHIELD_BLOCK, 1.0F, 0.8F + level.random.nextFloat() * 0.2F);
         if (p.plates <= 0) shatter(level, p);
     }
@@ -113,8 +114,7 @@ public final class KnightAegis {
         ACTIVE.remove(p.e.getUUID());
         LivingEntity e = p.e;
         Vec3 c = KnightFx.center(e);
-        KnightFx.runeCircle(level, e.position(), 3.0, KnightFx.GOLD, 36, 0F);
-        level.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y, c.z, 1, 0, 0, 0, 0);
+        KnightFxNet.on(e, KnightFxNet.AEGIS_BREAK, Vec3.ZERO, 3.0F, KnightFx.GOLD, 0);
         KnightFx.sound(level, c, SoundEvents.ANVIL_LAND, 0.8F, 0.6F);
         SpellContext ctx = p.ctx;
         for (LivingEntity o : level.getEntitiesOfClass(LivingEntity.class, e.getBoundingBox().inflate(3.0),

@@ -187,6 +187,10 @@ public final class QuincyFinalForms {
     }
 
     private static void finishLetzt(State s, LivingEntity e, boolean natural) {
+        // onda 5: a receita moldada para a Letzt Stil (aba Votos) acaba junto com a forma
+        if (e instanceof ServerPlayer lp) {
+            com.renanpontes.isekaimahou.glyph.TransformLaws.end(lp, com.renanpontes.isekaimahou.IsekaiMahou.id(Quincy.LETZT_STIL));
+        }
         AttributeInstance g = e.getAttribute(Attributes.GRAVITY);
         if (g != null) g.removeModifier(GRAVITY);
         QuincyFx.burst(s.level, e.position().add(0, 1.2, 0), 50, 1.0);
@@ -211,15 +215,10 @@ public final class QuincyFinalForms {
         QuincyFxNet.form(caster, QuincyFxNet.FORM_ALMIGHTY, ticks);
         QuincyFxNet.burst(caster, QuincyFxNet.EYES, caster.getEyePosition(), Vec3.ZERO, 3F, 0x6FA8FF);
         Vec3 eye = caster.getEyePosition();
-        // os olhos se abrem: anéis concêntricos com pupilas negras em volta da cabeça
-        for (int r = 1; r <= 3; r++) {
-            for (int k = 0; k < 10 * r; k++) {
-                double a = k * Mth.TWO_PI / (10 * r);
-                Vec3 p = eye.add(Math.cos(a) * r * 0.9, Math.sin(a) * r * 0.5 + 0.4, Math.sin(a) * r * 0.9);
-                level.sendParticles(k % 3 == 0 ? EYE : QuincyFx.WHITE, p.x, p.y, p.z, 1, 0, 0, 0, 0);
-            }
-        }
+        // w10: os olhos que se abrem, a tinta que espirra e as sombras são desenhados no cliente (QuincyFxClient, pelo
+        // preset gráfico); aqui só o clarão e os sons.
         level.sendParticles(ParticleTypes.FLASH, eye.x, eye.y, eye.z, 1, 0, 0, 0, 0);
+        QuincyFx.sound(level, eye, SoundEvents.SCULK_SHRIEKER_SHRIEK, 0.9F, 0.5F);
         QuincyFx.sound(level, eye, SoundEvents.ENDER_EYE_DEATH, 1.0F, 0.5F);
         QuincyFx.sound(level, eye, SoundEvents.BELL_RESONATE, 1.2F, 0.7F);
         QuincyFx.sound(level, eye, SoundEvents.BEACON_POWER_SELECT, 1.0F, 0.4F);
@@ -231,16 +230,7 @@ public final class QuincyFinalForms {
     private static void almightyTick(State s, LivingEntity e) {
         ServerLevel l = s.level;
         if (s.age % 40 == 0) QuincyFxNet.form(e, QuincyFxNet.FORM_ALMIGHTY, (int) Math.max(1, s.end - l.getGameTime()));
-        if (s.age % 6 == 0) {
-            // olhos flutuando em volta (um anel que gira)
-            Vec3 c = e.position().add(0, e.getBbHeight() * 0.7, 0);
-            for (int k = 0; k < 6; k++) {
-                double a = s.age * 0.06 + k * Mth.TWO_PI / 6;
-                Vec3 p = c.add(Math.cos(a) * 1.3, Math.sin(a * 2) * 0.4, Math.sin(a) * 1.3);
-                l.sendParticles(QuincyFx.WHITE, p.x, p.y, p.z, 2, 0.06, 0.03, 0.06, 0);
-                l.sendParticles(EYE, p.x, p.y, p.z, 1, 0, 0, 0, 0);
-            }
-        }
+        // w10: os olhos e a sombra em volta são do cliente (QuincyFxClient) — o servidor não manda mais partículas aqui.
         if (s.age % 10 != 0) return;
         // "vê os ataques antes": quem mira você brilha e mostra a linha do golpe; projéteis mostram a trajetória
         for (Mob m : l.getEntitiesOfClass(Mob.class, e.getBoundingBox().inflate(s.radius), m -> m.isAlive() && m.getTarget() == e)) {

@@ -6,6 +6,7 @@ import com.renanpontes.isekaimahou.core.ElementReactions;
 import com.renanpontes.isekaimahou.feature.fire_water.FwRegistries;
 import com.renanpontes.isekaimahou.feature.fire_water.FwUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -101,7 +102,7 @@ public class UndineWaterJet extends ThrowableProjectile {
     }
 
     private void splash(ServerLevel sl, Vec3 at) {
-        sl.sendParticles(ParticleTypes.SPLASH, at.x, at.y, at.z, 18, 0.25, 0.25, 0.25, 0.15);
+        sl.sendParticles(Vfx.splash(), at.x, at.y, at.z, 18, 0.25, 0.25, 0.25, 0.15);
         sl.sendParticles(ParticleTypes.BUBBLE_POP, at.x, at.y, at.z, 6, 0.2, 0.2, 0.2, 0.02);
         FwUtil.sound(sl, at, SoundEvents.GENERIC_SPLASH, 0.5F, 1.4F);
     }

@@ -1,0 +1,45 @@
+{
+  "hint.isekai_mahou.combat_feel_finisher": "The enemy is staggering! Get close and press %s for the mercy stroke.",
+  "hint.isekai_mahou.combat_feel_combo": "Spell combo: casting one spell right after another slightly raises your power. Stop and it resets.",
+
+  "hud.isekai_mahou.combat_feel.combo": "Combo ×%s",
+  "hud.isekai_mahou.combat_feel.combo_bonus": "+%s%%",
+  "hud.isekai_mahou.combat_feel.finish": "[%s] Finish",
+
+  "command.isekai_mahou.combat_feel.info": "Mercy stroke: %s (below %s%% health) · spell combo: %s (now ×%s, +%s%%) · smart casters: %s (%s nearby)",
+  "command.isekai_mahou.combat_feel.hitstop": "Test hit-stop sent: %s.",
+  "command.isekai_mahou.combat_feel.finisher": "%s is almost dead: aim at it up close and press the use key.",
+  "command.isekai_mahou.combat_feel.no_mob": "No common enemy within 12 blocks.",
+  "command.isekai_mahou.combat_feel.combo": "Spell combo at ×%s (+%s%% spell power).",
+  "command.isekai_mahou.combat_feel.caster": "%s: forced reflex (result: %s).",
+  "command.isekai_mahou.combat_feel.no_caster": "No smart caster (tag isekai_mahou:smart_casters) within 16 blocks.",
+
+  "isekai_mahou.configuration.section.isekai.mahou.feel.client.toml": "Combat: impact (you only)",
+  "isekai_mahou.configuration.section.isekai.mahou.feel.client.toml.title": "Isekai Mahou — Combat: impact",
+  "isekai_mahou.configuration.section.isekai.mahou.feel.common.toml": "Combat: impact, rules",
+  "isekai_mahou.configuration.section.isekai.mahou.feel.common.toml.title": "Isekai Mahou — Combat: impact, rules",
+
+  "isekai_mahou.configuration.hitStop": "Hit-stop on impacts",
+  "isekai_mahou.configuration.hitStop.tooltip": "The screen holds for 2 to 4 frames on heavy hits, criticals, parries and big explosions. Visual only, on your screen only. Turn it off if it bothers you.",
+  "isekai_mahou.configuration.hitStopStrength": "Hit-stop length (%)",
+  "isekai_mahou.configuration.hitStopStrength.tooltip": "100 = normal (2 to 4 frames). Lower = shorter, higher = longer.",
+  "isekai_mahou.configuration.showSpellCombo": "Show the spell combo",
+  "isekai_mahou.configuration.showSpellCombo.tooltip": "The \"Combo ×N\" counter next to the crosshair. When off, the bonus still applies.",
+  "isekai_mahou.configuration.finisherPrompt": "Finish prompt",
+  "isekai_mahou.configuration.finisherPrompt.tooltip": "One line just above the crosshair when you aim up close at an almost dead common enemy.",
+
+  "isekai_mahou.configuration.finisherEnabled": "Mercy stroke enabled",
+  "isekai_mahou.configuration.finisherEnabled.tooltip": "An almost dead common enemy can be finished with the use key, up close. Never bosses.",
+  "isekai_mahou.configuration.finisherHealthPercent": "Health to finish (%)",
+  "isekai_mahou.configuration.finisherHealthPercent.tooltip": "A common enemy can be finished when its health drops below this. Default: 10%.",
+  "isekai_mahou.configuration.spellComboEnabled": "Spell combo enabled",
+  "isekai_mahou.configuration.spellComboEnabled.tooltip": "Casting in quick succession builds a counter with a small spell power bonus that resets when you stop.",
+  "isekai_mahou.configuration.spellComboWindowTicks": "Combo time (ticks)",
+  "isekai_mahou.configuration.spellComboWindowTicks.tooltip": "How long the combo waits for the next spell before it resets. 80 = 4 s.",
+  "isekai_mahou.configuration.spellComboBonusPercent": "Bonus per combo spell (%)",
+  "isekai_mahou.configuration.spellComboBonusPercent.tooltip": "Extra spell power per combo spell after the first. 2 = +2% each.",
+  "isekai_mahou.configuration.spellComboMaxSteps": "Spells that count for the bonus",
+  "isekai_mahou.configuration.spellComboMaxSteps.tooltip": "Past this the counter keeps rising but the bonus stops. 10 at 2% = +20% at most.",
+  "isekai_mahou.configuration.smartCasters": "Smart casters",
+  "isekai_mahou.configuration.smartCasters.tooltip": "Caster monsters dodge spells, back off, heal themselves (hitting them cancels the heal) and call for help."
+}

@@ -7,7 +7,10 @@ import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.feature.cities.CityCrimes;
 import com.renanpontes.isekaimahou.feature.cities.CityLines;
+import com.renanpontes.isekaimahou.feature.cities.CityRoutine;
+import com.renanpontes.isekaimahou.feature.cities.CitySiege;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,9 +22,12 @@ import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 /**
  * Cidadão: anda pela cidade, conversa, conta rumores, foge de monstros e de noite fica em casa.
+ * Release 1.0 (rotina simples): um em cada três passa o começo da noite na taverna (perto do estalajadeiro) antes de
+ * ir para casa.
  * 10 variantes (pele, cabelo, roupa); a tabela {@link #LOOKS} bate com a ordem do tools/gen/cities.py.
  */
 public class Citizen extends CityNpc {
@@ -38,6 +44,11 @@ public class Citizen extends CityNpc {
             {false, false, false, false},
             {true, false, true, false},
     };
+
+    private static final int TAVERN_LINES = 4;
+    /** Onde fica a taverna (casa do estalajadeiro mais perto); procurada uma vez por dia. Só em memória. */
+    @Nullable private BlockPos tavern;
+    private long tavernDay = -1;
 
     public Citizen(EntityType<? extends Citizen> type, Level level) {
         super(type, level);
@@ -106,8 +117,48 @@ public class Citizen extends CityNpc {
 
     @Override
     protected int currentRadius() {
+        if (atTavern()) return 5;
         // De noite (e no cerco) os cidadãos voltam para casa.
         return level().isNight() ? 3 : wanderRadius();
+    }
+
+    @Override
+    protected BlockPos currentCenter() {
+        return atTavern() && tavern != null ? tavern : super.currentCenter();
+    }
+
+    /** Um em cada três cidadãos gosta da taverna (fixo por morador). */
+    private boolean tavernGoer() {
+        return Math.floorMod(getUUID().hashCode(), 3) == 0;
+    }
+
+    /** Começo da noite, a taverna é conhecida e a cidade não está sob cerco. */
+    private boolean atTavern() {
+        return tavern != null && CityRoutine.phase(level()) == CityRoutine.Phase.EVENING && !CitySiege.active(cityId());
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        // Uma busca por dia, no começo da noite, só para quem vai à taverna (espalhada pelos ticks).
+        if (level().isClientSide || tickCount % 100 != Math.floorMod(getId(), 100) || !tavernGoer()) return;
+        if (CityRoutine.phase(level()) != CityRoutine.Phase.EVENING) return;
+        long day = level().getDayTime() / 24000L;
+        if (day == tavernDay) return;
+        tavernDay = day;
+        tavern = findTavern();
+    }
+
+    @Nullable
+    private BlockPos findTavern() {
+        BlockPos from = home() != null ? home() : blockPosition();
+        CityMerchant best = null;
+        for (CityMerchant m : level().getEntitiesOfClass(CityMerchant.class, new AABB(from).inflate(56, 16, 56),
+                m -> m.isAlive() && m.profession() == Profession.INNKEEPER)) {
+            if (best == null || m.distanceToSqr(this) < best.distanceToSqr(this)) best = m;
+        }
+        if (best == null) return null;
+        return best.home() != null ? best.home() : best.blockPosition();
     }
 
     @Override
@@ -115,6 +166,7 @@ public class Citizen extends CityNpc {
     protected Component ambientLine(Player near) {
         if (isWarEnemy(near)) return CityLines.pick("citizen.enemy", random, kingdomName());
         if (isFeared(near)) return CityLines.pick("citizen.wanted", random);
+        if (atTavern()) return CityLines.line("citizen.tavern." + random.nextInt(TAVERN_LINES));
         if (!level().isNight() && random.nextInt(100) < 30) return CityLines.kingdomFlavor(kingdom(), random);
         return CityLines.pick(level().isNight() ? "citizen.night" : "citizen.ambient", random, kingdomName());
     }

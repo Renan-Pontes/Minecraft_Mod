@@ -10,8 +10,8 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -86,7 +86,7 @@ public class MeteorForm extends FormGlyph {
         if (!ctx.hasOrigin() && ctx.caster() != null) {
             ctx.caster().swing(InteractionHand.MAIN_HAND, true);
             Vec3 eye = ctx.caster().getEyePosition();
-            UltFx.far(level, ParticleTypes.FLAME, eye.x, eye.y + 0.3, eye.z, 10, 0.3, 0.3, 0.3, 0.05);
+            UltFx.far(level, Vfx.flame(), eye.x, eye.y + 0.3, eye.z, 10, 0.3, 0.3, 0.3, 0.05);
         }
     }
 
@@ -101,6 +101,11 @@ public class MeteorForm extends FormGlyph {
         level.addFreshEntity(m);
         Telegraph.show(level, Telegraph.Shape.circle(point, radius).warmup(fall).color(UltFx.mix(MeteorImpact.FIRE, rgb, 0.4F)));
         riftFx(level, start, size, rgb);
+        // v1.3: selo no céu onde a fenda abre + runa de aviso no chão até a rocha chegar (montados no cliente)
+        int fire = UltFx.mix(MeteorImpact.FIRE, rgb, 0.3F);
+        com.renanpontes.isekaimahou.core.ElementFx.portal(level, start, point.subtract(start).normalize(),
+                ctx.element() != null ? ctx.element() : Element.FIRE, fire, 2.0F + size, 5, fall + 6);
+        com.renanpontes.isekaimahou.core.ElementFx.runeCircle(level, point.add(0, 0.05, 0), fire, radius, fall + 4, 4);
         return m;
     }
 
@@ -140,11 +145,11 @@ public class MeteorForm extends FormGlyph {
         double r = 1.2 + size * 0.6;
         for (int i = 0; i < 16; i++) {
             double a = Math.PI * 2 * i / 16;
-            UltFx.far(level, ParticleTypes.REVERSE_PORTAL, at.x + Math.cos(a) * r, at.y, at.z + Math.sin(a) * r, 2, 0.05, 0.05, 0.05, 0.02);
+            UltFx.far(level, Vfx.reversePortal(), at.x + Math.cos(a) * r, at.y, at.z + Math.sin(a) * r, 2, 0.05, 0.05, 0.05, 0.02);
         }
-        UltFx.far(level, ParticleTypes.FLAME, at.x, at.y, at.z, 16, r * 0.4, 0.2, r * 0.4, 0.05);
+        UltFx.far(level, Vfx.flame(), at.x, at.y, at.z, 16, r * 0.4, 0.2, r * 0.4, 0.05);
         UltFx.far(level, new DustParticleOptions(Vec3.fromRGB24(rgb).toVector3f(), 2.2F), at.x, at.y, at.z, 14, r * 0.5, 0.2, r * 0.5, 0);
-        UltFx.far(level, ParticleTypes.LARGE_SMOKE, at.x, at.y + 0.5, at.z, 10, r * 0.6, 0.3, r * 0.6, 0.01);
+        UltFx.far(level, Vfx.largeSmoke(), at.x, at.y + 0.5, at.z, 10, r * 0.6, 0.3, r * 0.6, 0.01);
         UltFx.sound(level, at, SoundEvents.WITHER_SHOOT, 2.5F, 0.45F);
         UltFx.sound(level, at, SoundEvents.FIRECHARGE_USE, 2.5F, 0.6F);
     }

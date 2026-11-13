@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.feature.fusions_b.FbFx;
 import com.renanpontes.isekaimahou.feature.fusions_b.FbRegistries;
 import com.renanpontes.isekaimahou.feature.fusions_b.FbUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -114,7 +115,7 @@ public class TwilightCloneEntity extends FbSummon {
         if (ok && target instanceof LivingEntity le) {
             le.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60, 0), getOwner());
             if (level() instanceof ServerLevel sl) {
-                sl.sendParticles(ParticleTypes.SQUID_INK, le.getX(), le.getY() + le.getBbHeight() * 0.6, le.getZ(), 6, 0.2, 0.2, 0.2, 0.03);
+                sl.sendParticles(Vfx.ink(), le.getX(), le.getY() + le.getBbHeight() * 0.6, le.getZ(), 6, 0.2, 0.2, 0.2, 0.03);
                 sl.sendParticles(FbFx.dust(FbFx.TWILIGHT_SHADOW, 1.2F), le.getX(), le.getY() + le.getBbHeight() * 0.6, le.getZ(),
                         6, 0.25, 0.25, 0.25, 0);
             }
@@ -134,11 +135,11 @@ public class TwilightCloneEntity extends FbSummon {
     protected void spawnFx(ServerLevel level) {
         Vec3 c = position().add(0, 1, 0);
         if (isLight()) {
-            level.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 20, 0.3, 0.6, 0.3, 0.04);
+            level.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 20, 0.3, 0.6, 0.3, 0.04);
             level.sendParticles(FbFx.dust(FbFx.TWILIGHT_GOLD, 1.3F), c.x, c.y, c.z, 16, 0.35, 0.7, 0.35, 0);
             FbFx.sound(level, c, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.5F);
         } else {
-            level.sendParticles(ParticleTypes.SQUID_INK, c.x, c.y, c.z, 20, 0.3, 0.6, 0.3, 0.03);
+            level.sendParticles(Vfx.ink(), c.x, c.y, c.z, 20, 0.3, 0.6, 0.3, 0.03);
             level.sendParticles(FbFx.dust(FbFx.TWILIGHT_SHADOW, 1.3F), c.x, c.y, c.z, 16, 0.35, 0.7, 0.35, 0);
             FbFx.sound(level, c, SoundEvents.ENDERMAN_AMBIENT, 0.6F, 0.6F);
         }
@@ -147,7 +148,7 @@ public class TwilightCloneEntity extends FbSummon {
     @Override
     protected void vanishFx(ServerLevel level) {
         Vec3 c = position().add(0, 1, 0);
-        level.sendParticles(isLight() ? ParticleTypes.END_ROD : ParticleTypes.LARGE_SMOKE, c.x, c.y, c.z, 16, 0.3, 0.6, 0.3, 0.03);
+        level.sendParticles(isLight() ? Vfx.endRod() : Vfx.largeSmoke(), c.x, c.y, c.z, 16, 0.3, 0.6, 0.3, 0.03);
         level.sendParticles(FbFx.dust(isLight() ? FbFx.TWILIGHT_GOLD : FbFx.TWILIGHT_SHADOW, 1.2F), c.x, c.y, c.z, 12, 0.3, 0.6, 0.3, 0);
         FbFx.sound(level, c, SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.7F, isLight() ? 1.4F : 0.7F);
     }
@@ -256,7 +257,7 @@ public class TwilightCloneEntity extends FbSummon {
             clone.swing(InteractionHand.MAIN_HAND);
             best.heal(2.5F * clone.power());
             FbFx.line(sl, clone.position().add(0, 1.3, 0), FbUtil.center(best), FbFx.dust(FbFx.TWILIGHT_GOLD, 0.9F), 3.0);
-            sl.sendParticles(ParticleTypes.END_ROD, best.getX(), best.getY() + best.getBbHeight() * 0.6, best.getZ(), 6,
+            sl.sendParticles(Vfx.endRod(), best.getX(), best.getY() + best.getBbHeight() * 0.6, best.getZ(), 6,
                     0.3, 0.3, 0.3, 0.02);
             sl.sendParticles(ParticleTypes.HEART, best.getX(), best.getY() + best.getBbHeight() + 0.3, best.getZ(), 1, 0.2, 0.1, 0.2, 0);
             FbFx.sound(sl, best.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.7F, 1.7F);

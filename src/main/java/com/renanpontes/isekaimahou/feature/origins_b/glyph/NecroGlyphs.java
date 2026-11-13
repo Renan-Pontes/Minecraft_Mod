@@ -17,6 +17,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -139,7 +140,7 @@ public final class NecroGlyphs {
             le.addEffect(new MobEffectInstance(ObRegistries.BONE_SHIELD, stats.duration(600), amp, false, false, true), ctx.caster());
             ServerLevel level = ctx.level();
             ObFx.boneBurst(level, le.position().add(0, le.getBbHeight() * 0.5, 0), 24, 0.6);
-            level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, le.getX(), le.getY() + 0.1, le.getZ(), 10, 0.5, 0.05, 0.5, 0.02);
+            level.sendParticles(Vfx.soulFlame(), le.getX(), le.getY() + 0.1, le.getZ(), 10, 0.5, 0.05, 0.5, 0.02);
             ObFx.sound(level, le.position(), SoundEvents.BONE_BLOCK_PLACE, 1.0F, 0.6F);
             ObFx.sound(level, le.position(), SoundEvents.ARMOR_EQUIP_CHAIN.value(), 1.0F, 0.6F);
         }
@@ -172,7 +173,7 @@ public final class NecroGlyphs {
                 if (dealt > 0) caster.heal(dealt * 0.5F);
                 ObFx.soulStream(level, from, caster.position().add(0, caster.getBbHeight() * 0.6, 0), ObFx.SOUL_CYAN);
             }
-            level.sendParticles(ParticleTypes.SCULK_SOUL, from.x, from.y, from.z, 6, 0.25, 0.3, 0.25, 0.03);
+            level.sendParticles(Vfx.sculkSoul(), from.x, from.y, from.z, 6, 0.25, 0.3, 0.25, 0.03);
             ObFx.sound(level, from, SoundEvents.SOUL_ESCAPE.value(), 1.2F, 0.8F);
             if (!le.isAlive()) {
                 // Colheita: a alma do morto vira poder
@@ -285,8 +286,8 @@ public final class NecroGlyphs {
             }
             level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, center.x, center.y, center.z, 1, 0, 0, 0, 0);
             ObFx.boneBurst(level, center, 40, 0.5);
-            level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, center.x, center.y, center.z, 30, radius * 0.3, 0.4, radius * 0.3, 0.08);
-            level.sendParticles(ParticleTypes.SOUL, center.x, center.y, center.z, 12, 0.5, 0.5, 0.5, 0.06);
+            level.sendParticles(Vfx.soulFlame(), center.x, center.y, center.z, 30, radius * 0.3, 0.4, radius * 0.3, 0.08);
+            level.sendParticles(Vfx.soul(), center.x, center.y, center.z, 12, 0.5, 0.5, 0.5, 0.06);
             level.sendParticles(ObFx.dust(ObFx.SOUL_CYAN, 1.6F), center.x, center.y, center.z, 24, radius * 0.35, 0.6, radius * 0.35, 0);
             ObFx.sound(level, center, SoundEvents.GENERIC_EXPLODE.value(), 1.2F, 0.9F);
             ObFx.sound(level, center, SoundEvents.SKELETON_DEATH, 1.0F, 0.6F);
@@ -344,7 +345,7 @@ public final class NecroGlyphs {
                 w.setup(owner, stats.duration(800), ObUtil.power(ctx, stats));
                 level.addFreshEntity(w);
                 if (foe != null && !ctx.isAlly(foe)) w.setTarget(foe);
-                level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, p.x, p.y + 0.1, p.z, 12, 0.3, 0.05, 0.3, 0.03);
+                level.sendParticles(Vfx.soulFlame(), p.x, p.y + 0.1, p.z, 12, 0.3, 0.05, 0.3, 0.03);
             }
             ObFx.sound(level, at, SoundEvents.SKELETON_HORSE_AMBIENT, 1.0F, 0.6F);
             ObFx.sound(level, at, SoundEvents.BONE_BLOCK_BREAK, 1.2F, 0.6F);

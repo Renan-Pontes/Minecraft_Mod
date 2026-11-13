@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.feature.fusions_b.FbFx;
 import com.renanpontes.isekaimahou.feature.fusions_b.FbRegistries;
 import com.renanpontes.isekaimahou.feature.fusions_b.FbUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -107,7 +108,7 @@ public final class FbMobEffects {
         @Override
         public boolean applyEffectTick(LivingEntity e, int amplifier) {
             if (e.level() instanceof ServerLevel sl) {
-                FbFx.around(sl, e, ParticleTypes.WAX_ON, 3, 0.02);
+                FbFx.around(sl, e, Vfx.waxOn(), 3, 0.02);
                 FbFx.around(sl, e, FbFx.dust(FbFx.CRYSTAL_LIGHT, 0.8F), 3, 0);
             }
             return true;
@@ -163,7 +164,7 @@ public final class FbMobEffects {
                 e.setDeltaMovement(v.x * 0.9, v.y + (0.012 - v.y) * 0.1, v.z * 0.9);
             }
             if (e.tickCount % 8 == 0) {
-                sl.sendParticles(ParticleTypes.END_ROD, e.getX(), e.getY() - 0.1, e.getZ(), 1, 0.25, 0.05, 0.25, 0.01);
+                sl.sendParticles(Vfx.endRod(), e.getX(), e.getY() - 0.1, e.getZ(), 1, 0.25, 0.05, 0.25, 0.01);
                 sl.sendParticles(FbFx.dust(FbFx.ASTRAL_LIGHT, 0.8F), e.getX(), e.getY() + 0.1, e.getZ(), 2, 0.3, 0.1, 0.3, 0);
             }
             return true;
@@ -195,10 +196,10 @@ public final class FbMobEffects {
             if (e.tickCount % 3 == 0) {
                 sl.sendParticles(FbFx.fade(FbFx.HELLFIRE, FbFx.HELL_BLACK, 1.3F), e.getX(), e.getY() + e.getBbHeight() * 0.4,
                         e.getZ(), 3, e.getBbWidth() * 0.4, e.getBbHeight() * 0.35, e.getBbWidth() * 0.4, 0.02);
-                sl.sendParticles(ParticleTypes.SMOKE, e.getX(), e.getY() + e.getBbHeight() * 0.7, e.getZ(), 2,
+                sl.sendParticles(Vfx.smoke(), e.getX(), e.getY() + e.getBbHeight() * 0.7, e.getZ(), 2,
                         e.getBbWidth() * 0.3, 0.2, e.getBbWidth() * 0.3, 0.02);
                 if (e.getRandom().nextInt(3) == 0) {
-                    sl.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, e.getX(), e.getY() + 0.2, e.getZ(), 1,
+                    sl.sendParticles(Vfx.soulFlame(), e.getX(), e.getY() + 0.2, e.getZ(), 1,
                             e.getBbWidth() * 0.4, 0.1, e.getBbWidth() * 0.4, 0.01);
                 }
             }
@@ -262,7 +263,7 @@ public final class FbMobEffects {
             if (e.tickCount % 25 == 0) {
                 e.invulnerableTime = 0;
                 e.hurt(FbUtil.source(e, FbRegistries.ABYSSAL_VENOM_DAMAGE), 1.0F + amplifier);
-                FbFx.around(sl, e, ParticleTypes.SQUID_INK, 3, 0.02);
+                FbFx.around(sl, e, Vfx.ink(), 3, 0.02);
             }
             return true;
         }
@@ -288,7 +289,7 @@ public final class FbMobEffects {
             if (e.getAirSupply() <= 0 && e.tickCount % 20 == 0) {
                 e.invulnerableTime = 0;
                 e.hurt(FbUtil.source(e, FbRegistries.ABYSSAL_DROWN_DAMAGE), 2.0F + amplifier);
-                sl.sendParticles(ParticleTypes.SPLASH, e.getX(), headY, e.getZ(), 10, 0.3, 0.2, 0.3, 0.1);
+                sl.sendParticles(Vfx.splash(), e.getX(), headY, e.getZ(), 10, 0.3, 0.2, 0.3, 0.1);
                 FbFx.sound(sl, e.position(), SoundEvents.PLAYER_HURT_DROWN, 0.6F, 0.8F);
             }
             return true;
@@ -305,7 +306,7 @@ public final class FbMobEffects {
         @Override
         public boolean applyEffectTick(LivingEntity e, int amplifier) {
             if (!(e.level() instanceof ServerLevel sl)) return true;
-            sl.sendParticles(ParticleTypes.SQUID_INK, e.getX(), e.getEyeY(), e.getZ(), 2, 0.2, 0.1, 0.2, 0.01);
+            sl.sendParticles(Vfx.ink(), e.getX(), e.getEyeY(), e.getZ(), 2, 0.2, 0.1, 0.2, 0.01);
             if (e instanceof Mob m && m.getTarget() != null && m.distanceToSqr(m.getTarget()) > 3.5 * 3.5) {
                 m.setTarget(null);
             }
@@ -337,14 +338,14 @@ public final class FbMobEffects {
             if (!(e.level() instanceof ServerLevel sl)) return true;
             e.resetFallDistance();
             if (e.tickCount % 3 == 0) {
-                sl.sendParticles(ParticleTypes.REVERSE_PORTAL, e.getX(), e.getY(), e.getZ(), 3,
+                sl.sendParticles(Vfx.reversePortal(), e.getX(), e.getY(), e.getZ(), 3,
                         e.getBbWidth() * 0.4, 0.1, e.getBbWidth() * 0.4, 0.05);
             }
             boolean ceiling = e.verticalCollision && !e.verticalCollisionBelow && !e.onGround();
             if (ceiling && e.tickCount % 10 == 0) {
                 e.invulnerableTime = 0;
                 e.hurt(FbUtil.source(e, FbRegistries.GRAVITY_CRASH_DAMAGE), 2.0F + amplifier);
-                sl.sendParticles(ParticleTypes.CRIT, e.getX(), e.getY() + e.getBbHeight(), e.getZ(), 8, 0.3, 0.05, 0.3, 0.1);
+                sl.sendParticles(Vfx.crit(), e.getX(), e.getY() + e.getBbHeight(), e.getZ(), 8, 0.3, 0.05, 0.3, 0.1);
                 FbFx.sound(sl, e.position(), SoundEvents.ANVIL_LAND, 0.3F, 1.6F);
             }
             return true;

@@ -45,8 +45,10 @@ import net.neoforged.neoforge.network.PacketDistributor;
  *   <li>Humano: vencer 400 monstros · Elfo: 150 abates à distância · Anão: minerar 1000 blocos abaixo de y 0 ·
  *       Meio-Orc: 250 abates corpo a corpo · Demônio: 200 abates com fogo ou no Nether · Dracônico: 250 abates com
  *       magia · Bestial: domar 10 animais · Aracnídeo: 200 abates no subterrâneo · Fantasma: 200 abates à noite ·
- *       Anjo: purificar 150 mortos-vivos · Slime: devorar 150 comidas.</li>
+ *       Anjo: purificar 150 mortos-vivos · Slime: devorar 150 coisas (comidas e, v1.7, criaturas que o Predador copia —
+ *       o contador antigo de comidas continua valendo).</li>
  * </ul>
+ * v1.7: as raças que evoluem ({@link Race#hasStages()}) anunciam o novo estágio junto com o nível de raça.
  */
 public final class RaceProgress {
     public static final int MAX_LEVEL = 5;
@@ -162,6 +164,7 @@ public final class RaceProgress {
 
     static void announce(ServerPlayer sp, Race r, int lv) {
         PacketDistributor.sendToPlayer(sp, new CharacterNetwork.LevelUp(r.ordinal(), lv));
+        CharacterService.sendLook(sp);
         ServerLevel level = sp.serverLevel();
         RaceFx.dustBurst(level, sp.position().add(0, 1.0, 0), r.rgb, 40, 0.6);
         level.sendParticles(ParticleTypes.END_ROD, sp.getX(), sp.getY() + 1.2, sp.getZ(), 30, 0.5, 1.0, 0.5, 0.06);
@@ -169,6 +172,10 @@ public final class RaceProgress {
         level.playSound(null, sp.getX(), sp.getY(), sp.getZ(), raceSound(r), SoundSource.PLAYERS, 0.7F, 1.0F);
         Component lvText = Component.literal(roman(lv)).withColor(0xFFD86B);
         sp.sendSystemMessage(Component.translatable("message.isekai_mahou.character.race_level", r.displayName(), lvText).withColor(0xFFD86B));
+        if (r.hasStages()) {
+            sp.sendSystemMessage(Component.translatable("message.isekai_mahou.character.evolved", r.stageName(lv).withColor(r.rgb))
+                    .withColor(0xE8E2F4));
+        }
         if (lv >= MAX_LEVEL) {
             level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, sp.getX(), sp.getY() + 1.0, sp.getZ(), 60, 0.6, 1.0, 0.6, 0.4);
             level.playSound(null, sp.getX(), sp.getY(), sp.getZ(), SoundEvents.END_PORTAL_SPAWN, SoundSource.PLAYERS, 0.4F, 1.3F);
@@ -242,6 +249,7 @@ public final class RaceProgress {
         if (!level.canSeeSky(victim.blockPosition().above())) bump(sp, d, Race.ARACHNID);
         if (!level.dimensionType().hasSkyLight() || level.isNight()) bump(sp, d, Race.PHANTOM);
         if (victim.getType().is(EntityTypeTags.UNDEAD)) bump(sp, d, Race.ANGEL);
+        if (SlimePredator.Mimic.of(victim) != null) bump(sp, d, Race.SLIME);
     }
 
     private static void onBreak(BlockEvent.BreakEvent e) {

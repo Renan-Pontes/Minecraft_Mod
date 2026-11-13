@@ -8,7 +8,7 @@ import com.renanpontes.isekaimahou.feature.fusions_d.FdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -84,7 +84,7 @@ public class GravityFieldEntity extends FdSpellEntity {
             le.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 25, boss ? 1 : 3, false, false, true), owner());
             if (pulse) {
                 hit(le, air ? damage * 2.2F : damage, null);
-                sl.sendParticles(ParticleTypes.CRIT, le.getX(), le.getY() + 0.2, le.getZ(), 6, 0.3, 0.05, 0.3, 0.1);
+                sl.sendParticles(Vfx.crit(), le.getX(), le.getY() + 0.2, le.getZ(), 6, 0.3, 0.05, 0.3, 0.1);
             }
         }
         if (pulse) {
@@ -100,7 +100,7 @@ public class GravityFieldEntity extends FdSpellEntity {
 
     @Override
     protected void onExpire(ServerLevel sl) {
-        FdFx.shockwave(sl, position().add(0, 0.3, 0), ParticleTypes.REVERSE_PORTAL, 30, 0.4);
+        FdFx.shockwave(sl, position().add(0, 0.3, 0), Vfx.reversePortal(), 30, 0.4);
         FdFx.sound(sl, position(), SoundEvents.BEACON_DEACTIVATE, 1.2F, 0.5F);
     }
 
@@ -109,7 +109,7 @@ public class GravityFieldEntity extends FdSpellEntity {
         float r = radius();
         for (int i = 0; i < 3; i++) {
             double a = random.nextDouble() * Math.PI * 2, d = Math.sqrt(random.nextDouble()) * r;
-            level().addParticle(ParticleTypes.REVERSE_PORTAL, getX() + Math.cos(a) * d, getY() + 3 + random.nextDouble() * 4,
+            level().addParticle(Vfx.reversePortal(), getX() + Math.cos(a) * d, getY() + 3 + random.nextDouble() * 4,
                     getZ() + Math.sin(a) * d, 0, -0.6, 0);
         }
     }

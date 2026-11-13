@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_quincy.Quincy;
 import com.renanpontes.isekaimahou.feature.class_quincy.QuincyEvents;
+import com.renanpontes.isekaimahou.feature.class_quincy.QuincyForge;
 import com.renanpontes.isekaimahou.feature.class_quincy.QuincyNetwork;
 import com.renanpontes.isekaimahou.feature.class_quincy.QuincyRanks;
 import com.renanpontes.isekaimahou.feature.class_quincy.QuincyTechniques;
@@ -73,7 +74,7 @@ public class QuincyTab implements MenuTab {
         Font font = Minecraft.getInstance().font;
         MagicData d = ClientMagic.data();
         if (d == null) return;
-        renderSide(g, font, d);
+        renderSide(g, font, d, mx, my);
         renderPanel(g, font, d, mx, my);
         for (Tip t : tips) {
             if (mx >= t.x() && mx < t.x() + t.w() && my >= t.y() && my < t.y() + t.h()) {
@@ -86,7 +87,7 @@ public class QuincyTab implements MenuTab {
     }
 
     // ------------------------------------------------------------------ coluna da esquerda
-    private void renderSide(GuiGraphics g, Font font, MagicData d) {
+    private void renderSide(GuiGraphics g, Font font, MagicData d, int mx, int my) {
         MahouUi.frame(g, x, y, listW, h, BLUE);
         int rank = Quincy.rank(d);
         boolean quincy = d.path() == MagicPath.QUINCY;
@@ -132,9 +133,16 @@ public class QuincyTab implements MenuTab {
         ly += 4;
         g.drawString(font, Component.translatable("screen.isekai_mahou.quincy.bonuses").withStyle(ChatFormatting.GOLD), x + 7, ly, MahouUi.GOLD, false);
         ly += 11;
-        for (int i = 1; i <= 4 && ly < y + h - 10; i++) {
+        // release 1.0: com o Vollständig aprendido aparece o botão "Moldar liberação" (abre a aba Votos no espaço dele)
+        boolean shape = quincy && QuincyForge.hasRelease(d);
+        int bottomLimit = y + h - (shape ? 26 : 6);
+        for (int i = 1; i <= 4 && ly < bottomLimit - 4; i++) {
             ly = wrap(g, font, Component.literal("• ").append(Component.translatable(BONUS_KEY + i)), x + 7, ly, listW - 14,
-                    MahouUi.TEXT_DIM, y + h - 6);
+                    MahouUi.TEXT_DIM, bottomLimit);
+        }
+        if (shape) {
+            button(g, font, x + 7, y + h - 22, listW - 14, 15, Component.translatable("screen.isekai_mahou.release_forge.shape"),
+                    QuincyForge.canShape(d), ReleaseShaper.COLOR, mx, my, y, y + h, ReleaseShaper::open, ReleaseShaper.tip(d));
         }
         if (!quincy && ly < y + h - 20) {
             wrap(g, font, Component.translatable("screen.isekai_mahou.quincy.not_quincy").withStyle(ChatFormatting.ITALIC), x + 7, ly + 2,

@@ -13,6 +13,7 @@ import com.renanpontes.isekaimahou.feature.legends_c.LcFx;
 import com.renanpontes.isekaimahou.feature.legends_c.LcRegistry;
 import com.renanpontes.isekaimahou.feature.legends_c.LcUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -185,7 +186,7 @@ public class MalevolentShrineEntity extends LcEntity implements GeoEntity {
         if (tickCount % 50 == 0) LcFx.sound(l, position(), SoundEvents.WARDEN_HEARTBEAT, 3F, 0.5F);
         if (tickCount % 3 == 0) {
             LcFx.far(l, LcFx.dust(LcFx.RED, 2.2F), getX(), getY() + 6, getZ(), 6, 4.5, 4.0, 4.5, 0.02);
-            LcFx.far(l, ParticleTypes.SOUL_FIRE_FLAME, getX(), getY() + 11.5, getZ(), 2, 2.5, 0.3, 2.5, 0.01);
+            LcFx.far(l, Vfx.soulFlame(), getX(), getY() + 11.5, getZ(), 2, 2.5, 0.3, 2.5, 0.01);
         }
     }
 
@@ -193,7 +194,7 @@ public class MalevolentShrineEntity extends LcEntity implements GeoEntity {
         if (state() == CLOSING || random.nextInt(2) != 0) return;
         // Brasas vermelhas subindo do véu em volta do templo
         double a = random.nextDouble() * Math.PI * 2, r = 4 + random.nextDouble() * 3;
-        level().addParticle(ParticleTypes.CRIMSON_SPORE, getX() + Math.cos(a) * r, getY() + random.nextDouble() * 8,
+        level().addParticle(Vfx.crimsonSpore(), getX() + Math.cos(a) * r, getY() + random.nextDouble() * 8,
                 getZ() + Math.sin(a) * r, 0, 0.02, 0);
     }
 

@@ -6,6 +6,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightFx;
+import com.renanpontes.isekaimahou.feature.class_knight.KnightFxNet;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightPower;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightSkyfall;
 import com.renanpontes.isekaimahou.glyph.FormGlyph;
@@ -120,12 +121,8 @@ public class SwordRainForm extends FormGlyph {
             e.invulnerableTime = 0;
             ctx.resolveOnEntity(e, caster);
         }
-        BlockState below = level.getBlockState(net.minecraft.core.BlockPos.containing(land.x, land.y - 0.5, land.z));
-        if (!below.isAir()) {
-            level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, below), land.x, land.y + 0.1, land.z, 16, 0.4, 0.1, 0.4, 0.15);
-        }
-        level.sendParticles(KnightFx.dust(ctx.color() & 0xFFFFFF, 1.4F), land.x, land.y + 0.3, land.z, 10, 0.5, 0.2, 0.5, 0);
-        level.sendParticles(ParticleTypes.CRIT, land.x, land.y + 0.5, land.z, 8, 0.4, 0.3, 0.4, 0.3);
+        // estilhaços do chão, onda e faíscas: desenhados no cliente
+        KnightFxNet.at(level, KnightFxNet.SWORD_LAND, land, Vec3.ZERO, 1F, ctx.color() & 0xFFFFFF, -1);
         KnightFx.sound(level, land, SoundEvents.TRIDENT_HIT_GROUND, 1.0F, 0.8F + level.random.nextFloat() * 0.3F);
         if (last && !any) ctx.end(land, new Vec3(0, -1, 0));
     }

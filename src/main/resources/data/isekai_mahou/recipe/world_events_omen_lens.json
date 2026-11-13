@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " S ",
+    "SCS",
+    " Y "
+  ],
+  "key": {
+    "S": {
+      "item": "isekai_mahou:world_events_star_metal"
+    },
+    "C": {
+      "item": "isekai_mahou:world_events_alien_core"
+    },
+    "Y": {
+      "item": "minecraft:spyglass"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:world_events_omen_lens",
+    "count": 1
+  }
+}

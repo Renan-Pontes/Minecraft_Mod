@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -63,7 +64,7 @@ public final class MagmaGlyphs {
                 Vec3 c = t.position().add(0, t.getBbHeight() * 0.5, 0);
                 sl.sendParticles(MAGMA_BITS, c.x, c.y, c.z, 18, 0.3, 0.3, 0.3, 0.15);
                 sl.sendParticles(ParticleTypes.LAVA, c.x, c.y, c.z, 6, 0.25, 0.25, 0.25, 0);
-                sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y, c.z, 5, 0.2, 0.2, 0.2, 0.03);
+                sl.sendParticles(Vfx.largeSmoke(), c.x, c.y, c.z, 5, 0.2, 0.2, 0.2, 0.03);
                 FaUtil.sound(sl, c, SoundEvents.BASALT_BREAK, 1.2F, 0.7F);
                 FaUtil.sound(sl, c, SoundEvents.FIRECHARGE_USE, 0.8F, 0.8F);
             }
@@ -169,7 +170,7 @@ public final class MagmaGlyphs {
                     if (!(FaUtil.isOpen(sl, p) || FaShapes.isLiquid(sl, p)) || !FaUtil.canPlace(ctx, p)) continue;
                     if (FaTempBlocks.place(sl, p, FaRegistries.MAGMA_PRISON.get().defaultBlockState(), life + (dx * dx + dz * dz) * 4)) {
                         placed++;
-                        sl.sendParticles(ParticleTypes.LARGE_SMOKE, p.getX() + 0.5, p.getY() + 1.0, p.getZ() + 0.5, 1, 0.2, 0.05, 0.2, 0.01);
+                        sl.sendParticles(Vfx.largeSmoke(), p.getX() + 0.5, p.getY() + 1.0, p.getZ() + 0.5, 1, 0.2, 0.05, 0.2, 0.01);
                     }
                 }
             }
@@ -180,7 +181,7 @@ public final class MagmaGlyphs {
                 FaUtil.sound(sl, c, SoundEvents.LAVA_EXTINGUISH, 0.8F, 1.0F);
             } else {
                 // Sem espaço livre (chão plano, parede cheia): a rocha derretida só chia e esfria
-                sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y + 0.6, c.z, 8, 0.4, 0.1, 0.4, 0.02);
+                sl.sendParticles(Vfx.largeSmoke(), c.x, c.y + 0.6, c.z, 8, 0.4, 0.1, 0.4, 0.02);
                 sl.sendParticles(OBSIDIAN_BITS, c.x, c.y + 0.6, c.z, 8, 0.3, 0.1, 0.3, 0.05);
                 FaUtil.sound(sl, c, SoundEvents.LAVA_EXTINGUISH, 0.7F, 1.3F);
             }

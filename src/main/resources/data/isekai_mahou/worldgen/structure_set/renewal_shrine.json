@@ -1,0 +1,32 @@
+{
+  "structures": [
+    {
+      "structure": "isekai_mahou:renewal_shrine",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "isekai_mahou:random_spread_multi",
+    "spacing": 44,
+    "separation": 18,
+    "salt": 771100431,
+    "exclusion_zones": [
+      {
+        "other_set": "isekai_mahou:guild_city",
+        "chunk_count": 10
+      },
+      {
+        "other_set": "isekai_mahou:capital_city",
+        "chunk_count": 13
+      },
+      {
+        "other_set": "isekai_mahou:capital_sahra",
+        "chunk_count": 13
+      },
+      {
+        "other_set": "isekai_mahou:capital_nordheim",
+        "chunk_count": 13
+      }
+    ]
+  }
+}

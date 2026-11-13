@@ -291,8 +291,11 @@ public final class PartyService {
      */
     static void onDeath(LivingDeathEvent e) {
         DamageSource src = e.getSource();
-        if (!(src.getEntity() instanceof ServerPlayer killer) || killer instanceof FakePlayer) return;
         LivingEntity victim = e.getEntity();
+        // Mesmo critério do núcleo: golpe final sem autor (fogo, veneno, queda) vale para o último jogador que feriu
+        ServerPlayer killer = src.getEntity() instanceof ServerPlayer sp ? sp
+                : src.getEntity() == null && victim.getKillCredit() instanceof ServerPlayer sp2 ? sp2 : null;
+        if (killer == null || killer instanceof FakePlayer) return;
         if (victim instanceof Player || !(victim.level() instanceof ServerLevel level)) return;
         PartyRec party = partyOf(killer);
         if (party == null) return;

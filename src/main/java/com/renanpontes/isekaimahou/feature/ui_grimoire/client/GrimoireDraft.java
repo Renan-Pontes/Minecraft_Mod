@@ -10,6 +10,7 @@ import java.util.Set;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.Progression;
+import com.renanpontes.isekaimahou.glyph.CircleStyle;
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphKind;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
@@ -42,6 +43,8 @@ public final class GrimoireDraft {
     static String name = "";
     static String chant = "";
     static int color = -1;
+    /** Círculo mágico desta magia (forma/símbolo/cor do círculo de conjuração). */
+    static CircleStyle circle = CircleStyle.DEFAULT;
     /** Incrementa a cada mudança feita fora das caixas de texto (para a aba atualizar os campos). */
     static int revision;
     private static final Deque<Snapshot> UNDO = new ArrayDeque<>();
@@ -74,11 +77,11 @@ public final class GrimoireDraft {
     static boolean details;
 
     public static SpellRecipe recipe() {
-        return new SpellRecipe(glyphs, name, color, chant);
+        return new SpellRecipe(glyphs, name, color, chant, circle);
     }
 
     public static boolean isEmpty() {
-        return glyphs.isEmpty() && name.isEmpty() && chant.isEmpty() && color < 0;
+        return glyphs.isEmpty() && name.isEmpty() && chant.isEmpty() && color < 0 && circle.isDefault();
     }
 
     // ------------------------------------------------------------------ edição
@@ -122,6 +125,7 @@ public final class GrimoireDraft {
         name = r.name();
         chant = r.chant();
         color = r.color();
+        circle = r.circle();
         revision++;
     }
 
@@ -161,6 +165,12 @@ public final class GrimoireDraft {
     static void setColor(int rgb) {
         if (rgb == color) return;
         color = rgb;
+        revision++;
+    }
+
+    static void setCircle(CircleStyle c) {
+        if (c == null || c.equals(circle)) return;
+        circle = c;
         revision++;
     }
 

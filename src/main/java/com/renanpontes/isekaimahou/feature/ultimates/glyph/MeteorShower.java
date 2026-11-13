@@ -14,6 +14,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -96,7 +97,7 @@ final class MeteorShower implements Runnable {
         if (aborted) return;
         aborted = true;
         UltNet.sendNear(level, center, radius + 160, new UltNet.SkyOmen(omenId, center, radius, (float) (skyY - center.y), 0, rgb));
-        UltFx.far(level, ParticleTypes.REVERSE_PORTAL, center.x, skyY, center.z, 120, radius * 0.4, 1.0, radius * 0.4, 0.3);
+        UltFx.far(level, Vfx.reversePortal(), center.x, skyY, center.z, 120, radius * 0.4, 1.0, radius * 0.4, 0.3);
         UltFx.sound(level, center.add(0, skyY - center.y, 0), SoundEvents.GLASS_BREAK, 6F, 0.4F);
     }
 
@@ -136,7 +137,7 @@ final class MeteorShower implements Runnable {
             int n = 12;
             for (int i = 0; i < n; i++) {
                 double a = tick * 0.05 + Math.PI * 2 * i / n;
-                UltFx.far(level, ParticleTypes.REVERSE_PORTAL, center.x + Math.cos(a) * r, skyY, center.z + Math.sin(a) * r,
+                UltFx.far(level, Vfx.reversePortal(), center.x + Math.cos(a) * r, skyY, center.z + Math.sin(a) * r,
                         1, 0.2, 0.1, 0.2, 0.01);
                 if (i % 3 == 0) UltFx.far(level, ParticleTypes.FLAME, center.x + Math.cos(a) * r, skyY - 0.5,
                         center.z + Math.sin(a) * r, 1, 0.2, 0.1, 0.2, 0.01);
@@ -145,7 +146,7 @@ final class MeteorShower implements Runnable {
         if (tick > PREP / 2 && tick % 2 == 0) {
             // Gotas de lava e brasas pingando da fenda
             double a = rnd.nextDouble() * Math.PI * 2, d = Math.sqrt(rnd.nextDouble()) * radius * 0.5;
-            UltFx.far(level, ParticleTypes.FALLING_LAVA, center.x + Math.cos(a) * d, skyY - 1, center.z + Math.sin(a) * d,
+            UltFx.far(level, Vfx.lavaDrip(), center.x + Math.cos(a) * d, skyY - 1, center.z + Math.sin(a) * d,
                     2, 0.5, 0.2, 0.5, 0);
         }
         if (tick % 40 == 5) {
@@ -178,7 +179,7 @@ final class MeteorShower implements Runnable {
         level.addFreshEntity(m);
         Telegraph.show(level, Telegraph.Shape.circle(point, rockRadius).warmup(fall).noRunes()
                 .color(UltFx.mix(MeteorImpact.FIRE, rgb, 0.4F)));
-        UltFx.far(level, ParticleTypes.FLAME, start.x, start.y, start.z, 8, 0.6, 0.3, 0.6, 0.05);
+        UltFx.far(level, Vfx.flame(), start.x, start.y, start.z, 8, 0.6, 0.3, 0.6, 0.05);
         if (spawned % 2 == 0) UltFx.sound(level, start, SoundEvents.BLAZE_SHOOT, 2.5F, 0.5F + rnd.nextFloat() * 0.2F);
     }
 }

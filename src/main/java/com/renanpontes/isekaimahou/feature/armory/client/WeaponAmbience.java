@@ -1,5 +1,6 @@
 package com.renanpontes.isekaimahou.feature.armory.client;
 
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.feature.armory.WeaponKind;
 import com.renanpontes.isekaimahou.feature.armory.item.ArmoryWeapon;
@@ -40,7 +41,7 @@ public final class WeaponAmbience {
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
         ClientLevel level = mc.level;
-        if (level == null || mc.player == null || mc.isPaused() || MahouConfig.REDUCED_PARTICLES.get()) return;
+        if (level == null || mc.player == null || mc.isPaused() || !FxQuality.atLeast(MahouConfig.Graphics.HIGH)) return;
         RandomSource rnd = level.random;
         for (Player p : level.players()) {
             if (p.isInvisible() || p.isSpectator() || p.distanceToSqr(mc.player) > RANGE_SQR) continue;

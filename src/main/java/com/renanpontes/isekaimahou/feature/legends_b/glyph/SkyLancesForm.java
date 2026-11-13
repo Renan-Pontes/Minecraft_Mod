@@ -9,7 +9,7 @@ import com.renanpontes.isekaimahou.glyph.FormGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -64,7 +64,7 @@ public class SkyLancesForm extends FormGlyph {
         int rgb = ctx.color() & 0xFFFFFF;
         Telegraph.show(level, Telegraph.Shape.circle(ground, area).warmup(SkyLancesEntity.FORM_TICKS).hold(active)
                 .color(rgb).noFlash());
-        LbFx.send(level, ParticleTypes.END_ROD, ground.add(0, 0.2, 0), 20, area * 0.4, 0.02);
+        LbFx.send(level, Vfx.endRod(), ground.add(0, 0.2, 0), 20, area * 0.4, 0.02);
         LbFx.sound(level, ground, SoundEvents.ILLUSIONER_CAST_SPELL, 1.4F, 1.2F);
         if (!ctx.hasOrigin() && ctx.caster() != null) {
             ctx.caster().swing(InteractionHand.MAIN_HAND, true);

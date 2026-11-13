@@ -25,6 +25,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * Tela de diálogo com um NPC da cidade: retrato 3D (segue o mouse), nome, ofício, facção + patamar colorido, a fala
  * (aparece letra a letra) e os botões Conversar / Trocar / Serviços / Rumores / Despedir-se. "Serviços" troca a área
  * da fala pela lista de serviços com preço. Tudo que muda vem pronto do servidor.
+ * <p>Release 1.0: botão "Pedido" (sidequests) e a tela de escolha de um pedido — mesma disposição da abordagem da
+ * guarda (opções em duas colunas sob a fala), com as cores normais do diálogo.
  */
 public class CityDialogueScreen extends Screen {
     private static final int MAX_W = 430;
@@ -74,17 +76,33 @@ public class CityDialogueScreen extends Screen {
         return data.has(CitiesNetwork.BTN_CONFRONT);
     }
 
-    /** Linhas de botões da abordagem (2 por linha). */
+    /** Escolha de um pedido (aceitar/recusar, desfechos, desistir). */
+    private boolean choice() {
+        return data.has(CitiesNetwork.BTN_CHOICE);
+    }
+
+    /** A tela mostra opções vindas do servidor em vez dos botões normais (abordagem ou pedido). */
+    private boolean options() {
+        return confront() || choice();
+    }
+
+    /** Os dois desfechos de um pedido: um por linha, na largura toda (os textos são mais longos). */
+    private boolean wideChoice() {
+        return choice() && data.services().size() == 2 && data.services().get(0).id().equals("a");
+    }
+
+    /** Linhas de botões da abordagem (2 por linha; os desfechos de um pedido, 1 por linha). */
     private int confrontRows() {
-        return (data.services().size() + 1) / 2;
+        return wideChoice() ? data.services().size() : (data.services().size() + 1) / 2;
     }
 
     private void rebuild() {
         clearWidgets();
         int textX = left + PORTRAIT_W + 14;
         int textW = panelW - PORTRAIT_W - 24;
-        if (confront()) {
-            // v1.0: abordagem da guarda — as respostas em duas colunas embaixo da acusação.
+        if (options()) {
+            // v1.0: abordagem da guarda (e escolhas de pedidos) — as respostas em duas colunas embaixo da fala.
+            String action = confront() ? "confront" : "quest";
             List<CitiesNetwork.Service> opts = data.services();
             int rows = confrontRows();
             int gap = 4;
@@ -101,17 +119,22 @@ public class CityDialogueScreen extends Screen {
                     case "persuade" -> 0xB9E8FF;
                     case "return" -> 0xA8E07A;
                     case "bribe" -> 0xFFD86B;
+                    case "accept" -> 0xA8E07A;
+                    case "abandon" -> 0xFF7A6A;
+                    case "a" -> 0xFFE9A8;
+                    case "b" -> 0xB9E8FF;
                     default -> 0xFFFFFF;
                 };
-                int r = i / 2;
-                boolean last = i == opts.size() - 1 && opts.size() % 2 == 1;
-                int bx = textX + (i % 2) * (bw + gap);
+                boolean wide = wideChoice();
+                int r = wide ? i : i / 2;
+                boolean last = wide || (i == opts.size() - 1 && opts.size() % 2 == 1);
+                int bx = wide ? textX : textX + (i % 2) * (bw + gap);
                 int by = top + panelH - 30 - (rows - 1 - r) * 24;
-                Button b = Button.builder(label.copy().withColor(color), btn -> send("confront", s.id()))
-                        .bounds(bx, by, last ? textW : bw, 20)
-                        .tooltip(Tooltip.create(s.available() && !affordable
-                                ? Component.translatable("screen.isekai_mahou.cities.no_coins") : s.description()))
-                        .build();
+                Button b = Button.builder(label.copy().withColor(color), btn -> send(action, s.id()))
+                        .bounds(bx, by, last ? textW : bw, 20).build();
+                Component tip = s.available() && !affordable ? Component.translatable("screen.isekai_mahou.cities.no_coins")
+                        : s.description();
+                if (!tip.getString().isEmpty()) b.setTooltip(Tooltip.create(tip));
                 b.active = s.available() && affordable;
                 addRenderableWidget(b);
             }
@@ -144,12 +167,18 @@ public class CityDialogueScreen extends Screen {
         if (!data.has(CitiesNetwork.BTN_ENEMY)) {
             row.add(Button.builder(Component.translatable("screen.isekai_mahou.cities.talk"), b -> send("talk", "")).build());
         }
-        if (data.has(CitiesNetwork.BTN_TRADE) || data.has(CitiesNetwork.BTN_TRADE_LOCKED)) {
+        if (data.has(CitiesNetwork.BTN_TRADE) || data.has(CitiesNetwork.BTN_TRADE_LOCKED) || data.has(CitiesNetwork.BTN_TRADE_CLOSED)) {
             Button trade = Button.builder(Component.translatable("screen.isekai_mahou.cities.trade"), b -> send("trade", "")).build();
-            if (data.has(CitiesNetwork.BTN_TRADE_LOCKED)) {
+            if (data.has(CitiesNetwork.BTN_TRADE_CLOSED)) {
+                trade.setTooltip(Tooltip.create(Component.translatable("screen.isekai_mahou.cities.trade_closed")));
+            } else if (data.has(CitiesNetwork.BTN_TRADE_LOCKED)) {
                 trade.setTooltip(Tooltip.create(Component.translatable("screen.isekai_mahou.cities.trade_locked")));
             }
             row.add(trade);
+        }
+        if (data.has(CitiesNetwork.BTN_QUEST)) {
+            row.add(Button.builder(Component.translatable("screen.isekai_mahou.cities.quest").withColor(0xFFE9A8),
+                    b -> send("quest", "")).build());
         }
         if (data.has(CitiesNetwork.BTN_SERVICES)) {
             row.add(Button.builder(Component.translatable("screen.isekai_mahou.cities.services"), b -> {
@@ -213,6 +242,9 @@ public class CityDialogueScreen extends Screen {
             int boxBottom = top + panelH - 36 - (confrontRows() - 1) * 24;
             MahouUi.roundRect(g, tx - 4, top + 58, tw + 8, boxBottom - (top + 58), 0x90281410, 0x90140808);
             MahouUi.roundOutline(g, tx - 4, top + 58, tw + 8, boxBottom - (top + 58), MahouUi.alpha(accent, 0x70));
+        } else if (choice()) {
+            int boxBottom = top + panelH - 36 - (confrontRows() - 1) * 24;
+            MahouUi.roundRect(g, tx - 4, top + 58, tw + 8, boxBottom - (top + 58), 0x90101426, 0x90080A14);
         } else if (!servicesView) {
             int boxBottom = top + panelH - 36 - (tw >= 300 ? 0 : 24);
             MahouUi.roundRect(g, tx - 4, top + 58, tw + 8, boxBottom - (top + 58), 0x90101426, 0x90080A14);
@@ -266,13 +298,14 @@ public class CityDialogueScreen extends Screen {
                 g.drawString(font, l, tx, y, MahouUi.TEXT, false);
                 y += 11;
             }
-            if (confront() && !data.note().getString().isEmpty()) {
-                // A acusação: o que viram, a reputação perdida e a reincidência.
+            if (options() && !data.note().getString().isEmpty()) {
+                // A acusação: o que viram, a reputação perdida e a reincidência. Num pedido: o título dele.
                 int boxBottom = top + panelH - 36 - (confrontRows() - 1) * 24;
                 y = Math.max(y + 4, top + 64 + 3 * 11 + 4);
+                int noteColor = confront() ? 0xFFF0A043 : 0xFFE8B84A;
                 for (FormattedCharSequence l : font.split(data.note(), tw - 4)) {
                     if (y + 9 > boxBottom - 2) break;
-                    g.drawString(font, l, tx, y, 0xFFF0A043, false);
+                    g.drawString(font, l, tx, y, noteColor, false);
                     y += 10;
                 }
             }

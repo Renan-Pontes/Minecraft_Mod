@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.feature.class_gambler.glyph;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbFx;
+import com.renanpontes.isekaimahou.feature.class_gambler.GbFxNet;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbRegistries;
 import com.renanpontes.isekaimahou.feature.class_gambler.luck.LuckService;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
@@ -50,12 +51,9 @@ public class FateCoinEffect extends EffectGlyph {
         float heads = Math.min(0.8F, 0.5F + 0.03F * luck);
         boolean isHeads = !stats.inverted && ctx.random().nextFloat() < heads;
         Vec3 top = target.position().add(0, target.getBbHeight() + 0.6, 0);
-        ctx.level().sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.GOLD_NUGGET)), top.x, top.y, top.z,
-                5, 0.08, 0.15, 0.08, 0.05);
+        GbFxNet.at(ctx.level(), GbFxNet.FATE_COIN, top, Vec3.ZERO, 1F, GbFx.GOLD, target.getId(), isHeads ? 1 : 0);
         if (isHeads) {
             ctx.damage(target, HEADS, stats, null, Element.LIGHT);
-            ctx.level().sendParticles(GbFx.dust(0xFFE27A, 1.2F), top.x, top.y, top.z, 8, 0.2, 0.2, 0.2, 0);
-            ctx.level().sendParticles(ParticleTypes.END_ROD, top.x, top.y, top.z, 4, 0.1, 0.2, 0.1, 0.02);
             GbFx.sound(ctx.level(), top, SoundEvents.NOTE_BLOCK_CHIME.value(), 0.8F, 1.6F);
         } else {
             ctx.damage(target, TAILS, stats, null, Element.SHADOW);
@@ -63,8 +61,6 @@ public class FateCoinEffect extends EffectGlyph {
                 int amp = Math.max(0, Math.min(2, stats.amplify));
                 ctx.status(le, GbRegistries.JINXED, JINX_TICKS, amp, stats);
             }
-            ctx.level().sendParticles(GbFx.dust(0x5A3A78, 1.2F), top.x, top.y, top.z, 8, 0.2, 0.2, 0.2, 0);
-            ctx.level().sendParticles(ParticleTypes.SQUID_INK, top.x, top.y, top.z, 3, 0.1, 0.1, 0.1, 0.01);
             GbFx.sound(ctx.level(), top, SoundEvents.NOTE_BLOCK_BASS.value(), 0.8F, 0.6F);
         }
     }

@@ -1,0 +1,117 @@
+{
+  "chapters": [
+    {
+      "id": "end_library",
+      "order": 48,
+      "color": "#B98CFF",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:void_tome",
+        "isekai_mahou:star_fragment",
+        "isekai_mahou:void_treasure_gate"
+      ],
+      "steps": [
+        {
+          "id": "enter_end",
+          "condition": {
+            "type": "visit",
+            "dimension": "minecraft:the_end"
+          },
+          "xp": 250,
+          "icon": "minecraft:ender_eye",
+          "locate": {
+            "structure": "minecraft:stronghold",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "find",
+          "condition": {
+            "type": "flag",
+            "flag": "end_library.found"
+          },
+          "xp": 400,
+          "icon": "isekai_mahou:void_bookshelf",
+          "locate": {
+            "structure": "isekai_mahou:end_library",
+            "dimension": "minecraft:the_end"
+          }
+        },
+        {
+          "id": "tome",
+          "condition": {
+            "type": "flag",
+            "flag": "end_library.tome_read"
+          },
+          "optional": true,
+          "xp": 250,
+          "icon": "isekai_mahou:void_tome",
+          "locate": {
+            "structure": "isekai_mahou:end_library",
+            "dimension": "minecraft:the_end"
+          }
+        },
+        {
+          "id": "fragment",
+          "condition": {
+            "type": "item",
+            "item": "isekai_mahou:star_fragment"
+          },
+          "optional": true,
+          "xp": 300,
+          "icon": "isekai_mahou:star_fragment"
+        },
+        {
+          "id": "boss",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "star_devourer"
+            ],
+            "min": 1
+          },
+          "xp": 1100,
+          "icon": "isekai_mahou:star_devourer_spawn_egg",
+          "locate": {
+            "structure": "isekai_mahou:end_library",
+            "dimension": "minecraft:the_end"
+          },
+          "requires": [
+            "isekai_mahou:star_devourer"
+          ],
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 3
+              }
+            ]
+          }
+        },
+        {
+          "id": "star_gear",
+          "condition": {
+            "type": "flag",
+            "flag": "end_library.star_gear"
+          },
+          "optional": true,
+          "xp": 600,
+          "icon": "isekai_mahou:star_chestplate"
+        }
+      ],
+      "rewards": {
+        "xp": 3000,
+        "items": [
+          {
+            "id": "isekai_mahou:void_tome",
+            "count": 1
+          },
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 16
+          }
+        ]
+      }
+    }
+  ]
+}

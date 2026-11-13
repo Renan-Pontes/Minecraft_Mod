@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "cleared=false": {
+      "model": "isekai_mahou:block/tower_floor_core"
+    },
+    "cleared=true": {
+      "model": "isekai_mahou:block/tower_floor_core_cleared"
+    }
+  }
+}

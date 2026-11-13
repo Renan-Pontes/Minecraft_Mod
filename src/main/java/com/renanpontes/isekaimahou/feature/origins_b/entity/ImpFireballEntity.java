@@ -5,6 +5,7 @@ import com.renanpontes.isekaimahou.feature.origins_b.ObFx;
 import com.renanpontes.isekaimahou.feature.origins_b.ObRegistries;
 import com.renanpontes.isekaimahou.feature.origins_b.ObUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -67,7 +68,7 @@ public class ImpFireballEntity extends Fireball {
         if (level().isClientSide) {
             int n = isBig() ? 3 : 1;
             for (int i = 0; i < n; i++) {
-                level().addParticle(ParticleTypes.FLAME, getX() + (random.nextDouble() - 0.5) * 0.2, getY() + 0.15,
+                level().addParticle(Vfx.flame(), getX() + (random.nextDouble() - 0.5) * 0.2, getY() + 0.15,
                         getZ() + (random.nextDouble() - 0.5) * 0.2, 0, 0.01, 0);
             }
         }
@@ -75,7 +76,7 @@ public class ImpFireballEntity extends Fireball {
 
     @Override
     protected ParticleOptions getTrailParticle() {
-        return ParticleTypes.SMOKE;
+        return Vfx.smoke();
     }
 
     @Override
@@ -127,8 +128,8 @@ public class ImpFireballEntity extends Fireball {
                 ObFx.hellfireBurst(sl, p.subtract(0, 0.4, 0), 1.0);
                 sl.playSound(null, p.x, p.y, p.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 0.7F, 1.4F);
             } else {
-                sl.sendParticles(ParticleTypes.FLAME, p.x, p.y, p.z, 10, 0.15, 0.15, 0.15, 0.05);
-                sl.sendParticles(ParticleTypes.SMOKE, p.x, p.y, p.z, 6, 0.1, 0.1, 0.1, 0.02);
+                sl.sendParticles(Vfx.flame(), p.x, p.y, p.z, 10, 0.15, 0.15, 0.15, 0.05);
+                sl.sendParticles(Vfx.smoke(), p.x, p.y, p.z, 6, 0.1, 0.1, 0.1, 0.02);
                 sl.playSound(null, p.x, p.y, p.z, SoundEvents.FIRE_EXTINGUISH, SoundSource.HOSTILE, 0.4F, 1.6F);
             }
             discard();

@@ -4,9 +4,13 @@ import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementReactions;
+import com.renanpontes.isekaimahou.feature.bosses_c.entity.ClassBossEntity;
 import com.renanpontes.isekaimahou.module.Module;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 /**
@@ -29,6 +33,10 @@ public class BossesCModule implements Module {
         BossesCCommands.register();
         modBus.addListener(this::onCreativeTab);
         registerResistances();
+        // v1.0: o chefe provoca quando derruba um jogador (a fala tem trava no próprio chefe)
+        NeoForge.EVENT_BUS.addListener((LivingDeathEvent e) -> {
+            if (e.getEntity() instanceof ServerPlayer && e.getSource().getEntity() instanceof ClassBossEntity b) b.onPlayerSlain();
+        });
     }
 
     private void onCreativeTab(BuildCreativeModeTabContentsEvent event) {

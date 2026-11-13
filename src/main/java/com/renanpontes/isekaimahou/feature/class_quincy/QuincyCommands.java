@@ -19,7 +19,8 @@ import net.minecraft.server.level.ServerPlayer;
 /**
  * {@code /mahou quincy} (qualquer jogador): estado da classe e do próximo rank · {@code accept}: aceita um Auswählen.
  * Com cheats: {@code rank <0-5>} (dá as recompensas que faltam), {@code reishi <n>}, {@code letter <id>},
- * {@code feats} (completa os feitos do próximo rank para testar).
+ * {@code feats} (completa os feitos do próximo rank para testar), {@code forge} (release 1.0: estado do espaço de
+ * receita do Vollständig).
  */
 public final class QuincyCommands {
     static void register() {
@@ -56,6 +57,16 @@ public final class QuincyCommands {
                             QuincyRanks.chooseLetter(c.getSource().getPlayerOrException(), l, true);
                             return 1;
                         })))
+                .then(MahouCommands.op("forge").executes(c -> {
+                    ServerPlayer sp = c.getSource().getPlayerOrException();
+                    com.renanpontes.isekaimahou.glyph.SpellRecipe r = QuincyForge.recipe(sp);
+                    Component recipe = r == null ? Component.translatable("screen.isekai_mahou.release_forge.none")
+                            : r.name().isEmpty() ? Component.translatable("screen.isekai_mahou.tforge.unnamed") : Component.literal(r.name());
+                    sp.sendSystemMessage(Component.translatable("message.isekai_mahou.release_forge.debug",
+                            Component.translatable("screen.isekai_mahou.tforge.slot.vollstandig"), yesNo(QuincyForge.canShape(MagicApi.get(sp))),
+                            recipe, yesNo(QuincyForge.active(sp))).withStyle(ChatFormatting.GRAY));
+                    return 1;
+                }))
                 .then(MahouCommands.op("feats").executes(c -> {
                     ServerPlayer sp = c.getSource().getPlayerOrException();
                     QuincyRanks.Rank next = QuincyRanks.rank(Quincy.rank(MagicApi.get(sp)) + 1);
@@ -75,6 +86,10 @@ public final class QuincyCommands {
                     c.getSource().sendSuccess(() -> Quincy.msg("cmd_feats", Quincy.roman(next.number())), false);
                     return 1;
                 }))));
+    }
+
+    private static Component yesNo(boolean b) {
+        return Component.translatable(b ? "gui.yes" : "gui.no").withStyle(b ? ChatFormatting.GREEN : ChatFormatting.RED);
     }
 
     private static int status(ServerPlayer sp) {

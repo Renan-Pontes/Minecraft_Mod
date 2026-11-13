@@ -1,11 +1,14 @@
 package com.renanpontes.isekaimahou.feature.class_knight.glyph;
 
+import com.renanpontes.isekaimahou.core.anim.MahouAnims;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightFx;
+import com.renanpontes.isekaimahou.feature.class_knight.KnightFxNet;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightSwords;
 import com.renanpontes.isekaimahou.feature.class_knight.LegendSword;
 import com.renanpontes.isekaimahou.glyph.FormGlyph;
@@ -78,8 +81,7 @@ public class ExcaliburForm extends FormGlyph {
 
         // a lâmina erguida recebe a luz do céu
         Vec3 top = caster.position().add(0, caster.getBbHeight() + 0.8, 0);
-        KnightFx.pillar(level, caster.position(), 14, 0.6, rgb);
-        level.sendParticles(ParticleTypes.FLASH, top.x, top.y, top.z, 1, 0, 0, 0, 0);
+        KnightFxNet.on(caster, KnightFxNet.EXCALIBUR_CHARGE, dir, 1F, rgb, 0);
         KnightFx.sound(level, top, SoundEvents.BEACON_ACTIVATE, 1.5F, 0.6F);
         KnightFx.sound(level, top, SoundEvents.BELL_RESONATE, 1.2F, 1.4F);
         caster.swing(InteractionHand.MAIN_HAND, true);
@@ -88,6 +90,7 @@ public class ExcaliburForm extends FormGlyph {
             int pulse = p;
             SpellScheduler.schedule(6 + p * 10, () -> {
                 if (caster.isRemoved() || caster.level() != level) return;
+                if (pulse == 0) MahouAnims.play(caster, MahouAnims.CAST_ULT_RELEASE);
                 pulse(c, caster, level, from, to, dir, radius, rgb, pulse == 0, pulse == PULSES - 1);
             });
         }
@@ -96,20 +99,7 @@ public class ExcaliburForm extends FormGlyph {
     private static void pulse(SpellContext ctx, LivingEntity caster, ServerLevel level, Vec3 from, Vec3 to, Vec3 dir,
                               float radius, int rgb, boolean first, boolean last) {
         // visual: núcleo branco + bainha de luz na cor da magia + anéis ao longo do feixe
-        KnightFx.line(level, from, to, 0xFFFFFF, 0.6, 2.4F);
-        Vec3 side = KnightFx.side(dir);
-        Vec3 up = side.cross(dir).normalize();
-        int rings = (int) (LENGTH / 3);
-        for (int i = 0; i <= rings; i++) {
-            Vec3 c = from.add(dir.scale(i * 3.0));
-            for (int k = 0; k < 8; k++) {
-                double a = k * Mth.TWO_PI / 8 + i * 0.4;
-                Vec3 q = c.add(side.scale(Math.cos(a) * radius)).add(up.scale(Math.sin(a) * radius));
-                level.sendParticles(KnightFx.dust(rgb, 1.8F), q.x, q.y, q.z, 1, 0, 0, 0, 0);
-            }
-            if (i % 3 == 0) level.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 3, radius * 0.3, radius * 0.3, radius * 0.3, 0.05);
-        }
-        level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, to.x, to.y, to.z, 1, 0, 0, 0, 0);
+        KnightFxNet.at(level, KnightFxNet.EXCALIBUR_PULSE, from, to, radius, rgb, caster.getId(), first ? 1 : 0);
         KnightFx.sound(level, from, SoundEvents.LIGHTNING_BOLT_THUNDER, first ? 2.0F : 1.0F, 1.4F);
         KnightFx.sound(level, to, SoundEvents.GENERIC_EXPLODE.value(), 1.0F, 1.1F);
         if (first) KnightFx.sound(level, from, SoundEvents.TOTEM_USE, 0.8F, 1.6F);

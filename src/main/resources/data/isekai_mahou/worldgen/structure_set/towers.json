@@ -1,0 +1,52 @@
+{
+  "structures": [
+    {
+      "structure": "isekai_mahou:tower_stone",
+      "weight": 1
+    },
+    {
+      "structure": "isekai_mahou:tower_frost",
+      "weight": 1
+    },
+    {
+      "structure": "isekai_mahou:tower_sand",
+      "weight": 1
+    },
+    {
+      "structure": "isekai_mahou:tower_forest",
+      "weight": 1
+    },
+    {
+      "structure": "isekai_mahou:tower_sunken",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "isekai_mahou:random_spread_multi",
+    "spacing": 42,
+    "separation": 15,
+    "salt": 1946306501,
+    "exclusion_zones": [
+      {
+        "other_set": "minecraft:villages",
+        "chunk_count": 4
+      },
+      {
+        "other_set": "isekai_mahou:guild_city",
+        "chunk_count": 10
+      },
+      {
+        "other_set": "isekai_mahou:capital_city",
+        "chunk_count": 13
+      },
+      {
+        "other_set": "isekai_mahou:capital_sahra",
+        "chunk_count": 13
+      },
+      {
+        "other_set": "isekai_mahou:capital_nordheim",
+        "chunk_count": 13
+      }
+    ]
+  }
+}

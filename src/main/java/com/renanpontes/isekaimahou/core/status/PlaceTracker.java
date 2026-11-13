@@ -86,8 +86,7 @@ public final class PlaceTracker {
     //  Zonas seguras
     // =====================================================================================
     static void onExplosion(ExplosionEvent.Detonate event) {
-        if (!(event.getLevel() instanceof ServerLevel sl) || event.getAffectedBlocks().isEmpty()) return;
-        event.getAffectedBlocks().removeIf(pos -> PlaceData.safeAt(sl, pos));
+        // v1.3.2: cidades não são mais indestrutíveis (só arenas DURANTE a luta, no BossArenaService)
     }
 
     /** Spawn natural e de geração de chunk (pode rodar fora da thread principal: só lê o cache). */

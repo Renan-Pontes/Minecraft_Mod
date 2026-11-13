@@ -9,6 +9,12 @@ Gera os assets e dados do modulo journal (rode da raiz do projeto: py -I tools/g
   - v1.0: rota-guia POR CLASSE (data/isekai_mahou/journal/classes.json, 15 capitulos paralelos — tools/gen/journal_classes.py),
     capitulo do Mundo Oco (chefes do hueco_mundo) antes do Dragao, passo SECRETO 150->200 depois dele, textos sem a Roda
     Elemental (9 loadouts), categorias Magicas/Fisicas/Destreza e as 15 classes novas.
+  - v1.0 (onda 5): "o Dragao e o fim" — o capitulo pos-final (beyond_limit) virou o Abismo Infinito; o epilogo aponta para ele.
+
+ATENCAO (onda 5): NAO rode este gerador para "atualizar" o Diario. Os arquivos gerados receberam ajustes a mao que este
+script nao conhece (rota class_hollowfied em classes.json e os textos dela; nomes do Rei de Hueco Mundo/Barragan nos
+textos do Mundo Oco). Rodar de novo APAGA isso. Mude a fonte aqui E aplique a mesma mudanca nos arquivos gerados
+(chapters.json e src/main/lang/journal), como a onda 5 fez. Se rodar mesmo assim, rode depois tools/gen/journal_story.py.
 """
 import json
 import math
@@ -424,6 +430,12 @@ def circle(sid, n, xp, optional=False):
                 locate=LOC_ALTAR)
 
 
+# Onda 5: os passos do capítulo pós-final exigem o módulo endless_abyss (sem ele, o capítulo inteiro some do Diário).
+ABYSS = ["isekai_mahou:abyss_core"]
+
+# Ordem da história (campo "order") — onda 5: os seis capítulos que vinham DEPOIS do Dragão (61–66) agora ficam antes
+# dele, cada um no seu arquivo/gerador: magic_biomes 21 · towers 26 · depths 32 · dwarf_hold 34 · nether_citadel 45 ·
+# end_library 48. Depois do Dragão (60) só existe o capítulo do Abismo Infinito (70).
 CHAPTERS = [
     {"id": "awakening", "order": 10, "color": "#B98CFF", "intro": True,
      "icon": ["isekai_mahou:essence_arcane", "isekai_mahou:spell_scroll"],
@@ -711,19 +723,31 @@ CHAPTERS = [
                                              ("minecraft:enchanted_golden_apple", 2)),
                  "glyph_scrolls": 1, "glyph_tier": 5, "legend_scrolls": 2}},
 
-    # v1.0: passo SECRETO — escondido no Diário até o Dragão cair (o limite de nível vai de 150 a 200)
+    # v1.0 (onda 5) — "o Dragão é o fim... depois dele é só a torre infinita": o capítulo pós-final (SECRETO: escondido no
+    # Diário até o Dragão cair) é o ABISMO INFINITO (módulo endless_abyss: andares sem fim, marcos de 10 andares, Lutas
+    # das Sombras; contadores abyss.floors / abyss.best_floor / abyss.shadow_wins). O id continua "beyond_limit" (mundos
+    # salvos). Os passos antigos que não eram do Abismo saíram da lista (dragon_again, class_master, hollow_again — os
+    # marcadores salvos ficam sem uso, sem efeito); os degraus 160/180/200 viraram bônus.
     {"id": "beyond_limit", "order": 70, "color": "#FFE27A", "intro": True, "secret": True,
-     "icon": ["minecraft:nether_star", "isekai_mahou:primordial_dragon_heart", "minecraft:dragon_breath"],
+     "icon": ["isekai_mahou:abyss_core", "isekai_mahou:shadow_fragment", "minecraft:nether_star"],
      "steps": [
-         step("level_160", {"type": "level", "min": 160}, xp=2000, icon="minecraft:experience_bottle"),
-         step("dragon_again", {"type": "counter", "key": "boss.primordial_dragon", "min": 2}, optional=True, xp=3000,
-              icon="isekai_mahou:primordial_dragon_heart", locate=LOC_ARENA),
-         step("class_master", {"type": "counter", "key": "ritual_rank", "min": 5}, optional=True, xp=2000,
-              icon="minecraft:writable_book"),
-         step("level_180", {"type": "level", "min": 180}, xp=3000, icon="minecraft:experience_bottle"),
-         step("hollow_again", {"type": "counter", "key": "boss.hollow_king", "min": 2}, optional=True, xp=2500,
-              icon="isekai_mahou:decay_axe", locate=LOC_PALACE, requires=["isekai_mahou:hollow_king"]),
-         step("level_200", {"type": "level", "min": 200}, xp=5000, icon="minecraft:nether_star"),
+         step("abyss_enter", {"type": "counter", "key": "abyss.floors", "min": 1}, xp=1500,
+              icon="isekai_mahou:abyss_shard", requires=ABYSS),
+         step("abyss_shadow", {"type": "counter", "key": "abyss.shadow_wins", "min": 1}, xp=2000,
+              icon="isekai_mahou:shadow_fragment", requires=ABYSS),
+         step("abyss_floor_10", {"type": "counter", "key": "abyss.best_floor", "min": 10}, xp=3000,
+              icon="isekai_mahou:abyss_core", requires=ABYSS),
+         step("abyss_floor_25", {"type": "counter", "key": "abyss.best_floor", "min": 25}, xp=5000,
+              icon="isekai_mahou:abyss_core", requires=ABYSS),
+         step("abyss_floor_50", {"type": "counter", "key": "abyss.best_floor", "min": 50}, xp=8000,
+              icon="minecraft:nether_star", requires=ABYSS),
+         step("abyss_shadows_10", {"type": "counter", "key": "abyss.shadow_wins", "min": 10}, optional=True, xp=4000,
+              icon="isekai_mahou:shadow_fragment", requires=ABYSS),
+         step("abyss_floor_100", {"type": "counter", "key": "abyss.best_floor", "min": 100}, optional=True, xp=12000,
+              icon="minecraft:dragon_breath", requires=ABYSS),
+         step("level_160", {"type": "level", "min": 160}, optional=True, xp=2000, icon="minecraft:experience_bottle"),
+         step("level_180", {"type": "level", "min": 180}, optional=True, xp=3000, icon="minecraft:experience_bottle"),
+         step("level_200", {"type": "level", "min": 200}, optional=True, xp=5000, icon="minecraft:nether_star"),
      ],
      "rewards": {"xp": 10000, "items": items(("minecraft:nether_star", 2), ("minecraft:enchanted_golden_apple", 3),
                                               ("mana_crystal", 64)),
@@ -2097,27 +2121,90 @@ CH_TEXT["hollow_world"] = {
 }
 
 CH_TEXT["beyond_limit"] = {
-    "title": ("Além do Limite", "Beyond the Limit"),
+    "title": ("O Abismo Infinito", "The Endless Abyss"),
     "lore": (
-        "A brasa do coração do Dragão não esfriou. Ela pulsa no seu peito, e de repente você entende: o nível 150 nunca "
-        "foi o fim — era só a última porta que alguém tinha visto. Atrás dela há mais cinquenta degraus, e ninguém neste "
-        "mundo, nem os seis sábios, subiu algum deles.",
-        "The ember from the Dragon's heart has not cooled. It beats in your chest, and suddenly you understand: level 150 "
-        "was never the end — just the last door anyone had seen. Behind it are fifty more steps, and no one in this "
-        "world, not even the six sages, ever climbed one."),
+        "A história acabou: o Dragão dorme e a sua lenda está escrita. Mas a brasa do coração dele não esfriou — ela "
+        "pulsa no seu peito e puxa para baixo. Sob o mundo existe um poço que ninguém mediu: o Abismo Infinito. Não há "
+        "enredo lá embaixo, só andares, cada um mais fundo e mais forte que o anterior, e as Sombras de tudo o que você "
+        "já venceu esperando a revanche. Daqui em diante não existe capítulo seguinte. Só o quão fundo você aguenta descer.",
+        "The story is over: the Dragon sleeps and your legend is written. But the ember of its heart has not cooled — it "
+        "beats in your chest and pulls downward. Beneath the world lies a pit no one has measured: the Endless Abyss. "
+        "There is no plot down there, only floors, each deeper and stronger than the last, and the Shadows of everything "
+        "you have beaten waiting for a rematch. From here on there is no next chapter. Only how deep you can stand to go."),
     "outro": (
-        "Nível 200. A mana não corre mais em você nem você nela: vocês são a mesma coisa. Em algum lugar além das "
-        "estrelas, uma voz antiga diz o seu nome com respeito. O mundo agora conta a sua história como conta a dos "
-        "elementos.",
-        "Level 200. Mana no longer runs through you, nor you through it: you are the same thing. Somewhere beyond the "
-        "stars, an ancient voice speaks your name with respect. The world now tells your story the way it tells the "
-        "elements'."),
+        "Andar 50. Lá embaixo o silêncio tem peso, e as Sombras já não parecem inimigas: parecem velhas conhecidas. O "
+        "Abismo continua descendo — ele sempre continua. Mas agora, quando alguém neste mundo perguntar até onde dá para "
+        "ir, é o seu nome que vão dizer.",
+        "Floor 50. Down there the silence has weight, and the Shadows no longer feel like enemies: they feel like old "
+        "acquaintances. The Abyss keeps going down — it always does. But now, when anyone in this world asks how far one "
+        "can go, it is your name they will say."),
     "intro": (
-        "Você ainda sente a brasa do Dragão, não sente? O limite se rompeu: o nível 150 não é mais o teto. Há cinquenta "
-        "degraus que ninguém subiu. Vamos ver até onde você vai.",
-        "You still feel the Dragon's ember, don't you? The limit has broken: level 150 is no longer the ceiling. There "
-        "are fifty steps nobody has climbed. Let's see how far you go."),
+        "Você ainda sente a brasa do Dragão, não sente? A história acabou, mas o Abismo Infinito não tem fundo. Abra o "
+        "Menu, aba Abismo: andares sem fim e as Sombras dos chefes que você venceu. Vamos ver até onde você desce.",
+        "You still feel the Dragon's ember, don't you? The story is over, but the Endless Abyss has no bottom. Open the "
+        "Menu, Abyss tab: endless floors and the Shadows of the bosses you have beaten. Let's see how deep you go."),
     "steps": {
+        "abyss_enter": (
+            ("Vença um andar do Abismo", "Clear an Abyss floor"),
+            ("O primeiro degrau para baixo. O ar fica frio; a mana, espessa.",
+             "The first step down. The air turns cold; the mana, thick."),
+            ("Menu (B) → aba Abismo → Entrar (nível 100 ou mais). Cada andar tem ondas de inimigos, cada vez mais fortes. "
+             "Cair não mata: você volta para onde estava, sem perder itens.",
+             "Menu (B) → Abyss tab → Enter (level 100 or higher). Each floor has waves of enemies, stronger every time. "
+             "Falling doesn't kill: you return to where you were, with no item loss."),
+            ("Menu B → aba Abismo", "B menu → Abyss tab")),
+        "abyss_shadow": (
+            ("Vença uma Sombra", "Defeat a Shadow"),
+            ("É o seu próprio passado que volta para cobrar — mais forte, mais escuro e sem piedade.",
+             "It is your own past coming back to collect — stronger, darker and without mercy."),
+            ("A cada 5 andares surge a Sombra de um chefe que você já venceu. Na aba Abismo, em Lutas das Sombras, dá "
+             "para desafiar uma só. Sombras rendem Fragmentos de Sombra.",
+             "Every 5th floor brings the Shadow of a boss you have already beaten. In the Abyss tab, under Shadow Fights, "
+             "you can challenge a single one. Shadows pay Shadow Fragments."),
+            ("Andar 5 ou aba Abismo", "Floor 5 or the Abyss tab")),
+        "abyss_floor_10": (
+            ("Chegue ao andar 10", "Reach floor 10"),
+            ("O primeiro marco. Quem chega aqui não precisa mais começar do zero.",
+             "The first milestone. Those who reach it no longer start from zero."),
+            ("A cada 10 andares novos o Abismo entrega um Núcleo do Abismo, um prêmio raro e um novo ponto de partida: a "
+             "próxima descida começa dali.",
+             "Every 10 new floors the Abyss hands over an Abyss Core, a rare prize and a new starting point: your next "
+             "descent begins there."),
+            ("Marco: Núcleo do Abismo", "Milestone: Abyss Core")),
+        "abyss_floor_25": (
+            ("Chegue ao andar 25", "Reach floor 25"),
+            ("Aqui embaixo os monstros comuns já batem como os chefes lá de cima.",
+             "Down here common monsters already hit like the bosses up there."),
+            ("Cada andar deixa os inimigos mais fortes (+10% de vida, +4% de dano). Leve um grupo: um colega de nível "
+             "100+ pode entrar na pausa entre os andares (até 4). Núcleos do Abismo enchem a mana e as ultimates.",
+             "Each floor makes enemies stronger (+10% health, +4% damage). Bring a party: a level 100+ mate can join in "
+             "the pause between floors (up to 4). Abyss Cores refill mana and ultimates."),
+            ("Leve um grupo", "Bring a party")),
+        "abyss_floor_50": (
+            ("Chegue ao andar 50", "Reach floor 50"),
+            ("Meio caminho para lugar nenhum. O Abismo não tem fundo — mas tem respeito.",
+             "Halfway to nowhere. The Abyss has no bottom — but it has respect."),
+            ("Sem atalho: nível alto, magias de nível 100+, equipamento com gemas e runas e um grupo afinado. Comece "
+             "sempre do seu último marco de 10 andares.",
+             "No shortcut: high level, level 100+ spells, gear with gems and runes, and a tight party. Always start from "
+             "your last 10-floor milestone."),
+            ("Nível alto e grupo", "High level and a party")),
+        "abyss_shadows_10": (
+            ("Vença 10 Sombras", "Defeat 10 Shadows"),
+            ("Dez revanches. Dez vezes o passado perdeu de novo.", "Ten rematches. Ten times the past lost again."),
+            ("Valem as Sombras dos andares de chefe e as Lutas das Sombras da aba Abismo. A primeira vitória contra cada "
+             "chefe rende um Núcleo do Abismo.",
+             "Shadows on boss floors and Shadow Fights from the Abyss tab both count. The first win against each boss "
+             "pays an Abyss Core."),
+            ("Lutas das Sombras", "Shadow Fights")),
+        "abyss_floor_100": (
+            ("Chegue ao andar 100", "Reach floor 100"),
+            ("Ninguém desceu tanto. Se existe alguma coisa no fundo, ela já sabe o seu nome.",
+             "No one has gone this deep. If anything waits at the bottom, it already knows your name."),
+            ("O maior desafio deste mundo. O Ranking do Abismo (aba Abismo e Quadro de Renome) mostra quem chegou mais "
+             "fundo.",
+             "This world's greatest challenge. The Abyss Ranking (Abyss tab and Renown Board) shows who went deepest."),
+            ("O maior desafio", "The greatest challenge")),
         "level_160": (
             ("Alcance o nível 160", "Reach level 160"),
             ("O primeiro degrau acima do impossível. O ar fica mais leve; a mana, mais densa.",
@@ -2127,40 +2214,15 @@ CH_TEXT["beyond_limit"] = {
              "After the Dragon, the Tenth Circle's ceiling becomes 200 and the XP banked at 150 comes back. Every level "
              "above 100 raises your Mana Limit, glyphs per spell and Power."),
             ("Acima do 150", "Above 150")),
-        "dragon_again": (
-            ("Vença o Dragão de novo", "Defeat the Dragon again"),
-            ("Ele volta. Sempre volta. E agora outros heróis precisam de alguém que já o derrubou.",
-             "It comes back. It always does. And now other heroes need someone who has already brought it down."),
-            ("O Dragão Primordial renasce na arena da Fenda. Ajude outro grupo (até 6 jogadores) a vencê-lo — quem já "
-             "conhece as contramágicas salva vidas.",
-             "The Primordial Dragon is reborn in the Rift arena. Help another party (up to 6 players) defeat it — someone "
-             "who already knows the counterspells saves lives."),
-            ("Arena da Fenda", "The Rift arena")),
-        "class_master": (
-            ("Rank V da sua classe", "Your class's Rank V"),
-            ("Um lendário sem domínio da própria classe é só um sortudo.",
-             "A legend without mastery of their own class is just lucky."),
-            ("Complete a Rota da Classe até o rank V — as formas G e as Lendas da classe brilham com os níveis acima de "
-             "150.",
-             "Complete the Class Route up to rank V — the class's G forms and Legends shine with levels above 150."),
-            ("Rota da Classe: rank V", "Class Route: rank V")),
         "level_180": (
             ("Alcance o nível 180", "Reach level 180"),
             ("Os bardos param de cantar quando você entra na taverna. Não sabem mais que rimas usar.",
              "The bards stop singing when you walk into the tavern. They no longer know which rhymes to use."),
-            ("Os chefes que voltam (Arauto, Dragão, Rei Vazio, guardiões) e as Provações altas dão muito XP. Treine o "
-             "recurso todo dia: o Limite sobe junto.",
-             "Returning bosses (Herald, Dragon, Hollow King, guardians) and high Trials give a lot of XP. Train your "
-             "resource every day: the Limit rises with it."),
-            ("Chefes e Provações altas", "Bosses and high Trials")),
-        "hollow_again": (
-            ("O Rei Vazio, outra vez", "The Hollow King, again"),
-            ("Coroas de osso não ficam quebradas por muito tempo.", "Bone crowns don't stay broken for long."),
-            ("O Rei Vazio volta ao trono um dia depois de vencido. Vença-o de novo — de preferência ensinando o caminho a "
-             "alguém mais novo.",
-             "The Hollow King returns to his throne a day after being defeated. Beat him again — preferably showing the "
-             "way to someone newer."),
-            ("Trono do palácio", "Palace throne")),
+            ("Os andares fundos do Abismo, as Sombras e os chefes que voltam dão muito XP. Treine o recurso todo dia: o "
+             "Limite sobe junto.",
+             "The deep floors of the Abyss, the Shadows and returning bosses give a lot of XP. Train your resource every "
+             "day: the Limit rises with it."),
+            ("Abismo e chefes", "Abyss and bosses")),
         "level_200": (
             ("Alcance o nível 200", "Reach level 200"),
             ("O último degrau. Não há placa, não há porta. Só você e o silêncio de quem chegou.",
@@ -2195,9 +2257,12 @@ CH_TEXT["primordial"]["epilogue"][5] = (
     "sua casa, não é?\"",
     "The Guide Spirit appears, brighter than ever: \"You could go home now... but this world is already your home, "
     "isn't it?\"")
+# Onda 5: a história termina aqui; a última linha aponta para o único "depois" que existe — o Abismo Infinito.
 CH_TEXT["primordial"]["epilogue"][6] = (
-    "A sua lenda está escrita. Ou quase: a brasa do Dragão ainda pulsa no seu peito, como uma porta que acabou de abrir.",
-    "Your legend is written. Or almost: the Dragon's ember still beats in your chest, like a door that has just opened.")
+    "A sua lenda está escrita. Mas a brasa do Dragão ainda pulsa no seu peito e puxa para baixo: sob o mundo, o Abismo "
+    "Infinito espera por você.",
+    "Your legend is written. But the Dragon's ember still beats in your chest and pulls downward: beneath the world, "
+    "the Endless Abyss is waiting for you.")
 
 # Rotas de classe (15 capítulos paralelos — tools/gen/journal_classes.py)
 CLASS_CHAPTERS, CLASS_TEXT = journal_classes.build(step, items)
@@ -2714,6 +2779,14 @@ UI.update({
     "announce.isekai_mahou.journal.class_done": ("Rota do %s concluída: %s", "%s Route completed: %s"),
     "command.isekai_mahou.journal.no_class_chapter": ("%s não tem capítulo da rota da classe em andamento.",
                                                       "%s has no class route chapter in progress."),
+    # Onda 5: comandos de teste da ordem da história
+    "command.isekai_mahou.journal.unknown_chapter": ("Capítulo desconhecido: %s", "Unknown chapter: %s"),
+    "command.isekai_mahou.journal.set_done": ("Capítulo \"%s\" marcado como concluído para %s (sem recompensas).",
+                                              "Chapter \"%s\" marked as completed for %s (no rewards)."),
+    "command.isekai_mahou.journal.set_clear": ("Capítulo \"%s\" zerado para %s.", "Chapter \"%s\" cleared for %s."),
+    "command.isekai_mahou.journal.veteran": (
+        "%s agora é um veterano de mundo antigo: Dragão vencido, capítulos novos por fazer e o Abismo zerado.",
+        "%s is now an old-world veteran: Dragon beaten, new chapters still to do and the Abyss cleared."),
     "journal.isekai_mahou.tutorial.cast.physical": (
         "Feche o menu e segure %s para usar a técnica do 1º slot — cada classe tem as suas prontas. Técnicas gastam %s, "
         "que volta a cada golpe que acerta.",

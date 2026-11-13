@@ -18,6 +18,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -50,7 +51,7 @@ public final class IceGlyphs {
     static final BlockParticleOption ICE_BITS = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.PACKED_ICE.defaultBlockState());
 
     static void frostBurst(ServerLevel sl, Vec3 c, int n) {
-        sl.sendParticles(ParticleTypes.SNOWFLAKE, c.x, c.y, c.z, n, 0.35, 0.35, 0.35, 0.05);
+        sl.sendParticles(Vfx.snowflake(), c.x, c.y, c.z, n, 0.35, 0.35, 0.35, 0.05);
         sl.sendParticles(ICE_BITS, c.x, c.y, c.z, n / 2, 0.3, 0.3, 0.3, 0.1);
         sl.sendParticles(FaUtil.dust(0xCFF4FF, 1.1F), c.x, c.y, c.z, n / 2, 0.35, 0.35, 0.35, 0);
     }
@@ -101,7 +102,7 @@ public final class IceGlyphs {
             }
             if (n > 0) {
                 Vec3 c = Vec3.atCenterOf(surf).add(0, 0.6, 0);
-                sl.sendParticles(ParticleTypes.SNOWFLAKE, c.x, c.y, c.z, 30, r * 0.5, 0.1, r * 0.5, 0.02);
+                sl.sendParticles(Vfx.snowflake(), c.x, c.y, c.z, 30, r * 0.5, 0.1, r * 0.5, 0.02);
                 FaUtil.sound(sl, c, SoundEvents.GLASS_PLACE, 1.0F, 0.8F);
             }
         }
@@ -131,7 +132,7 @@ public final class IceGlyphs {
             ServerLevel sl = ctx.level();
             Vec3 hitAt = t.position().add(0, t.getBbHeight() * 0.55, 0);
             FaUtil.line(sl, from, hitAt, FaUtil.dustFade(0xFFFFFF, 0x8FD8FF, 0.9F), 5);
-            FaUtil.line(sl, hitAt.subtract(hitAt.subtract(from).normalize().scale(1.5)), hitAt, ParticleTypes.SNOWFLAKE, 6);
+            FaUtil.line(sl, hitAt.subtract(hitAt.subtract(from).normalize().scale(1.5)), hitAt, Vfx.snowflake(), 6);
             FaUtil.hurt(ctx, t, 7.0F, stats, null);
             t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, stats.duration(40), 1), ctx.caster());
             frostBurst(sl, hitAt, 16);
@@ -146,7 +147,7 @@ public final class IceGlyphs {
                     FaUtil.hurt(ctx, e, 4.0F, stats, null);
                     frostBurst(sl, e.position().add(0, e.getBbHeight() * 0.5, 0), 8);
                 }
-                FaUtil.line(sl, hitAt, end, ParticleTypes.SNOWFLAKE, 3);
+                FaUtil.line(sl, hitAt, end, Vfx.snowflake(), 3);
             }
             FaUtil.sound(sl, hitAt, SoundEvents.TRIDENT_HIT, 1.0F, 1.3F);
             FaUtil.sound(sl, hitAt, SoundEvents.GLASS_BREAK, 0.7F, 1.7F);
@@ -214,7 +215,7 @@ public final class IceGlyphs {
                     for (BlockPos p : row) {
                         if (!(FaUtil.isOpen(sl, p) || FaShapes.isLiquid(sl, p)) || !FaUtil.canPlace(ctx, p)) continue;
                         if (FaTempBlocks.place(sl, p, ice, rowLife)) {
-                            sl.sendParticles(ParticleTypes.SNOWFLAKE, p.getX() + 0.5, p.getY() + 1.05, p.getZ() + 0.5, 2, 0.3, 0.02, 0.3, 0.01);
+                            sl.sendParticles(Vfx.snowflake(), p.getX() + 0.5, p.getY() + 1.05, p.getZ() + 0.5, 2, 0.3, 0.02, 0.3, 0.01);
                         }
                     }
                     if (ping) FaUtil.sound(sl, Vec3.atCenterOf(row.get(0)), SoundEvents.GLASS_PLACE, 0.7F, 1.3F);
@@ -263,7 +264,7 @@ public final class IceGlyphs {
                     if (FaTempBlocks.place(sl, g, slick, t)) {
                         if (dx == 0 && dz == 0) surfaceY = g.getY() + 1;
                         if (sl.random.nextInt(3) == 0) {
-                            sl.sendParticles(ParticleTypes.SNOWFLAKE, g.getX() + 0.5, g.getY() + 1.05, g.getZ() + 0.5, 1, 0.3, 0.02, 0.3, 0.01);
+                            sl.sendParticles(Vfx.snowflake(), g.getX() + 0.5, g.getY() + 1.05, g.getZ() + 0.5, 1, 0.3, 0.02, 0.3, 0.01);
                         }
                     }
                 }
@@ -302,7 +303,7 @@ public final class IceGlyphs {
                 le.addEffect(new MobEffectInstance(FaRegistries.ICE_ARMOR, stats.duration(600), Math.min(2, FaUtil.amp(ctx, stats))), ctx.caster());
             }
             FaUtil.spiral(sl, le, ICE_BITS, 3, 30);
-            FaUtil.spiral(sl, le, ParticleTypes.SNOWFLAKE, 2, 20);
+            FaUtil.spiral(sl, le, Vfx.snowflake(), 2, 20);
             FaUtil.sound(sl, le.position(), SoundEvents.GLASS_PLACE, 1.0F, 0.9F);
             FaUtil.sound(sl, le.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.4F);
         }
@@ -335,7 +336,7 @@ public final class IceGlyphs {
             Vec3 c = FaUtil.ground(sl, at, 6);
             float r = stats.radius(5.0F);
             FusionZoneEntity.spawn(ctx, stats, this, FusionZoneEntity.Kind.BLIZZARD, c, r, stats.duration(160), null);
-            sl.sendParticles(ParticleTypes.SNOWFLAKE, c.x, c.y + 2, c.z, 60, r * 0.5, 1.0, r * 0.5, 0.1);
+            sl.sendParticles(Vfx.snowflake(), c.x, c.y + 2, c.z, 60, r * 0.5, 1.0, r * 0.5, 0.1);
             FaUtil.sound(sl, c, SoundEvents.POWDER_SNOW_BREAK, 1.2F, 0.5F);
             FaUtil.sound(sl, c, SoundEvents.PLAYER_HURT_FREEZE, 0.6F, 0.6F);
         }

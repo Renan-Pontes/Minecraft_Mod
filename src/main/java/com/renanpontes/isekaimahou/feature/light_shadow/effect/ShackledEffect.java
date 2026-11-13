@@ -3,7 +3,7 @@ package com.renanpontes.isekaimahou.feature.light_shadow.effect;
 import com.renanpontes.isekaimahou.feature.light_shadow.LsFx;
 import com.renanpontes.isekaimahou.feature.light_shadow.LsUtil;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
@@ -74,7 +74,7 @@ public class ShackledEffect extends MobEffect {
                         p.x, p.y, p.z, 1, 0, 0, 0, 0);
             }
             if (sl.random.nextInt(4) == 0) {
-                sl.sendParticles(ParticleTypes.SMOKE, ground.x, ground.y + 0.1, ground.z, 1, 0.05, 0, 0.05, 0.01);
+                sl.sendParticles(Vfx.smoke(), ground.x, ground.y + 0.1, ground.z, 1, 0.05, 0, 0.05, 0.01);
             }
         }
     }

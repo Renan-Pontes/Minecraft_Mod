@@ -76,7 +76,7 @@ public final class DragonFx {
     /** Config de cliente "partículas reduzidas" (falso se não carregada). */
     public static boolean reduced() {
         try {
-            return MahouConfig.REDUCED_PARTICLES.get();
+            return !com.renanpontes.isekaimahou.client.fx.FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         } catch (RuntimeException e) {
             return false;
         }

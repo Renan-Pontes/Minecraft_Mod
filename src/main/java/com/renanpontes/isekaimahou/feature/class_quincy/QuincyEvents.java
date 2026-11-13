@@ -242,6 +242,7 @@ public final class QuincyEvents {
     private static void onPlayerTick(PlayerTickEvent.Post e) {
         if (!(e.getEntity() instanceof ServerPlayer sp) || sp.tickCount % 20 != 0) return;
         QuincyTechniques.secondTick(sp);
+        QuincyForge.second(sp);
         boolean quincy = Quincy.isQuincy(sp);
         if (quincy) letterSecond(sp, Quincy.letter(MagicApi.get(sp)));
         boolean holding = quincy && (QuincyRegistries.isCross(sp.getMainHandItem()) || QuincyRegistries.isCross(sp.getOffhandItem()));

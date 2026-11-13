@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbFx;
+import com.renanpontes.isekaimahou.feature.class_steelball.SbFxNet;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbSpin;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbTechniques;
 import com.renanpontes.isekaimahou.feature.class_steelball.entity.SpiralHoleEntity;
@@ -91,8 +92,7 @@ public final class TuskActForms {
                     Vec3 d = s.spread ? CoreGlyphs.rotate(look, (ctx.random().nextFloat() - 0.5F) * 24F, (ctx.random().nextFloat() - 0.5F) * 8F)
                             : look;
                     level.addFreshEntity(TuskNailEntity.act1(nailCtx, from, d, speed, idx * 1.3F));
-                    SbFx.sound(level, from, SoundEvents.ARROW_SHOOT, 0.5F, 1.9F + idx * 0.02F);
-                    level.sendParticles(SbFx.dust(ACT1_COLOR, 0.9F), from.x, from.y, from.z, 3, 0.05, 0.05, 0.05, 0);
+                    SbFxNet.at(level, SbFxNet.NAIL_FIRE, from, d, 1F, ACT1_COLOR, caster.getId());
                     if (!staged) caster.swing(idx % 2 == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, true);
                 };
                 if (i == 0) shot.run();
@@ -141,7 +141,8 @@ public final class TuskActForms {
                 float yaw = n == 1 ? 0 : (i - (n - 1) / 2F) * 8F;
                 level.addFreshEntity(TuskNailEntity.act2(ctx, from, CoreGlyphs.rotate(look, yaw, 0), 3.0F * s.speedMult(), hole));
             }
-            SbFx.goldenSpiral(level, from.add(look.scale(0.8)), look, 1.1);
+            SbFxNet.at(level, SbFxNet.NAIL_FIRE, from, look, 2F, SbFx.GOLD, caster.getId());
+            SbFxNet.at(level, SbFxNet.GOLDEN_RECT, from.add(look.scale(0.9)), look, 1.2F, SbFx.GOLD, caster.getId());
             SbFx.sound(level, from, SoundEvents.TRIDENT_RIPTIDE_1.value(), 0.9F, 1.6F);
             SbFx.sound(level, from, SoundEvents.BEACON_POWER_SELECT, 0.6F, 2.0F);
             if (!ctx.hasOrigin()) {
@@ -189,8 +190,8 @@ public final class TuskActForms {
             Vec3 entry = caster.position();
             // o tiro em si mesmo
             Vec3 chest = caster.position().add(0, caster.getBbHeight() * 0.6, 0);
-            level.sendParticles(SbFx.dust(ACT3_COLOR, 1.3F), chest.x, chest.y, chest.z, 14, 0.15, 0.15, 0.15, 0);
-            level.sendParticles(ParticleTypes.REVERSE_PORTAL, chest.x, chest.y, chest.z, 20, 0.3, 0.6, 0.3, 0.05);
+            SbFxNet.at(level, SbFxNet.NAIL_FIRE, chest, new Vec3(0, -1, 0), 3F, ACT3_COLOR, caster.getId());
+            SbFxNet.at(level, SbFxNet.WORMHOLE, entry, dest == null ? entry : dest, 1F, ACT3_COLOR, caster.getId());
             SbFx.sound(level, chest, SoundEvents.ARROW_HIT_PLAYER, 0.8F, 0.7F);
             SbFx.sound(level, chest, SoundEvents.PORTAL_TRIGGER, 0.35F, 2.0F);
             SpiralHoleEntity.portal(level, entry);
@@ -227,12 +228,8 @@ public final class TuskActForms {
             ServerLevel level = ctx.level();
             if (caster.level() != level) return;
             float r = s.radius(RADIUS);
-            SbFx.spiral(level, at, ACT3_COLOR, r * 0.6, 2.4, 36, 0F);
-            SbFx.spinRing(level, at.add(0, 0.1, 0), ACT3_COLOR, r, 28);
-            SbFx.spinRing(level, at.add(0, 0.1, 0), SbFx.GOLD, r * 0.6, 18);
-            level.sendParticles(ParticleTypes.REVERSE_PORTAL, at.x, at.y + 1, at.z, 30, 0.6, 0.8, 0.6, 0.08);
-            SbFx.sound(level, at, SoundEvents.CHORUS_FRUIT_TELEPORT, 1.0F, 0.8F);
-            SbFx.sound(level, at, SoundEvents.TRIDENT_RIPTIDE_3.value(), 0.8F, 1.3F);
+            // a explosão em espiral da saída é desenhada no cliente (WORMHOLE enviado no início); aqui só o anel de alcance
+            SbFx.spinRing(level, at.add(0, 0.1, 0), ACT3_COLOR, r, 16);
             boolean any = false;
             for (LivingEntity e : ctx.enemiesAround(at, r)) {
                 e.invulnerableTime = 0;

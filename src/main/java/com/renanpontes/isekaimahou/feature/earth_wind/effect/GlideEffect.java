@@ -2,7 +2,7 @@ package com.renanpontes.isekaimahou.feature.earth_wind.effect;
 
 import com.renanpontes.isekaimahou.feature.earth_wind.EwUtil;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -52,8 +52,8 @@ public class GlideEffect extends EwMobEffect {
             // rastros de vento nas "pontas das asas"
             Vec3 side = new Vec3(-look.z, 0, look.x).scale(0.7);
             double y = e.getY() + e.getBbHeight() * 0.6;
-            e.level().addParticle(ParticleTypes.CLOUD, e.getX() + side.x, y, e.getZ() + side.z, -h.x * 0.2, 0.01, -h.z * 0.2);
-            e.level().addParticle(ParticleTypes.CLOUD, e.getX() - side.x, y, e.getZ() - side.z, -h.x * 0.2, 0.01, -h.z * 0.2);
+            e.level().addParticle(Vfx.cloud(), e.getX() + side.x, y, e.getZ() + side.z, -h.x * 0.2, 0.01, -h.z * 0.2);
+            e.level().addParticle(Vfx.cloud(), e.getX() - side.x, y, e.getZ() - side.z, -h.x * 0.2, 0.01, -h.z * 0.2);
         }
         return true;
     }

@@ -25,8 +25,9 @@ public final class LeFx {
         return new Vector3f(((rgb >> 16) & 255) / 255F, ((rgb >> 8) & 255) / 255F, (rgb & 255) / 255F);
     }
 
-    public static DustParticleOptions dust(int rgb, float size) {
-        return new DustParticleOptions(vec(rgb), Math.max(0.05F, Math.min(4.0F, size)));
+    public static ParticleOptions dust(int rgb, float size) {
+        // v1.3: brilho fx aditivo (mesmo tamanho do pó do vanilla; respeita o preset gráfico no cliente)
+        return com.renanpontes.isekaimahou.core.ElementFx.glow(rgb, size);
     }
 
     public static DustColorTransitionOptions fade(int from, int to, float size) {

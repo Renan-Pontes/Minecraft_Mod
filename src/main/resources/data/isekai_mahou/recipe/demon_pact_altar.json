@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GEG",
+    "OTO",
+    "BBB"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_shadow"
+    },
+    "O": {
+      "item": "minecraft:crying_obsidian"
+    },
+    "T": {
+      "item": "minecraft:ghast_tear"
+    },
+    "B": {
+      "item": "minecraft:polished_blackstone_bricks"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:demon_pact_altar",
+    "count": 1
+  }
+}

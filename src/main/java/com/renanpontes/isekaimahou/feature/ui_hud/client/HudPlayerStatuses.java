@@ -43,7 +43,7 @@ final class HudPlayerStatuses {
 
     /** Margem esquerda mínima da Pilha neste momento (0 = a coluna não está na tela). */
     static int stackEdge() {
-        return lastRight > 0 && Util.getMillis() - lastDrawn < 300 ? lastRight + 6 : 0;
+        return lastRight > 0 && Util.getMillis() - lastDrawn < 300 ? HudScale.toReal(lastRight + 6) : 0;
     }
 
     static void render(GuiGraphics g, Minecraft mc) {

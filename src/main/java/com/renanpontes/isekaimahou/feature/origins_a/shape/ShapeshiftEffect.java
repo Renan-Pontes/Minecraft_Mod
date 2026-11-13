@@ -4,8 +4,8 @@ import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.feature.origins_a.OaData;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.Holder;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
@@ -140,7 +140,7 @@ public class ShapeshiftEffect extends MobEffect {
         if (el.matches(Element.SHADOW)) keep(player, MobEffects.NIGHT_VISION, 0, 400);
         if (el.matches(Element.LIGHT) && player.tickCount % 60 == 0 && player.getHealth() < player.getMaxHealth()) {
             player.heal(1.0F);
-            level.sendParticles(ParticleTypes.END_ROD, player.getX(), player.getY() + player.getBbHeight() * 0.6,
+            level.sendParticles(Vfx.endRod(), player.getX(), player.getY() + player.getBbHeight() * 0.6,
                     player.getZ(), 3, 0.3, 0.3, 0.3, 0.01);
         }
     }

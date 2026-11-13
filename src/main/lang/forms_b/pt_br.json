@@ -14,14 +14,13 @@
   "glyph.isekai_mahou.turret": "Torre",
   "glyph.isekai_mahou.turret.desc": "Cria um cristal flutuante no ponto mirado que lança a magia como projétil no inimigo mais próximo. Magia persistente. Programável: nasce no ponto atingido e cada rajada que acerta ativa Ao Acertar.",
   "glyph.isekai_mahou.conjure": "Invocação",
-  "glyph.isekai_mahou.conjure.desc": "Chama um espírito que segue você e lança os efeitos no inimigo mais próximo a cada 2 segundos.",
+  "glyph.isekai_mahou.conjure.desc": "Chama um espírito que segue você e lança os efeitos no inimigo mais próximo a cada 2 segundos. Forja de Invocações: ponha logo depois o glifo de uma invocação (Invocar Golem, Salamandra, Ondina, Sílfide, Fada Guardiã, Sombra Viva, Ent) e nasce essa criatura no lugar do espírito — os efeitos seguintes passam a sair nos ataques dela, a cada 2 segundos. Dividir = quantidade (até o limite da criatura), Expandir = tamanho, Estender = duração, Amplificar = força.",
   "glyph.isekai_mahou.illusion": "Ilusão",
   "glyph.isekai_mahou.illusion.desc": "Cria um clone sombrio seu que atrai os monstros por perto. Ao sumir ou ser destruído, explode aplicando os efeitos. Programável: os clones surgem no ponto atingido.",
   "glyph.isekai_mahou.seal": "Selo",
   "glyph.isekai_mahou.seal.desc": "Grava a magia na arma da mão principal. Cada golpe forte aplica os efeitos no alvo e gasta uma carga.",
   "glyph.isekai_mahou.portal": "Portal",
   "glyph.isekai_mahou.portal.desc": "Abre dois portais ligados: um onde você está e outro no bloco mirado (até 64 blocos). Quem atravessa recebe os efeitos.",
-
   "entity.isekai_mahou.spell_zone": "Zona Mágica",
   "entity.isekai_mahou.spell_wall": "Muralha Mágica",
   "entity.isekai_mahou.spell_rune": "Runa Mágica",
@@ -30,9 +29,7 @@
   "entity.isekai_mahou.spell_conjurer": "Espírito Invocado",
   "entity.isekai_mahou.spell_illusion": "Ilusão",
   "entity.isekai_mahou.spell_portal": "Portal Mágico",
-
   "block.isekai_mahou.spell_barrier": "Barreira Mágica",
-
   "message.isekai_mahou.forms_b.persistent_limit": "Limite de %s magias persistentes: a mais antiga se desfez.",
   "message.isekai_mahou.forms_b.wall_no_space": "Não há espaço para erguer a muralha ali.",
   "message.isekai_mahou.forms_b.portal_no_target": "Mire num bloco (até 64 blocos) para abrir a saída do portal.",
@@ -44,8 +41,25 @@
   "message.isekai_mahou.forms_b.seal_done": "Selo gravado em %s: %s cargas.",
   "message.isekai_mahou.forms_b.seal_charges": "Selo: %s/%s cargas",
   "message.isekai_mahou.forms_b.seal_depleted": "O selo da arma se esgotou.",
-
   "tooltip.isekai_mahou.forms_b.seal": "Selo: %s (%s)",
   "tooltip.isekai_mahou.forms_b.seal_charges": "Cargas: %s/%s",
-  "tooltip.isekai_mahou.forms_b.seal_unnamed": "Magia sem nome"
+  "tooltip.isekai_mahou.forms_b.seal_unnamed": "Magia sem nome",
+  "glyph.isekai_mahou.summon_guard": "Ordem: Guardar",
+  "glyph.isekai_mahou.summon_guard.desc": "Depois de Invocação (ou do glifo da criatura): a invocação guarda o ponto onde surgiu e ataca quem chegar perto, em vez de seguir você.",
+  "glyph.isekai_mahou.summon_hunt": "Ordem: Caçar",
+  "glyph.isekai_mahou.summon_hunt.desc": "Depois de Invocação (ou do glifo da criatura): a invocação persegue só o alvo que você mirava ao conjurar. Sem alvo na mira, caça o próximo inimigo que você acertar.",
+  "glyph.isekai_mahou.summon_hold": "Ordem: Ficar",
+  "glyph.isekai_mahou.summon_hold.desc": "Depois de Invocação (ou do glifo da criatura): a invocação fica parada onde surgiu e só ataca o que estiver ao alcance.",
+  "summon_order.isekai_mahou.follow": "Seguir",
+  "summon_order.isekai_mahou.guard": "Guardar este ponto",
+  "summon_order.isekai_mahou.hunt": "Caçar",
+  "summon_order.isekai_mahou.stay": "Ficar parado",
+  "key.isekai_mahou.summon_order": "Ordem das invocações",
+  "message.isekai_mahou.forms_b.order": "Invocações: %s",
+  "message.isekai_mahou.forms_b.order_one": "%s: %s",
+  "message.isekai_mahou.forms_b.order_hunt_target": "Invocações: caçar %s",
+  "message.isekai_mahou.forms_b.order_hunt_wait": "Invocações: caçar — acerte um inimigo para marcar o alvo",
+  "message.isekai_mahou.forms_b.order_none": "Você não tem invocações por perto.",
+  "hint.isekai_mahou.summon_forge": "Sua invocação obedece à receita. Aperte %s para trocar a ordem: seguir, guardar, caçar ou ficar.",
+  "hint.isekai_mahou.summon_forge_tip": "Dica: numa magia, ponha Invocação e logo depois o glifo de uma criatura (ex.: Invocar Golem). Os efeitos seguintes passam a sair nos golpes dela."
 }

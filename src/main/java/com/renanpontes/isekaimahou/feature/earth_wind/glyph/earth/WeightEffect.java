@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -38,7 +39,7 @@ public class WeightEffect extends EffectGlyph {
         if (stats.inverted) {
             ctx.status(le, MobEffects.SLOW_FALLING, 200, 0, stats);
             ctx.status(le, MobEffects.JUMP, 200, 1, stats);
-            level.sendParticles(ParticleTypes.CLOUD, le.getX(), le.getY() + 0.2, le.getZ(), 14, 0.4, 0.1, 0.4, 0.03);
+            level.sendParticles(Vfx.cloud(), le.getX(), le.getY() + 0.2, le.getZ(), 14, 0.4, 0.1, 0.4, 0.03);
             EwFx.sound(level, top, SoundEvents.BREEZE_JUMP, 0.8F, 1.4F);
             return;
         }

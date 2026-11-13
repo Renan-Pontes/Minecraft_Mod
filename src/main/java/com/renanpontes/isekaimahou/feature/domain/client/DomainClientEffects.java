@@ -2,12 +2,14 @@ package com.renanpontes.isekaimahou.feature.domain.client;
 
 import java.util.List;
 
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.feature.domain.DomainNet;
 import com.renanpontes.isekaimahou.feature.domain.entity.DomainDomeEntity;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -94,7 +96,7 @@ public final class DomainClientEffects {
 
     /** Partículas ambientes do elemento em volta da câmera (só dentro do domo). */
     private static void ambient(ClientLevel level, DomainDomeEntity d, Vec3 cam) {
-        int n = MahouConfig.REDUCED_PARTICLES.get() ? 1 : 4;
+        int n = FxQuality.count(4);
         RandomSource rnd = level.random;
         // Magias multi-elemento: o "mundo interior" mistura as partículas de todos os elementos da magia
         List<Element> els = d.elements();
@@ -108,13 +110,13 @@ public final class DomainClientEffects {
             Element base = el.isFusion() ? (rnd.nextBoolean() ? el.parentA : el.parentB) : el;
             switch (base) {
                 case FIRE -> level.addParticle(rnd.nextInt(6) == 0 ? ParticleTypes.LAVA : ParticleTypes.FLAME, x, y, z, 0, 0.03, 0);
-                case WATER -> level.addParticle(ParticleTypes.FALLING_WATER, x, y + 4, z, 0, 0, 0);
+                case WATER -> level.addParticle(Vfx.water(), x, y + 4, z, 0, 0, 0);
                 case EARTH -> level.addParticle(new BlockParticleOption(ParticleTypes.FALLING_DUST, Blocks.DEEPSLATE.defaultBlockState()),
                         x, y + 4, z, 0, 0, 0);
-                case WIND -> level.addParticle(ParticleTypes.CLOUD, x, y, z, 0.15, 0.0, 0.05);
-                case LIGHT -> level.addParticle(ParticleTypes.END_ROD, x, y, z, 0, 0.015, 0);
-                case SHADOW -> level.addParticle(rnd.nextBoolean() ? ParticleTypes.ASH : ParticleTypes.SMOKE, x, y, z, 0, -0.01, 0);
-                default -> level.addParticle(ParticleTypes.ENCHANT, x, y, z, 0, 0.05, 0);
+                case WIND -> level.addParticle(Vfx.cloud(), x, y, z, 0.15, 0.0, 0.05);
+                case LIGHT -> level.addParticle(Vfx.endRod(), x, y, z, 0, 0.015, 0);
+                case SHADOW -> level.addParticle(rnd.nextBoolean() ? Vfx.ash() : Vfx.smoke(), x, y, z, 0, -0.01, 0);
+                default -> level.addParticle(Vfx.enchant(), x, y, z, 0, 0.05, 0);
             }
             ParticleOptions dust = ElementFx.dust(el, 0.9F);
             level.addParticle(dust, x + rnd.nextGaussian(), y + rnd.nextGaussian(), z + rnd.nextGaussian(), 0, 0.01, 0);
@@ -122,7 +124,7 @@ public final class DomainClientEffects {
             if (d.has(DomainDomeEntity.F_RUIN)) {
                 level.addParticle(new BlockParticleOption(ParticleTypes.FALLING_DUST, Blocks.COBBLED_DEEPSLATE.defaultBlockState()),
                         x, y + 5, z, 0, 0, 0);
-                level.addParticle(ParticleTypes.ASH, x + rnd.nextGaussian() * 2, y + 2, z + rnd.nextGaussian() * 2, 0, -0.02, 0);
+                level.addParticle(Vfx.ash(), x + rnd.nextGaussian() * 2, y + 2, z + rnd.nextGaussian() * 2, 0, -0.02, 0);
             }
         }
     }
@@ -178,7 +180,7 @@ public final class DomainClientEffects {
         if (mc.level == null) return;
         float pt = (float) event.getPartialTick();
         float k = Math.max(0, (shakeTicks - pt) / shakeTotal);
-        float s = shakeStrength * k * mc.options.screenEffectScale().get().floatValue();
+        float s = shakeStrength * k * mc.options.screenEffectScale().get().floatValue() * MahouConfig.shakeScale();
         if (s <= 0.001F) return;
         double t = mc.level.getGameTime() + pt;
         event.setPitch(event.getPitch() + (float) (Math.sin(t * 2.3) * s));

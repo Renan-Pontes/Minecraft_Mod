@@ -49,11 +49,23 @@ public final class SettlementView {
             t.putString("Standing", json(Reputation.standing(sp, f.id()).displayName(), reg));
         }
         wars(t, server, id, s, reg);
-        if (s != null) {
+        if (s != null && !s.own() && s.owner == null && Conquest.conquerable(place)) {
+            // v1.4: cidade de reino sem Senhor (abdicou/caiu): volta a ser conquistável, sem perder o estado
+            t.putString("Mode", "candidate");
+            t.putString("Kind", "city");
+            t.putInt("Color", place.color());
+            candidate(t, sp, place, reg);
+        } else if (s != null) {
             boolean owner = sp.getUUID().equals(s.owner);
-            t.putString("Mode", owner ? "manage" : "visitor");
+            boolean planner = s.canPlan(sp.getUUID());
+            t.putString("Mode", planner ? "manage" : "visitor");
             t.putString("Kind", s.own() ? "own" : "conquered");
-            settlement(t, sp, s, owner, reg);
+            t.putBoolean("Owner", owner);
+            t.putBoolean("Planner", planner);
+            t.putBoolean("Member", CityEconomy.isMember(server, s, sp));
+            t.putBoolean("Claimable", s.own() && s.owner == null && id.equals(Allegiance.of(sp)));
+            settlement(t, sp, s, planner, reg);
+            CityViewExtra.fill(t, sp, s, owner, planner, reg);
         } else {
             t.putString("Mode", Conquest.conquerable(place) ? "candidate" : "visitor");
             t.putString("Kind", "city");
@@ -81,8 +93,9 @@ public final class SettlementView {
         t.putInt("Income", s.lastIncome);
         t.putInt("AffDelta", s.lastAffinityDelta);
         t.putInt("TradesToday", s.tradesToday);
-        t.putBoolean("FestivalOk", s.festivalDay != SettlementService.day(server) && s.treasury >= SettlementService.FESTIVAL_COST);
-        t.putBoolean("AtHeart", sp.level().dimension() == s.dim && sp.blockPosition().distSqr(s.heart) <= 64);
+        t.putBoolean("FestivalOk", Lordship.festivalWait(server, s) == 0 && s.treasury >= SettlementService.FESTIVAL_COST);
+        // v1.0 (coleta fácil): o cofre abre de qualquer lugar dentro da cidade
+        t.putBoolean("AtHeart", CityActions.inCity(sp, s));
         t.putBoolean("WallDone", s.wallDone);
         CompoundTag pop = new CompoundTag(), cap = new CompoundTag();
         for (Settlement.Role r : Settlement.Role.values()) {
@@ -93,20 +106,38 @@ public final class SettlementView {
         t.put("Cap", cap);
         t.putBoolean("CanDeclare", WarService.canDeclare(s));
         t.putBoolean("CanTrain", WarService.canTrain(s));
+        // onda 7 (sky_island): Ilha Celeste — altitude e andamento da terra (cidade no chão: nada é enviado)
+        SkyCity.view(t, s);
+        // onda 7 (sky_access): onde a Corrente Ascendente toca o chão e se o Cais Celeste já existe
+        SkyAccess.view(t, s);
+        // onda 8 (water_city): tipo de terreno por id e o traço da Cidade das Águas
+        WaterCity.view(t, s);
         if (!owner) return;
         ListTag projects = new ListTag();
-        int active = Math.min(s.projects.size(), Math.max(1, s.population(Settlement.Role.BUILDER)));
+        // onda 7 (city_pause): "em obra" = quem tem equipe agora (obra pausada libera os construtores para as outras)
+        java.util.List<Project> crewed = CityPause.crewed(s);
         for (int i = 0; i < s.projects.size(); i++) {
             Project p = s.projects.get(i);
-            Blueprint bp = Blueprints.get(s.style, p.key);
             CompoundTag e = new CompoundTag();
-            e.putString("Lang", bp == null ? p.key : bp.langKey());
-            e.putInt("Pct", Math.round(SettlementService.progressOf(server, s, p) * 100));
-            e.putBoolean("Active", i < active);
-            e.putBoolean("Cancel", !p.key.equals(Blueprint.PLAZA) && p.pieceIdx == 0 && p.phase <= Project.PHASE_FOUNDATION);
+            e.putString("Name", json(CityPlanning.projectName(s, p), reg));
+            e.putBoolean("Rush", Project.KIND_REPAIR.equals(p.kind));
+            e.putInt("RushCost", CityActions.rushCost(s));
+            boolean active = crewed.contains(p);
+            e.putBoolean("Active", active);
+            // onda 6 (city_pace): barra pelos DIAS, "dia X de Y", etapa e se aceita materiais
+            CityPace.viewProject(e, server, s, p, active, reg);
+            // onda 7 (sky_island): obra esperando a terra do lote se formar
+            if (SkyCity.waitingLand(s, p)) {
+                e.putBoolean("NoLand", true);
+                // o motivo aparece já na linha da obra, no lugar da etapa ("Aguardando a terra se formar")
+                e.putString("Stage", json(SettlementsLang.tr("sky.wait.land"), reg));
+            }
+            // onda 7 (city_pause): pausada/desmontando, se dá para desistir agora (em qualquer etapa) ou o motivo de só pausar
+            CityPause.viewProject(e, s, p, reg);
             projects.add(e);
         }
         t.put("Projects", projects);
+        t.putInt("QueueMax", SettlementService.MAX_QUEUE);
         if (s.own()) {
             ListTag bps = new ListTag();
             for (Blueprint bp : Blueprints.of(s.style)) {
@@ -118,7 +149,7 @@ public final class SettlementView {
                 e.putInt("Points", bp.points());
                 e.putInt("Count", s.count(bp.key()));
                 e.putInt("Building", s.inProgress(bp.key()));
-                e.putInt("Max", bp.maxCount());
+                e.putInt("Max", CityGrowth.maxCount(s, bp));
                 e.putBoolean("Wonder", bp.isWonder());
                 Component problem = SettlementService.buildProblem(s, bp);
                 e.putString("Problem", problem == null ? "" : json(problem, reg));
@@ -185,7 +216,7 @@ public final class SettlementView {
         return server.getProfileCache() == null ? "?" : server.getProfileCache().get(id).map(gp -> gp.getName()).orElse("?");
     }
 
-    private static String json(Component c, HolderLookup.Provider reg) {
+    static String json(Component c, HolderLookup.Provider reg) {
         return Component.Serializer.toJson(c, reg);
     }
 

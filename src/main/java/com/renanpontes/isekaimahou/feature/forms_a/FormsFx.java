@@ -1,19 +1,18 @@
 package com.renanpontes.isekaimahou.feature.forms_a;
 
-import org.joml.Vector3f;
-
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.MahouConfig;
+import com.renanpontes.isekaimahou.core.fx.FxBatch;
 import com.renanpontes.isekaimahou.feature.forms_a.entity.SpellBeamEntity;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.Holder;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -23,16 +22,16 @@ import net.minecraft.world.phys.Vec3;
  * Visual/som das formas do módulo. Igual ao {@link ElementFx}, mas usa a COR escolhida na magia
  * ({@link SpellContext#color()}) e envia partículas também para quem está longe (Queda/Chuva miram a 48 blocos,
  * e o envio padrão do vanilla só alcança 32).
+ * <p>
+ * Release 1.0 (perf): tudo daqui entra no LOTE do tick ({@link FxBatch}) — o leque do Cone, a lâmina do Corte e a nuvem
+ * da Chuva mandavam uma partícula por pacote (dezenas por conjuração); agora vão juntas num pacote só por jogador, e os
+ * anéis vão só como parâmetros (o cliente desenha os pontos pelo Preset Gráfico).
  */
 public final class FormsFx {
-    /** Até onde os jogadores recebem as partículas destas formas. */
-    private static final double FAR = 96.0;
-    private static final double NEAR = 32.0;
-
     /** Pó colorido com a cor ARGB/RGB informada. */
-    public static DustParticleOptions dust(int rgb, float size) {
-        return new DustParticleOptions(new Vector3f(((rgb >> 16) & 255) / 255F, ((rgb >> 8) & 255) / 255F, (rgb & 255) / 255F),
-                Math.max(0.05F, Math.min(4.0F, size)));
+    public static ParticleOptions dust(int rgb, float size) {
+        // v1.3: brilho fx aditivo (mesmo tamanho do pó do vanilla; respeita o preset gráfico no cliente)
+        return com.renanpontes.isekaimahou.core.ElementFx.glow(rgb, size);
     }
 
     /** Clareia uma cor RGB (0 = igual, 1 = branco). Usado no "núcleo" brilhante dos feixes. */
@@ -45,16 +44,13 @@ public final class FormsFx {
     }
 
     /**
-     * Envia partículas para todos os jogadores até {@link #FAR} blocos. Quem está perto recebe pelo caminho normal
-     * (respeita a opção de partículas); quem está longe recebe como "longa distância" para não ficar sem ver o impacto.
+     * Envia partículas para todos os jogadores até {@link FxBatch#FAR} blocos (no lote do tick). Quem está perto vê pelo
+     * caminho normal (respeita a opção de partículas); quem está longe vê como "longa distância" para não ficar sem o
+     * impacto — o cliente ainda corta as partículas soltas pela distância do Preset Gráfico.
      */
     public static void send(ServerLevel level, ParticleOptions p, double x, double y, double z, int count,
                             double dx, double dy, double dz, double speed) {
-        for (ServerPlayer sp : level.players()) {
-            double d2 = sp.distanceToSqr(x, y, z);
-            if (d2 > FAR * FAR) continue;
-            level.sendParticles(sp, p, d2 > NEAR * NEAR, x, y, z, count, dx, dy, dz, speed);
-        }
+        FxBatch.emit(level, p, x, y, z, count, dx, dy, dz, speed, true);
     }
 
     public static void send(ServerLevel level, ParticleOptions p, Vec3 pos, int count, double spread, double speed) {
@@ -118,31 +114,25 @@ public final class FormsFx {
         if (from.distanceToSqr(to) < 0.25) return;
         beam(ctx, from, to, 0.08F, 5);
         sparks(ctx, from, to, 1.2);
-        send(ctx.level(), ParticleTypes.CLOUD, to, 4, 0.2, 0.02);
+        send(ctx.level(), Vfx.cloud(), to, 4, 0.2, 0.02);
         sound(ctx, to, SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.6F, 1.5F);
     }
 
-    /** Anel horizontal com a cor da magia. {@code density} = pontos por bloco de circunferência. */
+    /**
+     * Anel horizontal com a cor da magia. {@code density} = pontos por bloco de circunferência. Um item no lote: o
+     * cliente desenha os pontos (PC fraco desenha menos).
+     */
     public static void ring(SpellContext ctx, Vec3 center, double radius, double density) {
-        ServerLevel level = ctx.level();
-        ParticleOptions d = ElementFx.glow(ctx.color(), 1.3F);
-        ParticleOptions sig = ElementFx.signature(ctx.element());
         int points = Math.max(8, (int) (Math.PI * 2 * radius * density));
-        for (int i = 0; i < points; i++) {
-            double a = Math.PI * 2 * i / points;
-            double x = center.x + Math.cos(a) * radius, z = center.z + Math.sin(a) * radius;
-            send(level, d, x, center.y + 0.1, z, 1, 0.03, 0.02, 0.03, 0);
-            if (i % 4 == 0) send(level, sig, x, center.y + 0.15, z, 1, 0.05, 0.05, 0.05, 0.01);
-        }
+        FxBatch.ring(ctx.level(), ctx.element(), ctx.color(), center, radius, points, 4, 1.3F, true);
     }
 
-    /** Opção de cliente "reduzir partículas" (falso se a config ainda não carregou). Só faz sentido no cliente. */
+    /**
+     * "Poucas partículas"? Quem manda é o Preset Gráfico: LOW e MEDIUM contam como reduzido. Só faz sentido no cliente;
+     * para quantidades prefira {@link FxQuality#count}.
+     */
     public static boolean reducedParticles() {
-        try {
-            return MahouConfig.REDUCED_PARTICLES.get();
-        } catch (RuntimeException e) {
-            return false;
-        }
+        return !FxQuality.atLeast(MahouConfig.Graphics.HIGH);
     }
 
     /** Som na posição; magias com Silencioso tocam bem mais baixo. */

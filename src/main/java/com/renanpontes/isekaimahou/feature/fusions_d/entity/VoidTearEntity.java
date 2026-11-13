@@ -11,8 +11,8 @@ import com.renanpontes.isekaimahou.feature.fusions_d.FdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -154,8 +154,8 @@ public class VoidTearEntity extends FdSpellEntity {
             Statuses.apply(le, Statuses.Kind.EXPOSED, 1, 100, owner(), 1F);
             FdUtil.forgetTarget(le);
         }
-        sl.sendParticles(ParticleTypes.REVERSE_PORTAL, from.x, from.y + 1, from.z, 30, 0.3, 0.6, 0.3, 0.2);
-        sl.sendParticles(ParticleTypes.PORTAL, ex.x, ex.y, ex.z, 40, 0.4, 0.6, 0.4, 0.6);
+        sl.sendParticles(Vfx.reversePortal(), from.x, from.y + 1, from.z, 30, 0.3, 0.6, 0.3, 0.2);
+        sl.sendParticles(Vfx.portal(), ex.x, ex.y, ex.z, 40, 0.4, 0.6, 0.4, 0.6);
         sl.sendParticles(FdFx.dust(FdFx.VOID_EDGE, 1.5F), ex.x, ex.y, ex.z, 20, 0.5, 0.5, 0.5, 0);
         FdFx.sound(sl, from, SoundEvents.ENDERMAN_TELEPORT, 1.2F, 0.6F);
         FdFx.sound(sl, ex, SoundEvents.SHULKER_SHOOT, 1.4F, 0.5F);
@@ -164,7 +164,7 @@ public class VoidTearEntity extends FdSpellEntity {
     @Override
     protected void onExpire(ServerLevel sl) {
         Vec3 c = position().add(0, 1.2, 0);
-        sl.sendParticles(ParticleTypes.REVERSE_PORTAL, c.x, c.y, c.z, 40, 0.2, 0.8, 0.2, 0.4);
+        sl.sendParticles(Vfx.reversePortal(), c.x, c.y, c.z, 40, 0.2, 0.8, 0.2, 0.4);
         FdFx.sound(sl, c, SoundEvents.ENDER_EYE_DEATH, 1.2F, 0.6F);
         if (!isExit() && partner != null && partner.isAlive()) partner.end();
     }
@@ -174,9 +174,9 @@ public class VoidTearEntity extends FdSpellEntity {
         double h = 1.4 * size();
         double a = random.nextDouble() * Math.PI * 2, d = isExit() ? 0.6 : 3 + random.nextDouble() * 3;
         if (isExit()) {
-            level().addParticle(ParticleTypes.PORTAL, getX(), getY() + h, getZ(), Math.cos(a) * 0.4, (random.nextDouble() - 0.5) * 0.4, Math.sin(a) * 0.4);
+            level().addParticle(Vfx.portal(), getX(), getY() + h, getZ(), Math.cos(a) * 0.4, (random.nextDouble() - 0.5) * 0.4, Math.sin(a) * 0.4);
         } else {
-            level().addParticle(ParticleTypes.REVERSE_PORTAL, getX() + Math.cos(a) * d, getY() + h + (random.nextDouble() - 0.5) * 2,
+            level().addParticle(Vfx.reversePortal(), getX() + Math.cos(a) * d, getY() + h + (random.nextDouble() - 0.5) * 2,
                     getZ() + Math.sin(a) * d, -Math.cos(a) * 0.25, 0, -Math.sin(a) * 0.25);
         }
     }

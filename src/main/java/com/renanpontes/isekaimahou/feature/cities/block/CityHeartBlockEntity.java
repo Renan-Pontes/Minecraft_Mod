@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.core.api.Places;
 import com.renanpontes.isekaimahou.core.api.Travel;
 import com.renanpontes.isekaimahou.feature.cities.CitiesContent;
 import com.renanpontes.isekaimahou.feature.cities.CityData;
+import com.renanpontes.isekaimahou.feature.cities.CityFixtures;
 import com.renanpontes.isekaimahou.feature.cities.CityLines;
 import com.renanpontes.isekaimahou.feature.cities.CityNames;
 import com.renanpontes.isekaimahou.feature.cities.CityRealm;
@@ -59,7 +60,9 @@ import net.minecraft.world.phys.AABB;
  *       (inclusive persistentes), com spawners, limpa a vegetação natural ({@link CityVegetation}) e acha o Altar de
  *       Ascensão público e a Pedra de Teleporte da praça (registrada na Viagem: vira o ponto de chegada da cidade);</li>
  *   <li>repõe os moradores mortos: 1 por dia de jogo, de manhã, até a população original ({@link CityData});</li>
- *   <li>conduz o Cerco à Cidade ({@link CitySiege}).</li>
+ *   <li>conduz o Cerco à Cidade ({@link CitySiege});</li>
+ *   <li>release 1.0: põe na praça os blocos de serviço das ondas 1–2 ({@link CityFixtures}: Quadro do Mercado e, nas
+ *       capitais, os dois altares) — uma vez por cidade, só em ar e chão firme.</li>
  * </ol>
  * Reino: {@link CityKingdom#forHeart} — corações da v0.8 sem {@code Kingdom}: a capital é Aldória e a cidade comum é o
  * reino da paleta. Cidades que já existiam guardam o nome antigo ({@code LegacyNames}).
@@ -95,6 +98,10 @@ public class CityHeartBlockEntity extends BlockEntity {
     private final List<BlockPos> altars = new ArrayList<>();
     /** Chunks adiados (intruso lutando com um jogador) → idade do coração em que podem ser varridos de novo. Só em memória. */
     private final it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap deferredUntil = new it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap();
+    /** Release 1.0 — blocos de serviço ({@link CityFixtures}): bits dos já resolvidos (posto ou desistiu) e onde ficaram. */
+    private int fixturesDone;
+    private int fixtureTries;
+    private final BlockPos[] fixturePos = new BlockPos[CityFixtures.Kind.values().length];
 
     public CityHeartBlockEntity(BlockPos pos, BlockState state) {
         super(CitiesContent.CITY_HEART_BE.get(), pos, state);
@@ -152,6 +159,43 @@ public class CityHeartBlockEntity extends BlockEntity {
         return sweepDone;
     }
 
+    // ---- Release 1.0: blocos de serviço postos na praça (ver CityFixtures) ----
+    /** Os três blocos de serviço já foram resolvidos (postos, não se aplicam ou desistiu)? */
+    public boolean fixturesSettled() {
+        return fixturesDone == (1 << fixturePos.length) - 1;
+    }
+
+    public boolean fixtureDone(CityFixtures.Kind kind) {
+        return (fixturesDone & kind.bit()) != 0;
+    }
+
+    /** Onde o bloco de serviço foi posto (null = ainda não, não se aplica ou desistiu). */
+    @Nullable
+    public BlockPos fixturePos(CityFixtures.Kind kind) {
+        return fixturePos[kind.ordinal()];
+    }
+
+    /** Resolve um bloco de serviço: posto em {@code pos}, ou (null) não vai existir nesta cidade. */
+    public void settleFixture(CityFixtures.Kind kind, @Nullable BlockPos pos) {
+        fixturesDone |= kind.bit();
+        fixturePos[kind.ordinal()] = pos == null ? null : pos.immutable();
+        setChanged();
+    }
+
+    /** Comando de teste: esquece um bloco de serviço para ele poder ser posto de novo. */
+    public void forgetFixture(CityFixtures.Kind kind) {
+        fixturesDone &= ~kind.bit();
+        fixturePos[kind.ordinal()] = null;
+        fixtureTries = 0;
+        setChanged();
+    }
+
+    /** Mais uma tentativa sem achar lugar livre. Devolve o total. */
+    public int addFixtureTry() {
+        setChanged();
+        return ++fixtureTries;
+    }
+
     /** Y do chão da cidade (o coração fica no chafariz, 4 blocos acima na cidade e 5 na capital). */
     public int floorY() {
         return worldPosition.getY() - (capital() ? 5 : 4);
@@ -198,6 +242,10 @@ public class CityHeartBlockEntity extends BlockEntity {
         if (be.registered && !be.vegetationDone && be.age % 10 == 3) be.cleanVegetation(sl);
         if (be.registered && !be.sweepDone && be.age % 10 == 8) be.sweepNext(sl);
         if (be.registered && be.age % 1200 == 600) be.checkStone(sl);
+        // Blocos de serviço na praça: a cada 10 s até resolver os três (depois disto é só uma comparação de inteiros)
+        if (be.registered && be.age % 200 == 120 && !be.fixturesSettled()) CityFixtures.tick(sl, be);
+        // onda 10: o Mecânico (veículos) chega uma vez em cada cidade, num canto livre da praça
+        if (be.registered && be.age % 200 == 160) com.renanpontes.isekaimahou.feature.cities.CityMechanic.tick(sl, be);
         CitySiege.tickHeart(sl, be);
     }
 
@@ -244,7 +292,7 @@ public class CityHeartBlockEntity extends BlockEntity {
                 if (cleaned.contains(key)) continue;
                 pending = true;
                 if (!sl.hasChunk(cx, cz)) continue;
-                CityVegetation.cleanChunk(sl, new ChunkPos(cx, cz), b, floorY() - 4, worldPosition.getY() + BOX_UP);
+                CityVegetation.cleanChunk(sl, new ChunkPos(cx, cz), b, floorY() - 16, worldPosition.getY() + BOX_UP);
                 cleaned.add(key);
                 setChanged();
                 return;
@@ -421,6 +469,12 @@ public class CityHeartBlockEntity extends BlockEntity {
         stone = tag.contains("Stone") ? BlockPos.of(tag.getLong("Stone")) : null;
         altars.clear();
         for (long l : tag.getLongArray("Altars")) altars.add(BlockPos.of(l));
+        // Campos novos da release 1.0 (opcionais: coração antigo começa com tudo por fazer)
+        fixturesDone = tag.getInt("FixDone");
+        fixtureTries = tag.getInt("FixTries");
+        for (CityFixtures.Kind kind : CityFixtures.Kind.values()) {
+            fixturePos[kind.ordinal()] = tag.contains(kind.nbtKey) ? BlockPos.of(tag.getLong(kind.nbtKey)) : null;
+        }
     }
 
     @Override
@@ -441,6 +495,12 @@ public class CityHeartBlockEntity extends BlockEntity {
         long[] a = new long[altars.size()];
         for (int i = 0; i < a.length; i++) a[i] = altars.get(i).asLong();
         tag.putLongArray("Altars", a);
+        tag.putInt("FixDone", fixturesDone);
+        tag.putInt("FixTries", fixtureTries);
+        for (CityFixtures.Kind kind : CityFixtures.Kind.values()) {
+            BlockPos fp = fixturePos[kind.ordinal()];
+            if (fp != null) tag.putLong(kind.nbtKey, fp.asLong());
+        }
     }
 
     /** Ao cliente só vai o que o cristal precisa (cor do reino). */

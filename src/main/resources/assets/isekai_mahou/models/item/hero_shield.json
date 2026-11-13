@@ -1,0 +1,32 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "textures": {
+    "particle": "isekai_mahou:item/hero_shield"
+  },
+  "base": {
+    "parent": "isekai_mahou:item/dwarf_hold/hero_shield_held"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": "isekai_mahou:item/hero_shield"
+      }
+    },
+    "fixed": {
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": "isekai_mahou:item/hero_shield"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "blocking": 1
+      },
+      "model": "isekai_mahou:item/dwarf_hold/hero_shield_blocking"
+    }
+  ]
+}

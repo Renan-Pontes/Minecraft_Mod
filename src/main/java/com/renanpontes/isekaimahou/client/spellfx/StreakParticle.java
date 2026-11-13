@@ -28,6 +28,9 @@ public class StreakParticle extends TextureSheetParticle {
         super(level, x, y, z);
         this.spark = spark;
         float s = Mth.clamp(o.scale(), 0.05F, 8.0F);
+        int motion = com.renanpontes.isekaimahou.glyph.fx.SpellFxParticles.motionOf(o.flags());
+        if (motion == 1) { vx *= 0.3; vy *= 0.3; vz *= 0.3; }
+        else if (motion >= 2) { vx *= 0.1; vy *= 0.1; vz *= 0.1; }
         double sp = Math.sqrt(vx * vx + vy * vy + vz * vz);
         if (sp < 0.02) {
             if (spark) {

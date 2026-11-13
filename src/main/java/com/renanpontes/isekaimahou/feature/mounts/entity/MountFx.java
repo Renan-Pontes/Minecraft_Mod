@@ -20,10 +20,18 @@ import net.minecraft.world.entity.player.Player;
 public final class MountFx {
 
     /** Dica de controles na barra de ação ao montar (as teclas aparecem como o jogador configurou). */
-    public static void controlsHint(ServerPlayer player, FlyingMount mount) {
-        player.displayClientMessage(Component.translatable("message.isekai_mahou.mount_controls",
-                Component.keybind("key.jump"), Component.keybind("key.sneak"),
-                Component.keybind("key.isekai_mahou.mount_ability"), mount.abilityName()).withStyle(ChatFormatting.AQUA), true);
+    public static void controlsHint(ServerPlayer player, RideMount mount) {
+        if (mount instanceof FlyingMount) {
+            player.displayClientMessage(Component.translatable("message.isekai_mahou.mount_controls",
+                    Component.keybind("key.jump"), Component.keybind("key.sneak"),
+                    Component.keybind("key.isekai_mahou.mount_ability"), mount.abilityName()).withStyle(ChatFormatting.AQUA), true);
+        } else {
+            player.displayClientMessage(Component.translatable("message.isekai_mahou.ground_mount_controls",
+                    Component.keybind("key.isekai_mahou.mount_ability"), mount.abilityName(),
+                    Component.keybind("key.sneak")).withStyle(ChatFormatting.AQUA), true);
+        }
+        // Primeira vez montado: conta para o Diário (capítulo "Montarias e Veículos")
+        if (MagicApi.get(player).counter("feat.mount_ride") == 0) MagicApi.addCounter(player, "feat.mount_ride", 1);
     }
 
     /** Doma concluída: mensagem, contador ({@code feat.tame_<id>}) e partículas. */

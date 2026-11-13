@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.feature.cities.block.CityHeartBlock;
 import com.renanpontes.isekaimahou.feature.cities.block.CityHeartBlockEntity;
 import com.renanpontes.isekaimahou.feature.cities.effect.AuroraBlessingEffect;
 import com.renanpontes.isekaimahou.feature.cities.effect.WantedEffect;
+import com.renanpontes.isekaimahou.feature.cities.effect.WellRestedEffect;
 import com.renanpontes.isekaimahou.feature.cities.entity.Citizen;
 import com.renanpontes.isekaimahou.feature.cities.entity.CityGuard;
 import com.renanpontes.isekaimahou.feature.cities.entity.CityLord;
@@ -81,6 +82,9 @@ public final class CitiesContent {
     public static final DeferredHolder<MobEffect, WantedEffect> WANTED = EFFECTS.register("wanted", WantedEffect::new);
     public static final DeferredHolder<MobEffect, AuroraBlessingEffect> AURORA_BLESSING =
             EFFECTS.register("aurora_blessing", AuroraBlessingEffect::new);
+    /** Release 1.0: dormiu na estalagem (ver {@code CityInn}). */
+    public static final DeferredHolder<MobEffect, WellRestedEffect> WELL_RESTED =
+            EFFECTS.register("well_rested", WellRestedEffect::new);
 
     public static void register(IEventBus modBus) {
         BLOCKS.register(modBus);

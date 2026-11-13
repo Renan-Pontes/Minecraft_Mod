@@ -52,6 +52,8 @@ public final class CityTrades {
 
     /** Arsenal: as 5 armas de classe (ids "&lt;arma&gt;_t&lt;tier&gt;" do módulo armory). */
     private static final String[] ARMORY = {"mage_staff", "witch_wand", "pact_blade", "druid_staff", "reaper_scythe"};
+    /** Gemas do módulo gear_plus (ids "gem_&lt;tipo&gt;_chipped" = lascadas). */
+    private static final String[] GEMS = {"ruby", "sapphire", "emerald", "topaz", "amethyst", "onyx"};
 
     public static List<Trade> build(CityMerchant merchant, ServerPlayer player) {
         Profession prof = merchant.profession();
@@ -73,6 +75,7 @@ public final class CityTrades {
             case FENCE -> fence(b, player);
             case GROCER -> grocer(b);
             case TAILOR -> tailor(b, player);
+            case MECHANIC -> mechanic(b);
         }
         return b.out;
     }
@@ -83,6 +86,8 @@ public final class CityTrades {
     private static void blacksmith(B b, ServerPlayer p) {
         b.buy("iron", Items.IRON_INGOT, 4, 2, 16);
         b.buy("coal", Items.COAL, 10, 1, 16);
+        // Metal Estelar (meteoritos do módulo world_events): o ferreiro paga bem — mais um uso para o minério raro.
+        b.modBuy("star_metal", "world_events_star_metal", 1, 5, 8);
         b.sell("iron_sword", 6, new ItemStack(Items.IRON_SWORD), 3);
         b.sell("iron_axe", 6, new ItemStack(Items.IRON_AXE), 3);
         b.sell("shield", 5, new ItemStack(Items.SHIELD), 3);
@@ -117,6 +122,10 @@ public final class CityTrades {
         b.sell("night", 3, potion(Potions.NIGHT_VISION), 4);
         b.sell("water", 3, potion(Potions.WATER_BREATHING), 4);
         b.sell("crystal", 5, new ItemStack(CoreRegistries.MANA_CRYSTAL.get()), 6);
+        // Bolsa do Alquimista (módulo arcana_items): um pouco mais barata que na loja da Guilda, uma por dia.
+        b.modSell("alchemist_bag", "alchemist_bag", 26, 1, 1);
+        // onda 9 (fundar mais fácil): o Núcleo Celeste da cidade no céu, desde o primeiro dia (um por dia)
+        b.modSell("sky_core", "sky_core", 16, 1, 1);
         b.sellIf(Standing.FRIENDLY, "strength", 5, potion(Potions.STRENGTH), 4);
         b.sellIf(Standing.FRIENDLY, "splash_heal", 4, PotionContents.createItemStack(Items.SPLASH_POTION, Potions.HEALING), 6);
         if (b.st.atLeast(Standing.FRIENDLY)) b.modSell("elixir_mana", "witch_elixir_mana", 6, 1, 4);
@@ -131,21 +140,29 @@ public final class CityTrades {
         b.sellIf(Standing.EXALTED, "gapple", 90, new ItemStack(Items.ENCHANTED_GOLDEN_APPLE), 1);
     }
 
+    /**
+     * Escriba (release 1.0): NÃO vende mais Pergaminhos de Glifo — glifos vêm de exploração, chefes e templos. Ficou o
+     * material de escrita: papel (o Pergaminho de Magia do Grimório gasta 1 papel), tinta, penas, livros, estantes.
+     */
     private static void scribe(B b, ServerPlayer p) {
         b.buy("paper", Items.PAPER, 12, 1, 16);
         b.buy("book", Items.BOOK, 2, 1, 12);
         b.buy("lapis", Items.LAPIS_LAZULI, 6, 1, 12);
+        b.buy("feather", Items.FEATHER, 8, 1, 12);
+        b.sell("blank_scrolls", 1, new ItemStack(Items.PAPER, 6), 12);
+        b.sell("ink", 1, new ItemStack(Items.INK_SAC, 3), 8);
+        b.sell("quill", 1, new ItemStack(Items.FEATHER, 3), 8);
         b.sell("book_sell", 1, new ItemStack(Items.BOOK), 12);
         b.sell("writable", 2, new ItemStack(Items.WRITABLE_BOOK), 6);
+        b.sell("map", 2, new ItemStack(Items.MAP), 4);
         b.sell("crystal", 4, new ItemStack(CoreRegistries.MANA_CRYSTAL.get()), 6);
-        // Pergaminhos de glifo por tier conforme a Academia: Neutro 1 · Amigável 2 · Honrado 3 · Reverenciado 4.
-        int[] price = {0, 8, 16, 32, 60};
-        int maxTier = b.st.atLeast(Standing.REVERED) ? 4 : b.st.atLeast(Standing.HONORED) ? 3 : b.st.atLeast(Standing.FRIENDLY) ? 2 : 1;
-        for (int t = 1; t <= maxTier; t++) {
-            List<ResourceLocation> g = glyphsFor(p, t, 2, b.r);
-            for (ResourceLocation id : g) b.sell("glyph_" + id.getPath(), price[t], GlyphScrollItem.of(id), 1);
-        }
+        // onda 9 (fundar mais fácil): a Carta de Fundação do jogador, desde o primeiro dia (uma por dia)
+        b.modSell("founding_charter", "founding_charter", 12, 1, 1);
+        b.sellIf(Standing.FRIENDLY, "bookshelf", 3, new ItemStack(Items.BOOKSHELF), 6);
+        b.sellIf(Standing.FRIENDLY, "glow_ink", 2, new ItemStack(Items.GLOW_INK_SAC, 2), 6);
+        b.sellIf(Standing.FRIENDLY, "lectern", 4, new ItemStack(Items.LECTERN), 2);
         b.sellIf(Standing.HONORED, "ench_book", 14, enchantedBook(p, b.r), 1);
+        b.sellIf(Standing.REVERED, "xp_bottles", 5, new ItemStack(Items.EXPERIENCE_BOTTLE, 4), 4);
         // Exaltado: Pergaminhos Lendários (Legends) — um por dia, sorteado entre as lendas do Círculo do jogador.
         if (b.st.atLeast(Standing.EXALTED)) {
             ItemStack legend = Legends.randomScroll(b.r, Math.max(1, MagicApi.get(p).circle()));
@@ -166,6 +183,17 @@ public final class CityTrades {
             b.modSell("vitality_charm", "vitality_charm", 30, 1, 1);
             b.modSell("mana_ring", "mana_ring", 25, 1, 1);
             b.modSell("regen_ring", "regen_ring", 30, 1, 1);
+        }
+        // Gemas (módulo gear_plus): o Cinzel de Lapidário é ferramenta, vende sempre. Gemas LASCADAS só a partir de
+        // Amigável, duas sorteadas por dia e uma de cada — juntar 9 para uma perfeita leva dias ("nada de poder fácil").
+        b.modSell("gem_chisel", "gem_chisel", 16, 1, 1);
+        if (b.st.atLeast(Standing.FRIENDLY)) {
+            int first = b.r.nextInt(GEMS.length);
+            int second = (first + 1 + b.r.nextInt(GEMS.length - 1)) % GEMS.length;
+            for (int g : new int[] {first, second}) {
+                String id = "gem_" + GEMS[g] + "_chipped";
+                b.modSell(id, id, 22, 1, 1);
+            }
         }
         if (b.st.atLeast(Standing.HONORED)) {
             b.modSell("ward_ring", "ward_ring", 45, 1, 1);
@@ -192,6 +220,14 @@ public final class CityTrades {
         b.sellIf(Standing.FRIENDLY, "cake", 3, new ItemStack(Items.CAKE), 3);
         b.sellIf(Standing.HONORED, "feast", 4, new ItemStack(Items.COOKED_MUTTON, 8), 6);
         b.sellIf(Standing.REVERED, "golden_apple", 7, new ItemStack(Items.GOLDEN_APPLE), 2);
+        // Chave do Lar (módulo home_realm, onda 2): bem cara; a oferta some se o item não existir.
+        b.modSell("home_key", "home_key", 128, 1, 1);
+        // Costura da release 1.0 — itens das ondas 1–2 pelo id (somem se o módulo não existir):
+        // Pergaminho de Retorno baratinho (todo viajante passa pela estalagem), Incenso do Vínculo (ritual do familiar)
+        // e, para quem já é Amigável, as Rédeas do Drake Terrestre.
+        b.modSell("return_scroll", "return_scroll", 3, 2, 8);
+        b.modSell("bond_incense", "bond_incense", 14, 1, 1);
+        if (b.st.atLeast(Standing.FRIENDLY)) b.modSell("land_drake_reins", "land_drake_reins", 45, 1, 1);
     }
 
     private static void priest(B b, ServerPlayer p) {
@@ -247,6 +283,8 @@ public final class CityTrades {
         b.sell("seeds", 1, new ItemStack(Items.WHEAT_SEEDS, 12), 8);
         b.sell("cane", 1, new ItemStack(Items.SUGAR_CANE, 6), 8);
         b.sell("cookies", 1, new ItemStack(Items.COOKIE, 8), 8);
+        // Armazém: o Pergaminho de Retorno também sai daqui, pelo mesmo preço da estalagem.
+        b.modSell("return_scroll", "return_scroll", 3, 2, 8);
         b.sellIf(Standing.FRIENDLY, "golden_carrot", 2, new ItemStack(Items.GOLDEN_CARROT, 3), 6);
         b.sellIf(Standing.FRIENDLY, "glistering", 2, new ItemStack(Items.GLISTERING_MELON_SLICE, 2), 6);
         b.sellIf(Standing.HONORED, "cake", 2, new ItemStack(Items.CAKE), 4);
@@ -346,6 +384,37 @@ public final class CityTrades {
         return out;
     }
 
+    /**
+     * Onda 10 — Mecânico das cidades do mundo: o básico para todos (barco, carroça, kit, cristal); o resto pela
+     * reputação no reino, como o Ferreiro. Os veículos saem com meio tanque.
+     */
+    private static void mechanic(B b) {
+        b.buy("iron", Items.IRON_INGOT, 4, 2, 12);
+        b.buy("copper", Items.COPPER_INGOT, 8, 1, 12);
+        b.sell("crystal", 5, new ItemStack(CoreRegistries.MANA_CRYSTAL.get()), 6);
+        vehicle(b, "arcane_boat", 22, null);
+        vehicle(b, "golem_cart", 28, null);
+        b.modSell("repair_kit", "vehicle_repair_kit", 10, 2, 3);
+        vehicle(b, "flying_carpet", 45, Standing.FRIENDLY);
+        if (b.st.atLeast(Standing.FRIENDLY)) {
+            b.modSell("part_engine", "vehicle_part_engine", 18, 1, 2);
+            b.modSell("part_armor", "vehicle_part_armor", 16, 1, 2);
+        }
+        vehicle(b, "arcane_broom", 72, Standing.HONORED);
+        vehicle(b, "mana_rover", 64, Standing.HONORED);
+        if (b.st.atLeast(Standing.HONORED)) b.modSell("part_storage", "vehicle_part_storage", 14, 1, 2);
+        vehicle(b, "mini_airship", 110, Standing.REVERED);
+        vehicle(b, "tide_skiff", 90, Standing.REVERED);
+        vehicle(b, "sky_galleon", 128, Standing.EXALTED);
+    }
+
+    /** Um veículo do módulo vehicles (pelo id; some se o módulo faltar), um por dia, com meio tanque. */
+    private static void vehicle(B b, String id, int coins, @javax.annotation.Nullable Standing min) {
+        if (min != null && !b.st.atLeast(min)) return;
+        BuiltInRegistries.ITEM.getOptional(IsekaiMahou.id(id)).ifPresent(i -> b.sell("vehicle_" + id, coins,
+                com.renanpontes.isekaimahou.feature.vehicles.VehicleStacks.withFuel(new ItemStack(i), 600), 1));
+    }
+
     /** Moeda: Moeda da Guilda (módulo guild) ou, se faltar, esmeralda. */
     public static Item coin() {
         return BuiltInRegistries.ITEM.getOptional(IsekaiMahou.id("guild_coin")).orElse(Items.EMERALD);
@@ -381,6 +450,11 @@ public final class CityTrades {
         /** Item de outro módulo pelo id (some se o módulo não existir). */
         void modSell(String key, String path, int coins, int count, int maxUses) {
             BuiltInRegistries.ITEM.getOptional(IsekaiMahou.id(path)).ifPresent(i -> sell(key, coins, new ItemStack(i, count), maxUses));
+        }
+
+        /** O mercador compra um item de outro módulo pelo id (a oferta some se o módulo não existir). */
+        void modBuy(String key, String path, int count, int coins, int maxUses) {
+            BuiltInRegistries.ITEM.getOptional(IsekaiMahou.id(path)).ifPresent(i -> buy(key, i, count, coins, maxUses));
         }
 
         /** O mercador compra: com reputação alta ele paga mais. */

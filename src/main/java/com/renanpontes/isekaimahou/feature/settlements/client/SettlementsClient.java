@@ -40,13 +40,25 @@ public class SettlementsClient implements ClientModule {
             Minecraft mc = Minecraft.getInstance();
             if (tag.getBoolean("Open") && !(mc.screen instanceof SettlementScreen)) mc.setScreen(new SettlementScreen());
         };
-        SettlementsNetwork.onFound = pos -> Minecraft.getInstance().setScreen(new FoundingScreen(pos));
+        SettlementsNetwork.onFound = pos -> Minecraft.getInstance().setScreen(new FoundingScreen(pos, CityPlacer.foundRot()));
+        // v1.0 (city_plan): prévias no mundo — holograma da fundação e prédio em posição livre
+        SettlementsNetwork.onProbe = CityPlacer::onProbe;
+        // onda 7 (sky_ui): névoa de nuvem na borda das Ilhas Celestes e no pé das cachoeiras
+        SkyFx.init();
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.client.event.ClientTickEvent.Post e) -> CityPlacer.tick());
+        NeoForge.EVENT_BUS.addListener(CityPlacer::onRender);
+        NeoForge.EVENT_BUS.addListener(CityPlacer::onInteract);
+        NeoForge.EVENT_BUS.addListener(CityPlacer::onKey);
+        NeoForge.EVENT_BUS.addListener(CityPlacer::onScroll);
         SettlementsNetwork.onTracker = ClientSettlements::setTracker;
         MenuTabs.register("settlement", 62, Component.translatable("settlements.isekai_mahou.ui.tab"), SettlementTab::new);
         MenuTabs.setIcon("settlement", IsekaiMahou.id("textures/gui/settlements/tab.png"));
         ObjectiveTracker.register("settlements_oath", 320, SettlementsClient::oathLines);
         ObjectiveTracker.register("settlements_build", 180, SettlementsClient::buildLines);
-        NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) -> ClientSettlements.clear());
+        NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) -> {
+            ClientSettlements.clear();
+            CityPlacer.reset();
+        });
     }
 
     private void onRenderers(EntityRenderersEvent.RegisterRenderers e) {
@@ -55,6 +67,7 @@ public class SettlementsClient implements ClientModule {
         e.registerEntityRenderer(SettlementsContent.GUARD.get(), SettlementNpcRenderer::new);
         e.registerEntityRenderer(SettlementsContent.MERCHANT.get(), SettlementNpcRenderer::new);
         e.registerEntityRenderer(SettlementsContent.MILITIA.get(), SettlementNpcRenderer::new);
+        e.registerEntityRenderer(SettlementsContent.TRADER.get(), SettlementNpcRenderer::new);
         e.registerEntityRenderer(SettlementsContent.CHAMPION.get(), CityChampionRenderer::new);
         e.registerEntityRenderer(SettlementsContent.SITE_SIGN.get(), SiteSignRenderer::new);
         e.registerBlockEntityRenderer(SettlementsContent.HEART_BE.get(), SettlementHeartRenderer::new);
@@ -92,7 +105,8 @@ public class SettlementsClient implements ClientModule {
     private static List<ObjectiveLine> buildLines() {
         CompoundTag t = ClientSettlements.tracker();
         if (!t.contains("BuildKey") || t.getString("BuildKey").isEmpty()) return List.of();
-        Component title = Component.translatable("settlements.isekai_mahou.track.build", Component.translatable(t.getString("BuildKey")));
+        Component what = t.contains("BuildName") ? ClientSettlements.text(t, "BuildName") : Component.translatable(t.getString("BuildKey"));
+        Component title = Component.translatable("settlements.isekai_mahou.track.build", what);
         Component detail = Component.translatable("settlements.isekai_mahou.track.build.detail", t.getString("BuildCity"), t.getInt("BuildQueue"));
         return List.of(ObjectiveLine.progress(title, detail, t.getInt("BuildPct"), 100, 0xC9A27A, new ItemStack(Items.BRICKS)));
     }

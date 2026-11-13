@@ -8,7 +8,7 @@ import com.renanpontes.isekaimahou.feature.legends_f.LfUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -122,7 +122,7 @@ public class EnvyHandsEntity extends LfSpellEntity {
             if (age % 10 == 0 && stats != null) {
                 ctx.damage(le, DAMAGE, stats, this);
                 Statuses.apply(le, Statuses.Kind.CORRUPTED, 1, 100, ctx.caster(), LfUtil.power(ctx, stats));
-                level.sendParticles(ParticleTypes.SQUID_INK, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 6, 0.3, 0.3, 0.3, 0.02);
+                level.sendParticles(Vfx.ink(), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 6, 0.3, 0.3, 0.3, 0.02);
             }
         }
         if (age % 20 == 0) LfUtil.sound(level, c, SoundEvents.SCULK_CATALYST_BLOOM, 0.8F, 0.5F);

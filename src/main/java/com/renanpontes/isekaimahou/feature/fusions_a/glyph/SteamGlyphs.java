@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -33,8 +34,8 @@ public final class SteamGlyphs {
 
     /** Nuvem de vapor escaldante num ponto. */
     static void steamPuff(ServerLevel sl, Vec3 c, int amount, double spread) {
-        sl.sendParticles(ParticleTypes.CLOUD, c.x, c.y, c.z, amount, spread, spread * 0.6, spread, 0.04);
-        sl.sendParticles(ParticleTypes.POOF, c.x, c.y, c.z, amount / 2, spread, spread * 0.6, spread, 0.02);
+        sl.sendParticles(Vfx.cloud(), c.x, c.y, c.z, amount, spread, spread * 0.6, spread, 0.04);
+        sl.sendParticles(Vfx.poof(), c.x, c.y, c.z, amount / 2, spread, spread * 0.6, spread, 0.02);
         sl.sendParticles(FaUtil.dustFade(0xFFFFFF, 0xD8E6EE, 1.8F), c.x, c.y, c.z, amount / 2, spread, spread * 0.6, spread, 0);
     }
 
@@ -54,7 +55,7 @@ public final class SteamGlyphs {
                 t.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, stats.duration(80), 0), ctx.caster());
                 Vec3 c = t.position().add(0, t.getBbHeight() * 0.6, 0);
                 steamPuff(sl, c, 14, 0.35);
-                sl.sendParticles(ParticleTypes.SPLASH, c.x, c.y, c.z, 16, 0.3, 0.3, 0.3, 0.1);
+                sl.sendParticles(Vfx.splash(), c.x, c.y, c.z, 16, 0.3, 0.3, 0.3, 0.1);
                 FaUtil.sound(sl, c, SoundEvents.FIRE_EXTINGUISH, 0.9F, 0.9F);
                 FaUtil.sound(sl, c, SoundEvents.GENERIC_SPLASH, 0.6F, 1.3F);
             }
@@ -173,7 +174,7 @@ public final class SteamGlyphs {
                 final int tick = t;
                 SpellScheduler.schedule(Math.max(1, t), () -> {
                     sl.sendParticles(ParticleTypes.BUBBLE_POP, c.x, c.y + 0.1, c.z, 6 + tick, 0.5, 0.05, 0.5, 0.02);
-                    sl.sendParticles(ParticleTypes.CLOUD, c.x, c.y + 0.1, c.z, 2, 0.3, 0.05, 0.3, 0.01);
+                    sl.sendParticles(Vfx.cloud(), c.x, c.y + 0.1, c.z, 2, 0.3, 0.05, 0.3, 0.01);
                     FaUtil.ring(sl, c.add(0, 0.05, 0), FaUtil.dust(0xBFE6FF, 1.0F), 1.2, 14, 0);
                     if (tick % 6 == 0) FaUtil.sound(sl, c, SoundEvents.BUBBLE_COLUMN_UPWARDS_AMBIENT, 1.0F, 0.7F);
                 });
@@ -184,10 +185,10 @@ public final class SteamGlyphs {
         private void erupt(SpellContext ctx, SpellStats stats, Vec3 c) {
             ServerLevel sl = ctx.level();
             float p = Math.min(stats.power(), 2.5F);
-            FaUtil.column(sl, c, ParticleTypes.CLOUD, 7.0, 4, 0.35, 0.03);
-            FaUtil.column(sl, c, ParticleTypes.SPLASH, 6.0, 6, 0.4, 0.2);
+            FaUtil.column(sl, c, Vfx.cloud(), 7.0, 4, 0.35, 0.03);
+            FaUtil.column(sl, c, Vfx.splash(), 6.0, 6, 0.4, 0.2);
             FaUtil.column(sl, c, ParticleTypes.BUBBLE_COLUMN_UP, 5.0, 4, 0.3, 0.1);
-            sl.sendParticles(ParticleTypes.FALLING_WATER, c.x, c.y + 6, c.z, 30, 1.2, 0.3, 1.2, 0);
+            sl.sendParticles(Vfx.water(), c.x, c.y + 6, c.z, 30, 1.2, 0.3, 1.2, 0);
             FaUtil.sound(sl, c, SoundEvents.GENERIC_SPLASH, 1.4F, 0.8F);
             FaUtil.sound(sl, c, SoundEvents.FIRE_EXTINGUISH, 1.2F, 0.5F);
             FaUtil.sound(sl, c, SoundEvents.BUBBLE_COLUMN_UPWARDS_INSIDE, 1.2F, 1.0F);

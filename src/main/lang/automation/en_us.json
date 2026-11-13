@@ -25,7 +25,7 @@
   "glyph.isekai_mahou.till": "Till",
   "glyph.isekai_mahou.till.desc": "Tills grass and dirt in the area like a hoe and leaves the farmland well watered.",
   "glyph.isekai_mahou.sow": "Sow",
-  "glyph.isekai_mahou.sow.desc": "Plants seeds from your inventory (on a pedestal: from chests touching it) on empty farmland in the area, following the rows.",
+  "glyph.isekai_mahou.sow.desc": "Plants seeds from your inventory (on a pedestal: from chests touching it) on empty farmland in the area, following the rows. Pedestal filter (or seed in the off hand): plants only that seed.",
   "glyph.isekai_mahou.call_rain": "Call Rain",
   "glyph.isekai_mahou.call_rain.desc": "Makes it rain in the world for 5 minutes. The creature hit gets soaked and its fire goes out.",
   "glyph.isekai_mahou.clear_sky": "Clear Sky",

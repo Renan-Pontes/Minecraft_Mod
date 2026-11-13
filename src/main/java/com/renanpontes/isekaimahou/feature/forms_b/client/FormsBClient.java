@@ -20,6 +20,11 @@ public class FormsBClient implements ClientModule {
         modBus.addListener(FormsBClient::itemColors);
         NeoForge.EVENT_BUS.addListener(SealClient::tooltip);
         NeoForge.EVENT_BUS.addListener(SealClient::tick);
+        // Forja de Invocações: tecla de ordem e cor do elemento dos corpos
+        modBus.addListener(SummonForgeClient::registerKeys);
+        com.renanpontes.isekaimahou.feature.forms_b.summon.SummonNet.clientLook = SummonForgeClient::onLook;
+        NeoForge.EVENT_BUS.addListener(SummonForgeClient::tick);
+        NeoForge.EVENT_BUS.addListener(SummonForgeClient::logout);
     }
 
     private static void renderers(EntityRenderersEvent.RegisterRenderers e) {

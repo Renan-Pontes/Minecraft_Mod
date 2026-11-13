@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.feature.class_rogue.glyph;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueFx;
+import com.renanpontes.isekaimahou.feature.class_rogue.RogueFxNet;
 import com.renanpontes.isekaimahou.feature.class_rogue.entity.RogueKnifeEntity;
 import com.renanpontes.isekaimahou.glyph.FormGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
@@ -71,7 +72,7 @@ public class KnifeFanForm extends FormGlyph {
             RogueKnifeEntity knife = RogueKnifeEntity.spell(ctx, eye.add(dir.scale(0.4)).subtract(0, 0.15, 0), dir, speed);
             level.addFreshEntity(knife);
         }
-        level.sendParticles(RogueFx.dust(ctx.color() & 0xFFFFFF, 1.0F), eye.x + look.x, eye.y - 0.2, eye.z + look.z, 10, 0.3, 0.1, 0.3, 0);
+        RogueFxNet.at(level, RogueFxNet.KNIFE_FAN, eye.add(look).subtract(0, 0.2, 0), look, spread, ctx.color() & 0xFFFFFF, -1);
         RogueFx.sound(level, eye, SoundEvents.TRIDENT_THROW.value(), 0.8F, 1.6F);
         RogueFx.sound(level, eye, SoundEvents.PLAYER_ATTACK_SWEEP, 0.6F, 1.8F);
     }

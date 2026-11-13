@@ -1,0 +1,893 @@
+{
+  "layout": 2,
+  "branches": [
+    {
+      "id": "study",
+      "color": "6C7BFF"
+    },
+    {
+      "id": "elements",
+      "color": "FF8A3D"
+    },
+    {
+      "id": "ward",
+      "color": "7FD6E8"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "tome_reading",
+      "branch": 0,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:lapis_lazuli",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 8.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "sharp_mind",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:glowstone_dust",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:mana_regen",
+          "amount": 0.02,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "clean_formulas",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:amethyst_shard",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:spell_power",
+          "amount": 0.01,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "thesis_defended",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:ender_pearl",
+      "effects": [
+        {
+          "stat": "cast_refund",
+          "amount": 0.05
+        },
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 15.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "deep_well",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:lapis_lazuli",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 10.0,
+          "op": "add_value"
+        },
+        {
+          "attribute": "isekai_mahou:mana_regen",
+          "amount": 0.01,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "living_archive",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "mana_on_kill",
+          "amount": 2.0
+        },
+        {
+          "attribute": "isekai_mahou:spell_power",
+          "amount": 0.006,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "brimming_reserve",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:lapis_block",
+      "effects": [
+        {
+          "stat": "high_mana_power",
+          "amount": 0.1
+        }
+      ],
+      "exclusive": [
+        "quick_mind"
+      ]
+    },
+    {
+      "id": "quick_mind",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:compass",
+      "effects": [
+        {
+          "stat": "kill_cdr",
+          "amount": 1.5
+        }
+      ],
+      "exclusive": [
+        "brimming_reserve"
+      ]
+    },
+    {
+      "id": "margin_notes",
+      "branch": 0,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:enchanted_book",
+      "effects": [
+        {
+          "stat": "spell_damage_all",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "mind_library",
+      "branch": 0,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:diamond",
+      "effects": [
+        {
+          "stat": "crit_mana",
+          "amount": 4.0
+        },
+        {
+          "stat": "crit_chance",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "arcane_echo",
+      "branch": 0,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:echo_shard",
+      "effects": [
+        {
+          "stat": "echo",
+          "amount": 0.2
+        }
+      ]
+    },
+    {
+      "id": "mastery_study",
+      "branch": 0,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 4.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "trained_spark",
+      "branch": 1,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "isekai_mahou:essence_fire",
+      "effects": [
+        {
+          "stat": "spell_damage.fire",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "trained_tide",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "isekai_mahou:essence_water",
+      "effects": [
+        {
+          "stat": "spell_damage.water",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "trained_stone",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "isekai_mahou:essence_earth",
+      "effects": [
+        {
+          "stat": "spell_damage.earth",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "chain_reaction",
+      "branch": 1,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:poisonous_potato",
+      "effects": [
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.06
+        }
+      ]
+    },
+    {
+      "id": "trained_gale",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "isekai_mahou:essence_wind",
+      "effects": [
+        {
+          "stat": "spell_damage.wind",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "convergence",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:spyglass",
+      "effects": [
+        {
+          "stat": "crit_chance",
+          "amount": 0.01
+        },
+        {
+          "stat": "crit_damage",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "glass_cannon",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:tnt",
+      "effects": [
+        {
+          "stat": "reckless",
+          "amount": 0.14
+        }
+      ],
+      "exclusive": [
+        "long_range"
+      ]
+    },
+    {
+      "id": "long_range",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:spectral_arrow",
+      "effects": [
+        {
+          "stat": "far_damage",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "glass_cannon"
+      ]
+    },
+    {
+      "id": "light_and_shadow",
+      "branch": 1,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "isekai_mahou:essence_light",
+      "effects": [
+        {
+          "stat": "spell_damage.light",
+          "amount": 0.012
+        },
+        {
+          "stat": "spell_damage.shadow",
+          "amount": 0.012
+        }
+      ]
+    },
+    {
+      "id": "overload",
+      "branch": 1,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:glowstone",
+      "effects": [
+        {
+          "stat": "surge",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "cataclysm",
+      "branch": 1,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:gunpowder",
+      "effects": [
+        {
+          "stat": "kill_burst",
+          "amount": 0.2
+        },
+        {
+          "stat": "ult_power",
+          "amount": 0.15
+        }
+      ]
+    },
+    {
+      "id": "mastery_elements",
+      "branch": 1,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "spell_damage_all",
+          "amount": 0.004
+        }
+      ]
+    },
+    {
+      "id": "reinforced_robes",
+      "branch": 2,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:golden_apple",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 1.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "counterspell",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:ender_eye",
+      "effects": [
+        {
+          "stat": "magic_resist",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "mana_skin",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "isekai_mahou:mana_crystal",
+      "effects": [
+        {
+          "stat": "mana_shield",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "runic_barrier",
+      "branch": 2,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:tinted_glass",
+      "effects": [
+        {
+          "stat": "barrier",
+          "amount": 3.0
+        },
+        {
+          "attribute": "minecraft:generic.max_absorption",
+          "amount": 3.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "composure",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:anvil",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.knockback_resistance",
+          "amount": 0.03,
+          "op": "add_value"
+        },
+        {
+          "attribute": "minecraft:generic.armor",
+          "amount": 0.3,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "arcane_aegis",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:totem_of_undying",
+      "effects": [
+        {
+          "stat": "second_wind",
+          "amount": 1.5
+        },
+        {
+          "stat": "damage_resist",
+          "amount": 0.006
+        }
+      ]
+    },
+    {
+      "id": "casting_shield",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:shulker_shell",
+      "effects": [
+        {
+          "stat": "cast_ward",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "untouched_mantle"
+      ]
+    },
+    {
+      "id": "untouched_mantle",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:diamond_chestplate",
+      "effects": [
+        {
+          "stat": "full_health_resist",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "casting_shield"
+      ]
+    },
+    {
+      "id": "protective_circle",
+      "branch": 2,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:shield",
+      "effects": [
+        {
+          "stat": "damage_resist",
+          "amount": 0.008
+        }
+      ]
+    },
+    {
+      "id": "lifeline",
+      "branch": 2,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:glow_berries",
+      "effects": [
+        {
+          "stat": "heal_on_cast",
+          "amount": 1.0
+        },
+        {
+          "stat": "low_health_resist",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "time_anchor",
+      "branch": 2,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:totem_of_undying",
+      "effects": [
+        {
+          "stat": "cheat_death",
+          "amount": 0.35
+        }
+      ]
+    },
+    {
+      "id": "mastery_ward",
+      "branch": 2,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 0.5,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "endless_notes",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "mage_archmage",
+      "icon": "minecraft:lapis_lazuli",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 15.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "speed_reading",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "mage_archmage",
+      "icon": "minecraft:glowstone_dust",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:mana_regen",
+          "amount": 0.03,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "arcane_font",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "mage_archmage",
+      "icon": "minecraft:lapis_block",
+      "effects": [
+        {
+          "stat": "high_mana_power",
+          "amount": 0.05
+        },
+        {
+          "stat": "crit_mana",
+          "amount": 3.0
+        }
+      ]
+    },
+    {
+      "id": "omniscience",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "mage_archmage",
+      "icon": "minecraft:echo_shard",
+      "effects": [
+        {
+          "stat": "echo",
+          "amount": 0.1
+        },
+        {
+          "stat": "spell_damage_all",
+          "amount": 0.08
+        }
+      ]
+    },
+    {
+      "id": "steel_and_spell",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "mage_battlemage",
+      "icon": "minecraft:mace",
+      "effects": [
+        {
+          "stat": "near_damage",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "arcane_cuirass",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "mage_battlemage",
+      "icon": "minecraft:iron_chestplate",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.armor",
+          "amount": 1.0,
+          "op": "add_value"
+        },
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 1.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "mystic_blade",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "mage_battlemage",
+      "icon": "minecraft:red_banner",
+      "effects": [
+        {
+          "stat": "revenge",
+          "amount": 0.08
+        },
+        {
+          "stat": "cast_ward",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "eye_of_the_storm",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "mage_battlemage",
+      "icon": "minecraft:glowstone",
+      "effects": [
+        {
+          "stat": "surge",
+          "amount": 0.03
+        },
+        {
+          "stat": "low_health_resist",
+          "amount": 0.15
+        }
+      ]
+    }
+  ],
+  "subclasses": [
+    {
+      "id": "mage_archmage",
+      "color": "6C7BFF",
+      "icon": "minecraft:enchanted_book",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 120.0,
+          "op": "add_value"
+        },
+        {
+          "attribute": "isekai_mahou:mana_regen",
+          "amount": 0.15,
+          "op": "add_value"
+        },
+        {
+          "stat": "mana_on_kill",
+          "amount": 6.0
+        },
+        {
+          "stat": "high_mana_power",
+          "amount": 0.12
+        },
+        {
+          "stat": "cast_refund",
+          "amount": 0.15
+        }
+      ]
+    },
+    {
+      "id": "mage_battlemage",
+      "color": "FF6A4D",
+      "icon": "minecraft:blaze_rod",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:spell_power",
+          "amount": 0.08,
+          "op": "add_value"
+        },
+        {
+          "stat": "mana_shield",
+          "amount": 0.15
+        },
+        {
+          "attribute": "minecraft:generic.armor",
+          "amount": 4.0,
+          "op": "add_value"
+        },
+        {
+          "stat": "near_damage",
+          "amount": 0.15
+        },
+        {
+          "stat": "heal_on_cast",
+          "amount": 1.5
+        }
+      ]
+    }
+  ]
+}

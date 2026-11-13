@@ -1,0 +1,16 @@
+{
+  "screen.isekai_mahou.release_forge.shape": "✦ Moldar liberação",
+  "screen.isekai_mahou.release_forge.shape_shikai": "✦ Shikai",
+  "screen.isekai_mahou.release_forge.shape_bankai": "✦ Bankai",
+  "screen.isekai_mahou.release_forge.title": "Moldar liberação: %s",
+  "screen.isekai_mahou.release_forge.tip": "Escolha os efeitos, aumentos e leis que quiser: enquanto a liberação durar, os efeitos entram nos seus golpes e na aura, e as leis valem. O visual, o nome e as técnicas da liberação não mudam.",
+  "screen.isekai_mahou.release_forge.need_form": "Requer a forma Transformação (caminho Arcano, Círculo %s).",
+  "screen.isekai_mahou.release_forge.no_recipe": "Sem receita: a liberação fica como sempre foi.",
+  "screen.isekai_mahou.release_forge.recipe": "Receita atual: %s",
+  "screen.isekai_mahou.release_forge.click": "Clique para moldar no Grimório (glifo Transformação).",
+  "screen.isekai_mahou.release_forge.none": "nenhuma",
+  "message.isekai_mahou.release_forge.debug": "%s — pode moldar: %s · receita: %s · valendo agora: %s",
+  "hint.isekai_mahou.shinigami_shape_release": "Sua liberação aceita os efeitos que você quiser: menu → Shinigami → Moldar liberação.",
+  "hint.isekai_mahou.quincy_shape_release": "Seu Vollständig aceita os efeitos que você quiser: menu → Quincy → Moldar liberação.",
+  "hint.isekai_mahou.hollow_shape_release": "Sua Resurrección aceita os efeitos que você quiser: menu → Hollow → Moldar liberação."
+}

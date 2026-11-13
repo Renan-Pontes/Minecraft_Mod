@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:gem_emerald"
+    },
+    {
+      "item": "isekai_mahou:gem_emerald"
+    },
+    {
+      "item": "isekai_mahou:gem_emerald"
+    },
+    {
+      "item": "isekai_mahou:abyss_shard"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:gem_emerald_flawless",
+    "count": 1
+  }
+}

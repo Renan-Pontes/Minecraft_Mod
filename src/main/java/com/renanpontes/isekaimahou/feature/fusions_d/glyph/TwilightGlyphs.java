@@ -16,6 +16,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -92,7 +93,7 @@ public final class TwilightGlyphs {
                 }
                 if (shadow) Destruction.cylinder(sl, g.add(0, -0.5, 0), r * 0.75F, -4F, ctx.caster(), Destruction.Mode.ERASE);
                 else Destruction.surface(sl, g, r, ctx.caster(), Destruction.Mode.VITRIFY);
-                sl.sendParticles(shadow ? ParticleTypes.SQUID_INK : ParticleTypes.END_ROD, g.x, g.y + 0.5, g.z, 30, r * 0.4, 0.3, r * 0.4, 0.2);
+                sl.sendParticles(shadow ? Vfx.ink() : Vfx.endRod(), g.x, g.y + 0.5, g.z, 30, r * 0.4, 0.3, r * 0.4, 0.2);
                 FdFx.shockwave(sl, g.add(0, 0.2, 0), FdFx.dust(shadow ? FdFx.TWILIGHT_SHADOW : FdFx.TWILIGHT_GOLD, 1.8F), 20, 0.35);
                 FdFx.sound(sl, g, shadow ? SoundEvents.WARDEN_ATTACK_IMPACT : SoundEvents.BEACON_POWER_SELECT, 1.6F, shadow ? 0.6F : 1.4F);
                 FdFx.sound(sl, g, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.8F, shadow ? 0.5F : 1.2F);

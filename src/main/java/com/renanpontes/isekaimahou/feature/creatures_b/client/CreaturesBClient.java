@@ -44,8 +44,7 @@ public class CreaturesBClient implements ClientModule {
         e.registerEntityRenderer(CbRegistries.WEREWOLF.get(), ctx -> new CbRenderer<>(ctx, CbRenderer.model("werewolf", "werewolf"),
                 true, 0.6F, null));
         e.registerEntityRenderer(CbRegistries.CULTIST.get(), ctx -> new CbRenderer<>(ctx, new CultistModel(), true, 0.5F, null));
-        e.registerEntityRenderer(CbRegistries.WANDERING_MAGE.get(), ctx -> new CbRenderer<>(ctx,
-                CbRenderer.model("wandering_mage", "wandering_mage"), true, 0.5F, null));
+        e.registerEntityRenderer(CbRegistries.WANDERING_MAGE.get(), WanderingMageRenderer::new);
     }
 
     private static Color bossTint(CbBoss boss) {

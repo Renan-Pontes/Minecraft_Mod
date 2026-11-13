@@ -2,6 +2,7 @@ package com.renanpontes.isekaimahou.feature.origins_a.familiar;
 
 import java.util.EnumSet;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -137,7 +138,7 @@ public class FamiliarCatEntity extends FamiliarEntity {
         triggerAnim("action", "hiss");
         level.playSound(null, getX(), getY(), getZ(), SoundEvents.CAT_HISS, SoundSource.NEUTRAL, 1.0F, 1.0F);
         level.sendParticles(ParticleTypes.ANGRY_VILLAGER, getX(), getY() + 0.9, getZ(), 2, 0.2, 0.1, 0.2, 0);
-        level.sendParticles(ParticleTypes.WITCH, getX(), getY() + 0.5, getZ(), 10, 0.4, 0.3, 0.4, 0.05);
+        level.sendParticles(Vfx.witch(), getX(), getY() + 0.5, getZ(), 10, 0.4, 0.3, 0.4, 0.05);
     }
 
     @Override

@@ -11,6 +11,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.core.Element;
+import com.renanpontes.isekaimahou.core.boss.BossCurses;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
 import com.renanpontes.isekaimahou.feature.bosses_a.BossSpells;
@@ -288,6 +289,8 @@ public class IgnisEntity extends ElementalGuardian {
             breathHit.put(e.getUUID(), t);
             BossSpells.hit(this, e, Element.FIRE, dmg);
             e.igniteForSeconds(4);
+            // O jato é o calor mais forte: derrete a armadura mais rápido
+            BossCurses.apply(e, BossCurses.SCORCHED, 100, Math.min(3, phase()));
         }
     }
 
@@ -538,7 +541,11 @@ public class IgnisEntity extends ElementalGuardian {
         }
         if (t != 62) return;
         level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, c.x, c.y, c.z, 4, 2.0, 1.0, 2.0, 0);
-        level.sendParticles(flame(), c.x, c.y, c.z, 300, 3.0, 2.0, 3.0, 0.5);
+        level.sendParticles(flame(), c.x, c.y, c.z, 160, 3.0, 2.0, 3.0, 0.5);
+        // Impacto: clarão na tela de todos por perto e chão rachado (só visual: a arena não quebra)
+        BossKit.flashNear(level, c, 40, isBlueFlame() ? 0x9FE8FF : 0xFFC060, 0.75F, 18);
+        BossKit.crackFloor(level, position(), radius, 7, 120);
+        BossKit.debris(level, position(), radius * 0.6, 24);
         level.sendParticles(ParticleTypes.LAVA, c.x, c.y, c.z, 60, 3.0, 2.0, 3.0, 0);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 5.0F, 0.4F);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 2.0F, 1.5F);
@@ -550,6 +557,7 @@ public class IgnisEntity extends ElementalGuardian {
             float dmg = (float) (26F * mult() * Math.max(0.4, 1.0 - d / (radius + 2)));
             BossSpells.hit(this, e, Element.FIRE, dmg);
             e.igniteForSeconds(8);
+            BossCurses.apply(e, BossCurses.SCORCHED, 200, 3);
             BossSpells.knock(e, e.position().subtract(position()), 2.0, 0.8);
         }
         GuardianShockwave.create(this, position(), Element.FIRE).radius(14F, 1.2F).damage(0F).knock(0.4, 0.2)
@@ -561,6 +569,23 @@ public class IgnisEntity extends ElementalGuardian {
     // =====================================================================================
     @Override
     protected void passiveTick(ServerLevel level, @Nullable LivingEntity target) {
+        // ASSINATURA — Calor Escaldante: perto do Ignis o ar tremula e a armadura DERRETE (durabilidade). O raio cresce
+        // com a fase; ficar longe (ou com Resistência ao Fogo) é a resposta.
+        if (stage() != 2 && target != null && tickCount % 20 == 0 && !isDeadOrDying()) {
+            double heat = getBbWidth() * 0.5 + 5.0 + 2.5 * phase();
+            boolean any = false;
+            for (LivingEntity e : BossSpells.foesAround(this, position(), heat)) {
+                BossCurses.apply(e, BossCurses.SCORCHED, 50, phase() - 1);
+                any = true;
+            }
+            if (any) hint("heat", 32);
+            // Ondas de calor visíveis no chão em volta
+            for (int i = 0; i < 10; i++) {
+                double a = random.nextDouble() * Math.PI * 2, d = 1.5 + random.nextDouble() * heat;
+                level.sendParticles(ParticleTypes.WHITE_ASH, getX() + Math.cos(a) * d, getY() + 0.2, getZ() + Math.sin(a) * d,
+                        1, 0.1, 0.4, 0.1, 0.02);
+            }
+        }
         // Fase 3: aura de calor — um anel que acompanha o Ignis e pulsa a cada 2 s (dano leve em quem fica colado)
         if (phase() >= 3 && stage() == 0 && tickCount % 40 == 0 && !isDeadOrDying()) {
             float r = getBbWidth() * 0.5F + 3.0F;

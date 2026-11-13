@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -70,7 +71,7 @@ public final class NatureGlyphs {
             ServerLevel sl = ctx.level();
             if (target instanceof AgeableMob am && am.isBaby()) {
                 am.setAge(0);
-                FaUtil.around(sl, am, ParticleTypes.HAPPY_VILLAGER, 15, 0);
+                FaUtil.around(sl, am, Vfx.happy(), 15, 0);
                 FaUtil.sound(sl, am.position(), SoundEvents.BONE_MEAL_USE, 1.0F, 0.9F);
             }
             grow(ctx, stats, target.blockPosition());
@@ -194,7 +195,7 @@ public final class NatureGlyphs {
                     t.addEffect(new MobEffectInstance(MobEffects.POISON, stats.duration(100), FaUtil.amp(ctx, stats)), ctx.caster());
                 }
                 Vec3 c = t.position().add(0, t.getBbHeight() * 0.6, 0);
-                sl.sendParticles(ParticleTypes.SPORE_BLOSSOM_AIR, c.x, c.y, c.z, 30, 0.6, 0.5, 0.6, 0.02);
+                sl.sendParticles(Vfx.sporeAir(), c.x, c.y, c.z, 30, 0.6, 0.5, 0.6, 0.02);
                 sl.sendParticles(FaUtil.dust(0x9C6BD8, 1.4F), c.x, c.y, c.z, 14, 0.5, 0.4, 0.5, 0);
             }
             cloud(ctx, stats, target.position());
@@ -237,23 +238,23 @@ public final class NatureGlyphs {
                 // Invertido: pólen tóxico
                 FaUtil.hurt(ctx, le, 4.0F, stats, null);
                 le.addEffect(new MobEffectInstance(MobEffects.POISON, stats.duration(80), 0), ctx.caster());
-                FaUtil.around(sl, le, ParticleTypes.SPORE_BLOSSOM_AIR, 20, 0.02);
+                FaUtil.around(sl, le, Vfx.sporeAir(), 20, 0.02);
                 return;
             }
             ctx.heal(le, 6.0F, stats);
             le.addEffect(new MobEffectInstance(MobEffects.REGENERATION, stats.duration(60), 0), ctx.caster());
-            FaUtil.around(sl, le, ParticleTypes.CHERRY_LEAVES, 12, 0);
+            FaUtil.around(sl, le, Vfx.cherry(), 12, 0);
             if (!FaUtil.once(ctx, "bloom")) return;
             float r = stats.radius(4.0F);
             for (LivingEntity a : sl.getEntitiesOfClass(LivingEntity.class, le.getBoundingBox().inflate(r),
                     a -> a != le && a.isAlive() && (a == ctx.caster() || ctx.isAlly(a)) && a.distanceToSqr(le) <= r * r)) {
                 ctx.heal(a, 4.0F, stats);
-                FaUtil.around(sl, a, ParticleTypes.CHERRY_LEAVES, 6, 0);
+                FaUtil.around(sl, a, Vfx.cherry(), 6, 0);
             }
             plantFlowers(ctx, le.blockPosition(), r);
             Vec3 c = le.position().add(0, 0.2, 0);
             FaUtil.shockwave(sl, c, FaUtil.dustFade(0xFFB7E0, 0x7FDB6A, 1.2F), 36, 0.3);
-            sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, c.x, c.y + 1, c.z, 20, r * 0.4, 0.6, r * 0.4, 0);
+            sl.sendParticles(Vfx.happy(), c.x, c.y + 1, c.z, 20, r * 0.4, 0.6, r * 0.4, 0);
             FaUtil.sound(sl, c, SoundEvents.FLOWERING_AZALEA_PLACE, 1.2F, 0.9F);
             FaUtil.sound(sl, c, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.3F);
         }
@@ -272,7 +273,7 @@ public final class NatureGlyphs {
                 BlockState flower = FLOWERS[sl.random.nextInt(FLOWERS.length)].defaultBlockState();
                 if (!flower.canSurvive(sl, at)) continue;
                 sl.setBlock(at, flower, Block.UPDATE_ALL);
-                sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, at.getX() + 0.5, at.getY() + 0.3, at.getZ() + 0.5, 3, 0.2, 0.1, 0.2, 0);
+                sl.sendParticles(Vfx.happy(), at.getX() + 0.5, at.getY() + 0.3, at.getZ() + 0.5, 3, 0.2, 0.1, 0.2, 0);
                 planted++;
             }
         }
@@ -295,9 +296,9 @@ public final class NatureGlyphs {
             ServerLevel sl = ctx.level();
             le.addEffect(new MobEffectInstance(FaRegistries.PHOTOSYNTHESIS, stats.duration(1200), FaUtil.amp(ctx, stats)), ctx.caster());
             Vec3 top = le.position().add(0, le.getBbHeight() + 4, 0);
-            FaUtil.line(sl, top, le.position().add(0, le.getBbHeight(), 0), ParticleTypes.END_ROD, 2);
+            FaUtil.line(sl, top, le.position().add(0, le.getBbHeight(), 0), Vfx.endRod(), 2);
             FaUtil.spiral(sl, le, FaUtil.dustFade(0xFFF07A, 0x58C84A, 1.1F), 2, 30);
-            sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, le.getX(), le.getY() + le.getBbHeight() * 0.6, le.getZ(), 12, 0.4, 0.5, 0.4, 0);
+            sl.sendParticles(Vfx.happy(), le.getX(), le.getY() + le.getBbHeight() * 0.6, le.getZ(), 12, 0.4, 0.5, 0.4, 0);
             FaUtil.sound(sl, le.position(), SoundEvents.BEACON_POWER_SELECT, 0.7F, 1.5F);
             FaUtil.sound(sl, le.position(), SoundEvents.AZALEA_LEAVES_PLACE, 1.0F, 1.2F);
             if (le instanceof ServerPlayer sp && !FaEffects.Photosynthesis.inSunlight(sp)) {
@@ -339,7 +340,14 @@ public final class NatureGlyphs {
 
         private SummonedEnt summon(SpellContext ctx, SpellStats stats, Vec3 near) {
             if (!FaUtil.once(ctx, "summon_ent")) return null;
-            SummonedEnt ent = SummonedEnt.summon(ctx, near, stats.duration(900), Math.min(3.0F, FaUtil.power(ctx, stats)));
+            // v1.0: Dividir chama um segundo Ent, ao lado do primeiro (limite do próprio Ent)
+            int n = Math.min(SummonedEnt.MAX_PER_OWNER, stats.count());
+            SummonedEnt ent = null;
+            for (int i = 0; i < n; i++) {
+                Vec3 at = i == 0 ? near : near.add(FaUtil.flatLook(ctx).yRot((float) Math.PI / 2).scale(2.8 * i));
+                SummonedEnt e = SummonedEnt.summon(ctx, at, stats.duration(900), Math.min(3.0F, FaUtil.power(ctx, stats)), n);
+                if (ent == null) ent = e;
+            }
             if (ent != null && ctx.caster() instanceof Mob m && m.getTarget() != null) ent.setTarget(m.getTarget());
             return ent;
         }

@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import org.joml.Vector3f;
 
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.core.api.Domains;
 import com.renanpontes.isekaimahou.feature.ultimates.MeteorImpact;
@@ -14,6 +15,7 @@ import com.renanpontes.isekaimahou.feature.ultimates.UltFx;
 import com.renanpontes.isekaimahou.feature.ultimates.UltRegistries;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -207,7 +209,7 @@ public class MeteorEntity extends Entity implements GeoEntity, TraceableEntity {
         }
         // Rastro visível de longe também para quem ainda não rastreia a entidade
         if (tickCount % 3 == 0) {
-            UltFx.far(sl, ParticleTypes.LARGE_SMOKE, next.x, next.y, next.z, 2, 0.3 * s, 0.3 * s, 0.3 * s, 0.01);
+            UltFx.far(sl, Vfx.largeSmoke(), next.x, next.y, next.z, 2, 0.3 * s, 0.3 * s, 0.3 * s, 0.01);
         }
     }
 
@@ -253,7 +255,7 @@ public class MeteorEntity extends Entity implements GeoEntity, TraceableEntity {
         if (t >= 1.05F) return;
         RandomSource r = random;
         float s = size();
-        boolean reduced = MahouConfig.REDUCED_PARTICLES.get();
+        boolean reduced = !FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         int n = reduced ? 2 : 5;
         Vec3 back = direction().scale(-1);
         for (int i = 0; i < n; i++) {
@@ -261,7 +263,7 @@ public class MeteorEntity extends Entity implements GeoEntity, TraceableEntity {
             double x = p.x + back.x * k + (r.nextDouble() - 0.5) * s;
             double y = p.y + back.y * k + (r.nextDouble() - 0.5) * s;
             double z = p.z + back.z * k + (r.nextDouble() - 0.5) * s;
-            level().addParticle(ParticleTypes.FLAME, x, y, z, back.x * 0.05, back.y * 0.05, back.z * 0.05);
+            level().addParticle(Vfx.flame(), x, y, z, back.x * 0.05, back.y * 0.05, back.z * 0.05);
             if (i % 2 == 0) level().addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, back.x * 0.08, 0.02, back.z * 0.08);
         }
         if (r.nextInt(reduced ? 4 : 2) == 0) level().addParticle(ParticleTypes.LAVA, p.x, p.y, p.z, 0, 0, 0);

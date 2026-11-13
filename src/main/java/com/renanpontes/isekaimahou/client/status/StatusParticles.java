@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.joml.Vector3f;
 
-import com.renanpontes.isekaimahou.core.MahouConfig;
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -24,7 +24,8 @@ import net.minecraft.world.level.block.Blocks;
  * Chamas, neve no Gelado/Congelado, faíscas no Eletrizado, gotas de sangue, poeira de pedra, estrelinhas no Atordoado.
  */
 final class StatusParticles {
-    private static final double RANGE = 32.0;
+    /** Lista reaproveitada (cópia dos ids) — sem alocar a cada tick. */
+    private static final List<Integer> IDS = new ArrayList<>();
     private static final DustParticleOptions BLOOD = new DustParticleOptions(new Vector3f(0.55F, 0.03F, 0.06F), 0.9F);
     private static final DustParticleOptions FROST = new DustParticleOptions(new Vector3f(0.70F, 0.90F, 1.00F), 0.8F);
     private static final DustParticleOptions STONE_DUST = new DustParticleOptions(new Vector3f(0.55F, 0.53F, 0.50F), 1.0F);
@@ -36,13 +37,16 @@ final class StatusParticles {
         Minecraft mc = Minecraft.getInstance();
         ClientLevel level = mc.level;
         if (level == null || mc.player == null || mc.isPaused() || ClientStatuses.trackedIds().isEmpty()) return;
-        float rate = reduced() ? 0.45F : 1.0F;
+        // v1.3: preset gráfico (Fraco 0,3× … Ultra 1,5×) e alcance pelo FxQuality ("reducedParticles" já entra nele)
+        float rate = FxQuality.particles();
+        double range = Math.min(48.0, FxQuality.range());
         RandomSource r = level.random;
-        List<Integer> ids = new ArrayList<>(ClientStatuses.trackedIds());
-        for (int id : ids) {
+        IDS.clear();
+        IDS.addAll(ClientStatuses.trackedIds());
+        for (int id : IDS) {
             Entity ent = level.getEntity(id);
             if (!(ent instanceof LivingEntity le) || le.isRemoved() || le.isInvisible()) continue;
-            if (le.distanceToSqr(mc.player) > RANGE * RANGE) continue;
+            if (le.distanceToSqr(mc.player) > range * range) continue;
             // O próprio jogador em primeira pessoa: só poucas partículas (não tapar a visão)
             float own = le == mc.player && mc.options.getCameraType().isFirstPerson() ? 0.25F : 1.0F;
             for (ClientStatuses.Entry en : ClientStatuses.get(le)) {
@@ -99,14 +103,6 @@ final class StatusParticles {
         for (int i = 0; i < 3; i++) {
             double a = t + i * (Mth.TWO_PI / 3);
             level.addParticle(STARS, le.getX() + Math.cos(a) * rr, le.getY() + le.getBbHeight() + 0.25, le.getZ() + Math.sin(a) * rr, 0, 0, 0);
-        }
-    }
-
-    private static boolean reduced() {
-        try {
-            return MahouConfig.REDUCED_PARTICLES.get();
-        } catch (IllegalStateException e) {
-            return false;
         }
     }
 

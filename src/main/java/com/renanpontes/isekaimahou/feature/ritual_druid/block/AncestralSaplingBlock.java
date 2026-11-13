@@ -6,10 +6,10 @@ import com.mojang.serialization.MapCodec;
 import com.renanpontes.isekaimahou.feature.ritual_druid.DruidContent;
 import com.renanpontes.isekaimahou.feature.ritual_druid.DruidGrove;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -98,11 +98,11 @@ public class AncestralSaplingBlock extends BushBlock implements EntityBlock {
         double x = pos.getX() + 0.5, y = pos.getY() + 0.3, z = pos.getZ() + 0.5;
         if (random.nextInt(2) == 0) {
             double a = random.nextDouble() * Math.PI * 2;
-            level.addParticle(ParticleTypes.HAPPY_VILLAGER, x + Math.cos(a) * 0.5, y + random.nextDouble() * 0.7,
+            level.addParticle(Vfx.happy(), x + Math.cos(a) * 0.5, y + random.nextDouble() * 0.7,
                     z + Math.sin(a) * 0.5, 0, 0.02, 0);
         }
         if (random.nextInt(4) == 0) {
-            level.addParticle(ParticleTypes.END_ROD, x + (random.nextDouble() - 0.5) * 0.3, y + 0.6, z + (random.nextDouble() - 0.5) * 0.3,
+            level.addParticle(Vfx.endRod(), x + (random.nextDouble() - 0.5) * 0.3, y + 0.6, z + (random.nextDouble() - 0.5) * 0.3,
                     0, 0.03, 0);
         }
     }

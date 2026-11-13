@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.feature.class_enchanter.EnchFx;
+import com.renanpontes.isekaimahou.feature.class_enchanter.EnchFxNet;
 import com.renanpontes.isekaimahou.feature.class_enchanter.EnchRegistries;
 import com.renanpontes.isekaimahou.feature.class_enchanter.Enchants;
 import com.renanpontes.isekaimahou.feature.class_enchanter.glyph.EnchanterGlyphs;
@@ -73,8 +74,7 @@ public class SovereignSanctumEntity extends Entity implements GeoEntity {
         s.entityData.set(RADIUS, radius);
         s.entityData.set(LIFE, ticks);
         if (level.addFreshEntity(s)) ACTIVE.add(s);
-        EnchFx.sigil(level, feet.add(0, 0.1, 0), radius, EnchFx.GOLD, EnchFx.TEAL, 0F);
-        level.sendParticles(ParticleTypes.END_ROD, feet.x, feet.y + 4, feet.z, 40, 1.0, 2.0, 1.0, 0.05);
+        EnchFxNet.at(level, EnchFxNet.SANCTUM_OPEN, feet, Vec3.ZERO, (float) radius, EnchFx.GOLD, -1);
         EnchFx.sound(level, feet, SoundEvents.BEACON_ACTIVATE, 1.4F, 0.8F);
         EnchFx.sound(level, feet, SoundEvents.BELL_RESONATE, 1.0F, 1.2F);
         EnchFx.sound(level, feet, SoundEvents.ENCHANTMENT_TABLE_USE, 1.2F, 0.6F);

@@ -11,6 +11,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -152,8 +153,8 @@ public class RainForm extends FormGlyph {
     /** Nuvem mágica acima da área (e, de vez em quando, o círculo no chão mostrando a área). */
     private static void cloud(SpellContext ctx, Vec3 center, double top, double area, boolean showArea) {
         ServerLevel level = ctx.level();
-        DustParticleOptions dark = FormsFx.dust(darken(ctx.color()), 2.5F);
-        DustParticleOptions light = FormsFx.dust(FormsFx.lighten(ctx.color(), 0.4F), 2.0F);
+        ParticleOptions dark = FormsFx.dust(darken(ctx.color()), 2.5F);
+        ParticleOptions light = FormsFx.dust(FormsFx.lighten(ctx.color(), 0.4F), 2.0F);
         int puffs = (int) (area * area * 0.9);
         for (int i = 0; i < puffs; i++) {
             double r = (area + 0.8) * Math.sqrt(ctx.random().nextDouble());
@@ -171,7 +172,7 @@ public class RainForm extends FormGlyph {
         double y0 = top - (top - ground.y) * frame / FALL_FRAMES;
         double y1 = top - (top - ground.y) * (frame + 1) / FALL_FRAMES;
         ServerLevel level = ctx.level();
-        DustParticleOptions dust = FormsFx.dust(ctx.color(), 1.1F);
+        ParticleOptions dust = FormsFx.dust(ctx.color(), 1.1F);
         ParticleOptions sig = ElementFx.signature(ctx.element());
         int steps = Math.max(3, (int) ((y0 - y1) * 3));
         for (int i = 0; i <= steps; i++) {
@@ -195,7 +196,7 @@ public class RainForm extends FormGlyph {
         FormsFx.ring(ctx, ground.add(0, 0.05, 0), IMPACT_RADIUS, 3.0);
         BlockState st = level.getBlockState(BlockPos.containing(ground.x, ground.y - 0.2, ground.z));
         if (!st.getFluidState().isEmpty()) {
-            FormsFx.send(level, ParticleTypes.SPLASH, up, 12, 0.3, 0.2);
+            FormsFx.send(level, Vfx.splash(), up, 12, 0.3, 0.2);
         } else if (!st.isAir() && st.getRenderShape() != RenderShape.INVISIBLE) {
             FormsFx.send(level, new BlockParticleOption(ParticleTypes.BLOCK, st), up, 8, 0.25, 0.1);
         }

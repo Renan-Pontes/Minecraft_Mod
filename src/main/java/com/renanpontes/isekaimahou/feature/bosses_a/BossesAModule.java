@@ -9,6 +9,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementReactions;
 import com.renanpontes.isekaimahou.core.MahouCommands;
 import com.renanpontes.isekaimahou.feature.bosses_a.entity.ElementalGuardian;
+import com.renanpontes.isekaimahou.feature.bosses_a.polish.PolishCommands;
 import com.renanpontes.isekaimahou.module.Module;
 
 import net.minecraft.commands.CommandSourceStack;
@@ -19,7 +20,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 /**
@@ -49,6 +53,13 @@ public class BossesAModule implements Module {
             if (e.getTabKey() == CoreRegistries.TAB_CREATURES.getKey()) {
                 BossesARegistry.eggs().forEach(egg -> e.accept(egg.get()));
             }
+        });
+
+        // v1.0: /mahou bosspolish <kill|laststand|taunt> — testa o espetáculo novo no chefe mais perto
+        PolishCommands.register();
+        // v1.0: o Guardião provoca quando derruba um jogador (a fala tem trava no próprio chefe)
+        NeoForge.EVENT_BUS.addListener((LivingDeathEvent e) -> {
+            if (e.getEntity() instanceof ServerPlayer && e.getSource().getEntity() instanceof ElementalGuardian g) g.onPlayerSlain();
         });
 
         MahouCommands.extend((root, ctx) -> {

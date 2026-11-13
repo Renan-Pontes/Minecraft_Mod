@@ -5,6 +5,7 @@ import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
 import com.renanpontes.isekaimahou.feature.class_ranger.RangerFx;
+import com.renanpontes.isekaimahou.feature.class_ranger.RangerFxNet;
 import com.renanpontes.isekaimahou.feature.class_ranger.RangerGlyphIds;
 import com.renanpontes.isekaimahou.feature.class_ranger.RangerRegistries;
 import com.renanpontes.isekaimahou.feature.class_ranger.RangerUtil;
@@ -90,6 +91,7 @@ public class ThousandFeathersForm extends FormGlyph {
             eagle.setup(center, radius * 0.8F, WINDUP + RAIN_TICKS, rgb);
             level.addFreshEntity(eagle);
         }
+        RangerFxNet.at(level, RangerFxNet.FEATHERS_START, center, Vec3.ZERO, radius, rgb, caster.getId());
         RangerFx.sound(level, center, SoundEvents.PHANTOM_FLAP, 2.0F, 0.5F);
         RangerFx.sound(level, caster.position(), SoundEvents.PARROT_IMITATE_PHANTOM, 2.0F, 0.6F);
 
@@ -117,10 +119,8 @@ public class ThousandFeathersForm extends FormGlyph {
             ctx.resolveArea(center.add(0, 0.5, 0), radius * 0.5F, null, true);
             ctx.impact(center.add(0, 0.5, 0), new Vec3(0, -1, 0), null);
             level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, center.x, center.y + 0.5, center.z, 1, 0, 0, 0, 0);
-            level.sendParticles(ParticleTypes.END_ROD, center.x, center.y + 1, center.z, 60, radius * 0.3, 1.0, radius * 0.3, 0.2);
+            RangerFxNet.at(level, RangerFxNet.FEATHERS_DIVE, center, Vec3.ZERO, radius, rgb, -1);
             ElementFx.burst(level, center.add(0, 0.5, 0), ctx.element(), 40, radius * 0.35);
-            RangerFx.ring(level, center.add(0, 0.2, 0), radius * 0.5, 32, WeaponFx.dust(rgb, 1.6F), 0.05);
-            RangerFx.ring(level, center.add(0, 0.2, 0), radius, 48, WeaponFx.dust(rgb, 1.2F), 0.02);
             RangerFx.sound(level, center, SoundEvents.GENERIC_EXPLODE.value(), 1.6F, 0.8F);
             RangerFx.sound(level, center, SoundEvents.PARROT_IMITATE_PHANTOM, 2.0F, 0.5F);
         });

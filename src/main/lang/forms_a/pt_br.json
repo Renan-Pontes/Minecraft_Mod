@@ -18,5 +18,8 @@
   "entity.isekai_mahou.spell_wave": "Onda Mágica",
   "entity.isekai_mahou.spell_falling": "Meteoro Mágico",
   "entity.isekai_mahou.spell_beam": "Feixe Mágico",
-  "message.isekai_mahou.forms_a.mark_no_target": "Nada na mira para marcar."
+  "message.isekai_mahou.forms_a.mark_no_target": "Nada na mira para marcar.",
+  "command.isekai_mahou.fx.stats": "Efeitos em lote: %s itens em %s pacotes (antes seriam %s pacotes — %sx menos). Descartados: %s.",
+  "command.isekai_mahou.fx.stress": "Teste de carga: %s efeitos a cada 2 ticks por %s s. O resultado aparece no fim.",
+  "command.isekai_mahou.fx.reactions": "%s reações no mesmo tick: %s completas, %s enxutas, %s só na mecânica."
 }

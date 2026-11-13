@@ -93,10 +93,7 @@ public final class CoreEvents {
                     MagicApi.addCounter(player, "study", study);
                 }
             }
-            if (player.tickCount % 5 == 0) {
-                player.serverLevel().sendParticles(ParticleTypes.ENCHANT, player.getX(), player.getY() + 1.2, player.getZ(),
-                        6, 0.6, 0.4, 0.6, 0.6);
-            }
+            // v1.0: a aura da meditação é desenhada no cliente (ChannelAura), que respeita a opção de desligar
         }
 
         SpellCaster.tickChannel(player, d);

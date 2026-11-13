@@ -21,9 +21,9 @@ import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 
 import javax.annotation.Nullable;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -172,8 +172,8 @@ public final class LegendCasting {
         caster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, COLLAPSE_TICKS, 3, false, true, true));
         caster.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, COLLAPSE_TICKS, 1, false, true, true));
         Vec3 p = caster.position();
-        sl.sendParticles(ParticleTypes.SOUL, p.x, p.y + 1.0, p.z, 18, 0.4, 0.6, 0.4, 0.02);
-        sl.sendParticles(ParticleTypes.LARGE_SMOKE, p.x, p.y + 0.2, p.z, 14, 0.5, 0.1, 0.5, 0.01);
+        sl.sendParticles(Vfx.soul(), p.x, p.y + 1.0, p.z, 18, 0.4, 0.6, 0.4, 0.02);
+        sl.sendParticles(Vfx.largeSmoke(), p.x, p.y + 0.2, p.z, 14, 0.5, 0.1, 0.5, 0.01);
         sl.sendParticles(LegendFx.dust(Element.ARCANE.color, 1.5F), p.x, p.y + 1.2, p.z, 30, 0.5, 0.7, 0.5, 0);
         LegendFx.sound(sl, p, SoundEvents.BEACON_DEACTIVATE, 1.2F, 0.6F);
         LegendFx.sound(sl, p, SoundEvents.SOUL_ESCAPE, 1.0F, 0.7F);
@@ -182,8 +182,8 @@ public final class LegendCasting {
             SpellScheduler.schedule(t, () -> {
                 if (!caster.isAlive() || caster.level() != sl) return;
                 Vec3 q = caster.position();
-                sl.sendParticles(ParticleTypes.ASH, q.x, q.y + 1.0, q.z, 10, 0.4, 0.5, 0.4, 0.01);
-                sl.sendParticles(ParticleTypes.SMOKE, q.x, q.y + 0.4, q.z, 4, 0.3, 0.1, 0.3, 0.01);
+                sl.sendParticles(Vfx.ash(), q.x, q.y + 1.0, q.z, 10, 0.4, 0.5, 0.4, 0.01);
+                sl.sendParticles(Vfx.smoke(), q.x, q.y + 0.4, q.z, 4, 0.3, 0.1, 0.3, 0.01);
             });
         }
         if (sp != null) {

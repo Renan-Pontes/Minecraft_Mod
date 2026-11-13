@@ -16,6 +16,7 @@ import com.renanpontes.isekaimahou.feature.journal.data.JournalBook;
 import com.renanpontes.isekaimahou.feature.journal.data.JournalChapter;
 import com.renanpontes.isekaimahou.feature.journal.data.JournalRewards;
 import com.renanpontes.isekaimahou.feature.journal.data.JournalStep;
+import com.renanpontes.isekaimahou.feature.journal.story.StoryBook;
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.network.ClientMagic;
@@ -49,6 +50,10 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * <p>
  * v1.0: a lista tem duas seções — a ROTA DA CLASSE do jogador (no topo, na cor da classe) e a HISTÓRIA. Capítulos
  * secretos só aparecem depois de abrirem.
+ * <p>
+ * v1.0 release (campanha): a história aparece agrupada em ATOS (cabeçalhos; o mouse mostra a pergunta do ato), a crônica
+ * de cada capítulo guarda os "Ecos" (as falas da campanha que já passaram — vistas, puladas ou com a campanha desligada)
+ * e um botãozinho ao lado do Espírito Guia liga/desliga a campanha (a mesma opção do menu do Minecraft).
  */
 public class JournalTab implements MenuTab {
     private static final int LIST_W = 132;
@@ -61,7 +66,8 @@ public class JournalTab implements MenuTab {
     private static long guideReadyAt;
 
     /** Uma linha da lista: cabeçalho de seção (chapter null) ou capítulo (com o nº dentro da trilha). */
-    private record Row(@Nullable Component header, int headerColor, @Nullable JournalChapter chapter, int number, int top, int height) {}
+    private record Row(@Nullable Component header, int headerColor, @Nullable JournalChapter chapter, int number, int top, int height,
+                       @Nullable Component tip) {}
 
     private int x, y, w, h;
     /** Capítulo escolhido (id, nas duas trilhas). */
@@ -72,6 +78,9 @@ public class JournalTab implements MenuTab {
     private int loreScroll, loreMax;
     private int bookVersion = -1;
     private Button guideButton;
+    private Button campaignButton;
+    /** Estado da campanha já refletido no botão (para não recriar a dica a cada tick). */
+    private int campaignShown = -1;
 
     // Áreas calculadas no render (para os cliques)
     private int listTop, listBottom;
@@ -85,9 +94,25 @@ public class JournalTab implements MenuTab {
         this.w = w;
         this.h = h;
         guideButton = screen.addTabWidget(Button.builder(Component.translatable("screen.isekai_mahou.journal.call_guide"), b -> callGuide())
-                .bounds(x, y + h - 18, LIST_W, 18)
+                .bounds(x, y + h - 18, LIST_W - 22, 18)
                 .tooltip(Tooltip.create(Component.translatable("screen.isekai_mahou.journal.call_guide.tooltip")))
                 .build());
+        // Campanha: "se o player pular, pulou" — um clique desliga as falas do Eco (elas continuam guardadas no Diário).
+        campaignButton = screen.addTabWidget(Button.builder(Component.literal("✦"), b -> {
+            StoryClient.toggleCampaign();
+            click();
+        }).bounds(x + LIST_W - 20, y + h - 18, 20, 18).build());
+        campaignShown = -1;
+        refreshCampaignButton();
+    }
+
+    private void refreshCampaignButton() {
+        int now = StoryClient.campaign() ? 1 : 0;
+        if (now == campaignShown) return;
+        campaignShown = now;
+        campaignButton.setMessage(Component.literal(now == 1 ? "✦" : "✧"));
+        campaignButton.setTooltip(Tooltip.create(Component.translatable(now == 1
+                ? "screen.isekai_mahou.journal.campaign.on" : "screen.isekai_mahou.journal.campaign.off")));
     }
 
     private void callGuide() {
@@ -104,6 +129,7 @@ public class JournalTab implements MenuTab {
         guideButton.setMessage(left > 0
                 ? Component.translatable("screen.isekai_mahou.journal.call_guide.wait", (left + 999) / 1000)
                 : Component.translatable("screen.isekai_mahou.journal.call_guide"));
+        refreshCampaignButton();
     }
 
     // =====================================================================================
@@ -139,18 +165,29 @@ public class JournalTab implements MenuTab {
         List<JournalChapter> track = book.classTrack(path);
         if (!track.isEmpty()) {
             Component head = Component.translatable("screen.isekai_mahou.journal.section.class", path.displayName());
-            out.add(new Row(head, path.rgb(), null, 0, top, HEADER_H));
+            out.add(new Row(head, path.rgb(), null, 0, top, HEADER_H, null));
             top += HEADER_H;
             for (int i = 0; i < track.size(); i++) {
-                out.add(new Row(null, 0, track.get(i), i + 1, top, ENTRY_H));
+                out.add(new Row(null, 0, track.get(i), i + 1, top, ENTRY_H, null));
                 top += ENTRY_H + 2;
             }
-            out.add(new Row(Component.translatable("screen.isekai_mahou.journal.section.story"), 0xFFD86B, null, 0, top, HEADER_H));
+            out.add(new Row(Component.translatable("screen.isekai_mahou.journal.section.story"), 0xFFD86B, null, 0, top, HEADER_H, null));
             top += HEADER_H;
         }
+        int lastAct = -1;
         for (int i = 0; i < book.chapters().size(); i++) {
             if (!book.visible(i, d)) continue;
-            out.add(new Row(null, 0, book.chapters().get(i), i + 1, top, ENTRY_H));
+            JournalChapter c = book.chapters().get(i);
+            // Campanha: cabeçalho do Ato antes do primeiro capítulo dele. Ato ainda fechado não mostra o nome (sem spoiler).
+            StoryBook.Act act = StoryBook.actOf(c.order());
+            if (act.number() != lastAct) {
+                lastAct = act.number();
+                if (book.state(i, d) != JournalBook.State.LOCKED) {
+                    out.add(new Row(act.title(), act.color(), null, 0, top, HEADER_H, act.question()));
+                    top += HEADER_H;
+                }
+            }
+            out.add(new Row(null, 0, c, i + 1, top, ENTRY_H, null));
             top += ENTRY_H + 2;
         }
         return out;
@@ -196,10 +233,14 @@ public class JournalTab implements MenuTab {
         listScroll = Mth.clamp(listScroll, 0, listMax);
         g.enableScissor(x, listTop, x + LIST_W, listBottom);
         long time = Util.getMillis();
+        Component headerTip = null;
         for (Row row : rows) {
             int ey = listTop + row.top() - listScroll;
             if (ey + row.height() < listTop || ey > listBottom) continue;
             if (row.chapter() == null) {
+                if (row.tip() != null && JournalUi.inside(mx, my, x, ey, LIST_W, HEADER_H) && my >= listTop && my < listBottom) {
+                    headerTip = row.tip();
+                }
                 // Cabeçalho de seção: título pequeno com um filete na cor.
                 int color = 0xFF000000 | row.headerColor();
                 g.drawString(font, JournalUi.ellipsize(font, row.header().copy().withStyle(ChatFormatting.BOLD), LIST_W - 4), x + 1, ey + 2, color, false);
@@ -243,6 +284,8 @@ public class JournalTab implements MenuTab {
         }
         g.disableScissor();
         JournalUi.scrollbar(g, x + LIST_W + 2, listTop, listBottom, listScroll, listMax, contentH);
+        // A pergunta do Ato (campanha), só com o mouse em cima do cabeçalho.
+        if (headerTip != null) g.renderTooltip(font, font.split(headerTip.copy().withStyle(ChatFormatting.ITALIC), 170), mx, my);
     }
 
     /** "Capítulo 3" (história) ou "Rota · 1" (rota da classe). */
@@ -356,6 +399,12 @@ public class JournalTab implements MenuTab {
             // Dica e recompensa do passo logo abaixo da crônica.
             text.append("\n\n").append(Component.translatable("screen.isekai_mahou.journal.hint_label").withStyle(ChatFormatting.AQUA))
                     .append(" ").append(hint(ch, s));
+            // "No caminho" (v1.0 release): o que este marco abre de novo e onde conseguir — só nos passos que têm.
+            String extra = s.key(ch) + ".extra";
+            if (I18n.exists(extra)) {
+                text.append("\n\n").append(Component.translatable("screen.isekai_mahou.journal.extra_label").withStyle(ChatFormatting.GOLD))
+                        .append(" ").append(Component.translatable(extra));
+            }
             Component stepRewards = rewardsLine(s.rewards(), s.xp());
             if (stepRewards != null) text.append("\n\n").append(stepRewards.copy().withStyle(ChatFormatting.GOLD));
         } else {
@@ -369,6 +418,7 @@ public class JournalTab implements MenuTab {
                     for (int i = 1; i <= ch.epilogue(); i++) text.append("\n").append(ch.epilogueLine(i));
                 }
             }
+            appendEchoes(text, ch, d);
         }
         g.drawString(font, JournalUi.ellipsize(font, header.copy().withStyle(ChatFormatting.BOLD), loreW - 12), loreX + 6, loreY + 5,
                 0xFF000000 | ch.color(), false);
@@ -386,6 +436,36 @@ public class JournalTab implements MenuTab {
         }
         g.disableScissor();
         JournalUi.scrollbar(g, loreX + loreW - 4, textTop, textBottom, loreScroll, loreMax, contentH);
+    }
+
+    /**
+     * "Ecos" do capítulo: as batidas da campanha ligadas a ele que já passaram — vistas, puladas, com a campanha
+     * desligada, ou cujo marco (capítulo aberto, passo cumprido) aconteceu antes de a campanha existir. Quem pulou lê aqui.
+     */
+    private static void appendEchoes(MutableComponent text, JournalChapter ch, MagicData d) {
+        boolean head = false;
+        for (StoryBook.Beat b : StoryBook.forChapter(ch.id())) {
+            boolean passed = d.hasFlag(b.seenFlag()) || switch (b.trigger()) {
+                case CHAPTER_BEGIN -> d.hasFlag("journal." + b.key() + ".begun");
+                case CHAPTER_DONE, STEP -> d.hasFlag("journal." + b.key());
+                default -> false;
+            };
+            if (!passed) continue;
+            if (!head) {
+                head = true;
+                text.append("\n\n").append(Component.translatable("screen.isekai_mahou.journal.echoes")
+                        .withStyle(s -> s.withColor(StoryBook.ECHO).withBold(true)));
+            }
+            text.append("\n\n").append(Component.literal("✦ ").append(b.title()).withStyle(s -> s.withColor(b.rgb())));
+            if (b.scene()) text.append("\n").append(b.narration().withStyle(ChatFormatting.ITALIC));
+            int line = 1;
+            for (StoryBook.Part part : b.parts()) {
+                for (int k = 0; k < part.lines(); k++) {
+                    text.append("\n").append(StoryBook.speaker(part.speaker()).withStyle(ChatFormatting.GRAY))
+                            .append(Component.literal(": ").withStyle(ChatFormatting.GRAY)).append(b.line(line++));
+                }
+            }
+        }
     }
 
     /** "Recompensas: 150 XP · 3x Cristal de Mana · 1 Pergaminho de Glifo (até tier 1)". {@code bonusXp}: XP extra do passo. */

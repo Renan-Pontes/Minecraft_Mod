@@ -7,6 +7,7 @@ import com.renanpontes.isekaimahou.feature.fusions_b.FbRegistries;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -63,7 +64,7 @@ public class CrystalPrisonEntity extends FbSpellEntity {
         Vec3 c = target.position().add(0, target.getBbHeight() * 0.5, 0);
         sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.AMETHYST_BLOCK.defaultBlockState()),
                 c.x, c.y, c.z, 30, target.getBbWidth() * 0.6, target.getBbHeight() * 0.5, target.getBbWidth() * 0.6, 0.1);
-        FbFx.ring(sl, target.position().add(0, 0.1, 0), ParticleTypes.WAX_ON, target.getBbWidth() + 0.6, 16, 0.02);
+        FbFx.ring(sl, target.position().add(0, 0.1, 0), Vfx.waxOn(), target.getBbWidth() + 0.6, 16, 0.02);
         FbFx.sound(sl, c, SoundEvents.AMETHYST_CLUSTER_PLACE, 1.2F, 0.8F);
         FbFx.sound(sl, c, SoundEvents.GLASS_PLACE, 0.8F, 1.2F);
     }
@@ -95,7 +96,7 @@ public class CrystalPrisonEntity extends FbSpellEntity {
         // Acompanha o alvo (a gravidade ainda age: se estava no ar, o cristal cai junto)
         setPos(le.getX(), le.getY(), le.getZ());
         if (tickCount % 15 == 0) {
-            sl.sendParticles(ParticleTypes.WAX_ON, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 2,
+            sl.sendParticles(Vfx.waxOn(), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 2,
                     le.getBbWidth() * 0.5, le.getBbHeight() * 0.5, le.getBbWidth() * 0.5, 0.02);
         }
     }
@@ -124,7 +125,7 @@ public class CrystalPrisonEntity extends FbSpellEntity {
         Entity t = target();
         if (t != null) setPos(t.getX(), t.getY(), t.getZ());
         if (random.nextInt(6) == 0) {
-            level().addParticle(ParticleTypes.WAX_ON, getX() + (random.nextDouble() - 0.5) * prisonWidth() * 1.4,
+            level().addParticle(Vfx.waxOn(), getX() + (random.nextDouble() - 0.5) * prisonWidth() * 1.4,
                     getY() + random.nextDouble() * prisonHeight(), getZ() + (random.nextDouble() - 0.5) * prisonWidth() * 1.4, 0, 0.02, 0);
         }
     }

@@ -4,6 +4,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbFx;
+import com.renanpontes.isekaimahou.feature.class_steelball.SbFxNet;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbPart;
 import com.renanpontes.isekaimahou.feature.class_steelball.entity.InfiniteSpinEntity;
 import com.renanpontes.isekaimahou.feature.class_steelball.entity.SpinNailEntity;
@@ -74,9 +75,9 @@ public class InfiniteRotationForm extends FormGlyph {
         int duration = ctx.formStats().duration(BASE_DURATION);
         level.addFreshEntity(SpinNailEntity.infinite(ctx, from, look, duration));
         // o Retângulo Dourado se forma diante do atirador antes do disparo
-        SbFx.goldenSpiral(level, from.add(look.scale(1.2)), look, 2.0);
-        SbFx.spiral(level, caster.position(), SbFx.GOLD, 1.2, 2.4, 40, 0F);
-        level.sendParticles(ParticleTypes.END_ROD, from.x, from.y, from.z, 24, 0.4, 0.4, 0.4, 0.08);
+        SbFxNet.at(level, SbFxNet.GOLDEN_RECT, from.add(look.scale(1.2)), look, 2.0F, SbFx.GOLD, caster.getId());
+        SbFxNet.at(level, SbFxNet.LEARN, caster.position(), look, 1F, SbFx.GOLD, caster.getId());
+        SbFxNet.at(level, SbFxNet.NAIL_FIRE, from, look, 4F, SbFx.GOLD, caster.getId());
         SbFx.sound(level, from, SoundEvents.BEACON_POWER_SELECT, 1.0F, 1.8F);
         SbFx.sound(level, from, SoundEvents.TRIDENT_RIPTIDE_3.value(), 1.0F, 1.2F);
     }

@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
+import com.renanpontes.isekaimahou.core.boss.BossCurses;
 import com.renanpontes.isekaimahou.feature.bosses_a.BossSpells;
 import com.renanpontes.isekaimahou.feature.bosses_a.BossesARegistry;
 
@@ -139,9 +140,10 @@ public class TideBubble extends Entity implements GeoEntity {
         victim.setDeltaMovement(pull.scale(0.6));
         victim.hurtMarked = true;
         victim.fallDistance = 0;
+        // ASSINATURA: dentro da bolha o ar ACABA (Afogamento) — só estourar a bolha salva
+        if (tickCount % 10 == 0) BossCurses.apply(victim, BossCurses.DROWNING, 30, 1);
         if (tickCount % 20 == 10) {
             BossSpells.hit(owner, victim, Element.WATER, damage);
-            victim.setAirSupply(Math.max(0, victim.getAirSupply() - 40));
             sl.sendParticles(ParticleTypes.BUBBLE, victim.getX(), victim.getEyeY(), victim.getZ(), 12, 0.3, 0.3, 0.3, 0.05);
         }
         if (tickCount % 15 == 0) {
@@ -173,6 +175,7 @@ public class TideBubble extends Entity implements GeoEntity {
         sl.playSound(null, c.x, c.y, c.z, SoundEvents.PLAYER_SPLASH, SoundSource.HOSTILE, 1.5F, broken ? 1.2F : 0.9F);
         sl.playSound(null, c.x, c.y, c.z, SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, SoundSource.HOSTILE, 2.0F, 0.7F);
         Entity victim = victimId != null ? sl.getEntity(victimId) : null;
+        if (victim instanceof LivingEntity lv) BossCurses.cleanse(lv, BossCurses.DROWNING);
         if (victim != null) {
             victim.setDeltaMovement(victim.getDeltaMovement().multiply(0.3, 0, 0.3).add(0, 0.25, 0));
             victim.hurtMarked = true;

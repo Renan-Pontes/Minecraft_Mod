@@ -1,0 +1,85 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "isekai_mahou:block/depths_light_mirror",
+    "mirror": "isekai_mahou:block/depths_light_mirror",
+    "base": "minecraft:block/chiseled_deepslate"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        0,
+        3
+      ],
+      "to": [
+        13,
+        2,
+        13
+      ],
+      "faces": {
+        "north": {
+          "texture": "#base"
+        },
+        "south": {
+          "texture": "#base"
+        },
+        "east": {
+          "texture": "#base"
+        },
+        "west": {
+          "texture": "#base"
+        },
+        "up": {
+          "texture": "#base"
+        },
+        "down": {
+          "texture": "#base"
+        }
+      }
+    },
+    {
+      "from": [
+        7.25,
+        2,
+        0
+      ],
+      "to": [
+        8.75,
+        15,
+        16
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "y",
+        "angle": -45,
+        "rescale": true
+      },
+      "faces": {
+        "north": {
+          "texture": "#mirror"
+        },
+        "south": {
+          "texture": "#mirror"
+        },
+        "east": {
+          "texture": "#mirror"
+        },
+        "west": {
+          "texture": "#mirror"
+        },
+        "up": {
+          "texture": "#mirror"
+        },
+        "down": {
+          "texture": "#mirror"
+        }
+      }
+    }
+  ]
+}

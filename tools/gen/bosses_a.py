@@ -551,6 +551,21 @@ def ignis_model():
             kx = (14 + k * 3.5) if sx > 0 else (-24 + k * 3.5)
             m.cube(fa, [kx, 17, -7.5], [2, 3, 2], P("rock_light", deco=speckle("lava", 0.2, glow=True)))
 
+    # v1.3: espinhos de obsidiana com ponta de lava nas costas e nos ombros, joelheiras de basalto
+    spike = P("rock_dark", noise=0.05, deco=vgrad("rock_dark", "lava", glow=False))
+    tip = P("lava", noise=0.0, glow=True, deco=vgrad("lava_dark", "lava_core", glow=True, top_face="lava_core"))
+    for x, h, rx in ((-6, 9, 40), (0, 11, 35), (6, 9, 40)):
+        m.cube("chest", [x - 1.5, 50, 6.5], [3, h, 3], spike, rotation=[rx, 0, x * 2.5], pivot=[x, 50, 8])
+        m.cube("chest", [x - 1, 50 + h, 7], [2, 3, 2], tip, rotation=[rx, 0, x * 2.5], pivot=[x, 50, 8])
+    for side, sx in (("left", 1), ("right", -1)):
+        arm = "arm_" + side
+        for k, (dz, h) in enumerate(((-4, 7), (2, 6))):
+            ox = (17 if sx > 0 else -20) + k * sx
+            m.cube(arm, [ox, 56, dz], [3, h, 3], spike, rotation=[0, 0, -28 * sx], pivot=[ox + 1.5, 56, dz + 1.5])
+            m.cube(arm, [ox + 0.5, 56 + h, dz + 0.5], [2, 2, 2], tip, rotation=[0, 0, -28 * sx], pivot=[ox + 1.5, 56, dz + 1.5])
+        m.cube("leg_" + side, [1.5 if sx > 0 else -10.5, 13, -5.5], [9, 5, 2], P("rock_light", noise=0.06,
+                                                                                    deco=cracks("lava", "lava_core", 0.9)))
+
     m.bone("embers", [0, 40, 0], "root")
     for o, s in (([16, 62, 6], [3, 3, 3]), ([-19, 60, 5], [3, 3, 3]), ([0, 70, 8], [2, 2, 2]), ([-10, 66, -9], [2, 2, 2])):
         m.cube("embers", o, s, P("ember", noise=0.0, glow=True, deco=speckle("lava_core", 0.3, glow=True)))
@@ -905,6 +920,21 @@ def tide_model():
         m.cube(fa, [7.5 if sx > 0 else -11.5, 12, -2.5], [4, 9, 4], P("skin", deco=chain(row("front", 1, "gold"), row("back", 1, "gold"),
                                                                                            row("left", 1, "gold"), row("right", 1, "gold"))))
         m.cube(fa, [7.5 if sx > 0 else -11.5, 9, -3], [4, 3, 5], P("skin_light", deco=row("front", -1, "scale_dark")))
+    # v1.3: diadema de ouro com gema abissal, ombreiras de coral e pérolas luminosas no peito
+    m.cube("head", [-5, 40, -6.5], [10, 2, 1], P("gold", deco=chain(row("front", 0, "gold_dark"),
+                                                                  lambda fs, pal, rnd: fs["front"].rect(4, 0, 5, 1, pal["glow"], True))))
+    m.cube("head", [-1, 41.5, -7], [2, 3, 1], P("glow", noise=0.0, glow=True, deco=vgrad("fin_dark", "eye", glow=True)))
+    pearl = P("eye", noise=0.0, glow=True, deco=speckle("glow", 0.4, glow=True))
+    for x in (-5, -2.5, 1.5, 4):
+        m.cube("torso", [x - 0.5, 30.5, -5.6], [1, 1, 1], pearl)
+    for side, sx in (("left", 1), ("right", -1)):
+        arm = "arm_" + side
+        for k, (h, dz) in enumerate(((5, -2.5), (4, 0.5), (3, 2.5))):
+            ox = 9 if sx > 0 else -11
+            m.cube(arm, [ox, 32, dz], [2, h, 2], P("coral", noise=0.05, deco=chain(speckle("coral_light", 0.3),
+                                                                                  row("top", 0, "glow", True))),
+                   rotation=[0, 0, -(20 + 12 * k) * sx], pivot=[ox + 1, 32, dz + 1])
+
     m.bone("trident", [-9.5, 10.5, -1], "forearm_right")
     m.cube("trident", [-10, 2, -2], [1, 38, 1], P("gold", noise=0.05, deco=speckle("gold_dark", 0.2)))
     m.cube("trident", [-12.5, 38, -2], [6, 1, 1], P("gold", deco=row("front", 0, "gold_dark")))
@@ -1144,6 +1174,19 @@ def golem_model():
         m.cube(fa, [16 if sx > 0 else -31, 0, -8], [15, 9, 15], P("stone_dark", noise=0.08, deco=chain(
             bricks("stone"), speckle("dirt", 0.12))))
         m.cube(fa, [24 if sx > 0 else -27, 18, 4], [3, 6, 3], crystal, rotation=[20, 0, -20 * sx], pivot=[25.5 * sx, 18, 5.5])
+
+    # v1.3: chifres de rocha, aglomerados de cristal nos ombros e uma placa de runas na testa
+    for sx in (1, -1):
+        m.cube("head", [5 if sx > 0 else -8, 51, -14], [3, 7, 3], P("stone_dark", noise=0.06, deco=speckle("stone_light", 0.12)),
+               rotation=[-25, 0, -30 * sx], pivot=[6.5 * sx, 51, -12.5])
+        m.cube("head", [6.5 if sx > 0 else -9.5, 57, -14.5], [2, 4, 2], crystal, rotation=[-25, 0, -45 * sx],
+               pivot=[7.5 * sx, 57, -13.5])
+        arm = "arm_left" if sx > 0 else "arm_right"
+        for k, (o, h, r) in enumerate((([20, 55, -4], 7, -15), ([24, 54, 1], 5, -35), ([18, 55, 3], 4, 10))):
+            ox = o[0] if sx > 0 else -o[0] - 3
+            m.cube(arm, [ox, o[1], o[2]], [3, h, 3], crystal, rotation=[10 * (k - 1), 0, r * sx],
+                   pivot=[ox + 1.5, o[1], o[2] + 1.5])
+    m.cube("head", [-4, 50, -18.6], [8, 2, 1], P("rune", noise=0.0, glow=True, deco=row("front", 0, "eye", True)))
 
     m.bone("shell", [0, 20, 0], "body")
     shell = lambda extra=None: P("shell", noise=0.06, deco=chain(bricks("shell_dark", bw=8, bh=5), speckle("stone_light", 0.05),
@@ -1389,6 +1432,14 @@ def zephyr_model():
     for sx in (1, -1):
         m.cube("head", [3.5 if sx > 0 else -6.5, 44, -1], [3, 1, 5], P("feather_blue", deco=speckle("wind", 0.2, glow=True)),
                rotation=[0, 0, 25 * sx], pivot=[3.5 * sx, 44, 1.5])
+    # v1.3: coroa de penas douradas com gema do vento e quatro "redemoinhos" orbitando as costas
+    for k, (x, h, rz) in enumerate(((-2.5, 5, 25), (-0.5, 7, 0), (1.5, 5, -25))):
+        m.cube("head", [x, 48.5, -4.5], [1, h, 1], P("gold", deco=vgrad("gold_dark", "gold")),
+               rotation=[-10, 0, rz], pivot=[x + 0.5, 48.5, -4])
+    m.cube("head", [-1, 46, -4.6], [2, 2, 1], P("wind_light", noise=0.0, glow=True, deco=vgrad("wind", "wind_light", glow=True)))
+    for k, (x, y) in enumerate(((-6, 44), (6, 44), (-4, 50), (4, 50))):
+        m.cube("torso", [x - 1, y, 6], [2, 2, 1], wisp, rotation=[0, 0, 45], pivot=[x, y + 1, 6.5])
+
     for side, sx in (("left", 1), ("right", -1)):
         arm = "arm_" + side
         m.bone(arm, [7.5 * sx, 38, -0.5], "torso")

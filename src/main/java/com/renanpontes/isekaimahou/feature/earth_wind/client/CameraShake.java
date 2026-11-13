@@ -32,7 +32,7 @@ public final class CameraShake {
         if (mc.level == null || mc.isPaused()) return;
         float pt = (float) e.getPartialTick();
         float fade = Math.max(0, (ticksLeft - pt) / totalTicks);
-        float k = intensity * fade * (MahouConfig.REDUCED_PARTICLES.get() ? 0.5F : 1.0F);
+        float k = intensity * fade * (!com.renanpontes.isekaimahou.client.fx.FxQuality.atLeast(MahouConfig.Graphics.HIGH) ? 0.5F : 1.0F) * MahouConfig.shakeScale();
         double t = mc.level.getGameTime() + pt;
         e.setPitch(e.getPitch() + (float) (Math.sin(t * 2.3) * k));
         e.setYaw(e.getYaw() + (float) (Math.cos(t * 1.9) * k * 0.8));

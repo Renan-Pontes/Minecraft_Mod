@@ -1,0 +1,32 @@
+{
+  "values": [
+    {
+      "id": "isekai_mahou:guild_receptionist",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:guild_master",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:adventurer",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:steelball_mentor",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:quincy_npc",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:guide_spirit",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:city_champion",
+      "required": false
+    }
+  ]
+}

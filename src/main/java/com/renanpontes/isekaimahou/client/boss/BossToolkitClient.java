@@ -11,9 +11,12 @@ public final class BossToolkitClient {
         NeoForge.EVENT_BUS.addListener(TelegraphRenderer::onRender);
         NeoForge.EVENT_BUS.addListener(BossCameraShake::onClientTick);
         NeoForge.EVENT_BUS.addListener(BossCameraShake::onCameraAngles);
+        // v1.3: tela das maldições assinatura e clarões dos chefes
+        BossScreenFx.init(modBus);
         NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) -> {
             TelegraphRenderer.clear();
             BossCameraShake.clear();
+            BossScreenFx.clear();
         });
     }
 

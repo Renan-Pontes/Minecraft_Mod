@@ -15,6 +15,7 @@ import com.renanpontes.isekaimahou.core.api.Cutscenes;
 import com.renanpontes.isekaimahou.core.api.SpellStack;
 import com.renanpontes.isekaimahou.core.event.SpellCastEvent;
 import com.renanpontes.isekaimahou.core.stack.StackManager;
+import com.renanpontes.isekaimahou.glyph.fx.SpellVisuals;
 import com.renanpontes.isekaimahou.network.CorePayloads;
 
 import net.minecraft.ChatFormatting;
@@ -57,6 +58,11 @@ public final class SpellCaster {
             return;
         }
         if (data.channelSlot >= 0) return;
+        // v1.6: Modo Paz (cidade/casa) — nada de conjurar sem querer
+        if (com.renanpontes.isekaimahou.core.ux.PeaceMode.isOn(player)) {
+            com.renanpontes.isekaimahou.core.ux.PeaceMode.denied(player);
+            return;
+        }
 
         int loadout = data.activeLoadout();
         SpellSlot spellSlot = data.peekSlot(loadout, slot);
@@ -83,7 +89,8 @@ public final class SpellCaster {
             return;
         }
         boolean creative = player.getAbilities().instabuild;
-        SpellParser.Result r = SpellParser.parse(recipe, element, creative ? null : data);
+        // a maestria vale sempre (mesmo no criativo); as checagens de conhecimento e de limites, só fora dele
+        SpellParser.Result r = SpellParser.parse(recipe, element, creative ? null : data, data);
         if (!r.ok()) {
             fail(player, r.error());
             return;
@@ -148,11 +155,13 @@ public final class SpellCaster {
         if (data.channelSlot < 0 || data.channelRecipe == null) return;
         long elapsed = player.serverLevel().getGameTime() - data.channelStart;
         if (elapsed < data.channelTicks) {
-            if (elapsed % 3 == 0) ElementFx.channeling(player.serverLevel(), player, data.channelElement);
+            // release 1.0: o jogador conjurando mostra só o círculo mágico (o da magia); a aura discreta de quem segura
+            // uma conjuração longa é desenhada no cliente (client/spellfx/ChannelAura) e pode ser desligada lá
+            if (elapsed % 3 == 0) SpellVisuals.channelCircle(player.serverLevel(), player, data.channelElement);
             return;
         }
         boolean creative = player.getAbilities().instabuild;
-        SpellParser.Result r = SpellParser.parse(data.channelRecipe, data.channelElement, creative ? null : data);
+        SpellParser.Result r = SpellParser.parse(data.channelRecipe, data.channelElement, creative ? null : data, data);
         if (!r.ok() || !canPay(player, data, r.spell(), creative)) {
             clearChannel(player, data, true);
             if (r.ok()) fail(player, MagicApi.noResourceMessage(player));

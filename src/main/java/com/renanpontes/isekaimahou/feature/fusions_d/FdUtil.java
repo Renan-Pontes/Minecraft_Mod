@@ -21,9 +21,9 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -232,7 +232,7 @@ public final class FdUtil {
         float amount = base * stats.power() * ctx.powerMult() * ctx.casterSpellPower();
         if (stats.crit && level.random.nextFloat() < 0.25F) {
             amount *= 1.75F;
-            level.sendParticles(ParticleTypes.CRIT, target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ(),
+            level.sendParticles(Vfx.crit(), target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ(),
                     12, 0.3, 0.3, 0.3, 0.2);
         }
         amount = ElementReactions.onSpellHit(ctx, target, el, amount);

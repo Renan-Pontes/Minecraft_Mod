@@ -11,6 +11,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -80,8 +81,8 @@ public final class WaterGlyphs {
     }
 
     static void splashFx(ServerLevel sl, Entity e, int amount) {
-        FwUtil.around(sl, e, ParticleTypes.SPLASH, amount, 0.15);
-        sl.sendParticles(ParticleTypes.FALLING_WATER, e.getX(), e.getY() + e.getBbHeight() * 0.9, e.getZ(), amount / 3,
+        FwUtil.around(sl, e, Vfx.splash(), amount, 0.15);
+        sl.sendParticles(Vfx.water(), e.getX(), e.getY() + e.getBbHeight() * 0.9, e.getZ(), amount / 3,
                 e.getBbWidth() * 0.4, 0.1, e.getBbWidth() * 0.4, 0);
     }
 
@@ -138,7 +139,7 @@ public final class WaterGlyphs {
                     continue;
                 }
                 Vec3 c = Vec3.atCenterOf(p);
-                sl.sendParticles(ParticleTypes.SPLASH, c.x, c.y + 0.4, c.z, 12, 0.3, 0.1, 0.3, 0.1);
+                sl.sendParticles(Vfx.splash(), c.x, c.y + 0.4, c.z, 12, 0.3, 0.1, 0.3, 0.1);
             }
         }
     }
@@ -157,7 +158,7 @@ public final class WaterGlyphs {
             boolean self = FwUtil.isSelf(ctx, target);
             Vec3 origin = ctx.caster() != null ? ctx.caster().position() : target.position().subtract(ctx.look());
             if (self) {
-                FwUtil.shockwave(sl, target.position().add(0, 0.3, 0), ParticleTypes.SPLASH, 48, 0.6);
+                FwUtil.shockwave(sl, target.position().add(0, 0.3, 0), Vfx.splash(), 48, 0.6);
                 FwUtil.ring(sl, target.position().add(0, 0.2, 0), FwUtil.dust(0x3FA9FF, 1.5F), 1.5, 24, 0);
             }
             for (LivingEntity e : FwUtil.offensiveTargets(ctx, target, stats.radius(4.0F))) {
@@ -171,7 +172,7 @@ public final class WaterGlyphs {
                 ctx.status(e, CoreRegistries.SOAKED, 80, 0, stats);
                 douse(e, false);
                 // Paredão de água no impacto
-                sl.sendParticles(ParticleTypes.SPLASH, e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 30,
+                sl.sendParticles(Vfx.splash(), e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 30,
                         e.getBbWidth() * 0.6, e.getBbHeight() * 0.5, e.getBbWidth() * 0.6, 0.3);
                 sl.sendParticles(ParticleTypes.BUBBLE_POP, e.getX(), e.getY() + 0.5, e.getZ(), 8, 0.4, 0.4, 0.4, 0.05);
             }
@@ -230,7 +231,7 @@ public final class WaterGlyphs {
                     sl.sendParticles(ParticleTypes.SWEEP_ATTACK, target.getX() + Math.cos(a) * r * 0.6, target.getY() + 1.0,
                             target.getZ() + Math.sin(a) * r * 0.6, 1, 0, 0, 0, 0);
                 }
-                FwUtil.ring(sl, target.position().add(0, 1.0, 0), ParticleTypes.SPLASH, r * 0.7, 30, 0.2);
+                FwUtil.ring(sl, target.position().add(0, 1.0, 0), Vfx.splash(), r * 0.7, 30, 0.2);
             }
             for (LivingEntity e : FwUtil.offensiveTargets(ctx, target, stats.radius(3.0F))) {
                 float base = self ? 6.0F : 8.0F;
@@ -292,7 +293,7 @@ public final class WaterGlyphs {
             float r = stats.radius(2.5F);
             if (!FwUtil.isSelf(ctx, target) && target instanceof LivingEntity le && le.fireImmune()) {
                 FwUtil.hurt(ctx, le, 5.0F, stats, null); // água fere criaturas feitas de fogo
-                FwUtil.around(sl, le, ParticleTypes.LARGE_SMOKE, 16, 0.04);
+                FwUtil.around(sl, le, Vfx.largeSmoke(), 16, 0.04);
             }
             douseArea(ctx, target.position(), r);
             douseBlocks(ctx, target.blockPosition(), r);
@@ -311,11 +312,11 @@ public final class WaterGlyphs {
             for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, new AABB(c, c).inflate(r))) {
                 if (!e.isOnFire() && !e.hasEffect(FwRegistries.LINGERING_EMBER) && !e.hasEffect(FwRegistries.AZURE_FLAME)) continue;
                 douse(e, true);
-                FwUtil.around(sl, e, ParticleTypes.CLOUD, 8, 0.03);
+                FwUtil.around(sl, e, Vfx.cloud(), 8, 0.03);
                 splashFx(sl, e, 10);
             }
-            sl.sendParticles(ParticleTypes.SPLASH, c.x, c.y + 0.5, c.z, 30, r * 0.4, 0.4, r * 0.4, 0.15);
-            sl.sendParticles(ParticleTypes.WHITE_SMOKE, c.x, c.y + 0.5, c.z, 10, r * 0.3, 0.3, r * 0.3, 0.02);
+            sl.sendParticles(Vfx.splash(), c.x, c.y + 0.5, c.z, 30, r * 0.4, 0.4, r * 0.4, 0.15);
+            sl.sendParticles(Vfx.whiteSmoke(), c.x, c.y + 0.5, c.z, 10, r * 0.3, 0.3, r * 0.3, 0.02);
             FwUtil.sound(sl, c, SoundEvents.FIRE_EXTINGUISH, 1.0F, 1.0F);
             FwUtil.sound(sl, c, SoundEvents.GENERIC_SPLASH, 0.6F, 1.2F);
         }
@@ -344,8 +345,8 @@ public final class WaterGlyphs {
                     AbstractCandleBlock.extinguish(player, s, sl, fixed);
                 }
                 Vec3 pc = Vec3.atCenterOf(fixed);
-                sl.sendParticles(ParticleTypes.LARGE_SMOKE, pc.x, pc.y, pc.z, 4, 0.25, 0.2, 0.25, 0.02);
-                sl.sendParticles(ParticleTypes.SPLASH, pc.x, pc.y, pc.z, 4, 0.25, 0.1, 0.25, 0.1);
+                sl.sendParticles(Vfx.largeSmoke(), pc.x, pc.y, pc.z, 4, 0.25, 0.2, 0.25, 0.02);
+                sl.sendParticles(Vfx.splash(), pc.x, pc.y, pc.z, 4, 0.25, 0.1, 0.25, 0.1);
             }
         }
     }
@@ -393,14 +394,14 @@ public final class WaterGlyphs {
                     if (rnd.nextFloat() < 0.65F && bm.isValidBonemealTarget(sl, fixed, s) && bm.isBonemealSuccess(sl, rnd, fixed, s)
                             && FwUtil.canPlace(ctx, fixed)) {
                         bm.performBonemeal(sl, rnd, fixed, s);
-                        sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, fixed.getX() + 0.5, fixed.getY() + 0.6, fixed.getZ() + 0.5,
+                        sl.sendParticles(Vfx.happy(), fixed.getX() + 0.5, fixed.getY() + 0.6, fixed.getZ() + 0.5,
                                 5, 0.3, 0.3, 0.3, 0);
                         grown++;
                     }
                 } else if (s.is(Blocks.SUGAR_CANE) || s.is(Blocks.CACTUS) || s.is(Blocks.KELP) || s.is(Blocks.BAMBOO)) {
                     if (FwUtil.canPlace(ctx, fixed)) {
                         for (int i = 0; i < 4; i++) sl.getBlockState(fixed).randomTick(sl, fixed, rnd);
-                        sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, fixed.getX() + 0.5, fixed.getY() + 0.6, fixed.getZ() + 0.5,
+                        sl.sendParticles(Vfx.happy(), fixed.getX() + 0.5, fixed.getY() + 0.6, fixed.getZ() + 0.5,
                                 3, 0.3, 0.3, 0.3, 0);
                         grown++;
                     }
@@ -411,7 +412,7 @@ public final class WaterGlyphs {
             int drops = 10 + r * r * 3;
             for (int i = 0; i < drops; i++) {
                 double x = c.x + (rnd.nextDouble() * 2 - 1) * r, z = c.z + (rnd.nextDouble() * 2 - 1) * r;
-                sl.sendParticles(ParticleTypes.FALLING_WATER, x, c.y + 2.5 + rnd.nextDouble(), z, 1, 0, 0, 0, 0);
+                sl.sendParticles(Vfx.water(), x, c.y + 2.5 + rnd.nextDouble(), z, 1, 0, 0, 0, 0);
             }
             sl.sendParticles(FwUtil.dust(0x8A93A6, 2.5F), c.x, c.y + 3.2, c.z, 8, r * 0.5, 0.15, r * 0.5, 0);
             FwUtil.sound(sl, c, SoundEvents.WEATHER_RAIN, 0.4F, 1.3F);
@@ -473,7 +474,7 @@ public final class WaterGlyphs {
             Vec3 c = Vec3.atCenterOf(first);
             if (placed > 0) {
                 FwUtil.sound(sl, c, SoundEvents.BUCKET_EMPTY, 1.0F, 1.0F);
-                sl.sendParticles(ParticleTypes.SPLASH, c.x, c.y, c.z, 20, 0.4 + r, 0.2, 0.4 + r, 0.1);
+                sl.sendParticles(Vfx.splash(), c.x, c.y, c.z, 20, 0.4 + r, 0.2, 0.4 + r, 0.1);
             }
         }
 
@@ -491,7 +492,7 @@ public final class WaterGlyphs {
             if (!(t.isAir() || (t.canBeReplaced() && fluid.isEmpty() && !(t.getBlock() instanceof LiquidBlock)))) return false;
             if (sl.dimensionType().ultraWarm()) {
                 // No Nether a água evapora na hora (igual ao balde)
-                sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y, c.z, 8, 0.3, 0.2, 0.3, 0.02);
+                sl.sendParticles(Vfx.largeSmoke(), c.x, c.y, c.z, 8, 0.3, 0.2, 0.3, 0.02);
                 FwUtil.sound(sl, c, SoundEvents.FIRE_EXTINGUISH, 0.5F, 2.0F);
                 return false;
             }
@@ -585,7 +586,7 @@ public final class WaterGlyphs {
         private static void trail(ServerLevel sl, Vec3 from, Vec3 dir) {
             for (int i = 0; i < 10; i++) {
                 Vec3 p = from.add(dir.scale(i * 0.4)).add(0, 0.15, 0);
-                sl.sendParticles(ParticleTypes.SPLASH, p.x, p.y, p.z, 3, 0.2, 0.05, 0.2, 0.1);
+                sl.sendParticles(Vfx.splash(), p.x, p.y, p.z, 3, 0.2, 0.05, 0.2, 0.1);
                 sl.sendParticles(ParticleTypes.FISHING, p.x, p.y, p.z, 1, 0.1, 0.02, 0.1, 0.02);
             }
         }
@@ -649,7 +650,7 @@ public final class WaterGlyphs {
                 sl.sendParticles(FwUtil.dust(i % 2 == 0 ? 0x7FD8FF : 0xD8F6FF, 1.0F), le.getX() + Math.cos(a) * 0.6, le.getY() + h,
                         le.getZ() + Math.sin(a) * 0.6, 1, 0, 0, 0, 0);
             }
-            FwUtil.around(sl, le, ParticleTypes.SPLASH, 10, 0.1);
+            FwUtil.around(sl, le, Vfx.splash(), 10, 0.1);
             FwUtil.sound(sl, le.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.5F);
             FwUtil.sound(sl, le.position(), SoundEvents.BUBBLE_COLUMN_UPWARDS_INSIDE, 0.6F, 1.4F);
         }
@@ -681,7 +682,13 @@ public final class WaterGlyphs {
 
         private SummonedUndine summon(SpellContext ctx, Vec3 near, SpellStats stats) {
             if (!FwUtil.once(ctx, "summon_undine")) return null;
-            return FwSummon.summon(ctx, FwRegistries.UNDINE.get(), near, stats.duration(600), FwUtil.power(ctx, stats), 2);
+            // v1.0: Dividir chama a segunda ondina de uma vez (o limite por dono continua 2)
+            SummonedUndine first = null;
+            for (int i = 0; i < Math.min(2, stats.count()); i++) {
+                SummonedUndine u = FwSummon.summon(ctx, FwRegistries.UNDINE.get(), near, stats.duration(600), FwUtil.power(ctx, stats), 2);
+                if (first == null) first = u;
+            }
+            return first;
         }
     }
 
@@ -713,7 +720,7 @@ public final class WaterGlyphs {
                 // Esfera de água presa na cabeça
                 FwUtil.sphere(sl, head, FwUtil.dust(0x2F7FD8, 1.0F), Math.max(0.45, e.getBbWidth() * 0.6), 30);
                 sl.sendParticles(ParticleTypes.BUBBLE_POP, head.x, head.y, head.z, 10, 0.25, 0.25, 0.25, 0.02);
-                sl.sendParticles(ParticleTypes.FALLING_WATER, head.x, head.y - 0.2, head.z, 6, 0.25, 0.1, 0.25, 0);
+                sl.sendParticles(Vfx.water(), head.x, head.y - 0.2, head.z, 6, 0.25, 0.1, 0.25, 0);
                 FwUtil.sound(sl, head, SoundEvents.PLAYER_HURT_DROWN, 1.0F, 1.0F);
                 FwUtil.sound(sl, head, SoundEvents.BUBBLE_COLUMN_UPWARDS_INSIDE, 1.0F, 0.8F);
             }
@@ -766,7 +773,7 @@ public final class WaterGlyphs {
             Vec3 c = center(le);
             if (stats.inverted && !ctx.isAlly(le)) {
                 ctx.status(le, CoreRegistries.EXPOSED, 100, 0, stats);
-                sl.sendParticles(ParticleTypes.SPLASH, c.x, c.y, c.z, 16, 0.3, 0.4, 0.3, 0.1);
+                sl.sendParticles(Vfx.splash(), c.x, c.y, c.z, 16, 0.3, 0.4, 0.3, 0.1);
                 FwUtil.sound(sl, c, SoundEvents.GLASS_BREAK, 0.7F, 1.5F);
                 return;
             }
@@ -775,7 +782,7 @@ public final class WaterGlyphs {
             for (int ring = 0; ring < 3; ring++) {
                 FwUtil.ring(sl, le.position().add(0, 0.3 + ring * le.getBbHeight() * 0.35, 0), FwUtil.dust(0xBFF4FF, 1.1F), r, 18, 0);
             }
-            sl.sendParticles(ParticleTypes.SPLASH, c.x, c.y, c.z, 16, 0.4, 0.5, 0.4, 0.1);
+            sl.sendParticles(Vfx.splash(), c.x, c.y, c.z, 16, 0.4, 0.5, 0.4, 0.1);
             FwUtil.sound(sl, c, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.0F, 1.4F);
             FwUtil.sound(sl, c, SoundEvents.BOTTLE_FILL, 0.8F, 1.0F);
         }
@@ -811,8 +818,12 @@ public final class WaterGlyphs {
 
         private void spawn(SpellContext ctx, Vec3 at, SpellStats stats) {
             if (!FwUtil.once(ctx, "deluge")) return;
-            ElementalFieldEntity.spawn(ctx, ElementalFieldEntity.Kind.DELUGE, FwUtil.ground(ctx.level(), at, 6),
+            Vec3 g = FwUtil.ground(ctx.level(), at, 6);
+            ElementalFieldEntity.spawn(ctx, ElementalFieldEntity.Kind.DELUGE, g,
                     stats.radius(9.0F), stats.duration(240), 1.5F * stats.power(), FwUtil.amp(ctx, stats), 0);
+            // v1.3: o céu se abre (golpe do céu) e a chuva cai sobre a área inteira enquanto o Dilúvio durar
+            com.renanpontes.isekaimahou.core.ElementFx.skyStrike(ctx.level(), g, Element.WATER, ctx.color(), stats.radius(9.0F) * 0.6F, 5, 12);
+            com.renanpontes.isekaimahou.core.ElementFx.area(ctx.level(), g, Element.WATER, ctx.color(), stats.radius(9.0F), 4, Math.min(400, stats.duration(240)));
         }
     }
 

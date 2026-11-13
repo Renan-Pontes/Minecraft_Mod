@@ -74,8 +74,9 @@ public final class LegendFx {
         return ctx.element() == Element.ARCANE ? arcaneDefault : ctx.element().color;
     }
 
-    public static DustParticleOptions dust(int rgb, float size) {
-        return new DustParticleOptions(new Vector3f(((rgb >> 16) & 255) / 255F, ((rgb >> 8) & 255) / 255F, (rgb & 255) / 255F), size);
+    public static ParticleOptions dust(int rgb, float size) {
+        // v1.3: brilho fx aditivo (mesmo tamanho do pó do vanilla; respeita o preset gráfico no cliente)
+        return com.renanpontes.isekaimahou.core.ElementFx.glow(rgb, size);
     }
 
     /**

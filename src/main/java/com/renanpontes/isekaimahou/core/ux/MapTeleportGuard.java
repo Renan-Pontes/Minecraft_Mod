@@ -21,9 +21,14 @@ import net.neoforged.neoforge.event.CommandEvent;
 /**
  * Bloqueio de teleporte por mapa/comando ({@link MahouConfig#BLOCK_MAP_TELEPORT}, padrão ligado). Os minimapas
  * (Xaero's Minimap / World Map, JourneyMap) teleportam mandando um comando ({@code /tp @s x y z},
- * {@code /execute ... run tp ...}, {@code /jtp}) em nome do jogador: aqui o comando é cancelado quando quem mandou é um
- * jogador fora do criativo/espectador, com a mensagem "Use as Pedras de Teleporte". Console, blocos de comando,
- * funções e jogadores no criativo continuam podendo usar.
+ * {@code /execute ... run tp ...}, {@code /jtp}) em nome do jogador: aqui o comando DIGITADO por um jogador é cancelado,
+ * com a mensagem "Use as Pedras de Teleporte". Console, blocos de comando e funções continuam podendo usar.
+ * <p>
+ * v1.0 ("LEMBRE DE TIRAR O TP DO XAEROSMAP"): estar no criativo não libera mais — só o <b>admin logado</b>
+ * ({@code /mahou admin login}, {@link AdminAuth}) teleporta por comando/mapa. No ambiente de desenvolvimento a senha de
+ * admin fica desligada; lá vale a regra antiga (criativo/espectador passam) para dar para testar o bloqueio.
+ * A opção do mapa do Xaero também é desligada na config ({@code client/ux/XaeroSeed} e o perfil de servidor semeado
+ * pelo módulo travel).
  */
 public final class MapTeleportGuard {
     /** Comandos (raiz) que teleportam. "jtp" = JourneyMap no servidor. */
@@ -34,8 +39,9 @@ public final class MapTeleportGuard {
         ParseResults<CommandSourceStack> parse = e.getParseResults();
         if (parse == null) return;
         CommandSourceStack source = parse.getContext().getSource();
-        if (!(source.getEntity() instanceof ServerPlayer sp) || sp instanceof FakePlayer) return;
-        if (sp.isCreative() || sp.isSpectator()) return;
+        // Só o que o próprio jogador mandou (o mapa manda o comando em nome dele): bloco de comando e função passam
+        if (!(source.source instanceof ServerPlayer sp) || sp instanceof FakePlayer) return;
+        if (mayTeleport(sp)) return;
         if (!teleports(parse.getContext())) return;
         e.setCanceled(true);
         sp.sendSystemMessage(Component.translatable("ux.isekai_mahou.teleport_blocked").withStyle(ChatFormatting.RED));
@@ -43,8 +49,14 @@ public final class MapTeleportGuard {
         sp.playNotifySound(SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.PLAYERS, 0.7F, 0.6F);
     }
 
+    /** Quem pode teleportar por comando/mapa: o admin logado (em desenvolvimento, sem senha: criativo/espectador). */
+    public static boolean mayTeleport(ServerPlayer sp) {
+        if (AdminAuth.enabled()) return AdminAuth.isAdmin(sp);
+        return sp.isCreative() || sp.isSpectator();
+    }
+
     /** Algum comando da cadeia (o principal ou o que vem depois de {@code execute ... run}) é de teleporte? */
-    private static boolean teleports(CommandContextBuilder<CommandSourceStack> ctx) {
+    public static boolean teleports(CommandContextBuilder<CommandSourceStack> ctx) {
         int guard = 0;
         while (ctx != null && guard++ < 32) {
             List<ParsedCommandNode<CommandSourceStack>> nodes = ctx.getNodes();

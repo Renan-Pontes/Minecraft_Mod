@@ -8,11 +8,11 @@ import com.renanpontes.isekaimahou.core.Progression;
 import com.renanpontes.isekaimahou.core.event.SpellCastEvent;
 import com.renanpontes.isekaimahou.feature.domain.entity.DomainDomeEntity;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -147,8 +147,8 @@ public final class DomainEvents {
             if (!d.nullifies(sl, caster)) continue;
             event.setCanceled(true);
             Vec3 p = caster.position().add(0, caster.getBbHeight() * 0.6, 0);
-            sl.sendParticles(ParticleTypes.SMOKE, p.x, p.y, p.z, 14, 0.3, 0.4, 0.3, 0.02);
-            sl.sendParticles(ParticleTypes.ENCHANT, p.x, p.y, p.z, 10, 0.4, 0.4, 0.4, 0.4);
+            sl.sendParticles(Vfx.smoke(), p.x, p.y, p.z, 14, 0.3, 0.4, 0.3, 0.02);
+            sl.sendParticles(Vfx.enchant(), p.x, p.y, p.z, 10, 0.4, 0.4, 0.4, 0.4);
             sl.playSound(null, p.x, p.y, p.z, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.8F, 1.4F);
             if (caster instanceof ServerPlayer sp) {
                 sp.displayClientMessage(Component.translatable("message.isekai_mahou.domain_nullified").withStyle(ChatFormatting.RED), true);

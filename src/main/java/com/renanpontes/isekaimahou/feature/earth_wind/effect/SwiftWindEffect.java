@@ -1,6 +1,6 @@
 package com.renanpontes.isekaimahou.feature.earth_wind.effect;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +24,7 @@ public class SwiftWindEffect extends EwMobEffect {
             // (para jogadores e o ultimo movimento enviado pelo cliente; para mobs, a velocidade)
             Vec3 mv = e.getKnownMovement();
             if (mv.x * mv.x + mv.z * mv.z > 0.004 && e.onGround()) {
-                level.sendParticles(ParticleTypes.CLOUD, e.getX() - mv.x * 2, e.getY() + 0.1, e.getZ() - mv.z * 2, 1, 0.15, 0.02, 0.15, 0.01);
+                level.sendParticles(Vfx.cloud(), e.getX() - mv.x * 2, e.getY() + 0.1, e.getZ() - mv.z * 2, 1, 0.15, 0.02, 0.15, 0.01);
             }
         }
         return true;

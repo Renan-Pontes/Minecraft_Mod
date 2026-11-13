@@ -11,7 +11,7 @@ import com.renanpontes.isekaimahou.feature.fusions_c.FcRegistries;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -98,7 +98,7 @@ public class FusionShockwaveEntity extends FcSpellEntity {
             Statuses.apply(le, Statuses.Kind.FROZEN, 1, freezeTicks, owner(), power);
             Statuses.apply(le, Statuses.Kind.CHILLED, 3, freezeTicks + 60, owner(), power);
             Statuses.clear(le, Statuses.Kind.BURNING);
-            sl.sendParticles(ParticleTypes.SNOWFLAKE, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 16,
+            sl.sendParticles(Vfx.snowflake(), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 16,
                     le.getBbWidth() * 0.5, le.getBbHeight() * 0.4, le.getBbWidth() * 0.5, 0.05);
             FcFx.sound(sl, le.position(), SoundEvents.PLAYER_HURT_FREEZE, 1F, 0.8F);
         }
@@ -107,7 +107,7 @@ public class FusionShockwaveEntity extends FcSpellEntity {
             int pts = Math.min(48, (int) (r * 4));
             for (int i = 0; i < pts; i++) {
                 double a = Math.PI * 2 * i / pts + random.nextDouble() * 0.1;
-                sl.sendParticles(ParticleTypes.SNOWFLAKE, c.x + Math.cos(a) * r, c.y + 0.2, c.z + Math.sin(a) * r, 1, 0.1, 0.2, 0.1, 0.02);
+                sl.sendParticles(Vfx.snowflake(), c.x + Math.cos(a) * r, c.y + 0.2, c.z + Math.sin(a) * r, 1, 0.1, 0.2, 0.1, 0.02);
             }
         }
     }
@@ -118,7 +118,7 @@ public class FusionShockwaveEntity extends FcSpellEntity {
             float r = radius(0);
             for (int i = 0; i < 6; i++) {
                 double a = random.nextDouble() * Math.PI * 2;
-                level().addParticle(ParticleTypes.CLOUD, getX() + Math.cos(a) * r, getY() + random.nextDouble() * r * 0.6,
+                level().addParticle(Vfx.cloud(), getX() + Math.cos(a) * r, getY() + random.nextDouble() * r * 0.6,
                         getZ() + Math.sin(a) * r, Math.cos(a) * 0.15, 0.05, Math.sin(a) * 0.15);
             }
         }

@@ -1,6 +1,7 @@
 package com.renanpontes.isekaimahou.client.spellfx;
 
 import com.renanpontes.isekaimahou.glyph.fx.FxOptions;
+import com.renanpontes.isekaimahou.glyph.fx.SpellFxParticles;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
@@ -134,6 +135,20 @@ public class FxParticle extends TextureSheetParticle {
         }
         if (o.life() > 0) life = o.life();
         this.lifetime = Math.max(2, life);
+        // Velocidade "à moda do vanilla" que esta partícula substitui (Vfx)
+        switch (SpellFxParticles.motionOf(o.flags())) {
+            case 1 -> { xd *= 0.3; yd *= 0.3; zd *= 0.3; }
+            case 2 -> { xd *= 0.1; yd *= 0.1; zd *= 0.1; }
+            case 3 -> {
+                // Nasce afastada e vem até o ponto (portal/encantamento): percorre a velocidade inteira na vida toda
+                setPos(x + vx, y + vy, z + vz);
+                xo = this.x; yo = this.y; zo = this.z;
+                double k = 1.0 - friction;
+                xd = -vx * k; yd = -vy * k; zd = -vz * k;
+                gravity = 0;
+            }
+            default -> { }
+        }
         this.baseSize = size;
         this.quadSize = size;
         this.baseAlpha = alpha;

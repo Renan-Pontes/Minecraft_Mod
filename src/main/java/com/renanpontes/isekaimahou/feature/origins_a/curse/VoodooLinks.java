@@ -11,6 +11,7 @@ import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.feature.origins_a.OaRegistries;
 import com.renanpontes.isekaimahou.feature.origins_a.OaUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -50,7 +51,7 @@ public final class VoodooLinks {
             prev.removeEffect(OaRegistries.VOODOO_BOUND);
         }
         line(level, caster.position().add(0, caster.getBbHeight() * 0.6, 0), target.position().add(0, target.getBbHeight() * 0.6, 0), 0.25);
-        level.sendParticles(ParticleTypes.WITCH, target.getX(), target.getY() + target.getBbHeight(), target.getZ(), 16, 0.3, 0.3, 0.3, 0.05);
+        level.sendParticles(Vfx.witch(), target.getX(), target.getY() + target.getBbHeight(), target.getZ(), 16, 0.3, 0.3, 0.3, 0.05);
         level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.WITCH_CELEBRATE, SoundSource.PLAYERS, 0.8F, 1.3F);
         if (caster instanceof Player p) OaUtil.actionbar(p, "voodoo_bound", target.getDisplayName(), charges);
     }

@@ -1,9 +1,18 @@
 package com.renanpontes.isekaimahou.feature.character;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.renanpontes.isekaimahou.core.Element;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 /**
@@ -42,6 +51,12 @@ public final class CharacterData implements INBTSerializable<CompoundTag> {
     private long relentlessReadyAt;
     /** Quando a Transformação pode ser usada de novo. */
     private long formReadyAt;
+
+    // ---- v1.7 (raças de anime): Predador do Slime (Rimuru) ----
+    /** Habilidades copiadas pelo Predador, da mais antiga à mais nova (ids de {@link SlimePredator.Mimic}). */
+    private final List<String> mimics = new ArrayList<>();
+    /** Amostras devoradas de cada tipo ainda não aprendido (análise do Grande Sábio). */
+    private final Map<String, Integer> analysis = new HashMap<>();
 
     /** Algo mudou: reenviar ao cliente e reaplicar os modificadores. */
     public transient boolean dirty = true;
@@ -128,6 +143,52 @@ public final class CharacterData implements INBTSerializable<CompoundTag> {
         dirty = true;
     }
 
+    // ---- Predador (Slime) ----
+    /** Habilidades copiadas (da mais antiga à mais nova). */
+    public List<String> mimics() { return Collections.unmodifiableList(mimics); }
+
+    public boolean hasMimic(String id) { return mimics.contains(id); }
+
+    /** Amostras já analisadas de um tipo ainda não aprendido. */
+    public int analysis(String id) { return analysis.getOrDefault(id, 0); }
+
+    /** +1 amostra; devolve o total. */
+    public int analyze(String id) {
+        int n = analysis(id) + 1;
+        analysis.put(id, n);
+        return n;
+    }
+
+    /**
+     * Aprende a habilidade {@code id}; com a capacidade cheia, a MAIS ANTIGA é descartada.
+     * @return o id descartado (ou null)
+     */
+    public String learnMimic(String id, int cap) {
+        if (mimics.contains(id)) return null;
+        analysis.remove(id);
+        mimics.add(id);
+        String dropped = null;
+        while (mimics.size() > Math.max(1, cap)) dropped = mimics.remove(0);
+        dirty = true;
+        return dropped;
+    }
+
+    /** Corta as habilidades excedentes (a capacidade caiu, ex.: comando de op). */
+    public void trimMimics(int cap) {
+        boolean changed = false;
+        while (mimics.size() > Math.max(1, cap)) {
+            mimics.remove(0);
+            changed = true;
+        }
+        if (changed) dirty = true;
+    }
+
+    public void clearMimics() {
+        mimics.clear();
+        analysis.clear();
+        dirty = true;
+    }
+
     /** Volta ao estado "sem raça escolhida" (comando de op). Feitos ficam. */
     public void reset() {
         race = Race.HUMAN;
@@ -161,6 +222,14 @@ public final class CharacterData implements INBTSerializable<CompoundTag> {
             if (feats[r.ordinal()] > 0) f.putInt(r.id, feats[r.ordinal()]);
         }
         t.put("feats", f);
+        CompoundTag pr = new CompoundTag();
+        ListTag learned = new ListTag();
+        for (String m : mimics) learned.add(StringTag.valueOf(m));
+        pr.put("learned", learned);
+        CompoundTag an = new CompoundTag();
+        analysis.forEach((k, v) -> { if (v > 0) an.putInt(k, v); });
+        pr.put("analysis", an);
+        t.put("predator", pr);
         return t;
     }
 
@@ -183,6 +252,16 @@ public final class CharacterData implements INBTSerializable<CompoundTag> {
         announcedLevel = t.contains("announced_level") ? t.getInt("announced_level") : -1;
         CompoundTag f = t.getCompound("feats");
         for (Race x : Race.ALL) feats[x.ordinal()] = f.getInt(x.id);
+        // v1.7: Predador (saves antigos não têm a chave: começa vazio)
+        mimics.clear();
+        analysis.clear();
+        CompoundTag pr = t.getCompound("predator");
+        for (Tag x : pr.getList("learned", Tag.TAG_STRING)) {
+            String id = x.getAsString();
+            if (!mimics.contains(id)) mimics.add(id);
+        }
+        CompoundTag an = pr.getCompound("analysis");
+        for (String k : an.getAllKeys()) analysis.put(k, an.getInt(k));
         dirty = true;
     }
 

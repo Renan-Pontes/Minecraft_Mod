@@ -21,6 +21,7 @@ import com.renanpontes.isekaimahou.glyph.ParsedSpell;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -134,6 +135,9 @@ public class SupremeCircleEntity extends LeSpellEntity {
         level.addFreshEntity(e);
 
         int rgb = e.color();
+        // v1.3: energia subindo para o céu durante a canalização (o círculo gigante é do próprio renderer)
+        com.renanpontes.isekaimahou.core.ElementFx.gatherAt(level, caster.position().add(0, 1.2, 0), com.renanpontes.isekaimahou.core.Element.ARCANE, rgb, 4.5F, 5, dur);
+        com.renanpontes.isekaimahou.core.ElementFx.shake(level, caster.position(), 32, 0.3F, dur);
         // Trava e marca ANTES de entrar na Pilha: uma resposta imediata ("Em Resposta") já encontra tudo para desfazer
         e.telegraph = Telegraph.show(level, Telegraph.Shape.circle(target, (float) REACH).warmup(dur).color(LeFx.mix(rgb, 0xFFFFFF, 0.4F)));
         SupremeCasting.lock(caster, e.getId());
@@ -223,7 +227,7 @@ public class SupremeCircleEntity extends LeSpellEntity {
         if (age % 4 == 0) {
             double a = random.nextDouble() * Math.PI * 2, r = Math.sqrt(random.nextDouble()) * REACH * 0.8;
             Vec3 q = target.add(Math.cos(a) * r, 0.3, Math.sin(a) * r);
-            LeFx.send(level, ParticleTypes.END_ROD, q.x, q.y, q.z, 2, 0.3, 1.5, 0.3, 0.06);
+            LeFx.send(level, Vfx.endRod(), q.x, q.y, q.z, 2, 0.3, 1.5, 0.3, 0.06);
         }
     }
 
@@ -238,7 +242,7 @@ public class SupremeCircleEntity extends LeSpellEntity {
         LeFx.sound(level, p, SoundEvents.BEACON_DEACTIVATE, 2.0F, 0.5F);
         LeFx.send(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.LIGHT_BLUE_STAINED_GLASS.defaultBlockState()),
                 p.x, p.y + 0.5, p.z, 120, RADIUS * 0.5, 0.4, RADIUS * 0.5, 0.2);
-        LeFx.send(level, ParticleTypes.END_ROD, p.x, p.y + 1, p.z, 60, RADIUS * 0.4, 1.0, RADIUS * 0.4, 0.15);
+        LeFx.send(level, Vfx.endRod(), p.x, p.y + 1, p.z, 60, RADIUS * 0.4, 1.0, RADIUS * 0.4, 0.15);
         BossKit.shake(level, p, 32, 1.2F, 16);
     }
 
@@ -364,7 +368,7 @@ public class SupremeCircleEntity extends LeSpellEntity {
         LeFx.ring(level, target.add(0, 0.3, 0), new Vec3(0, 1, 0), (float) REACH, LeFx.mix(rgb, 0xFFFFFF, 0.5F), 30);
         LeFx.ring(level, target.add(0, 0.6, 0), new Vec3(0, 1, 0), (float) REACH * 0.6F, 0xFFFFFF, 20);
         LeFx.send(level, ParticleTypes.EXPLOSION_EMITTER, target, 3, 2.0, 0);
-        LeFx.send(level, ParticleTypes.END_ROD, target.x, target.y + 1, target.z, 120, 6, 4, 6, 0.4);
+        LeFx.send(level, Vfx.endRod(), target.x, target.y + 1, target.z, 120, 6, 4, 6, 0.4);
         LeFx.sound(level, target, SoundEvents.GENERIC_EXPLODE, 4.0F, 0.5F);
         LeFx.sound(level, target, SoundEvents.LIGHTNING_BOLT_IMPACT, 4.0F, 0.7F);
     }
@@ -378,7 +382,7 @@ public class SupremeCircleEntity extends LeSpellEntity {
             if (strong.isValidTarget(en.effect(), en.stats(), e)) strong.applyEffect(en, e);
         }
         LeFx.send(level, ParticleTypes.FLASH, hit, 1, 0, 0);
-        LeFx.send(level, meteor ? ParticleTypes.LAVA : ParticleTypes.END_ROD, hit.x, hit.y, hit.z, 14, 0.6, 0.6, 0.6, 0.25);
+        LeFx.send(level, meteor ? ParticleTypes.LAVA : Vfx.endRod(), hit.x, hit.y, hit.z, 14, 0.6, 0.6, 0.6, 0.25);
         LeFx.send(level, LeFx.dust(LeFx.mix(rgb, 0xFFFFFF, 0.4F), 1.6F), hit.x, hit.y, hit.z, 10, 0.8, 0.8, 0.8, 0);
         LeFx.ring(level, e.position().add(0, 0.2, 0), new Vec3(0, 1, 0), 4.5F, meteor ? 0xFF8A3A : LeFx.mix(rgb, 0xFFFFFF, 0.5F), 12);
         if (impactSounds++ < 10) {
@@ -399,15 +403,15 @@ public class SupremeCircleEntity extends LeSpellEntity {
             int n = reduced ? 1 : 3;
             for (int i = 0; i < n; i++) {
                 double a = random.nextDouble() * Math.PI * 2, r = Math.sqrt(random.nextDouble()) * RADIUS;
-                level().addParticle(ParticleTypes.END_ROD, getX() + Math.cos(a) * r, getY() + 0.2, getZ() + Math.sin(a) * r,
+                level().addParticle(Vfx.endRod(), getX() + Math.cos(a) * r, getY() + 0.2, getZ() + Math.sin(a) * r,
                         0, 0.04 + 0.12 * p, 0);
             }
             double a = random.nextDouble() * Math.PI * 2, r = 3 + random.nextDouble() * 6;
-            level().addParticle(ParticleTypes.ENCHANT, getX(), getY() + 1.4, getZ(), Math.cos(a) * r, 1.0 + random.nextDouble() * 2, Math.sin(a) * r);
+            level().addParticle(Vfx.enchant(), getX(), getY() + 1.4, getZ(), Math.cos(a) * r, 1.0 + random.nextDouble() * 2, Math.sin(a) * r);
             if (p > 0.45F && !reduced) {
                 Vec3 t = position().add(targetOffset());
                 double b = random.nextDouble() * Math.PI * 2, rr = Math.sqrt(random.nextDouble()) * 22;
-                level().addParticle(ParticleTypes.END_ROD, t.x + Math.cos(b) * rr, t.y + 34, t.z + Math.sin(b) * rr, 0, -0.25, 0);
+                level().addParticle(Vfx.endRod(), t.x + Math.cos(b) * rr, t.y + 34, t.z + Math.sin(b) * rr, 0, -0.25, 0);
             }
         }
     }
@@ -421,7 +425,7 @@ public class SupremeCircleEntity extends LeSpellEntity {
         if (st == UNLEASHED) {
             for (int i = 0; i < n; i++) {
                 double a = random.nextDouble() * Math.PI * 2;
-                level().addParticle(ParticleTypes.END_ROD, getX(), getY() + 0.5, getZ(), Math.cos(a) * 0.9, 0.05 + random.nextDouble() * 0.3, Math.sin(a) * 0.9);
+                level().addParticle(Vfx.endRod(), getX(), getY() + 0.5, getZ(), Math.cos(a) * 0.9, 0.05 + random.nextDouble() * 0.3, Math.sin(a) * 0.9);
             }
         } else if (st == SHATTERED || st == FIZZLED) {
             for (int i = 0; i < n; i++) {

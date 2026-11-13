@@ -15,6 +15,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -61,9 +62,9 @@ public final class HellfireGlyphs {
                 Vec3 c = FbUtil.center(e);
                 sl.sendParticles(FbFx.fade(FbFx.HELLFIRE, FbFx.HELL_BLACK, 1.6F), c.x, c.y, c.z, 20,
                         e.getBbWidth() * 0.5, e.getBbHeight() * 0.4, e.getBbWidth() * 0.5, 0.03);
-                sl.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, c.x, c.y, c.z, 6, e.getBbWidth() * 0.4, e.getBbHeight() * 0.3,
+                sl.sendParticles(Vfx.soulFlame(), c.x, c.y, c.z, 6, e.getBbWidth() * 0.4, e.getBbHeight() * 0.3,
                         e.getBbWidth() * 0.4, 0.02);
-                sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y, c.z, 4, 0.2, 0.3, 0.2, 0.02);
+                sl.sendParticles(Vfx.largeSmoke(), c.x, c.y, c.z, 4, 0.2, 0.3, 0.2, 0.02);
             }
             FbFx.sound(sl, target.position(), SoundEvents.FIRECHARGE_USE, 0.9F, 0.5F);
             FbFx.sound(sl, target.position(), SoundEvents.SOUL_ESCAPE.value(), 1.2F, 0.7F);
@@ -225,21 +226,21 @@ public final class HellfireGlyphs {
                 }
                 double r = Math.min(1.6, age * 0.06);
                 if (age % 2 == 0) {
-                    FbFx.ring(level, at.add(0, 0.1, 0), ParticleTypes.FLAME, r, 18, 0.01);
+                    FbFx.ring(level, at.add(0, 0.1, 0), Vfx.flame(), r, 18, 0.01);
                     FbFx.ring(level, at.add(0, 0.12, 0), FbFx.fade(FbFx.HELLFIRE, FbFx.HELL_BLACK, 1.4F), r * 0.7, 14, 0);
-                    level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, at.x, at.y + 0.2, at.z, 3, r * 0.4, 0.05, r * 0.4, 0.06);
-                    level.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y + 0.3, at.z, 2, r * 0.4, 0.1, r * 0.4, 0.04);
+                    level.sendParticles(Vfx.soulFlame(), at.x, at.y + 0.2, at.z, 3, r * 0.4, 0.05, r * 0.4, 0.06);
+                    level.sendParticles(Vfx.largeSmoke(), at.x, at.y + 0.3, at.z, 2, r * 0.4, 0.1, r * 0.4, 0.04);
                 }
                 if (age % 5 == 0) level.sendParticles(ParticleTypes.LAVA, at.x, at.y + 0.2, at.z, 2, r * 0.5, 0.05, r * 0.5, 0);
                 LivingEntity owner = ctx.caster();
                 if (spawned < count && age >= 15 + spawned * 7 && owner != null && owner.isAlive() && owner.level() == level) {
                     HellfireImpEntity.emerge(level, owner, at, life, power);
                     spawned++;
-                    level.sendParticles(ParticleTypes.FLAME, at.x, at.y + 0.5, at.z, 20, 0.3, 0.4, 0.3, 0.08);
+                    level.sendParticles(Vfx.flame(), at.x, at.y + 0.5, at.z, 20, 0.3, 0.4, 0.3, 0.08);
                     FbFx.sound(level, at, SoundEvents.BLAZE_SHOOT, 1.0F, 0.7F);
                 }
                 if (age >= OPEN_TICKS) {
-                    level.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y + 0.3, at.z, 20, 0.8, 0.2, 0.8, 0.03);
+                    level.sendParticles(Vfx.largeSmoke(), at.x, at.y + 0.3, at.z, 20, 0.8, 0.2, 0.8, 0.03);
                     FbFx.sound(level, at, SoundEvents.FIRE_EXTINGUISH, 1.0F, 0.6F);
                     return false;
                 }

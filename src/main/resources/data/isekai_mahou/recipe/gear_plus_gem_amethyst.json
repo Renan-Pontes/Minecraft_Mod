@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:gem_amethyst_chipped"
+    },
+    {
+      "item": "isekai_mahou:gem_amethyst_chipped"
+    },
+    {
+      "item": "isekai_mahou:gem_amethyst_chipped"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:gem_amethyst",
+    "count": 1
+  }
+}

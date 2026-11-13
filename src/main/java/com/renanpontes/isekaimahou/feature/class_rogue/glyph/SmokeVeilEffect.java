@@ -5,6 +5,7 @@ import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueCombat;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueFx;
+import com.renanpontes.isekaimahou.feature.class_rogue.RogueFxNet;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
@@ -71,9 +72,8 @@ public class SmokeVeilEffect extends EffectGlyph {
             if (!Statuses.isBossLike(mob)) mob.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0), ctx.caster());
         }
         // nuvem densa em volta (quantidade fixa, raio acompanha a área)
-        level.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, c.x, c.y + 0.8, c.z, 14, r * 0.3, 0.5, r * 0.3, 0.01);
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y + 0.6, c.z, 30, r * 0.35, 0.6, r * 0.35, 0.02);
-        level.sendParticles(RogueFx.dust(RogueFx.SHADOW, 2.0F), c.x, c.y + 1.0, c.z, 20, r * 0.3, 0.7, r * 0.3, 0);
+        level.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, c.x, c.y + 0.8, c.z, 6, r * 0.3, 0.5, r * 0.3, 0.01);
+        RogueFxNet.at(level, RogueFxNet.SMOKE_VEIL, c, Vec3.ZERO, r, RogueFx.SHADOW, -1);
         RogueFx.sound(level, c, SoundEvents.FIRE_EXTINGUISH, 0.8F, 0.7F);
         RogueFx.sound(level, c, SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.8F, 1.1F);
     }

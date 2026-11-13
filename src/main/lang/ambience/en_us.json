@@ -1,0 +1,32 @@
+{
+  "hint.isekai_mahou.ambience_music": "Ambient music is on · volume in Mods > Isekai Mahou > Config",
+
+  "ambience.isekai_mahou.zone.none": "none",
+  "ambience.isekai_mahou.zone.dungeon": "Dungeon",
+  "ambience.isekai_mahou.zone.citadel": "Citadel",
+  "ambience.isekai_mahou.zone.library": "Library",
+  "ambience.isekai_mahou.zone.tower": "Tower",
+  "ambience.isekai_mahou.zone.city": "City",
+  "ambience.isekai_mahou.zone.abyss": "Abyss",
+  "ambience.isekai_mahou.zone.home": "Home Realm",
+
+  "subtitles.isekai_mahou.ambience.spell_cast": "Spell cast",
+  "subtitles.isekai_mahou.ambience.spell_impact": "Spell hits",
+
+  "command.isekai_mahou.ambience.zone": "Music zone here: %s",
+  "command.isekai_mahou.ambience.music": "Ambient music forced: %s (back to normal with /mahou ambience music auto)",
+  "command.isekai_mahou.ambience.music_auto": "Ambient music back to automatic.",
+  "command.isekai_mahou.ambience.sfx": "Test spell sound: %s · %s · size %s",
+  "command.isekai_mahou.ambience.unknown": "I don't know \"%s\".",
+
+  "isekai_mahou.configuration.ambientMusic": "Ambient music",
+  "isekai_mahou.configuration.ambientMusic.tooltip": "Quiet dark fantasy music in dungeons, towers, cities, the Abyss and the Home Realm. Bosses keep their own music.",
+  "isekai_mahou.configuration.ambientMusicVolume": "Ambient music volume",
+  "isekai_mahou.configuration.ambientMusicVolume.tooltip": "0 to 100. The game's \"Music\" slider also applies. 0 = no ambient music.",
+  "isekai_mahou.configuration.spellSounds": "Custom spell sounds",
+  "isekai_mahou.configuration.spellSounds.tooltip": "Each element has its own sound on cast and on hit; bigger spell, bigger sound.",
+  "isekai_mahou.configuration.spellSoundVolume": "Spell sound volume",
+  "isekai_mahou.configuration.spellSoundVolume.tooltip": "0 to 100. 0 = only the old sounds.",
+  "isekai_mahou.configuration.glowInDark": "Glow in the dark",
+  "isekai_mahou.configuration.glowInDark.tooltip": "Crystals, runes and essences glow in the dark. Reload resources (F3+T) for a change to apply."
+}

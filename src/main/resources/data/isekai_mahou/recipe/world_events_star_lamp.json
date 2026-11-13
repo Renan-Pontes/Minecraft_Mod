@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " G ",
+    "GSG",
+    " G "
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "S": {
+      "item": "isekai_mahou:world_events_star_metal"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:world_events_star_lamp",
+    "count": 2
+  }
+}

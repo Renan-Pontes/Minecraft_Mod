@@ -27,9 +27,9 @@ import com.renanpontes.isekaimahou.glyph.SpellStats;
 import com.renanpontes.isekaimahou.glyph.TriggerGlyph;
 import com.renanpontes.isekaimahou.glyph.entity.SpellProjectileEntity;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -142,7 +142,7 @@ public final class CounterEffects {
         /** Mana escorrendo: gotas azuis caindo de um anel trincado. */
         private static void drip(ServerLevel level, Vec3 c) {
             DuelFx.ring(level, c, 0.7, DuelFx.dust(DuelFx.MANA, 1.0F), 12);
-            level.sendParticles(ParticleTypes.DRIPPING_WATER, c.x, c.y, c.z, 14, 0.4, 0.4, 0.4, 0);
+            level.sendParticles(Vfx.water(), c.x, c.y, c.z, 14, 0.4, 0.4, 0.4, 0);
             level.sendParticles(DuelFx.dust(0x2A5FB0, 1.3F), c.x, c.y - 0.3, c.z, 10, 0.3, 0.5, 0.3, 0);
             DuelFx.sound(level, c, SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 0.6F);
         }
@@ -229,7 +229,7 @@ public final class CounterEffects {
                 }, caster, newOwner, false);
                 proj.setPos(at.add(dir.scale(0.6)));
             }
-            level.sendParticles(ParticleTypes.ENCHANTED_HIT, at.x, at.y, at.z, 10, 0.2, 0.2, 0.2, 0.3);
+            level.sendParticles(Vfx.magicCrit(), at.x, at.y, at.z, 10, 0.2, 0.2, 0.2, 0.3);
             level.sendParticles(DuelFx.dust(DuelFx.ARCANE, 1.2F), at.x, at.y, at.z, 8, 0.25, 0.25, 0.25, 0);
             return true;
         }
@@ -279,7 +279,7 @@ public final class CounterEffects {
             }
             DuelUtil.actionbar(caster, Component.translatable("message.isekai_mahou.arcane_duel.fork.nothing"), ChatFormatting.GRAY);
             Vec3 c = DuelFx.center(caster);
-            level.sendParticles(ParticleTypes.SMOKE, c.x, c.y + 0.6, c.z, 10, 0.3, 0.3, 0.3, 0.01);
+            level.sendParticles(Vfx.smoke(), c.x, c.y + 0.6, c.z, 10, 0.3, 0.3, 0.3, 0.01);
             DuelFx.sound(level, c, SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.6F);
         }
 
@@ -289,7 +289,7 @@ public final class CounterEffects {
             // A carta espelhada surge sobre você; um fio de luz liga o original à cópia
             DuelFx.spawn(level, DuelFxEntity.CARD, caster.position().add(0, caster.getBbHeight() + 0.6, 0), 0.9F, 30, rgb, 1F);
             DuelFx.line(level, r.pos().add(0, 1, 0), c, DuelFx.dust(rgb, 1.0F), 0.6);
-            level.sendParticles(ParticleTypes.ENCHANT, c.x, c.y + 0.6, c.z, 30, 0.4, 0.6, 0.4, 0.9);
+            level.sendParticles(Vfx.enchant(), c.x, c.y + 0.6, c.z, 30, 0.4, 0.6, 0.4, 0.9);
             DuelFx.sound(level, c, SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 0.8F);
             DuelFx.sound(level, c, SoundEvents.ENCHANTMENT_TABLE_USE, 1.0F, 1.3F);
             Component name = r.recipe().name().isEmpty()
@@ -341,7 +341,7 @@ public final class CounterEffects {
             Vec3 from = DuelFx.center(le);
             Vec3 to = DuelFx.center(caster);
             if (stolen.isEmpty()) {
-                level.sendParticles(ParticleTypes.SMOKE, from.x, from.y, from.z, 8, 0.3, 0.3, 0.3, 0.01);
+                level.sendParticles(Vfx.smoke(), from.x, from.y, from.z, 8, 0.3, 0.3, 0.3, 0.01);
                 DuelUtil.actionbar(caster, Component.translatable("message.isekai_mahou.arcane_duel.spell_steal.nothing"), ChatFormatting.GRAY);
                 return;
             }
@@ -356,7 +356,7 @@ public final class CounterEffects {
             DuelFx.spawn(level, DuelFxEntity.CARD, le.position().add(0, le.getBbHeight() + 0.5, 0), 0.8F, 20, 0x5A3A8A, 2F);
             DuelFx.spawn(level, DuelFxEntity.CARD, caster.position().add(0, caster.getBbHeight() + 0.6, 0), 0.8F, 28, DuelFx.GOLD, 0F);
             DuelFx.line(level, from, to, DuelFx.dust(DuelFx.GOLD, 1.1F), 0.45);
-            level.sendParticles(ParticleTypes.ENCHANT, to.x, to.y + 0.5, to.z, 24, 0.4, 0.5, 0.4, 0.8);
+            level.sendParticles(Vfx.enchant(), to.x, to.y + 0.5, to.z, 24, 0.4, 0.5, 0.4, 0.8);
             DuelFx.sound(level, to, SoundEvents.ILLUSIONER_CAST_SPELL, 1.0F, 1.2F);
             DuelFx.sound(level, from, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 0.7F);
             DuelUtil.actionbar(caster, Component.translatable("message.isekai_mahou.arcane_duel.spell_steal.done", stolen.size(),

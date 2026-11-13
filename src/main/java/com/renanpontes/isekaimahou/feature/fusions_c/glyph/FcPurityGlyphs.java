@@ -15,7 +15,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -101,8 +101,8 @@ public final class FcPurityGlyphs {
                 ctx.heal(a, 2F + 0.5F * r.size(), stats);
                 Vec3 ac = FcUtil.center(a);
                 // A "mancha" sai do corpo
-                sl.sendParticles(ParticleTypes.SQUID_INK, ac.x, ac.y, ac.z, 6 + 4 * r.size(), 0.3, 0.4, 0.3, 0.08);
-                sl.sendParticles(ParticleTypes.END_ROD, ac.x, ac.y, ac.z, 12, 0.3, 0.5, 0.3, 0.08);
+                sl.sendParticles(Vfx.ink(), ac.x, ac.y, ac.z, 6 + 4 * r.size(), 0.3, 0.4, 0.3, 0.08);
+                sl.sendParticles(Vfx.endRod(), ac.x, ac.y, ac.z, 12, 0.3, 0.5, 0.3, 0.08);
             }
             int weight = 0;
             for (FcCleansing.Removed r : removed) weight += r.weight();

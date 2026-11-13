@@ -1,11 +1,14 @@
 package com.renanpontes.isekaimahou.feature.class_knight.glyph;
 
+import com.renanpontes.isekaimahou.core.anim.MahouAnims;
+
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightFx;
+import com.renanpontes.isekaimahou.feature.class_knight.KnightFxNet;
 import com.renanpontes.isekaimahou.glyph.FormGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
@@ -82,6 +85,8 @@ public class BalmungForm extends FormGlyph {
     private static void sweep(SpellContext ctx, ServerLevel sl, Vec3 origin, Vec3 dir, float r, boolean last) {
         LivingEntity caster = ctx.caster();
         if (caster == null || !caster.isAlive()) return;
+        // cada varredura é um giro da espada (pedido sem efeito se a animação não existir)
+        MahouAnims.play(caster, "spin_slash");
         for (int w = 1; w <= 5; w++) {
             final double dist = r * w / 5.0;
             final int wave = w;
@@ -105,7 +110,7 @@ public class BalmungForm extends FormGlyph {
                 sl.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 20, 0.4, 0.6, 0.4, 0.15);
                 KnightFx.sound(sl, c, SoundEvents.ANVIL_LAND, 0.8F, 1.5F);
             }
-            sl.sendParticles(KnightFx.dust(TWILIGHT, 1.3F), c.x, c.y, c.z, 10, 0.3, 0.4, 0.3, 0);
+            KnightFxNet.at(sl, KnightFxNet.WAVE_BURST, c, dir, 1.4F, TWILIGHT, e.getId(), 1);
             ctx.impact(c, dir, e);
         }
         if (last) ctx.end(origin.add(dir.scale(r)), dir);
@@ -123,15 +128,6 @@ public class BalmungForm extends FormGlyph {
 
     /** Meia-lua horizontal de 140° na distância {@code d}. */
     private static void arc(ServerLevel sl, Vec3 origin, Vec3 dir, double d, int rgb) {
-        double base = Math.atan2(dir.z, dir.x);
-        int n = Math.max(10, (int) (d * 3));
-        for (int i = 0; i <= n; i++) {
-            double a = base + Math.toRadians(-HALF_ANGLE + 2 * HALF_ANGLE * i / n);
-            double y = origin.y + 0.2 * Mth.sin((float) (i * 0.6));
-            sl.sendParticles(KnightFx.dust(rgb, 1.4F), origin.x + Math.cos(a) * d, y, origin.z + Math.sin(a) * d, 1, 0, 0.05, 0, 0);
-            if (i % 4 == 0) {
-                sl.sendParticles(ParticleTypes.END_ROD, origin.x + Math.cos(a) * d, y + 0.3, origin.z + Math.sin(a) * d, 1, 0, 0.05, 0, 0.01);
-            }
-        }
+        KnightFxNet.at(sl, KnightFxNet.BALMUNG_ARC, origin, dir, (float) d, rgb, -1);
     }
 }

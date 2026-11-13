@@ -17,6 +17,7 @@ public class ClassKnightClient implements ClientModule {
         modBus.addListener((EntityRenderersEvent.RegisterRenderers e) ->
                 e.registerEntityRenderer(KnightRegistries.SPECTRAL_SWORD.get(), SpectralSwordRenderer::new));
         InvisibleAirClient.init();
+        KnightFxClient.init();
         MenuTabs.register("class_knight", 12, Component.translatable("screen.isekai_mahou.class_knight.tab"), OathTab::new);
     }
 }

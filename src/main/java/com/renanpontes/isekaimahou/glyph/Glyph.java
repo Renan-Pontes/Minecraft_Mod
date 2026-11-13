@@ -24,6 +24,7 @@ public abstract class Glyph {
     private int minCircle = 1;
     private int tier = 1;
     private boolean legendary = false;
+    private boolean hidden = false;
 
     protected Glyph(String path, GlyphKind kind, int cost) {
         this.id = IsekaiMahou.id(path);
@@ -65,6 +66,16 @@ public abstract class Glyph {
     public int minCircle() { return minCircle; }
     public int tier() { return tier; }
     public boolean isLegendary() { return legendary; }
+
+    /**
+     * v1.4: glifo APOSENTADO — continua registrado (magias e mundos antigos carregam e funcionam), mas some das listas
+     * do Grimório (paleta e aba Glifos), a não ser que o jogador ainda o use numa magia salva. Ver {@link GlyphRegistry#hide}.
+     */
+    public boolean isHidden() { return hidden; }
+
+    /** Marca o glifo como aposentado (ver {@link #isHidden()}). */
+    @SuppressWarnings("unchecked")
+    public <T extends Glyph> T hidden() { this.hidden = true; return (T) this; }
 
     public String translationKey() { return "glyph." + id.getNamespace() + "." + id.getPath(); }
     public MutableComponent displayName() { return Component.translatable(translationKey()); }

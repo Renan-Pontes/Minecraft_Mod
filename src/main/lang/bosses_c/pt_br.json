@@ -10,16 +10,13 @@
   "entity.isekai_mahou.corrupted_ent_root": "Raiz Corrompida",
   "entity.isekai_mahou.class_boss_bolt": "Projétil Mágico",
   "entity.isekai_mahou.cursed_bottle": "Maldição Engarrafada",
-
   "item.isekai_mahou.renegade_archmage_spawn_egg": "Ovo Gerador de Arquimago Renegado",
   "item.isekai_mahou.corrupted_witch_spawn_egg": "Ovo Gerador de Bruxa Corrompida",
   "item.isekai_mahou.imprisoned_patron_spawn_egg": "Ovo Gerador de Patrono Aprisionado",
   "item.isekai_mahou.corrupted_ent_spawn_egg": "Ovo Gerador de Ent Corrompido",
   "item.isekai_mahou.lich_spawn_egg": "Ovo Gerador de Lich",
-
   "command.isekai_mahou.spawnboss.class_done": "%s foi invocado!",
   "command.isekai_mahou.spawnboss.class_fail": "Não foi possível invocar o chefe aqui.",
-
   "boss.isekai_mahou.renegade_archmage.subtitle": "Mestre da Torre Esquecida",
   "boss.isekai_mahou.renegade_archmage.phase1": "Magia Proibida",
   "announce.isekai_mahou.renegade_archmage.intro": "Mais um aprendiz querendo meus segredos? Venha morrer como os outros!",
@@ -31,7 +28,6 @@
   "message.isekai_mahou.renegade_archmage.illusions": "Dica: as ilusões não têm sombra, nem olhos brilhantes, nem runas aos pés.",
   "message.isekai_mahou.renegade_archmage.weary": "O Arquimago ficou sem fôlego e não consegue piscar — ataque agora!",
   "announce.isekai_mahou.renegade_archmage.death": "Os segredos... da Torre... são seus...",
-
   "boss.isekai_mahou.corrupted_witch.subtitle": "Senhora do Caldeirão Podre",
   "boss.isekai_mahou.corrupted_witch.phase1": "A Noite das Bruxas",
   "announce.isekai_mahou.corrupted_witch.intro": "Hihihi! Que coisinha suculenta veio parar no meu caldeirão!",
@@ -41,7 +37,6 @@
   "announce.isekai_mahou.corrupted_witch.drink": "Só um golinho de poção...",
   "announce.isekai_mahou.corrupted_witch.cauldron": "Borbulha, borbulha... meu caldeirão transborda!",
   "announce.isekai_mahou.corrupted_witch.death": "Minhas receitas... não... deixe-as em paz...",
-
   "boss.isekai_mahou.imprisoned_patron.subtitle": "Aquele Que Foi Selado",
   "boss.isekai_mahou.imprisoned_patron.phase1": "Uma Corrente se Parte",
   "boss.isekai_mahou.imprisoned_patron.phase2": "O Selo Enfraquece",
@@ -57,7 +52,6 @@
   "announce.isekai_mahou.imprisoned_patron.chain_lash": "Sintam o peso das minhas correntes!",
   "message.isekai_mahou.imprisoned_patron.nova": "A onda de fogo das almas é rasteira: pule por cima dela!",
   "announce.isekai_mahou.imprisoned_patron.death": "De volta... ao abismo... mas eu voltarei...",
-
   "boss.isekai_mahou.corrupted_ent.subtitle": "Coração Podre do Bosque",
   "boss.isekai_mahou.corrupted_ent.phase1": "A Floresta Apodrece",
   "announce.isekai_mahou.corrupted_ent.intro": "Hrrrm... pequeno... pisoteando... meu bosque...",
@@ -67,7 +61,6 @@
   "announce.isekai_mahou.corrupted_ent.root_line": "Raízes... rasguem... a terra!",
   "announce.isekai_mahou.corrupted_ent.regen": "A terra... me alimenta... (afaste-o da grama ou queime-o!)",
   "announce.isekai_mahou.corrupted_ent.death": "Finalmente... o bosque... respira...",
-
   "boss.isekai_mahou.lich.subtitle": "Rei da Cripta Esquecida",
   "boss.isekai_mahou.lich.phase1": "Imortal",
   "boss.isekai_mahou.lich.phylactery_broken": "O Filactério se Partiu!",
@@ -81,5 +74,24 @@
   "announce.isekai_mahou.lich.phylactery_broken": "NÃO! Minha alma... minha alma!",
   "announce.isekai_mahou.lich.collapse": "Hehehe... a morte é só uma pausa...",
   "announce.isekai_mahou.lich.reform": "Você não pode matar o que já está morto!",
-  "announce.isekai_mahou.lich.death": "Impossível... a eternidade... era minha..."
+  "announce.isekai_mahou.lich.death": "Impossível... a eternidade... era minha...",
+  "message.isekai_mahou.lich.soul_drain": "O Lich prendeu parte da sua ALMA no filactério (vida máxima menor)! Quebre o filactério para recuperá-la.",
+  "message.isekai_mahou.lich.souls_released": "Sua alma voltou para você!",
+  "message.isekai_mahou.corrupted_witch.frogged": "Você virou um SAPO! Fuja até a maldição passar!",
+  "message.isekai_mahou.corrupted_witch.inverted": "Mente Invertida! Frente vira trás, esquerda vira direita!",
+  "message.isekai_mahou.renegade_archmage.mirror_swap": "Dica: quando todos brilham juntos, o Arquimago TROCA de lugar com as ilusões — procure a sombra de novo.",
+  "announce.isekai_mahou.imprisoned_patron.bind": "Vocês dividirão as minhas correntes!",
+  "message.isekai_mahou.imprisoned_patron.bind": "Dica: saia do círculo vermelho quando ele travar — quem ficar é acorrentado. Acorrentados: fiquem JUNTOS por 2 s para partir a corrente.",
+  "message.isekai_mahou.imprisoned_patron.bound_pair": "Acorrentado a um aliado! Fiquem juntos para partir a corrente.",
+  "message.isekai_mahou.imprisoned_patron.bound_self": "Acorrentado ao Patrono! Não se afaste demais.",
+  "announce.isekai_mahou.renegade_archmage.taunt": "Reprovado. Próximo aprendiz!",
+  "announce.isekai_mahou.renegade_archmage.last_stand": "Não... eu ainda tenho um último feitiço!",
+  "announce.isekai_mahou.corrupted_witch.taunt": "Hihihi! Mais um para o caldeirão!",
+  "announce.isekai_mahou.corrupted_witch.last_stand": "Minhas poções... onde estão minhas poções?!",
+  "announce.isekai_mahou.imprisoned_patron.taunt": "Sua alma serve. Obrigado, mortal.",
+  "announce.isekai_mahou.imprisoned_patron.last_stand": "Não... de volta ao selo NÃO!",
+  "announce.isekai_mahou.corrupted_ent.taunt": "Adubo... para as... raízes...",
+  "announce.isekai_mahou.corrupted_ent.last_stand": "A podridão... seca... HRRRM!",
+  "announce.isekai_mahou.lich.taunt": "Levante-se. Agora você serve a mim.",
+  "announce.isekai_mahou.lich.last_stand": "Meus ossos racham... mas a morte é minha aliada!"
 }

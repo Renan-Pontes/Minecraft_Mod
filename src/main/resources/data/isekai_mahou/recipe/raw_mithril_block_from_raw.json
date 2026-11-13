@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:raw_mithril"
+    },
+    {
+      "item": "isekai_mahou:raw_mithril"
+    },
+    {
+      "item": "isekai_mahou:raw_mithril"
+    },
+    {
+      "item": "isekai_mahou:raw_mithril"
+    },
+    {
+      "item": "isekai_mahou:raw_mithril"
+    },
+    {
+      "item": "isekai_mahou:raw_mithril"
+    },
+    {
+      "item": "isekai_mahou:raw_mithril"
+    },
+    {
+      "item": "isekai_mahou:raw_mithril"
+    },
+    {
+      "item": "isekai_mahou:raw_mithril"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:raw_mithril_block",
+    "count": 1
+  }
+}

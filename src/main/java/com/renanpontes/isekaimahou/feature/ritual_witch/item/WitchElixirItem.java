@@ -6,9 +6,9 @@ import java.util.function.Supplier;
 import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MagicData;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -76,7 +76,7 @@ public class WitchElixirItem extends Item {
                 }
             }
             applySpecial(sl, entity);
-            sl.sendParticles(ParticleTypes.WITCH, entity.getX(), entity.getY() + 1.0, entity.getZ(), 8, 0.3, 0.4, 0.3, 0.02);
+            sl.sendParticles(Vfx.witch(), entity.getX(), entity.getY() + 1.0, entity.getZ(), 8, 0.3, 0.4, 0.3, 0.02);
         }
         if (player != null) {
             player.awardStat(Stats.ITEM_USED.get(this));
@@ -98,7 +98,7 @@ public class WitchElixirItem extends Item {
                 if (entity instanceof ServerPlayer sp) {
                     MagicData d = MagicApi.get(sp);
                     d.addMana(d.maxMana() * MANA_RESTORE);
-                    level.sendParticles(ParticleTypes.ENCHANT, sp.getX(), sp.getY() + 1.2, sp.getZ(), 30, 0.4, 0.5, 0.4, 0.8);
+                    level.sendParticles(Vfx.enchant(), sp.getX(), sp.getY() + 1.2, sp.getZ(), 30, 0.4, 0.5, 0.4, 0.8);
                     level.playSound(null, sp.getX(), sp.getY(), sp.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0F, 1.4F);
                 }
             }

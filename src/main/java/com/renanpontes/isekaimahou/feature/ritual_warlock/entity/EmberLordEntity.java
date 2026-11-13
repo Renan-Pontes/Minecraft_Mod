@@ -4,6 +4,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.feature.ritual_warlock.ritual.PatronKind;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -73,7 +74,7 @@ public class EmberLordEntity extends PatronEntity {
     private void eruption(ServerLevel level) {
         Vec3 c = position();
         for (double r = 1.5; r <= 4.5; r += 1.5) ElementFx.ring(level, c.add(0, 0.2, 0), Element.FIRE, r, (int) (12 * r));
-        level.sendParticles(ParticleTypes.FLAME, c.x, c.y + 0.3, c.z, 80, 2.5, 0.2, 2.5, 0.08);
+        level.sendParticles(Vfx.flame(), c.x, c.y + 0.3, c.z, 80, 2.5, 0.2, 2.5, 0.08);
         level.sendParticles(ParticleTypes.LAVA, c.x, c.y + 0.5, c.z, 20, 2.0, 0.3, 2.0, 0.0);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 1.2F, 0.7F);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.BLAZE_SHOOT, SoundSource.HOSTILE, 1.5F, 0.5F);
@@ -100,7 +101,7 @@ public class EmberLordEntity extends PatronEntity {
             SmallFireball fb = new SmallFireball(level, x, y, z, new Vec3((random.nextDouble() - 0.5) * 0.1, -1.0, (random.nextDouble() - 0.5) * 0.1));
             fb.setOwner(this);
             level.addFreshEntity(fb);
-            level.sendParticles(ParticleTypes.FLAME, x, target.getY() + 0.1, z, 4, 0.3, 0.0, 0.3, 0.01);
+            level.sendParticles(Vfx.flame(), x, target.getY() + 0.1, z, 4, 0.3, 0.0, 0.3, 0.01);
         }
         level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.BLAZE_SHOOT, SoundSource.HOSTILE, 1.5F, 0.6F);
     }
@@ -151,11 +152,11 @@ public class EmberLordEntity extends PatronEntity {
     @Override
     protected void clientAmbient() {
         if (random.nextInt(2) == 0) {
-            level().addParticle(ParticleTypes.FLAME, getRandomX(0.6), getY() + random.nextDouble() * getBbHeight(), getRandomZ(0.6),
+            level().addParticle(Vfx.flame(), getRandomX(0.6), getY() + random.nextDouble() * getBbHeight(), getRandomZ(0.6),
                     0, 0.02, 0);
         }
         if (random.nextInt(5) == 0) {
-            level().addParticle(ParticleTypes.LARGE_SMOKE, getRandomX(0.5), getY() + getBbHeight() * 0.9, getRandomZ(0.5), 0, 0.03, 0);
+            level().addParticle(Vfx.largeSmoke(), getRandomX(0.5), getY() + getBbHeight() * 0.9, getRandomZ(0.5), 0, 0.03, 0);
         }
         if (random.nextInt(25) == 0) {
             level().addParticle(ParticleTypes.LAVA, getRandomX(0.6), getY() + getBbHeight() * 0.6, getRandomZ(0.6), 0, 0, 0);

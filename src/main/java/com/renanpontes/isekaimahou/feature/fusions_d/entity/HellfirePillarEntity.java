@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.feature.fusions_d.FdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -49,6 +50,9 @@ public class HellfirePillarEntity extends FdSpellEntity {
         p.entityData.set(RADIUS, r);
         p.entityData.set(HEIGHT, Math.min(40F, 16F + 4F * Math.max(0, stats.amplify)));
         sl.addFreshEntity(p);
+        // v1.3: selo infernal + energia convergindo antes de o pilar subir
+        com.renanpontes.isekaimahou.core.ElementFx.runeCircle(sl, g.add(0, 0.05, 0), 0xC0182E, r, CHARGE_TICKS + 30, 4);
+        com.renanpontes.isekaimahou.core.ElementFx.gatherAt(sl, g.add(0, 1.0, 0), com.renanpontes.isekaimahou.core.Element.HELLFIRE, 0xC0182E, r, 4, CHARGE_TICKS);
         Telegraph.show(sl, Telegraph.Shape.circle(g, r).warmup(CHARGE_TICKS).color(FdFx.HELLFIRE));
         FdFx.sound(sl, g, SoundEvents.FIRECHARGE_USE, 1.4F, 0.5F);
         FdFx.sound(sl, g, SoundEvents.SOUL_ESCAPE.value(), 1.6F, 0.5F);
@@ -72,7 +76,7 @@ public class HellfirePillarEntity extends FdSpellEntity {
         if (state() == CHARGE) {
             if (tickCount % 2 == 0) {
                 FdFx.ring(sl, c.add(0, 0.1, 0), FdFx.fade(FdFx.HELLFIRE, FdFx.HELL_BLACK, 1.8F), r * (1 - tickCount / (float) CHARGE_TICKS), 10, 0.01);
-                sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y + 0.2, c.z, 4, r * 0.5, 0.05, r * 0.5, 0.01);
+                sl.sendParticles(Vfx.largeSmoke(), c.x, c.y + 0.2, c.z, 4, r * 0.5, 0.05, r * 0.5, 0.01);
             }
             if (tickCount >= CHARGE_TICKS) erupt(sl, c, r);
             return;
@@ -85,7 +89,7 @@ public class HellfirePillarEntity extends FdSpellEntity {
         }
         if (tickCount % 3 == 0) {
             sl.sendParticles(FdFx.fade(FdFx.HELLFIRE, FdFx.HELL_BLACK, 1.8F), c.x, c.y + 0.5, c.z, 6, r * 0.6, 0.3, r * 0.6, 0.15);
-            sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y + height(), c.z, 4, r * 0.6, 0.6, r * 0.6, 0.05);
+            sl.sendParticles(Vfx.largeSmoke(), c.x, c.y + height(), c.z, 4, r * 0.6, 0.6, r * 0.6, 0.05);
         }
         if (tickCount % 20 == 0) FdFx.sound(sl, c, SoundEvents.BLAZE_BURN, 2F, 0.5F);
     }
@@ -110,7 +114,7 @@ public class HellfirePillarEntity extends FdSpellEntity {
         Destruction.cylinder(sl, c.add(0, -0.5, 0), r + 0.3F, -3F, owner(), Destruction.Mode.SCORCH);
         Destruction.surface(sl, c, r * 1.8F, owner(), Destruction.Mode.SCORCH);
         sl.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y + 1, c.z, 4, r * 0.4, 0.5, r * 0.4, 0);
-        sl.sendParticles(ParticleTypes.FLAME, c.x, c.y + 1, c.z, 40, r * 0.4, 1.5, r * 0.4, 0.3);
+        sl.sendParticles(Vfx.flame(), c.x, c.y + 1, c.z, 40, r * 0.4, 1.5, r * 0.4, 0.3);
         sl.sendParticles(FdFx.fade(FdFx.HELLFIRE, FdFx.HELL_BLACK, 1.8F), c.x, c.y + 1, c.z, 80, r * 0.4, 1.5, r * 0.4, 0.35);
         FdFx.shockwave(sl, c.add(0, 0.3, 0), FdFx.fade(FdFx.HELLFIRE, FdFx.HELL_BLACK, 2.2F), 36, 0.55);
         FdFx.sound(sl, c, SoundEvents.GENERIC_EXPLODE.value(), 2F, 0.6F);
@@ -122,8 +126,8 @@ public class HellfirePillarEntity extends FdSpellEntity {
     @Override
     protected void onExpire(ServerLevel sl) {
         Vec3 c = position();
-        sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y + 2, c.z, 40, radius() * 0.6, 2, radius() * 0.6, 0.05);
-        sl.sendParticles(ParticleTypes.SOUL, c.x, c.y + 1, c.z, 12, radius() * 0.5, 1, radius() * 0.5, 0.05);
+        sl.sendParticles(Vfx.largeSmoke(), c.x, c.y + 2, c.z, 40, radius() * 0.6, 2, radius() * 0.6, 0.05);
+        sl.sendParticles(Vfx.soul(), c.x, c.y + 1, c.z, 12, radius() * 0.5, 1, radius() * 0.5, 0.05);
         FdFx.sound(sl, c, SoundEvents.FIRE_EXTINGUISH, 1.4F, 0.5F);
     }
 

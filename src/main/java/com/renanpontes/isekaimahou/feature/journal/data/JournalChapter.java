@@ -29,7 +29,8 @@ import net.minecraft.util.GsonHelper;
  *                 caixa de diálogo); sem ela, o espírito usa uma saudação genérica
  * @param path     v1.0: id da classe ({@code "smith"}, {@code "mage"}...) — o capítulo é da ROTA DA CLASSE (trilha paralela
  *                 à história, só para quem é daquela classe); null = história principal
- * @param secret   v1.0: escondido na lista do Diário (nem "???") até começar — o passo secreto 150→200 depois do Dragão
+ * @param secret   v1.0: escondido na lista do Diário (nem "???") até começar — o capítulo de depois do Dragão (desde a
+ *                 onda 5, o Abismo Infinito: "o Dragão é o fim", nada aparece depois dele antes de ele cair)
  */
 public record JournalChapter(String id, int order, List<ResourceLocation> icons, int color, List<JournalStep> steps,
                              JournalRewards rewards, boolean finale, int epilogue, boolean intro, @Nullable String path,

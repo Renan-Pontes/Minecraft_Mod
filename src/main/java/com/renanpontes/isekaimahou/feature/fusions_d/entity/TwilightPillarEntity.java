@@ -2,7 +2,7 @@ package com.renanpontes.isekaimahou.feature.fusions_d.entity;
 
 import com.renanpontes.isekaimahou.feature.fusions_d.FdRegistries;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -52,7 +52,7 @@ public class TwilightPillarEntity extends FdSpellEntity {
         if (tickCount > 10) return;
         for (int i = 0; i < 4; i++) {
             double a = random.nextDouble() * Math.PI * 2, d = radius() * random.nextDouble();
-            level().addParticle(shadow() ? ParticleTypes.SQUID_INK : ParticleTypes.END_ROD, getX() + Math.cos(a) * d,
+            level().addParticle(shadow() ? Vfx.ink() : Vfx.endRod(), getX() + Math.cos(a) * d,
                     getY() + 0.2, getZ() + Math.sin(a) * d, Math.cos(a) * 0.2, 0.25, Math.sin(a) * 0.2);
         }
     }

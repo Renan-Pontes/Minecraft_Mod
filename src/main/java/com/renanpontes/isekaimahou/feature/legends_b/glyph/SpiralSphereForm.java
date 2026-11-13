@@ -8,8 +8,8 @@ import com.renanpontes.isekaimahou.glyph.FormGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -57,7 +57,7 @@ public class SpiralSphereForm extends FormGlyph {
             orb.markHeld();
             caster.swing(InteractionHand.MAIN_HAND, true);
             Vec3 p = orb.position();
-            LbFx.send(level, ParticleTypes.CLOUD, p, 8, 0.15, 0.05);
+            LbFx.send(level, Vfx.cloud(), p, 8, 0.15, 0.05);
             LbFx.sound(level, p, SoundEvents.BREEZE_CHARGE, 1.0F, 1.4F);
             LbFx.sound(level, p, SoundEvents.BREEZE_WHIRL, 0.8F, 1.8F);
             if (caster instanceof ServerPlayer sp) {

@@ -67,6 +67,14 @@ public final class Pedestals {
         current = null;
     }
 
+    /**
+     * v1.5: item do espaço de FILTRO do pedestal que está conjurando agora (ex.: a semente escolhida para Semear, o
+     * bloco que a Escavação deve guardar). Vazio = sem filtro / não veio de um pedestal.
+     */
+    public static net.minecraft.world.item.ItemStack currentFilter() {
+        return current == null || current.isRemoved() ? net.minecraft.world.item.ItemStack.EMPTY : current.filter();
+    }
+
     public static boolean isPedestalCaster(@Nullable Entity e) {
         return e instanceof PedestalCaster;
     }

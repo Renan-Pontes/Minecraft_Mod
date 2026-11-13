@@ -9,6 +9,7 @@ import org.joml.Vector3f;
 import com.renanpontes.isekaimahou.feature.ritual_necro.NecroContent;
 import com.renanpontes.isekaimahou.feature.ritual_necro.NecroRitual;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -97,8 +98,8 @@ public class OssuaryAltarBlockEntity extends BlockEntity {
         owner = null;
         sync();
         Vec3 c = Vec3.atBottomCenterOf(worldPosition).add(0, 1.1, 0);
-        level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, c.x, c.y, c.z, 70, 0.5, 0.9, 0.5, 0.06);
-        level.sendParticles(ParticleTypes.SCULK_SOUL, c.x, c.y, c.z, 25, 0.6, 0.6, 0.6, 0.04);
+        level.sendParticles(Vfx.soulFlame(), c.x, c.y, c.z, 70, 0.5, 0.9, 0.5, 0.06);
+        level.sendParticles(Vfx.sculkSoul(), c.x, c.y, c.z, 25, 0.6, 0.6, 0.6, 0.04);
         level.sendParticles(SOUL_DUST, c.x, c.y, c.z, 40, 1.4, 0.4, 1.4, 0);
         level.playSound(null, worldPosition, SoundEvents.ZOMBIE_VILLAGER_CONVERTED, SoundSource.BLOCKS, 1.0F, 0.6F);
         level.playSound(null, worldPosition, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1.2F, 0.5F);
@@ -164,7 +165,7 @@ public class OssuaryAltarBlockEntity extends BlockEntity {
         }
         for (BlockPos p : highlightCorners) {
             level.sendParticles(viewer, SOUL_DUST, true, p.getX() + 0.5, p.getY() + 0.4, p.getZ() + 0.5, 5, 0.2, 0.3, 0.2, 0);
-            level.sendParticles(viewer, ParticleTypes.SOUL_FIRE_FLAME, true, p.getX() + 0.5, p.getY() + 0.3, p.getZ() + 0.5, 1, 0.1, 0.1, 0.1, 0.01);
+            level.sendParticles(viewer, Vfx.soulFlame(), true, p.getX() + 0.5, p.getY() + 0.3, p.getZ() + 0.5, 1, 0.1, 0.1, 0.1, 0.01);
         }
     }
 
@@ -198,7 +199,7 @@ public class OssuaryAltarBlockEntity extends BlockEntity {
         boolean midnight = NecroRitual.isMidnight(level);
         if (r.nextInt(midnight ? 3 : 14) == 0) {
             BlockPos c = OssuaryStructure.corners(pos).get(r.nextInt(4));
-            level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, c.getX() + 0.5 + (r.nextDouble() - 0.5) * 0.3, c.getY() + 0.7 + r.nextDouble() * 0.6,
+            level.addParticle(Vfx.soulFlame(), c.getX() + 0.5 + (r.nextDouble() - 0.5) * 0.3, c.getY() + 0.7 + r.nextDouble() * 0.6,
                     c.getZ() + 0.5 + (r.nextDouble() - 0.5) * 0.3, 0, 0.015, 0);
         }
         if (r.nextInt(midnight ? 4 : 12) == 0) {
@@ -206,7 +207,7 @@ public class OssuaryAltarBlockEntity extends BlockEntity {
             level.addParticle(SOUL_DUST, cx + Math.cos(a) * 0.4, pos.getY() + 0.86, cz + Math.sin(a) * 0.4, 0, 0, 0);
         }
         if (midnight && r.nextInt(18) == 0) {
-            level.addParticle(ParticleTypes.SOUL, cx + (r.nextDouble() - 0.5) * 0.5, pos.getY() + 0.9, cz + (r.nextDouble() - 0.5) * 0.5,
+            level.addParticle(Vfx.soul(), cx + (r.nextDouble() - 0.5) * 0.5, pos.getY() + 0.9, cz + (r.nextDouble() - 0.5) * 0.5,
                     0, 0.02, 0);
         }
     }
@@ -228,19 +229,19 @@ public class OssuaryAltarBlockEntity extends BlockEntity {
                 double px = cx + (fx * Math.cos(ang) - fz * Math.sin(ang)) * rad;
                 double pz = cz + (fx * Math.sin(ang) + fz * Math.cos(ang)) * rad;
                 double py = Mth.lerp(phase, c.getY() + 1.0, topY) + Math.sin(phase * Math.PI) * 0.8;
-                level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, px, py, pz, 0, 0, 0);
+                level.addParticle(Vfx.soulFlame(), px, py, pz, 0, 0, 0);
                 if (r.nextInt(4) == 0) level.addParticle(SOUL_DUST, px, py, pz, 0, 0, 0);
             }
         }
         double ring = activeTicks * 0.22;
         for (int i = 0; i < 3; i++) {
             double a = ring + i * Math.PI * 2 / 3;
-            level.addParticle(ParticleTypes.SOUL, cx + Math.cos(a) * 1.6, worldPosition.getY() + 0.1, cz + Math.sin(a) * 1.6, 0, 0.01, 0);
+            level.addParticle(Vfx.soul(), cx + Math.cos(a) * 1.6, worldPosition.getY() + 0.1, cz + Math.sin(a) * 1.6, 0, 0.01, 0);
         }
         if (r.nextInt(3) == 0) level.addParticle(ParticleTypes.SCULK_SOUL, cx, topY, cz, (r.nextDouble() - 0.5) * 0.05, 0.03, (r.nextDouble() - 0.5) * 0.05);
         if (t > 0.75F) {
             for (int i = 0; i < 3; i++) {
-                level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, cx + (r.nextDouble() - 0.5) * 0.4, topY, cz + (r.nextDouble() - 0.5) * 0.4,
+                level.addParticle(Vfx.soulFlame(), cx + (r.nextDouble() - 0.5) * 0.4, topY, cz + (r.nextDouble() - 0.5) * 0.4,
                         0, 0.12 + r.nextDouble() * 0.1, 0);
             }
         }

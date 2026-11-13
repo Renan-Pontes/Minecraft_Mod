@@ -13,18 +13,15 @@
   "entity.isekai_mahou.golem_pillar": "Pilar do Golem",
   "entity.isekai_mahou.golem_slab": "Placa de Terra",
   "entity.isekai_mahou.zephyr_curtain": "Cortina de Ventos",
-
   "item.isekai_mahou.ignis_spawn_egg": "Ovo Gerador de Ignis",
   "item.isekai_mahou.tide_guardian_spawn_egg": "Ovo Gerador de Maré",
   "item.isekai_mahou.primordial_golem_spawn_egg": "Ovo Gerador de Golem Primordial",
   "item.isekai_mahou.zephyr_spawn_egg": "Ovo Gerador de Zéfiro",
-
   "boss.isekai_mahou.guardian_defeated": "%s foi derrotado! O Núcleo do Guardião ressoa com o seu poder.",
   "boss.isekai_mahou.guardian_out_of_arena": "O Guardião só pode ser ferido de dentro da arena!",
   "boss.isekai_mahou.guardian_no_hiding": "Não há onde se esconder de um Guardião!",
   "command.isekai_mahou.spawnboss.guardian_done": "%s surgiu!",
   "command.isekai_mahou.spawnboss.guardian_fail": "Não foi possível invocar o chefe aqui.",
-
   "boss.isekai_mahou.ignis.epithet": "Titã das Chamas Eternas",
   "boss.isekai_mahou.ignis.intro": "Quem ousa pisar nas brasas do meu templo? Ardam!",
   "boss.isekai_mahou.ignis.phase2": "Chamas Azuis",
@@ -41,7 +38,6 @@
   "boss.isekai_mahou.ignis.move.flame_charge": "Investida Flamejante!",
   "boss.isekai_mahou.ignis.hint.slam": "Dica: a onda de chamas corre rente ao chão — PULE quando ela passar!",
   "boss.isekai_mahou.ignis.hint.supernova": "Dica: fuja do círculo vermelho ou esconda-se atrás de um pilar!",
-
   "boss.isekai_mahou.tide_guardian.epithet": "Serpente das Profundezas",
   "boss.isekai_mahou.tide_guardian.intro": "As marés me obedecem. Afoguem-se em silêncio.",
   "boss.isekai_mahou.tide_guardian.phase2": "Maré Alta",
@@ -54,8 +50,7 @@
   "boss.isekai_mahou.tide_guardian.move.storm_call": "Tempestade das Marés!",
   "boss.isekai_mahou.tide_guardian.move.bubble_prison": "Prisão de Bolha!",
   "boss.isekai_mahou.tide_guardian.hint.bubble_prison": "Um círculo de água te persegue — saia dele quando ele parar!",
-  "boss.isekai_mahou.tide_guardian.hint.bubble_trapped": "Preso na bolha! Golpeie a bolha (ou peça ajuda) para estourá-la!",
-
+  "boss.isekai_mahou.tide_guardian.hint.bubble_trapped": "Preso na bolha e SEM AR! Golpeie a bolha (ou peça ajuda) para estourá-la!",
   "boss.isekai_mahou.primordial_golem.epithet": "Colosso da Terra Ancestral",
   "boss.isekai_mahou.primordial_golem.intro": "...A montanha... despertou. Intrusos... serão... soterrados.",
   "boss.isekai_mahou.primordial_golem.phase2": "Escudo de Pedra",
@@ -72,7 +67,6 @@
   "boss.isekai_mahou.primordial_golem.shield_up": "O Golem se cobre de pedra! Só magia pode rachar o escudo!",
   "boss.isekai_mahou.primordial_golem.shield_broken": "O Escudo de Pedra se partiu! O Golem está vulnerável!",
   "boss.isekai_mahou.primordial_golem.shield_immune": "Ataques físicos não racham a pedra — use magia!",
-
   "boss.isekai_mahou.zephyr.epithet": "Djinn dos Ventos Eternos",
   "boss.isekai_mahou.zephyr.intro": "Hahaha! Mais um que veio desafiar o céu? Voe, se puder!",
   "boss.isekai_mahou.zephyr.phase2": "Vendaval",
@@ -86,5 +80,22 @@
   "boss.isekai_mahou.zephyr.move.vacuum": "Olho da Tempestade!",
   "boss.isekai_mahou.zephyr.move.wind_curtain": "Cortina de Ventos!",
   "boss.isekai_mahou.zephyr.hint.wind_curtain": "Dica: as paredes de vento giram — caminhe junto com a brecha entre elas!",
-  "boss.isekai_mahou.zephyr.hint.vacuum": "Dica: corra contra o vento para fora do círculo vermelho e pule a onda!"
+  "boss.isekai_mahou.zephyr.hint.vacuum": "Dica: corra contra o vento para fora do círculo vermelho e pule a onda!",
+  "boss.isekai_mahou.ignis.hint.heat": "O calor do Ignis DERRETE sua armadura! Mantenha distância (Resistência ao Fogo ajuda).",
+  "boss.isekai_mahou.zephyr.move.updraft": "Corrente Ascendente!",
+  "boss.isekai_mahou.zephyr.hint.updraft": "Dica: o círculo de vento te persegue e TRAVA — saia dele ou será lançado ao céu!",
+  "boss.isekai_mahou.primordial_golem.move.shatter": "Terra Partida!",
+  "boss.isekai_mahou.primordial_golem.hint.shatter": "Dica: as fendas correm em linha reta a partir do Golem — fique ENTRE as linhas vermelhas!",
+  "boss.isekai_mahou.fallen": "Derrotado",
+  "boss.isekai_mahou.ignis.taunt": "Cinzas. É só isso que vocês são.",
+  "boss.isekai_mahou.ignis.last_stand": "A fornalha... ainda... não apagou!",
+  "boss.isekai_mahou.tide_guardian.taunt": "Mais um para o fundo do mar.",
+  "boss.isekai_mahou.tide_guardian.last_stand": "A maré... recua... mas sempre volta!",
+  "boss.isekai_mahou.primordial_golem.taunt": "...Pó... volta... ao pó.",
+  "boss.isekai_mahou.primordial_golem.last_stand": "...Rachado... mas... de pé.",
+  "boss.isekai_mahou.zephyr.taunt": "Hahaha! Caiu feito folha seca!",
+  "boss.isekai_mahou.zephyr.last_stand": "Tch... o vento ainda sopra, pequeno!",
+  "command.isekai_mahou.bosspolish.none": "Nenhum chefe a até 48 blocos.",
+  "command.isekai_mahou.bosspolish.survival": "Use no modo sobrevivência: o chefe precisa derrubar você de verdade.",
+  "command.isekai_mahou.bosspolish.done": "Feito em %s."
 }

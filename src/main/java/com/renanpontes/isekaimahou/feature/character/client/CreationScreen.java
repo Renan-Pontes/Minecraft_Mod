@@ -14,6 +14,7 @@ import com.renanpontes.isekaimahou.feature.character.CharacterService;
 import com.renanpontes.isekaimahou.feature.character.Race;
 import com.renanpontes.isekaimahou.feature.character.RaceGlyphs;
 import com.renanpontes.isekaimahou.feature.character.RaceProgress;
+import com.renanpontes.isekaimahou.feature.character.Reincarnation;
 import com.renanpontes.isekaimahou.network.ClientMagic;
 
 import net.minecraft.client.Minecraft;
@@ -33,7 +34,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * PASSIVA nível a nível (I–IV, com o nível do personagem pedido), as 2 SKILLS RACIAIS (glifos do Grimório), a prévia da
  * TRANSFORMAÇÃO (nível V: nível 90 + feito da raça) e os traços.
  * Modos: criação (entrada no jogo, não fecha com Esc), aba (personagem antigo escolhendo pela 1ª vez) e altar (renascer:
- * troca de raça, custa Cristais de Mana). Teclado: ↑/↓ escolhem, Enter confirma.
+ * troca de raça; release 1.0: custo MUITO alto — Cristais de Mana + 1 Núcleo de Guardião; a troca de CLASSE fica na
+ * {@link AltarScreen}). Teclado: ↑/↓ escolhem, Enter confirma.
  */
 public class CreationScreen extends Screen {
     private static final int PAD = 8, FOOT_H = 24, HEAD_H = 10, GAP = 2;
@@ -105,8 +107,7 @@ public class CreationScreen extends Screen {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return false;
         // Primeira escolha (personagem antigo) é grátis também no altar
-        return !data().created() || mc.player.getAbilities().instabuild
-                || mc.player.getInventory().countItem(CoreRegistries.MANA_CRYSTAL.get()) >= CharacterService.ALTAR_COST;
+        return !data().created() || Reincarnation.RACE.canPay(mc.player);
     }
 
     private static void click(float pitch) {
@@ -214,10 +215,11 @@ public class CreationScreen extends Screen {
         if (mode == CharacterNetwork.MODE_ALTAR && d.created()) {
             Minecraft mc = Minecraft.getInstance();
             int have = mc.player == null ? 0 : mc.player.getInventory().countItem(CoreRegistries.MANA_CRYSTAL.get());
+            // release 1.0: custo MUITO alto — cristais + 1 Núcleo de Guardião (tudo numa linha só)
             Component cost = d.race() == race
                     ? Component.translatable("screen.isekai_mahou.character.altar_same")
-                    : Component.translatable("screen.isekai_mahou.character.altar_cost", CharacterService.ALTAR_COST,
-                    CoreRegistries.MANA_CRYSTAL.get().getDescription(), have);
+                    : Component.translatable("screen.isekai_mahou.character.altar_cost_race", Reincarnation.RACE.crystals(), have,
+                    Reincarnation.RACE.cores(), mc.player == null ? 0 : Reincarnation.countCores(mc.player));
             g.drawString(font, MahouUi.fit(font, cost, footTextW), x, y + 10,
                     d.race() != race && canPayAltar() ? MahouUi.TEXT_DIM : 0xFFE07A7A, false);
         } else {

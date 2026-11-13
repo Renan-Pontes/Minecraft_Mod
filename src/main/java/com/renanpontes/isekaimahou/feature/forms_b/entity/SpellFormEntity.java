@@ -10,7 +10,7 @@ import com.renanpontes.isekaimahou.feature.forms_b.util.FormsBUtil;
 import com.renanpontes.isekaimahou.feature.forms_b.util.PersistentSpells;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -220,7 +220,7 @@ public abstract class SpellFormEntity extends Entity {
     public void fizzle() {
         if (level() instanceof ServerLevel sl) {
             ElementFx.burst(sl, position().add(0, 0.3, 0), element(), 14, 0.3);
-            sl.sendParticles(ParticleTypes.SMOKE, getX(), getY() + 0.3, getZ(), 10, 0.3, 0.2, 0.3, 0.02);
+            sl.sendParticles(Vfx.smoke(), getX(), getY() + 0.3, getZ(), 10, 0.3, 0.2, 0.3, 0.02);
             sl.playSound(null, getX(), getY(), getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.5F, 1.4F);
         }
         discard();

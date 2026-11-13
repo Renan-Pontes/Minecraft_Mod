@@ -64,8 +64,11 @@ public class RuinColossus extends OverworldBoss {
     private static final int SWEEP_WARMUP = 24;
     private static final int KNEEL_TICKS = 100;
     private static final int VENT_TICKS = 70;
+    /** v1.3 — Terremoto: braços sobem (aviso longo), os dois punhos descem e 4 ondas saem em sequência. */
+    private static final int QUAKE_WARMUP = 32;
+    private static final int QUAKE_WAVES = 4;
 
-    private int stompCd = 30, throwCd = 60, fistCd = 140, sweepCd = 100, rainCd = 160;
+    private int stompCd = 30, throwCd = 60, fistCd = 140, sweepCd = 100, rainCd = 160, quakeCd = 200;
     private int attackTimer;
     private int throwTimer;
     private float attackYaw;
@@ -109,12 +112,12 @@ public class RuinColossus extends OverworldBoss {
 
     @Override
     protected List<String> actionAnimations() {
-        return List.of("roar", "stomp_l", "stomp_r", "throw", "fist", "sweep", "rain");
+        return List.of("roar", "stomp_l", "stomp_r", "throw", "fist", "sweep", "rain", "quake");
     }
 
     @Override
     protected int deathTicks() {
-        return 70;
+        return 84; // v1.0: 3,5 s de animação + o corpo se desfazendo
     }
 
     @Override
@@ -202,6 +205,7 @@ public class RuinColossus extends OverworldBoss {
         fistCd--;
         sweepCd--;
         rainCd--;
+        quakeCd--;
         if (ventTimer > 0) {
             ventTimer--;
             if (ventTimer % 4 == 0) {
@@ -243,6 +247,10 @@ public class RuinColossus extends OverworldBoss {
         double dist = distanceTo(target);
         if (ph >= 1 && rainCd <= 0) {
             startRain(sl);
+            return;
+        }
+        if (ph >= 1 && quakeCd <= 0 && dist < 16) {
+            startQuake(sl);
             return;
         }
         if (ph >= 1 && sweepCd <= 0 && dist < 8.5) {
@@ -425,6 +433,88 @@ public class RuinColossus extends OverworldBoss {
         hintOnce(sl, "jump");
     }
 
+    // ------------------------------------------------------------------ Terremoto (v1.3)
+
+    /**
+     * Ergue os dois braços (32 ticks: dá tempo de ler), afunda os punhos no chão e solta {@link #QUAKE_WAVES} ondas de
+     * choque em anéis cada vez mais largos, uma atrás da outra — cada uma rasteira (dá para PULAR). O tremor solta
+     * entulho do alto sobre quem estiver longe (marcas marrons).
+     */
+    private void startQuake(ServerLevel sl) {
+        int ph = phase();
+        attackYaw = yBodyRot;
+        getNavigation().stop();
+        attackTimer = QUAKE_WARMUP + QUAKE_WAVES * 9 + 6;
+        quakeCd = ph >= 2 ? 240 : 320;
+        action("quake");
+        announce("quake");
+        hintOnce(sl, "quake");
+        BossKit.roar(this, SoundEvents.IRON_GOLEM_DEATH, 0.3F);
+        Vec3 c = groundAt(sl, position().add(0, 1, 0), 6);
+        float dmgSlam = attackDamage() * 0.9F;
+        float dmgWave = scaled(7.5F);
+        // 1) os punhos: círculo no meio (quem está colado nele leva o golpe cheio)
+        Telegraph.delayed(sl, Telegraph.Shape.circle(c, 4.0F).warmup(QUAKE_WARMUP).color(Telegraph.DANGER).owner(this)
+                .castName(attackName("quake")), hits -> {
+            if (!isAlive()) return;
+            for (LivingEntity e : hits) {
+                if (isFoe(e) && e.hurt(damageSources().mobAttack(this), dmgSlam)) {
+                    e.setDeltaMovement(e.getDeltaMovement().add(0, 0.8, 0));
+                    e.hurtMarked = true;
+                }
+            }
+            BfFx.impactCrater(sl, c, 3.2);
+            BfFx.groundBurst(sl, c, 5.0, 90);
+            sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, c.x, c.y + 0.5, c.z, 1, 0, 0, 0, 0);
+            playSound(SoundEvents.GENERIC_EXPLODE.value(), 3.0F, 0.35F);
+            BossKit.shake(sl, c, 40, 2.2F, 26);
+            quakeRubble(sl, c);
+        });
+        // 2) as ondas: anéis de 3 blocos de largura que se afastam (cada um some antes do próximo chegar)
+        for (int k = 0; k < QUAKE_WAVES; k++) {
+            float inner = 4.0F + k * 3.5F;
+            int warm = QUAKE_WARMUP + 6 + k * 9;
+            final int wave = k;
+            Telegraph.delayed(sl, Telegraph.Shape.ring(c, inner, inner + 3.0F).warmup(warm).vertical(0.5, 1.0).color(EARTH).owner(this)
+                    .noRunes(), hits -> {
+                if (!isAlive()) return;
+                BfFx.ring(sl, c.add(0, 0.25, 0), inner + 1.5, 28 + wave * 8, ParticleTypes.CLOUD, 0.04);
+                BfFx.ring(sl, c.add(0, 0.15, 0), inner + 1.5, 20 + wave * 6, BfFx.dust(EARTH, 2.2F), 0);
+                playSound(SoundEvents.STONE_BREAK, 2.0F, 0.5F + wave * 0.08F);
+                for (LivingEntity e : hits) {
+                    if (!isFoe(e)) continue;
+                    if (e.hurt(damageSources().mobAttack(this), dmgWave)) {
+                        Vec3 push = e.position().subtract(c).multiply(1, 0, 1);
+                        push = push.lengthSqr() < 1.0E-3 ? new Vec3(1, 0, 0) : push.normalize();
+                        e.setDeltaMovement(e.getDeltaMovement().add(push.x * 0.9, 0.45, push.z * 0.9));
+                        e.hurtMarked = true;
+                    }
+                }
+            });
+        }
+        hintOnce(sl, "jump");
+    }
+
+    /** Entulho caindo do alto depois do terremoto: uma pedra perto de cada jogador (até 4), marca marrom antes. */
+    private void quakeRubble(ServerLevel sl, Vec3 c) {
+        float dmg = scaled(8.0F);
+        int n = 0;
+        for (ServerPlayer p : BossKit.partyAround(this, 36)) {
+            if (n++ >= 4) break;
+            double a = random.nextDouble() * Math.PI * 2;
+            double r = random.nextDouble() * 3.0;
+            Vec3 at = groundAt(sl, p.position().add(Math.cos(a) * r, 2, Math.sin(a) * r), 8);
+            int warm = 34 + random.nextInt(10);
+            Telegraph.show(sl, Telegraph.Shape.circle(at, 2.2F).warmup(warm).color(EARTH).owner(this).noRunes());
+            BossKit.schedule(sl, warm - 20, () -> {
+                if (!isAlive()) return;
+                ColossusBoulder.dropFrom(this, at.add(0, 22, 0), 1.1, 0.8F, dmg, 2.2F, 0F);
+            });
+            // poeira escorrendo do alto: olhe para cima
+            sl.sendParticles(BfFx.dust(EARTH, 1.5F), at.x, at.y + 14, at.z, 12, 1.2, 1.5, 1.2, 0);
+        }
+    }
+
     // ------------------------------------------------------------------ Chuva de Pedras
 
     private void startRain(ServerLevel sl) {
@@ -497,6 +587,7 @@ public class RuinColossus extends OverworldBoss {
         }
         rainCd = Math.min(rainCd, 60);
         sweepCd = Math.min(sweepCd, 80);
+        quakeCd = Math.min(quakeCd, phase >= 2 ? 40 : 140);
         updateCore();
     }
 
@@ -528,6 +619,7 @@ public class RuinColossus extends OverworldBoss {
         fistCd = 140;
         sweepCd = 100;
         rainCd = 160;
+        quakeCd = 200;
         entityData.set(DATA_KNEEL, false);
         entityData.set(DATA_CORE, CORE_CLOSED);
     }

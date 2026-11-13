@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.classes.ClassResources;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbFx;
+import com.renanpontes.isekaimahou.feature.class_steelball.SbFxNet;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbProgress;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbRegistry;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbSpin;
@@ -131,17 +132,14 @@ public class TuskNailEntity extends ThrowableProjectile implements GeoEntity {
         }
         if (!level().isClientSide && act() == ACT1) corkscrew();
         super.tick();
+        SbFxNet.trail(this);
         if (!(level() instanceof ServerLevel sl) || isRemoved()) return;
         if (tickCount > LIFE) {
             if (ctx != null) ctx.end(position(), getDeltaMovement());
             discard();
             return;
         }
-        int rgb = golden() ? SbFx.GOLD : SbFx.NAIL;
-        sl.sendParticles(SbFx.dust(rgb, 0.7F), getX(), getY(), getZ(), 1, 0, 0, 0, 0);
-        if (tickCount % 2 == 0) {
-            sl.sendParticles(golden() ? ParticleTypes.END_ROD : ParticleTypes.ENCHANTED_HIT, getX(), getY(), getZ(), 1, 0.02, 0.02, 0.02, 0.0);
-        }
+        // rastro de broca desenhado no cliente (SbFxNet.trail)
     }
 
     /** Ato 1: a próxima posição gira em volta do eixo da mira (raio cresce até 0,55 bloco). */
@@ -178,8 +176,7 @@ public class TuskNailEntity extends ThrowableProjectile implements GeoEntity {
         if (owner instanceof ServerPlayer sp && target instanceof LivingEntity) MagicApi.addCounter(sp, SbProgress.NAIL_HITS, 1);
         if (act() == ACT1) {
             if (target instanceof LivingEntity le && le.isAlive()) twirl(le, owner instanceof LivingEntity o ? o : null);
-            sl.sendParticles(SbFx.dust(SbFx.NAIL, 1.1F), at.x, at.y, at.z, 6, 0.15, 0.15, 0.15, 0);
-            SbFx.sound(sl, at, SoundEvents.AMETHYST_BLOCK_HIT, 0.7F, 1.9F);
+            SbFxNet.at(sl, SbFxNet.NAIL_HIT, at, getDeltaMovement(), 1F, SbFx.NAIL, -1);
             if (pierce > 0) {
                 pierce--;
                 return;
@@ -187,8 +184,8 @@ public class TuskNailEntity extends ThrowableProjectile implements GeoEntity {
             discard();
         } else {
             SpiralHoleEntity.chaser(ctx, at, target instanceof LivingEntity le ? le : null, holeTicks);
-            SbFx.goldenSpiral(sl, at, getDeltaMovement(), 1.0);
-            SbFx.sound(sl, at, SoundEvents.TRIDENT_RIPTIDE_2.value(), 0.8F, 1.5F);
+            SbFxNet.at(sl, SbFxNet.NAIL_HIT, at, getDeltaMovement(), 2F, SbFx.GOLD, -1);
+            if (target instanceof LivingEntity le) SbFxNet.at(sl, SbFxNet.CHASE_MARK, at, Vec3.ZERO, 1F, SbFx.GOLD, le.getId());
             discard();
         }
     }
@@ -220,8 +217,8 @@ public class TuskNailEntity extends ThrowableProjectile implements GeoEntity {
             ctx.resolveOnBlock(result, this);
             if (act() == ACT2) SpiralHoleEntity.chaser(ctx, at.add(0, 0.05, 0), null, holeTicks);
         }
-        sl.sendParticles(SbFx.dust(golden() ? SbFx.GOLD : SbFx.NAIL, 0.9F), at.x, at.y, at.z, 5, 0.1, 0.1, 0.1, 0);
-        SbFx.sound(sl, at, SoundEvents.AMETHYST_BLOCK_STEP, 0.6F, 1.7F);
+        SbFxNet.at(sl, SbFxNet.NAIL_HIT, at, Vec3.atLowerCornerOf(result.getDirection().getNormal()), golden() ? 2F : 1F,
+                golden() ? SbFx.GOLD : SbFx.NAIL, -1);
         discard();
     }
 

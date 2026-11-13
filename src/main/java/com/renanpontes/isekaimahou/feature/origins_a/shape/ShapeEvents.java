@@ -8,8 +8,8 @@ import com.renanpontes.isekaimahou.feature.origins_a.OaNetwork;
 import com.renanpontes.isekaimahou.feature.origins_a.OaRegistries;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.Holder;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -161,9 +161,9 @@ public final class ShapeEvents {
         ServerLevel level = sp.serverLevel();
         Element el = OaData.of(sp).formElement();
         double y = sp.getY() + 0.6;
-        level.sendParticles(ParticleTypes.POOF, sp.getX(), y, sp.getZ(), 24, 0.4, 0.5, 0.4, 0.04);
+        level.sendParticles(Vfx.poof(), sp.getX(), y, sp.getZ(), 24, 0.4, 0.5, 0.4, 0.04);
         level.sendParticles(ElementFx.dust(el, 1.3F), sp.getX(), y, sp.getZ(), 20, 0.5, 0.6, 0.5, 0.0);
-        level.sendParticles(ParticleTypes.HAPPY_VILLAGER, sp.getX(), y, sp.getZ(), 8, 0.5, 0.5, 0.5, 0.0);
+        level.sendParticles(Vfx.happy(), sp.getX(), y, sp.getZ(), 8, 0.5, 0.5, 0.5, 0.0);
         SoundEvent sound = entering ? switch (s) {
             case WOLF -> SoundEvents.WOLF_HOWL;
             case BEAR -> SoundEvents.POLAR_BEAR_WARNING;

@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.feature.fusions_b.FbUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -107,7 +108,7 @@ public class CrystalShardEntity extends ThrowableItemProjectile {
         if (isRemoved()) return;
         sl.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.AMETHYST_SHARD)), at.x, at.y, at.z,
                 6, 0.1, 0.1, 0.1, 0.08);
-        sl.sendParticles(ParticleTypes.WAX_ON, at.x, at.y, at.z, 2, 0.1, 0.1, 0.1, 0.05);
+        sl.sendParticles(Vfx.waxOn(), at.x, at.y, at.z, 2, 0.1, 0.1, 0.1, 0.05);
         FbFx.sound(sl, at, SoundEvents.AMETHYST_CLUSTER_BREAK, 0.4F, 1.5F);
         discard();
     }

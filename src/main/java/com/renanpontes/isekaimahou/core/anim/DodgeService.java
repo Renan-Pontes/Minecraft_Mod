@@ -29,6 +29,7 @@ public final class DodgeService {
         if (!AnimConfig.DODGE_ENABLED.get()) return;
         if (player.isSpectator() || player.isPassenger() || player.isSleeping() || player.isFallFlying() || player.isDeadOrDying()) return;
         if (dir < MahouAnims.DIR_FORWARD || dir > MahouAnims.DIR_RIGHT) return;
+        if (com.renanpontes.isekaimahou.core.ux.PeaceMode.isOn(player)) return; // v1.6: Modo Paz trava a esquiva
         ServerLevel level = player.serverLevel();
         long now = level.getGameTime();
         Long next = NEXT.get(player.getUUID());
@@ -38,6 +39,7 @@ public final class DodgeService {
         if (!creative && player.getFoodData().getFoodLevel() <= 6) return;
 
         NEXT.put(player.getUUID(), now + AnimConfig.DODGE_COOLDOWN.get());
+        GuardService.onDodge(player); // v1.0: esquivar solta o bloqueio e não emenda com o aparo
         int iframes = AnimConfig.DODGE_IFRAMES.get();
         if (iframes > 0) IFRAMES.put(player.getUUID(), now + iframes);
         if (!creative) player.causeFoodExhaustion(AnimConfig.DODGE_EXHAUSTION.get().floatValue());

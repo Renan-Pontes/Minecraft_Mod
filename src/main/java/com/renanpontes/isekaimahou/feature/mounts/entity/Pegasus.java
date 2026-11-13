@@ -427,7 +427,8 @@ public class Pegasus extends AbstractHorse implements GeoEntity, FlyingMount {
         flight.tick(this);
         if (level() instanceof ServerLevel sl) {
             int active = abilityActive();
-            if (active > 0) {
+            // v1.3 (desempenho): partículas da habilidade a cada 2 ticks (2 pacotes por tick para todos por perto era demais)
+            if (active > 0 && (tickCount & 1) == 0) {
                 sl.sendParticles(ParticleTypes.END_ROD, getX(), getY() + 0.6, getZ(), 2, 0.4, 0.3, 0.4, 0.01);
                 sl.sendParticles(ElementFx.dust(Element.LIGHT, 1.3F), getX(), getY() + 0.2, getZ(), 2, 0.5, 0.1, 0.5, 0.0);
             }

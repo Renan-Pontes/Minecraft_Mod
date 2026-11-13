@@ -40,6 +40,9 @@ public class MerchantNpc extends SettlementNpc implements Merchant {
     private static final Set<String> KINGDOM = Set.of("apron", "satchel", "cap");
     private static final Set<String> DESERT = Set.of("hood", "satchel", "skirt");
     private static final Set<String> NORDIC = Set.of("apron", "satchel", "beard");
+    // onda 5: texturas recoloridas do Reino (Oriental, Élfico, Sombrio) e do Nórdico (Anão) — só peças que a origem pinta
+    private static final Set<String> ORIENTAL = Set.of("apron", "satchel");
+    private static final Set<String> ELVEN = Set.of("satchel");
 
     @Nullable private Player tradingPlayer;
     private MerchantOffers offers = new MerchantOffers();
@@ -64,7 +67,9 @@ public class MerchantNpc extends SettlementNpc implements Merchant {
     public Set<String> visibleBones() {
         return switch (style()) {
             case DESERT -> DESERT;
-            case NORDIC -> NORDIC;
+            case NORDIC, DWARVEN -> NORDIC;
+            case ORIENTAL -> ORIENTAL;
+            case ELVEN -> ELVEN;
             default -> KINGDOM;
         };
     }
@@ -113,6 +118,27 @@ public class MerchantNpc extends SettlementNpc implements Merchant {
                 buy(out, coin, Items.LEATHER, 8, 2);
                 buy(out, coin, Items.COD, 12, 2);
             }
+            // onda 5: cada estilo novo compra a matéria-prima da sua terra
+            case ORIENTAL -> {
+                buy(out, coin, Items.BAMBOO, 32, 2);
+                buy(out, coin, Items.CHERRY_LOG, 24, 2);
+                buy(out, coin, Items.COD, 12, 2);
+            }
+            case ELVEN -> {
+                buy(out, coin, Items.BIRCH_LOG, 24, 2);
+                buy(out, coin, Items.SWEET_BERRIES, 24, 2);
+                buy(out, coin, Items.STRING, 12, 2);
+            }
+            case GOTHIC -> {
+                buy(out, coin, Items.BONE, 16, 2);
+                buy(out, coin, Items.SPIDER_EYE, 8, 2);
+                buy(out, coin, Items.DEEPSLATE, 48, 1);
+            }
+            case DWARVEN -> {
+                buy(out, coin, Items.COBBLESTONE, 48, 1);
+                buy(out, coin, Items.COAL, 16, 2);
+                buy(out, coin, Items.RAW_IRON, 6, 3);
+            }
             default -> {
                 buy(out, coin, Items.WHEAT, 24, 2);
                 buy(out, coin, Items.COBBLESTONE, 48, 1);
@@ -134,6 +160,38 @@ public class MerchantNpc extends SettlementNpc implements Merchant {
                 sell(out, coin, mult, 3, new ItemStack(Items.SPRUCE_PLANKS, 32));
                 sell(out, coin, mult, 5, new ItemStack(Items.LEATHER_CHESTPLATE));
                 sell(out, coin, mult, 6, new ItemStack(Items.HONEY_BOTTLE, 4));
+                sell(out, coin, mult, 9, new ItemStack(Items.IRON_AXE));
+                sell(out, coin, mult, 14, new ItemStack(Items.SHIELD));
+            }
+            case ORIENTAL -> {
+                sell(out, coin, mult, 2, new ItemStack(Items.COOKED_COD, 8));
+                sell(out, coin, mult, 3, new ItemStack(Items.PAPER, 16));
+                sell(out, coin, mult, 3, new ItemStack(Items.CHERRY_PLANKS, 32));
+                sell(out, coin, mult, 4, new ItemStack(Items.LANTERN, 4));
+                sell(out, coin, mult, 9, new ItemStack(Items.IRON_SWORD));
+                sell(out, coin, mult, 12, new ItemStack(Items.CHERRY_SAPLING, 2));
+            }
+            case ELVEN -> {
+                sell(out, coin, mult, 2, new ItemStack(Items.APPLE, 8));
+                sell(out, coin, mult, 3, new ItemStack(Items.BIRCH_PLANKS, 32));
+                sell(out, coin, mult, 4, new ItemStack(Items.ARROW, 16));
+                sell(out, coin, mult, 6, new ItemStack(Items.HONEY_BOTTLE, 4));
+                sell(out, coin, mult, 9, new ItemStack(Items.BOW));
+                sell(out, coin, mult, 12, new ItemStack(Items.FLOWERING_AZALEA, 2));
+            }
+            case GOTHIC -> {
+                sell(out, coin, mult, 2, new ItemStack(Items.BAKED_POTATO, 8));
+                sell(out, coin, mult, 3, new ItemStack(Items.DEEPSLATE_BRICKS, 32));
+                sell(out, coin, mult, 4, new ItemStack(Items.SOUL_LANTERN, 4));
+                sell(out, coin, mult, 5, new ItemStack(Items.CANDLE, 8));
+                sell(out, coin, mult, 9, new ItemStack(Items.IRON_SWORD));
+                sell(out, coin, mult, 12, new ItemStack(Items.CROSSBOW));
+            }
+            case DWARVEN -> {
+                sell(out, coin, mult, 2, new ItemStack(Items.COOKED_PORKCHOP, 6));
+                sell(out, coin, mult, 3, new ItemStack(Items.STONE_BRICKS, 32));
+                sell(out, coin, mult, 4, new ItemStack(Items.LANTERN, 4));
+                sell(out, coin, mult, 6, new ItemStack(Items.IRON_PICKAXE));
                 sell(out, coin, mult, 9, new ItemStack(Items.IRON_AXE));
                 sell(out, coin, mult, 14, new ItemStack(Items.SHIELD));
             }

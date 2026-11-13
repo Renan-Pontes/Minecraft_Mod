@@ -4,6 +4,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueFx;
+import com.renanpontes.isekaimahou.feature.class_rogue.RogueFxNet;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueTechniques;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
@@ -50,8 +51,7 @@ public class OneCutCurseEffect extends EffectGlyph {
         Vec3 c = RogueFx.center(le);
         // o corte: um traço vermelho-escuro longo e limpo
         Vec3 side = new Vec3(Math.cos(sl.random.nextDouble() * Math.PI), 0, Math.sin(sl.random.nextDouble() * Math.PI)).normalize();
-        RogueFx.line(sl, c.add(side.scale(-1.0)).add(0, 0.6, 0), c.add(side.scale(1.0)).add(0, -0.6, 0), RogueFx.dust(0x8A0A1E, 1.2F), 0.1);
-        sl.sendParticles(ParticleTypes.SWEEP_ATTACK, c.x, c.y, c.z, 1, 0, 0, 0, 0);
+        RogueFxNet.at(sl, RogueFxNet.ONE_CUT, c, side, 1F, 0x8A0A1E, le.getId());
         RogueFx.sound(sl, c, SoundEvents.PLAYER_ATTACK_SWEEP, 1.0F, 0.6F);
         if (!le.isAlive()) return;
         RogueTechniques.curse(le, ctx, stats);

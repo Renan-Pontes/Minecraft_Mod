@@ -112,6 +112,8 @@ public final class EwUtil {
     /** Pode MEXER (colocar/trocar temporariamente) neste bloco? Respeita protecao de area e mobGriefing. */
     public static boolean canEdit(SpellContext ctx, BlockPos pos) {
         ServerLevel level = ctx.level();
+        // v1.0 r9: torre em escalada / masmorra são indestrutíveis (nem blocos temporários de magia)
+        if (com.renanpontes.isekaimahou.core.api.Destruction.wardedFor(level, pos, ctx.caster())) return false;
         if (!level.isInWorldBounds(pos) || !level.getWorldBorder().isWithinBounds(pos)) return false;
         LivingEntity caster = ctx.caster();
         if (caster instanceof ServerPlayer sp) {

@@ -24,6 +24,12 @@ public final class UxCore {
         bus.addListener(ArenaService::onRespawn);
         // Estado estático limpo ao parar o servidor (mundo novo no mesmo jogo começa do zero)
         bus.addListener((ServerStoppedEvent e) -> ArenaService.clear());
+        // v1.3: "/mahou perf [segundos]" — quem está pesando no tick do servidor
+        com.renanpontes.isekaimahou.core.perf.PerfProfiler.init();
+        // v1.6: Modo Paz (trava magias/esquiva/PvP na cidade e em casa)
+        PeaceMode.init(modBus);
+        // v1.0: senha de administrador (ninguém usa comando de admin sem ela)
+        AdminAuth.init(modBus);
     }
 
     private UxCore() {}

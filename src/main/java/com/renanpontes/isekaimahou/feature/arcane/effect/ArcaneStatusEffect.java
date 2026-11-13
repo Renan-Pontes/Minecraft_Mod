@@ -2,8 +2,8 @@ package com.renanpontes.isekaimahou.feature.arcane.effect;
 
 import org.joml.Vector3f;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -46,13 +46,13 @@ public class ArcaneStatusEffect extends MobEffect {
                             entity.getZ() + Math.sin(a) * w, 1, 0, 0, 0, 0);
                 }
                 if (entity.tickCount % 12 == 0) {
-                    level.sendParticles(ParticleTypes.END_ROD, entity.getX(), cy, entity.getZ(), 1, w * 0.6, 0.3, w * 0.6, 0.0);
+                    level.sendParticles(Vfx.endRod(), entity.getX(), cy, entity.getZ(), 1, w * 0.6, 0.3, w * 0.6, 0.0);
                 }
             }
             case SHRINK -> level.sendParticles(dust, entity.getX(), cy, entity.getZ(), 2, w * 0.6, entity.getBbHeight() * 0.3, w * 0.6, 0);
             case GROWTH -> {
                 level.sendParticles(dust, entity.getX(), entity.getY() + 0.1, entity.getZ(), 3, w, 0.05, w, 0);
-                level.sendParticles(ParticleTypes.HAPPY_VILLAGER, entity.getX(), cy, entity.getZ(), 1, w * 0.6, 0.4, w * 0.6, 0);
+                level.sendParticles(Vfx.happy(), entity.getX(), cy, entity.getZ(), 1, w * 0.6, 0.4, w * 0.6, 0);
             }
         }
         return true;

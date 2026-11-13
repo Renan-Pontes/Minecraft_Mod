@@ -247,8 +247,12 @@ public class PathSelectionScreen extends Screen {
         super.render(g, mx, my, pt);
         renderList(g, mx, my);
         ItemStack hovered = renderDetails(g, mx, my);
-        g.drawCenteredString(font, Component.translatable("screen.isekai_mahou.choose_path.note"), width / 2,
-                Math.min(height - 10, top + panelH + 5), MahouUi.TEXT_DIM);
+        // Rodapé: com o Shinigami selecionado, mostra a dica da classe secreta (Hollow) no lugar da nota geral
+        Component foot = current() == MagicPath.SHINIGAMI
+                ? Component.translatable("screen.isekai_mahou.hollow.locked_line", MagicPath.HOLLOW.displayName(), MagicPath.HOLLOW.lockedHint())
+                : Component.translatable("screen.isekai_mahou.choose_path.note");
+        g.drawCenteredString(font, MahouUi.fit(font, foot, Math.min(width - 16, 460)), width / 2,
+                Math.min(height - 10, top + panelH + 5), current() == MagicPath.SHINIGAMI ? 0xFFB8A89A : MahouUi.TEXT_DIM);
         int ht = tabAt(mx, my);
         if (!hovered.isEmpty()) {
             g.renderTooltip(font, hovered, mx, my);

@@ -9,7 +9,7 @@ import com.renanpontes.isekaimahou.glyph.FormGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -56,7 +56,7 @@ public class TurretForm extends FormGlyph {
         level.addFreshEntity(turret);
         Vec3 c = turret.muzzle();
         for (Element e : FormsBUtil.spellElements(ctx)) ElementFx.burst(level, c, e, 18, 0.4);
-        level.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 12, 0.2, 0.5, 0.2, 0.05);
+        level.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 12, 0.2, 0.5, 0.2, 0.05);
         level.playSound(null, c.x, c.y, c.z, SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 0.8F, 1.5F);
     }
 }

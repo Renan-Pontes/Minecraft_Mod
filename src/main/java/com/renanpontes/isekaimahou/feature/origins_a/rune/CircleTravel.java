@@ -10,10 +10,10 @@ import com.renanpontes.isekaimahou.feature.origins_a.OaRegistries;
 import com.renanpontes.isekaimahou.feature.origins_a.OaUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -74,7 +74,7 @@ public final class CircleTravel {
         }
         level.addFreshEntity(circle);
         refreshPartners(sp);
-        level.sendParticles(ParticleTypes.PORTAL, pos.x, pos.y + 0.3, pos.z, 50, 0.8, 0.2, 0.8, 0.4);
+        level.sendParticles(Vfx.portal(), pos.x, pos.y + 0.3, pos.z, 50, 0.8, 0.2, 0.8, 0.4);
         level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 0.8F, 1.3F);
         OaUtil.actionbar(sp, data.circles().size() >= 2 ? "circle_linked" : "circle_first");
     }
@@ -104,7 +104,7 @@ public final class CircleTravel {
         Vec3 to = Vec3.atBottomCenterOf(dest.pos()).add(0, 0.05, 0);
         if (!clear(target, e, to)) {
             // Alguém construiu em cima do outro círculo: não joga ninguém dentro de blocos
-            level.sendParticles(ParticleTypes.SMOKE, e.getX(), e.getY() + 0.3, e.getZ(), 12, 0.4, 0.1, 0.4, 0.01);
+            level.sendParticles(Vfx.smoke(), e.getX(), e.getY() + 0.3, e.getZ(), 12, 0.4, 0.1, 0.4, 0.01);
             level.playSound(null, e.getX(), e.getY(), e.getZ(), SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 0.5F, 1.8F);
             if (e instanceof ServerPlayer sp) OaUtil.actionbar(sp, "circle_blocked");
             return;
@@ -140,13 +140,13 @@ public final class CircleTravel {
     }
 
     private static void departFx(ServerLevel level, Vec3 p, int color) {
-        level.sendParticles(ParticleTypes.REVERSE_PORTAL, p.x, p.y + 1.0, p.z, 40, 0.3, 0.8, 0.3, 0.05);
+        level.sendParticles(Vfx.reversePortal(), p.x, p.y + 1.0, p.z, 40, 0.3, 0.8, 0.3, 0.05);
         level.sendParticles(dust(color), p.x, p.y + 0.8, p.z, 20, 0.35, 0.7, 0.35, 0);
         level.playSound(null, p.x, p.y, p.z, SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.9F, 1.1F);
     }
 
     private static void arriveFx(ServerLevel level, Vec3 p, int color) {
-        level.sendParticles(ParticleTypes.PORTAL, p.x, p.y + 0.8, p.z, 50, 0.4, 0.8, 0.4, 0.4);
+        level.sendParticles(Vfx.portal(), p.x, p.y + 0.8, p.z, 50, 0.4, 0.8, 0.4, 0.4);
         level.sendParticles(dust(color), p.x, p.y + 0.5, p.z, 20, 0.5, 0.4, 0.5, 0);
         level.playSound(null, p.x, p.y, p.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.8F, 1.2F);
     }
@@ -189,9 +189,9 @@ public final class CircleTravel {
         double ang = done * 0.4;
         for (int i = 0; i < 3; i++) {
             double a = ang + i * Math.PI * 2 / 3;
-            level.sendParticles(ParticleTypes.ENCHANT, sp.getX() + Math.cos(a) * 0.8, sp.getY() + rise * 2.0,
+            level.sendParticles(Vfx.enchant(), sp.getX() + Math.cos(a) * 0.8, sp.getY() + rise * 2.0,
                     sp.getZ() + Math.sin(a) * 0.8, 1, 0, 0, 0, 0);
-            level.sendParticles(ParticleTypes.PORTAL, sp.getX() + Math.cos(a) * 0.8, sp.getY() + 0.1,
+            level.sendParticles(Vfx.portal(), sp.getX() + Math.cos(a) * 0.8, sp.getY() + 0.1,
                     sp.getZ() + Math.sin(a) * 0.8, 1, 0, 0.2, 0, 0.1);
         }
         if (r.left() > 1) {

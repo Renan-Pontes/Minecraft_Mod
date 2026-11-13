@@ -10,9 +10,9 @@ import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.feature.ritual_druid.DruidContent;
 import com.renanpontes.isekaimahou.feature.ritual_druid.DruidProgress;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -146,7 +146,7 @@ public class AnimalSpiritEntity extends Mob implements GeoEntity {
         spirit.yBodyRot = spirit.getYRot();
         level.addFreshEntity(spirit);
 
-        level.sendParticles(ParticleTypes.END_ROD, spirit.getX(), spirit.getY() + 0.6, spirit.getZ(), 40, 0.4, 0.6, 0.4, 0.08);
+        level.sendParticles(Vfx.endRod(), spirit.getX(), spirit.getY() + 0.6, spirit.getZ(), 40, 0.4, 0.6, 0.4, 0.08);
         level.sendParticles(dust(kind, 1.6F), spirit.getX(), spirit.getY() + 0.6, spirit.getZ(), 50, 0.6, 0.8, 0.6, 0.0);
         level.playSound(null, spirit.getX(), spirit.getY(), spirit.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.NEUTRAL, 1.2F, 1.4F);
         level.playSound(null, spirit.getX(), spirit.getY(), spirit.getZ(), kindSound(kind), SoundSource.NEUTRAL, 1.0F, 1.1F);
@@ -227,7 +227,7 @@ public class AnimalSpiritEntity extends Mob implements GeoEntity {
                     getZ() + (random.nextDouble() - 0.5) * w, 0, 0.02, 0);
         }
         if (random.nextInt(8) == 0) {
-            level().addParticle(ParticleTypes.END_ROD, getX() + (random.nextDouble() - 0.5) * getBbWidth(),
+            level().addParticle(Vfx.endRod(), getX() + (random.nextDouble() - 0.5) * getBbWidth(),
                     getY() + random.nextDouble() * getBbHeight(), getZ() + (random.nextDouble() - 0.5) * getBbWidth(),
                     0, 0.01, 0);
         }
@@ -293,7 +293,7 @@ public class AnimalSpiritEntity extends Mob implements GeoEntity {
                 entityData.set(FADE, Math.min(FADE_TICKS, phaseTicks));
                 if (phaseTicks >= FADE_TICKS) {
                     sl.sendParticles(dust(kind(), 1.4F), getX(), getY() + getBbHeight() * 0.5, getZ(), 40, 0.4, 0.5, 0.4, 0.0);
-                    sl.sendParticles(ParticleTypes.END_ROD, getX(), getY() + getBbHeight() * 0.5, getZ(), 18, 0.3, 0.4, 0.3, 0.05);
+                    sl.sendParticles(Vfx.endRod(), getX(), getY() + getBbHeight() * 0.5, getZ(), 18, 0.3, 0.4, 0.3, 0.05);
                     sl.playSound(null, getX(), getY(), getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.NEUTRAL, 1.0F, 1.6F);
                     discard();
                 }
@@ -377,7 +377,7 @@ public class AnimalSpiritEntity extends Mob implements GeoEntity {
         }
         Vec3 c = player.position().add(0, 1.0, 0);
         sl.sendParticles(dust(k, 1.2F), c.x, c.y, c.z, 30, 0.5, 0.7, 0.5, 0.0);
-        sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, c.x, c.y, c.z, 12, 0.6, 0.8, 0.6, 0.0);
+        sl.sendParticles(Vfx.happy(), c.x, c.y, c.z, 12, 0.6, 0.8, 0.6, 0.0);
     }
 
     @Override

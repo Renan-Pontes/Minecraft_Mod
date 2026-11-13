@@ -7,9 +7,9 @@ import java.util.UUID;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.feature.origins_b.ObUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -205,7 +205,7 @@ public abstract class ObSummonEntity extends PathfinderMob implements OwnableEnt
             }
             entityData.set(DATA_FADE, lifetime < 60 ? lifetime : -1);
             if (lifetime < 60 && lifetime % 6 == 0) {
-                sl.sendParticles(ParticleTypes.SMOKE, getX(), getY() + getBbHeight() * 0.6, getZ(),
+                sl.sendParticles(Vfx.smoke(), getX(), getY() + getBbHeight() * 0.6, getZ(),
                         3, getBbWidth() * 0.4, getBbHeight() * 0.3, getBbWidth() * 0.4, 0.01);
             }
         }

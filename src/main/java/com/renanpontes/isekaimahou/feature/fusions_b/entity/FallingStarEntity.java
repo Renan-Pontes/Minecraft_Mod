@@ -9,6 +9,7 @@ import com.renanpontes.isekaimahou.feature.fusions_b.FbUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -73,7 +74,7 @@ public class FallingStarEntity extends Entity implements ItemSupplier {
         sl.addFreshEntity(star);
         // Aviso no chão
         FbFx.ring(sl, target.add(0, 0.15, 0), FbFx.dust(FbFx.ASTRAL_LIGHT, 1.2F), radius, 24, 0);
-        FbFx.ring(sl, target.add(0, 0.15, 0), ParticleTypes.END_ROD, radius * 0.4, 8, 0.01);
+        FbFx.ring(sl, target.add(0, 0.15, 0), Vfx.endRod(), radius * 0.4, 8, 0.01);
         FbFx.sound(sl, start, SoundEvents.FIREWORK_ROCKET_LAUNCH, 1.4F, 0.6F);
     }
 
@@ -139,17 +140,17 @@ public class FallingStarEntity extends Entity implements ItemSupplier {
             double x = getX() - v.x * f, y = getY() - v.y * f, z = getZ() - v.z * f;
             level().addParticle(FbFx.dust(i % 2 == 0 ? FbFx.ASTRAL_LIGHT : FbFx.ASTRAL, 1.6F), x, y + 0.3, z, 0, 0, 0);
         }
-        level().addParticle(ParticleTypes.END_ROD, getX(), getY() + 0.3, getZ(),
+        level().addParticle(Vfx.endRod(), getX(), getY() + 0.3, getZ(),
                 (random.nextDouble() - 0.5) * 0.08, 0.04, (random.nextDouble() - 0.5) * 0.08);
         if (random.nextInt(2) == 0) level().addParticle(ParticleTypes.FIREWORK, getX(), getY() + 0.3, getZ(), 0, 0, 0);
     }
 
     private void impact(ServerLevel sl, Vec3 at) {
         sl.sendParticles(ParticleTypes.FLASH, at.x, at.y + 0.5, at.z, 1, 0, 0, 0, 0);
-        sl.sendParticles(ParticleTypes.FIREWORK, at.x, at.y + 0.5, at.z, 50, 0.3, 0.3, 0.3, 0.25);
-        sl.sendParticles(ParticleTypes.END_ROD, at.x, at.y + 0.5, at.z, 30, 0.2, 0.2, 0.2, 0.3);
+        sl.sendParticles(Vfx.firework(), at.x, at.y + 0.5, at.z, 50, 0.3, 0.3, 0.3, 0.25);
+        sl.sendParticles(Vfx.endRod(), at.x, at.y + 0.5, at.z, 30, 0.2, 0.2, 0.2, 0.3);
         FbFx.shockwave(sl, at.add(0, 0.2, 0), FbFx.dust(FbFx.ASTRAL_LIGHT, 1.6F), 36, 0.6);
-        FbFx.shockwave(sl, at.add(0, 0.25, 0), ParticleTypes.CLOUD, 20, 0.35);
+        FbFx.shockwave(sl, at.add(0, 0.25, 0), Vfx.cloud(), 20, 0.35);
         FbFx.sound(sl, at, SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 2.0F, 0.7F);
         FbFx.sound(sl, at, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.5F, 1.4F);
         for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(radius),

@@ -4,9 +4,9 @@ import com.mojang.serialization.MapCodec;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.feature.forms_b.FormsBRegistry;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -111,7 +111,7 @@ public class SpellBarrierBlock extends TransparentBlock implements EntityBlock, 
         double x = pos.getX() + 0.5 + d.getStepX() * 0.52 + (d.getStepX() == 0 ? random.nextDouble() - 0.5 : 0);
         double y = pos.getY() + 0.5 + d.getStepY() * 0.52 + (d.getStepY() == 0 ? random.nextDouble() - 0.5 : 0);
         double z = pos.getZ() + 0.5 + d.getStepZ() * 0.52 + (d.getStepZ() == 0 ? random.nextDouble() - 0.5 : 0);
-        level.addParticle(ParticleTypes.ENCHANT, x, y, z, 0, 0.05, 0);
+        level.addParticle(Vfx.enchant(), x, y, z, 0, 0.05, 0);
     }
 
     /**

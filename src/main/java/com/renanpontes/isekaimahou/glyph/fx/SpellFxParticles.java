@@ -53,6 +53,12 @@ public final class SpellFxParticles {
     public static final DeferredHolder<ParticleType<?>, ParticleType<FxOptions>> SHOCKWAVE = reg("fx_shockwave", true);
     /** Círculo mágico (scale = raio). data = entidade a seguir. flags = modo/tier/camada. */
     public static final DeferredHolder<ParticleType<?>, ParticleType<FxOptions>> CIRCLE = reg("fx_circle", true);
+    /**
+     * release 1.0 — NÃO é uma partícula que se cria: só carrega no atlas as artes do círculo mágico por magia
+     * ({@code CircleStyle}: formas {@code fx_circle_s*} e símbolos {@code fx_circle_y*}) que o círculo
+     * ({@link #CIRCLE}) usa quando as flags trazem forma/símbolo. Lista em {@code particles/fx_circle_style.json}.
+     */
+    public static final DeferredHolder<ParticleType<?>, ParticleType<FxOptions>> CIRCLE_STYLE = reg("fx_circle_style", true);
     /** Pilar de luz (scale = raio, data = altura em 1/16 bloco). */
     public static final DeferredHolder<ParticleType<?>, ParticleType<FxOptions>> PILLAR = reg("fx_pillar", true);
 
@@ -76,6 +82,21 @@ public final class SpellFxParticles {
     public static final int FLAG_REVERSE = 1 << 7;
     /** bits 8-9: camada/sprite do círculo (0 principal, 1 selo interno, 2 camada de ultimate, 3 simples). */
     public static final int LAYER_SHIFT = 8;
+    /**
+     * Partículas soltas, bits 10-11: como tratar a velocidade recebida (para imitar o vanilla que elas substituem,
+     * ver {@link Vfx}). 0 = normal, {@link #MOTION_SLOW} ×0,3, {@link #MOTION_SLOWER} ×0,1, {@link #MOTION_INWARD} = nasce
+     * em pos+velocidade e vem até pos (como o portal/encantamento do vanilla).
+     */
+    public static final int MOTION_SHIFT = 10;
+    public static final int MOTION_SLOW = 1 << MOTION_SHIFT;
+    public static final int MOTION_SLOWER = 2 << MOTION_SHIFT;
+    public static final int MOTION_INWARD = 3 << MOTION_SHIFT;
+    /*
+     * Círculos, bits 12-14 (forma) e 15-18 (símbolo): o círculo mágico escolhido na receita — ver
+     * {@code glyph.CircleStyle#flags()} (0 = o círculo padrão do tier, sem símbolo).
+     */
+
+    public static int motionOf(int flags) { return (flags >> MOTION_SHIFT) & 3; }
 
     public static int flags(int tier, int mode, int layer) {
         return (Math.max(0, Math.min(5, tier)) & TIER_MASK) | ((mode & 3) << MODE_SHIFT) | ((layer & 3) << LAYER_SHIFT);

@@ -11,7 +11,7 @@ public class W32k {
 $p = Get-CimInstance Win32_Process -Filter "Name='java.exe'" | Where-Object { $_.CommandLine -like '*fml.modFolders*' -and (Get-Process -Id $_.ProcessId).MainWindowHandle -ne 0 } | Select-Object -First 1
 if (-not $p) { Write-Output "sem processo"; exit 1 }
 $h = (Get-Process -Id $p.ProcessId).MainWindowHandle
-$vk = @{ 'TAB'=0x09; 'ENTER'=0x0D; 'ESC'=0x1B; 'F2'=0x71; 'F1'=0x70; 'F3'=0x72; 'B'=0x42; 'Z'=0x5A; 'G'=0x47; 'T'=0x54; 'RIGHT'=0x27; 'LEFT'=0x25; 'SPACE'=0x20; 'DOWN'=0x28; 'UP'=0x26; 'F5'=0x74; 'E'=0x45; 'S'=0x53; 'W'=0x57; '1'=0x31; '2'=0x32; 'BACK'=0x08; 'C'=0x43; 'X'=0x58; 'J'=0x4A; 'CTRLA'=0x41 }
+$vk = @{ 'TAB'=0x09; 'ENTER'=0x0D; 'ESC'=0x1B; 'F2'=0x71; 'F1'=0x70; 'F3'=0x72; 'B'=0x42; 'Z'=0x5A; 'G'=0x47; 'T'=0x54; 'RIGHT'=0x27; 'LEFT'=0x25; 'SPACE'=0x20; 'DOWN'=0x28; 'UP'=0x26; 'F5'=0x74; 'E'=0x45; 'S'=0x53; 'W'=0x57; '1'=0x31; '2'=0x32; 'BACK'=0x08; 'C'=0x43; 'X'=0x58; 'J'=0x4A; 'N'=0x4E; 'CTRLA'=0x41 }
 foreach ($k in $Seq) {
   if ($k -like 'wait*') { Start-Sleep -Milliseconds ([int]$k.Substring(4)); continue }
   if ($k -like 'type:*') {

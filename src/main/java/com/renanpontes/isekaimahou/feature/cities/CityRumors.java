@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.mojang.datafixers.util.Pair;
 import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.core.MagicApi;
@@ -53,23 +55,40 @@ public final class CityRumors {
                     : CityLines.line("rumor.none");
         }
         t.putLong("RumorAt", now);
+        RandomSource r = npc.getRandom();
+        BlockPos from = npc.blockPosition();
+        Found found = search(sl, from, r, path -> !SKIP.contains(path), MAX_TRIES);
+        if (found == null) return CityLines.line("rumor.none");
+        setRumor(player, found.pos(), found.key());
+        int dist = (int) Math.sqrt(from.distSqr(found.pos()));
+        sl.playSound(null, player.blockPosition(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 0.8F, 1.0F);
+        return CityLines.line("rumor.found." + r.nextInt(3), rumorName(found.key()), dist, direction(from, found.pos()));
+    }
+
+    /** Uma estrutura achada: onde fica (na superfície) e o id dela (caminho, sem o namespace). */
+    public record Found(BlockPos pos, String key) {}
+
+    /**
+     * Procura perto de {@code from} uma estrutura do mod cujo id passe em {@code filter}: sorteia a ordem e tenta as
+     * {@code maxTries} primeiras (cada tentativa é uma busca igual à do /locate, por isso o limite). Null = nada perto.
+     */
+    @Nullable
+    public static Found search(ServerLevel sl, BlockPos from, RandomSource r, java.util.function.Predicate<String> filter, int maxTries) {
         Registry<Structure> reg = sl.registryAccess().registryOrThrow(Registries.STRUCTURE);
         List<Holder<Structure>> candidates = new ArrayList<>();
         for (Holder.Reference<Structure> h : reg.holders().toList()) {
             ResourceLocation id = h.key().location();
-            if (!id.getNamespace().equals(IsekaiMahou.MODID) || SKIP.contains(id.getPath())) continue;
+            if (!id.getNamespace().equals(IsekaiMahou.MODID) || !filter.test(id.getPath())) continue;
             if (sl.getChunkSource().getGeneratorState().getPlacementsForStructure(h).isEmpty()) continue;
             candidates.add(h);
         }
-        RandomSource r = npc.getRandom();
         for (int i = candidates.size() - 1; i > 0; i--) {
             int k = r.nextInt(i + 1);
             Holder<Structure> tmp = candidates.get(i);
             candidates.set(i, candidates.get(k));
             candidates.set(k, tmp);
         }
-        BlockPos from = npc.blockPosition();
-        for (int i = 0; i < Math.min(MAX_TRIES, candidates.size()); i++) {
+        for (int i = 0; i < Math.min(maxTries, candidates.size()); i++) {
             Holder<Structure> h = candidates.get(i);
             Pair<BlockPos, Holder<Structure>> found = sl.getChunkSource().getGenerator()
                     .findNearestMapStructure(sl, HolderSet.direct(h), from, SEARCH_RADIUS_CHUNKS, false);
@@ -77,14 +96,14 @@ public final class CityRumors {
             BlockPos pos = found.getFirst();
             int y = sl.getChunkSource().getGenerator().getBaseHeight(pos.getX(), pos.getZ(), Heightmap.Types.WORLD_SURFACE_WG, sl,
                     sl.getChunkSource().randomState());
-            BlockPos target = new BlockPos(pos.getX(), y, pos.getZ());
-            String key = h.unwrapKey().map(k -> k.location().getPath()).orElse("unknown");
-            setRumor(player, target, key);
-            int dist = (int) Math.sqrt(from.distSqr(target));
-            sl.playSound(null, player.blockPosition(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 0.8F, 1.0F);
-            return CityLines.line("rumor.found." + r.nextInt(3), rumorName(key), dist, direction(from, target));
+            return new Found(new BlockPos(pos.getX(), y, pos.getZ()), h.unwrapKey().map(k -> k.location().getPath()).orElse("unknown"));
         }
-        return CityLines.line("rumor.none");
+        return null;
+    }
+
+    /** Marca no rastreador um lugar achado por {@link #search} (dica paga do estalajadeiro). */
+    public static void mark(ServerPlayer p, Found found) {
+        setRumor(p, found.pos(), found.key());
     }
 
     /** Nome traduzido da estrutura (reserva genérica se não houver tradução). */

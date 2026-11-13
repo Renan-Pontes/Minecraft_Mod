@@ -1,6 +1,7 @@
 package com.renanpontes.isekaimahou.feature.ui_hud.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.renanpontes.isekaimahou.core.MahouConfig;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -25,7 +26,9 @@ public class MahouTopLayer implements LayeredDraw.Layer {
         RenderSystem.defaultBlendFunc();
         int gw = g.guiWidth(), gh = g.guiHeight();
         if (TopSpace.eyeEnabled()) TargetEye.render(g, mc, TopSpace.eye(gw, gh));
-        HudBanner.render(g, mc, TopSpace.bannerTop(gw, gh));
+        // Faixas de nível/Círculo desligadas nas opções: a fila é esvaziada (nada de faixa velha ao religar)
+        if (HudDraw.config(MahouConfig.HUD_LEVEL_BANNERS)) HudBanner.render(g, mc, TopSpace.bannerTop(gw, gh));
+        else HudBanner.clear();
         RenderSystem.disableBlend();
     }
 }

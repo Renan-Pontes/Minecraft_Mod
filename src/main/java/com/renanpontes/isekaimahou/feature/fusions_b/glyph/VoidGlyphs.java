@@ -12,7 +12,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,8 +40,8 @@ public final class VoidGlyphs {
 
     /** Efeito visual de "pedaço apagado da realidade" em volta de um ponto. */
     static void voidFx(ServerLevel sl, Vec3 c, double spread, int count) {
-        sl.sendParticles(ParticleTypes.PORTAL, c.x, c.y, c.z, count, spread, spread, spread, 0.6);
-        sl.sendParticles(ParticleTypes.REVERSE_PORTAL, c.x, c.y, c.z, count / 2, spread * 0.6, spread * 0.6, spread * 0.6, 0.05);
+        sl.sendParticles(Vfx.portal(), c.x, c.y, c.z, count, spread, spread, spread, 0.6);
+        sl.sendParticles(Vfx.reversePortal(), c.x, c.y, c.z, count / 2, spread * 0.6, spread * 0.6, spread * 0.6, 0.05);
         sl.sendParticles(FbFx.fade(FbFx.VOID, FbFx.VOID_BLACK, 1.5F), c.x, c.y, c.z, count / 2, spread, spread, spread, 0);
     }
 
@@ -147,7 +147,7 @@ public final class VoidGlyphs {
                     voidFx(sl, from, 0.4, 16);
                     continue;
                 }
-                FbFx.implode(sl, from, ParticleTypes.PORTAL, 1.5, 24, 0.3);
+                FbFx.implode(sl, from, Vfx.portal(), 1.5, 24, 0.3);
                 voidFx(sl, from, 0.4, 30);
                 FbFx.sound(sl, from, SoundEvents.ENDERMAN_TELEPORT, 1.2F, 0.6F);
                 FbUtil.teleport(e, spot);
@@ -227,7 +227,7 @@ public final class VoidGlyphs {
 
         static void warp(ServerLevel sl, LivingEntity c, Vec3 dest) {
             Vec3 from = FbUtil.center(c);
-            FbFx.implode(sl, from, ParticleTypes.PORTAL, 1.8, 30, 0.4);
+            FbFx.implode(sl, from, Vfx.portal(), 1.8, 30, 0.4);
             voidFx(sl, from, 0.5, 30);
             FbFx.sound(sl, from, SoundEvents.ENDERMAN_TELEPORT, 1.2F, 0.5F);
             FbFx.sound(sl, from, SoundEvents.RESPAWN_ANCHOR_DEPLETE.value(), 0.8F, 1.4F);
@@ -245,7 +245,7 @@ public final class VoidGlyphs {
             FbUtil.teleport(a, pb);
             FbUtil.teleport(b, pa);
             FbUtil.forgetTarget(b);
-            FbFx.line(sl, pa.add(0, 1, 0), pb.add(0, 1, 0), ParticleTypes.REVERSE_PORTAL, 1.5);
+            FbFx.line(sl, pa.add(0, 1, 0), pb.add(0, 1, 0), Vfx.reversePortal(), 1.5);
             FbFx.sound(sl, pa, SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
             FbFx.sound(sl, pb, SoundEvents.ENDERMAN_TELEPORT, 1.0F, 0.7F);
         }

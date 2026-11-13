@@ -14,6 +14,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -59,7 +60,7 @@ public final class AbyssGlyphs {
                 Vec3 c = FbUtil.center(e);
                 sl.sendParticles(FbFx.fade(FbFx.VENOM, FbFx.ABYSS_DEEP, 1.3F), c.x, c.y, c.z, 16, e.getBbWidth() * 0.5,
                         e.getBbHeight() * 0.4, e.getBbWidth() * 0.5, 0);
-                sl.sendParticles(ParticleTypes.SQUID_INK, c.x, c.y, c.z, 4, 0.2, 0.2, 0.2, 0.03);
+                sl.sendParticles(Vfx.ink(), c.x, c.y, c.z, 4, 0.2, 0.2, 0.2, 0.03);
                 FbFx.sound(sl, c, SoundEvents.PUFFER_FISH_STING, 0.9F, 0.8F);
             }
         }
@@ -91,8 +92,8 @@ public final class AbyssGlyphs {
                 e.addEffect(new MobEffectInstance(FbRegistries.INKED, ticks, 0), ctx.caster());
                 FbUtil.forgetTarget(e);
             }
-            sl.sendParticles(ParticleTypes.SQUID_INK, c.x, c.y, c.z, 90, r * 0.45, r * 0.3, r * 0.45, 0.05);
-            sl.sendParticles(ParticleTypes.GLOW_SQUID_INK, c.x, c.y, c.z, 10, r * 0.4, r * 0.3, r * 0.4, 0.03);
+            sl.sendParticles(Vfx.ink(), c.x, c.y, c.z, 90, r * 0.45, r * 0.3, r * 0.45, 0.05);
+            sl.sendParticles(Vfx.glowInk(), c.x, c.y, c.z, 10, r * 0.4, r * 0.3, r * 0.4, 0.03);
             sl.sendParticles(FbFx.dust(FbFx.ABYSS_DEEP, 2.0F), c.x, c.y, c.z, 30, r * 0.5, r * 0.3, r * 0.5, 0);
             FbFx.sound(sl, c, SoundEvents.SQUID_SQUIRT, 1.4F, 0.7F);
             FbFx.sound(sl, c, SoundEvents.GLOW_SQUID_SQUIRT, 0.8F, 0.6F);
@@ -154,7 +155,7 @@ public final class AbyssGlyphs {
                 FbFx.implode(sl, c.add(0, 0.5, 0), FbFx.dust(FbFx.ABYSS_DEEP, 1.2F), 1.3, pts / 2, 0.2);
                 sl.sendParticles(ParticleTypes.BUBBLE_POP, c.x, c.y, c.z, (int) (12 * f), 0.4, 0.5, 0.4, 0.05);
                 sl.sendParticles(ParticleTypes.NAUTILUS, c.x, c.y + 0.5, c.z, 6, 0.3, 0.3, 0.3, 0.3);
-                if (f >= 2F) sl.sendParticles(ParticleTypes.CRIT, c.x, c.y, c.z, 12, 0.3, 0.4, 0.3, 0.2);
+                if (f >= 2F) sl.sendParticles(Vfx.crit(), c.x, c.y, c.z, 12, 0.3, 0.4, 0.3, 0.2);
                 FbFx.sound(sl, c, SoundEvents.CONDUIT_ATTACK_TARGET, 1.0F, 1.2F - 0.15F * f);
                 FbFx.sound(sl, c, SoundEvents.BUBBLE_COLUMN_WHIRLPOOL_INSIDE, 0.8F, 0.6F);
             }
@@ -194,7 +195,7 @@ public final class AbyssGlyphs {
                 e.addEffect(new MobEffectInstance(FbRegistries.ABYSSAL_DROWN, stats.duration(120), FbUtil.amp(ctx, stats)), ctx.caster());
                 double headY = e.getEyeY();
                 sl.sendParticles(ParticleTypes.BUBBLE_POP, e.getX(), headY, e.getZ(), 20, 0.3, 0.3, 0.3, 0.05);
-                sl.sendParticles(ParticleTypes.SPLASH, e.getX(), headY, e.getZ(), 16, 0.3, 0.2, 0.3, 0.1);
+                sl.sendParticles(Vfx.splash(), e.getX(), headY, e.getZ(), 16, 0.3, 0.2, 0.3, 0.1);
                 FbFx.ring(sl, new Vec3(e.getX(), headY, e.getZ()), FbFx.dust(FbFx.ABYSS, 1.2F), e.getBbWidth() * 0.6 + 0.3, 14, 0);
                 FbFx.sound(sl, e.position(), SoundEvents.DROWNED_AMBIENT_WATER, 1.0F, 0.6F);
                 FbFx.sound(sl, e.position(), SoundEvents.PLAYER_HURT_DROWN, 0.8F, 0.8F);

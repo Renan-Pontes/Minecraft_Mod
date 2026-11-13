@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:world_events_star_metal_block"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:world_events_star_metal",
+    "count": 9
+  }
+}

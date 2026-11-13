@@ -176,6 +176,83 @@ GlyphRegistry.register(new IgniteEffect());
 **Loot tables de baú** (estruturas): `isekai_mahou:chests/<id_da_estrutura>` — para dar Pergaminhos de Glifo use a função `minecraft:set_components` com `{"isekai_mahou:glyph": "isekai_mahou:<id_do_glifo>"}` no item `isekai_mahou:glyph_scroll`.
 
 ---------------------------------------------------------------------------------------------------
+## 6b. Catálogo da release 1.0 — o que as ondas 1 e 2 criaram
+
+Tudo aqui já está compilado e pode ser usado por módulos novos. Relatórios de cada trabalho: `docs/v10r/w1_*.md` e `w2_*.md`.
+Regras da release (texto, balanço, tela limpa, cidades sagradas): `docs/V1_RELEASE_DESIGN.md`, seção "Regras comuns".
+
+### APIs públicas novas
+
+| Classe | Para quê |
+|---|---|
+| `feature.ui_hud.Hints` | Dicas de primeira vez. SERVIDOR: `Hints.show(player, "<id>", args...)` — texto em `hint.isekai_mahou.<id>` (lang do SEU módulo), uma linha acima da barra de itens, uma por vez, nunca repete. `Hints.seen(player, id)` (consulta barata), `force`/`reset` para depuração (`/mahou hints`). Ids `a-z 0-9 _ .`, com prefixo do módulo |
+| `glyph.GlyphMastery` | Maestria por glifo (I–X): `level(data, glyphId)`, `level(xp)`, `progress(xp)`, `costDiscount(level)`, `powerMult(level)`, `spellDiscount(data, glyphs)`, `roman(level)`, `visualTier(parsedSpell)`; servidor: `setLevel(sp, glyph, level)`, `addXp(sp, glyph, xp)`. Guardada em `MagicData` (`extra.glyph_mastery`) |
+| `glyph.SpellParser.parse(recipe, element, data, mastery)` | Versão de 4 argumentos: `data` decide o que é CHECADO (null = não checa conhecimento/Círculo/limites — criativo, magias guardadas em entidades); `mastery` dá os níveis de maestria (null = sem maestria: mobs, pedestais, lendas). A de 3 argumentos equivale a `parse(recipe, element, data, data)` |
+| `glyph.SpellRecipe.circle()` | Estilo do círculo mágico da receita (`CircleStyle`: forma, símbolo, cor). Quem remonta uma receita deve usar `withGlyphs/withName/withColor/withChant/withCircle` para não perder o círculo |
+| `feature.travel.guide.PortalGuide` | Guia de Portais (menu B → Viagem): `PortalGuide.register(new PortalGuide.Entry(id, color, structures, siteDim, minCircle, bosses, icon, hasExtra))` + lang `guide.isekai_mahou.portals.<id>.name\|site\|where\|how` (`.extra` se `hasExtra`). `entries()`, `get(id)`, `byStructure(path)` |
+| `feature.travel.guide.MapMarkers` | Marcadores do mapa/Xaero: `MapMarkers.registerStructure("<structure_path>", "<city\|dungeon\|tower\|citadel\|library\|portal\|lair\|sanctum>")` + lang `map.isekai_mahou.structure.<path>` |
+| `core.classes.ClassTalents` | Ponte para os talentos (módulo `talents`): `available()`, `reset(sp)`, `reset(sp, includeSubclass)`, `subclass(player)` (id `<classe>_<nome>`, lang `subclass.isekai_mahou.<id>`), `hasSubclass(player, id)`, `stat(player, key)`, `unspent(player)` |
+| `feature.endless_abyss.AbyssRecords` | Recordes do Abismo sem Fim (inclui jogadores offline): `bestFloor(server, uuid)`, `shadowWins(server, uuid[, bossPath])`, `top(server, n)` → `Entry(player, name, bestFloor, gameTime, shadowWins)` |
+| `core.anim.GuardEvent` | Eventos de bloqueio (NeoForge.EVENT_BUS): `GuardEvent.Parry` (golpe anulado no tempo certo) e `GuardEvent.Block` (`getReduced()` = dano que sobrou). `getPlayer() getAttacker() getSource() getDamage()`. `core.anim.GuardService`: `isGuarding(player)`, `canGuardWith(stack)`, `interrupt(sp, lockTicks)` |
+| `client.fx.FxQuality` | Preset Gráfico (CLIENTE): `level()`, `particles()` (multiplicador), `count(base)`, `atLeast(Graphics)`, `range()`, `inRange(distSqr)`, `shake()`. Todo FX novo passa por aqui em vez de ler `MahouConfig.REDUCED_PARTICLES` |
+| `core.MahouConfig` (leituras prontas) | `shakeScale()` (CLIENTE: multiplique QUALQUER tremor de câmera), `hudScale()`, `hintsEnabled()`, `safe(valor)` (lê sem quebrar antes de a config carregar); SERVIDOR: `peaceAuto(player)`, `wantsTutorial(player)` |
+| `core.api.Places` | `Places.isSafe(level, pos)` / `Place.safeZone()` — cidades são sagradas: eventos e efeitos novos pulam zonas seguras |
+| `core.ux.AdminAuth` / `core.ux.PeaceMode` | `AdminAuth.isAdmin(sp)` (comandos op só depois de `/mahou admin login`); `PeaceMode.isOn(player)` (Modo Paz). Não mexa neles |
+| `feature.cities.block.CitySweep.KEEP_TAG` | Marca de entidade (`Entity#addTag("isekai_mahou.city_keep")`): "este mob hostil pode ficar dentro da cidade" |
+
+### Opções novas no menu do Minecraft (`MahouConfig`, cliente)
+`hudCard`, `hudPlaceName`, `hudResourceBar`, `hudHealthBar`, `hudSpellBar`, `hudCastBar`, `hudLevelBanners`, `hudScalePercent`, `showHints`, `loadingTips`, `guideTutorial`, `peaceModeAuto`, `screenShakePercent`, e (costura) `showPartyMarkers` (lido em `client/social/PartyMarkers`), `showFightTimer` (`feature/renown/client/FightTimerHud`), `showPlayerTitles` (`feature/renown/client/TitleTags`). Nome e descrição de cada opção: `isekai_mahou.configuration.<chave>` e `.tooltip` no lang `ui_hud`.
+Outros arquivos de config: `isekai_mahou-lock-{common,client}.toml` (travar alvo), `-spellfx-client.toml` (`channelAura`), `-feel-{common,client}.toml` (finalizador, combo de magias, hit-stop).
+
+### Ids novos por módulo
+
+**Dimensões**
+- `isekai_mahou:endless_abyss` (endless_abyss — Abismo sem Fim, nível 100+) · `isekai_mahou:home_realm` (home_realm — o Lar do jogador). **Qualquer coisa que edite blocos ou crie mobs em volta de jogadores deve pular `home_realm`.**
+
+**Blocos** (todos com item de mesmo id)
+- market: `market_board` (Quadro do Mercado, `HorizontalDirectionalBlock.FACING`) · renown: `renown_board` (mesmo formato do `quest_board`)
+- character: `reincarnation_altar` (trocar raça/classe), `new_beginnings_altar` (resetar talentos); estruturas `renewal_shrine`, `reincarnation_shrine`
+- world_events: `world_events_meteorite`, `world_events_star_ore`, `world_events_star_metal_block`, `world_events_star_lamp`
+
+**Entidades**
+- familiars: `familiar_spirit` (um tipo para todas as formas; não é salva com o mundo)
+- mounts: `land_drake`, `nightmare`, `aurora_stag` · vehicles: `arcane_broom`, `flying_carpet`, `arcane_boat`, `golem_cart`, `mini_airship`
+- world_events: `world_events_alien_grunt`, `world_events_alien_spitter`, `world_events_alien_larva`, `world_events_alien_overseer` (chefe)
+
+**Itens**
+- endless_abyss: `abyss_shard`, `abyss_core`, `shadow_fragment`
+- arcana_items: `mana_necklace`, `greater_mana_necklace`, `grand_mana_necklace`, `blank_recipe_scroll`, `recipe_scroll`, `alchemist_bag`, `return_scroll`; glifo `recover_belongings`; tag de item `isekai_mahou:arcana_items_reagents`
+- gear_plus: `gem_chisel`; gemas `gem_<ruby|sapphire|emerald|topaz|amethyst|onyx>` (lapidada) + `_chipped` (lascada) + `_flawless` (perfeita)
+- familiars: `bond_incense` · home_realm: `home_key`
+- mounts: `land_drake_reins`, `nightmare_reins`, `aurora_stag_reins` · vehicles: um item por veículo (mesmo id da entidade)
+- world_events: `world_events_star_metal`, `world_events_alien_core`, `world_events_omen_lens`
+
+**Efeitos**: cities: `well_rested` (Bem Descansado, estalagem).
+
+**Abas do menu B** (id → ordem): `character` 5, `talents` 11, `gear_plus` 12, `familiar` 8, `market` 61, `renown` 65, `endless_abyss` 85, `home_realm` 90 (seção "Lar" dentro de `travel`). Abrir direto: `StatusScreen.open("<id>")` (cliente).
+
+**Contadores e flags** (`MagicData.counter(key)` / `hasFlag`)
+- combate: `feat.parry`, `feat.guard_block`, `feat.finisher`
+- abismo: `abyss.floors`, `abyss.best_floor`, `abyss.shadow_wins`, `abyss.shadow.<chefe>`; flag `abyss.unlocked`
+- cidades: `cities.sidequest`, `quest.cities_<id>` · mercado: `market.sold`, `market.bought` · renome: `renown.world_records`
+- familiares: `familiars.stage` (1–3); flag `familiars.awakened`
+- montarias/veículos: `mounts.boss_rolls`, `feat.mount_ride`, `feat.mount_ability`, `feat.mount_own.<id>`, `feat.vehicle_ride`, `feat.vehicle.<id>`; flags `mounts.got.nightmare`, `mounts.got.aurora_stag`
+- eventos do mundo: `world_event.<meteor|blood_moon|arcane_storm|earthquake|mana_storm>`, `world_event.blood_moon_kills`, `boss.world_events_alien_overseer`
+- lar: `visit.isekai_mahou.home_realm`
+
+**Tags de entidade**: `isekai_mahou:smart_casters`, `isekai_mahou:no_finisher` (combat_feel).
+
+**Dados por datapack**: talentos `data/<ns>/talents/<classe>.json`; loja da Guilda `data/isekai_mahou/guild_shop/<modulo>.json` (`{"offers":[{"rank":"F","price":4,"item":{"id":"...","count":2}}]}`).
+
+**Dicas já usadas** (`hint.isekai_mahou.<id>`): `arcana_items.*`, `character.altars`, `combat_feel_finisher`, `combat_feel_combo`, `familiar_*`, `gear_plus.*`, `home_realm_*`, `market.open`, `market.quest_board`, `market.party`, `mounts.*`, `vehicles.*`, `renown.title`, `renown.boss_time`, `world_events.<evento>`, `cities.market_board`, `cities.capital_altars`, `cities.inn`, `cities.request`.
+
+### Costura cidades/Guilda (trabalho "integration")
+- **Blocos de serviço nas cidades do mundo** — `feature/cities/CityFixtures`: o coração da cidade põe, uma vez por cidade (mundos novos e antigos), o `market_board` na praça e, SÓ nas capitais, o `new_beginnings_altar` e o `reincarnation_altar` em lados opostos da praça. Só em ar, sobre chão firme, fora das avenidas; nada é quebrado; se alguém tirar, não volta. Estado no NBT do coração (chaves novas e opcionais `FixDone`, `FixTries`, `FixMarket`, `FixRenewal`, `FixReinc`). Para acrescentar outro bloco: um valor novo em `CityFixtures.Kind` (o módulo do bloco é buscado por id). Teste: `/mahou city fixtures [retry]`.
+- **Itens de outros módulos nos mercadores** — `feature/cities/trade/CityTrades`: `b.modSell(chave, "<id do item>", moedas, quantidade, estoque)` e `b.modBuy(chave, "<id>", quantidade, moedas, estoque)`; a oferta some se o item não existir. Hoje: `return_scroll` (estalagem e armazém), `bond_incense` e `land_drake_reins` (estalagem; rédeas com reputação Amigável), `alchemist_bag` (alquimista), `gem_chisel` e duas gemas lascadas por dia (joalheiro; gemas com Amigável), e o ferreiro COMPRA `world_events_star_metal`.
+- **Guilda** — botão "Mercado" na `GuildScreen` → `StatusScreen.open("market")` (só aparece se a aba `market` existe).
+- Traduções da costura: `src/main/lang/integration/` (os langs `cities` e `guild` são gerados por `tools/gen/*.py`; chave nova posta à mão neles se perde se o gerador rodar de novo).
+
+---------------------------------------------------------------------------------------------------
 ## 7. Definição de pronto
 
 - `bash tools/check-module.sh <modulo>` termina com **TUDO OK**.

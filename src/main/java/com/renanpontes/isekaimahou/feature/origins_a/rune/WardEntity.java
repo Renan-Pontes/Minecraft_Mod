@@ -7,8 +7,10 @@ import com.renanpontes.isekaimahou.feature.origins_a.OaUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -104,7 +106,7 @@ public class WardEntity extends OriginRuneEntity {
             if (age % 10 == 0) {
                 Vec3 hit = c.add(dir.scale(r)).add(0, e.getBbHeight() * 0.5, 0);
                 level.sendParticles(dust(color(), 1.4F), hit.x, e.getY() + e.getBbHeight() * 0.5, hit.z, 8, 0.1, 0.4, 0.1, 0);
-                level.sendParticles(ParticleTypes.ELECTRIC_SPARK, hit.x, hit.y, hit.z, 4, 0.1, 0.3, 0.1, 0.05);
+                level.sendParticles(Vfx.electric(), hit.x, hit.y, hit.z, 4, 0.1, 0.3, 0.1, 0.05);
                 level.playSound(null, hit.x, hit.y, hit.z, SoundEvents.AMETHYST_BLOCK_HIT, SoundSource.PLAYERS, 0.6F, 1.6F);
             }
         }
@@ -114,7 +116,7 @@ public class WardEntity extends OriginRuneEntity {
             if (shooter == null || !(shooter instanceof Mob m) || !isRepelled(level, owner, m)) continue;
             double dx = p.getX() - c.x, dz = p.getZ() - c.z;
             if (dx * dx + dz * dz > r * r) continue;
-            level.sendParticles(ParticleTypes.CRIT, p.getX(), p.getY(), p.getZ(), 6, 0.1, 0.1, 0.1, 0.1);
+            level.sendParticles(Vfx.crit(), p.getX(), p.getY(), p.getZ(), 6, 0.1, 0.1, 0.1, 0.1);
             level.sendParticles(dust(color(), 1.0F), p.getX(), p.getY(), p.getZ(), 6, 0.15, 0.15, 0.15, 0);
             level.playSound(null, p.getX(), p.getY(), p.getZ(), SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 0.5F, 1.5F);
             p.discard();
@@ -145,8 +147,9 @@ public class WardEntity extends OriginRuneEntity {
         ringFx(level, 40);
     }
 
-    private static DustParticleOptions dust(int rgb, float size) {
-        return new DustParticleOptions(new Vector3f(((rgb >> 16) & 255) / 255F, ((rgb >> 8) & 255) / 255F, (rgb & 255) / 255F), size);
+    private static ParticleOptions dust(int rgb, float size) {
+        // v1.3: brilho fx aditivo (mesmo tamanho do pó do vanilla; respeita o preset gráfico no cliente)
+        return com.renanpontes.isekaimahou.core.ElementFx.glow(rgb, size);
     }
 
     // Culling: a barreira é bem maior que a caixa da entidade
@@ -161,7 +164,7 @@ public class WardEntity extends OriginRuneEntity {
         if (random.nextInt(3) != 0) return;
         float r = radius();
         double a = random.nextDouble() * Math.PI * 2;
-        level().addParticle(ParticleTypes.END_ROD, getX() + Math.cos(a) * r, getY() + 0.1 + random.nextDouble() * 2.5,
+        level().addParticle(Vfx.endRod(), getX() + Math.cos(a) * r, getY() + 0.1 + random.nextDouble() * 2.5,
                 getZ() + Math.sin(a) * r, 0, 0.02, 0);
     }
 

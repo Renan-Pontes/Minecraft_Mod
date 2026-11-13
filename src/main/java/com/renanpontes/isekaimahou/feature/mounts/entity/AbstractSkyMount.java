@@ -307,7 +307,15 @@ public abstract class AbstractSkyMount extends TamableAnimal implements GeoEntit
         boolean client = level().isClientSide;
         if (isVehicle()) return InteractionResult.PASS;
 
-        if (!isTame()) return interactWild(player, hand, stack);
+        if (!isTame()) {
+            InteractionResult wild = interactWild(player, hand, stack);
+            // v1.0: mão vazia numa selvagem diz o que ela quer (antes o clique não fazia nada e ninguém descobria a doma)
+            if (wild == InteractionResult.PASS && stack.isEmpty() && hand == InteractionHand.MAIN_HAND && !isBaby()) {
+                if (!client) player.displayClientMessage(tameHint(), true);
+                return InteractionResult.sidedSuccess(client);
+            }
+            return wild;
+        }
 
         if (!isOwnedBy(player)) {
             if (!client && (stack.isEmpty() || stack.is(Items.SADDLE))) {

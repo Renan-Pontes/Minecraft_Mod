@@ -2,9 +2,9 @@ package com.renanpontes.isekaimahou.feature.ritual_warlock.item;
 
 import java.util.List;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -40,7 +40,7 @@ public class RitualDaggerItem extends SwordItem {
         if (level instanceof ServerLevel sl) {
             sl.setBlock(pos, state.setValue(BlockStateProperties.LIT, true), 11);
             sl.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 0.5F, 1.6F);
-            sl.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, pos.getX() + 0.5, pos.getY() + 0.6, pos.getZ() + 0.5, 6, 0.1, 0.15, 0.1, 0.01);
+            sl.sendParticles(Vfx.soulFlame(), pos.getX() + 0.5, pos.getY() + 0.6, pos.getZ() + 0.5, 6, 0.1, 0.15, 0.1, 0.01);
             sl.gameEvent(ctx.getPlayer(), GameEvent.BLOCK_CHANGE, pos);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);

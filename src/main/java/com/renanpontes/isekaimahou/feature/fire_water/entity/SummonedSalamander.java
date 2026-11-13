@@ -7,6 +7,7 @@ import com.renanpontes.isekaimahou.core.ElementReactions;
 import com.renanpontes.isekaimahou.feature.fire_water.FwRegistries;
 import com.renanpontes.isekaimahou.feature.fire_water.FwUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -94,9 +95,9 @@ public class SummonedSalamander extends FwSummon {
         float yaw = yBodyRot * Mth.DEG_TO_RAD;
         double fx = -Mth.sin(yaw), fz = Mth.cos(yaw);
         // Chama na ponta da cauda e brasas nas costas
-        level().addParticle(ParticleTypes.FLAME, getX() - fx * 1.45, getY() + 0.34, getZ() - fz * 1.45, 0, 0.02, 0);
+        level().addParticle(Vfx.flame(), getX() - fx * 1.45, getY() + 0.34, getZ() - fz * 1.45, 0, 0.02, 0);
         if (random.nextInt(2) == 0) {
-            level().addParticle(ParticleTypes.SMALL_FLAME, getX() + (random.nextDouble() - 0.5) * 0.3, getY() + 0.62,
+            level().addParticle(Vfx.smallFlame(), getX() + (random.nextDouble() - 0.5) * 0.3, getY() + 0.62,
                     getZ() + (random.nextDouble() - 0.5) * 0.3, 0, 0.015, 0);
         }
         if (random.nextInt(12) == 0) level().addParticle(ParticleTypes.LAVA, getX(), getY() + 0.5, getZ(), 0, 0, 0);
@@ -105,17 +106,17 @@ public class SummonedSalamander extends FwSummon {
     @Override
     protected void spawnFx(ServerLevel level) {
         Vec3 c = position().add(0, 0.3, 0);
-        FwUtil.shockwave(level, c, ParticleTypes.FLAME, 28, 0.18);
+        FwUtil.shockwave(level, c, Vfx.flame(), 28, 0.18);
         level.sendParticles(ParticleTypes.LAVA, c.x, c.y, c.z, 8, 0.4, 0.2, 0.4, 0);
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y + 0.3, c.z, 10, 0.4, 0.3, 0.4, 0.02);
+        level.sendParticles(Vfx.largeSmoke(), c.x, c.y + 0.3, c.z, 10, 0.4, 0.3, 0.4, 0.02);
         FwUtil.sound(level, c, SoundEvents.BLAZE_SHOOT, 1.0F, 0.8F);
         FwUtil.sound(level, c, SoundEvents.FIRECHARGE_USE, 0.8F, 1.0F);
     }
 
     @Override
     protected void vanishFx(ServerLevel level) {
-        level.sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.3, getZ(), 20, 0.4, 0.2, 0.6, 0.05);
-        level.sendParticles(ParticleTypes.SMOKE, getX(), getY() + 0.4, getZ(), 12, 0.4, 0.2, 0.6, 0.02);
+        level.sendParticles(Vfx.flame(), getX(), getY() + 0.3, getZ(), 20, 0.4, 0.2, 0.6, 0.05);
+        level.sendParticles(Vfx.smoke(), getX(), getY() + 0.4, getZ(), 12, 0.4, 0.2, 0.6, 0.02);
         FwUtil.sound(level, position(), SoundEvents.FIRE_EXTINGUISH, 0.7F, 1.2F);
     }
 
@@ -237,7 +238,7 @@ public class SummonedSalamander extends FwSummon {
                         aim.x + jx, aim.y + jy, aim.z + jz, 0.32 + sl.random.nextDouble() * 0.12);
             }
             if (breathTicks % 4 == 0) {
-                sl.sendParticles(ParticleTypes.SMOKE, mouth.x, mouth.y, mouth.z, 0, aim.x, aim.y + 0.2, aim.z, 0.15);
+                sl.sendParticles(Vfx.smoke(), mouth.x, mouth.y, mouth.z, 0, aim.x, aim.y + 0.2, aim.z, 0.15);
                 FwUtil.sound(sl, mouth, SoundEvents.FIRE_AMBIENT, 0.8F, 1.3F);
             }
             if (breathTicks % 6 != 0) return;

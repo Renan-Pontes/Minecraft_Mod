@@ -19,8 +19,8 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -47,7 +47,7 @@ public final class CurseGlyphs {
 
     private static void curseFx(ServerLevel level, LivingEntity t, DustParticleOptions dust) {
         double y = t.getY() + t.getBbHeight() * 0.6;
-        level.sendParticles(ParticleTypes.WITCH, t.getX(), y, t.getZ(), 14, 0.3, 0.4, 0.3, 0.05);
+        level.sendParticles(Vfx.witch(), t.getX(), y, t.getZ(), 14, 0.3, 0.4, 0.3, 0.05);
         level.sendParticles(dust, t.getX(), y, t.getZ(), 12, 0.35, 0.45, 0.35, 0);
     }
 
@@ -120,7 +120,7 @@ public final class CurseGlyphs {
                 double a = Math.PI * 2 * i / 16;
                 level.sendParticles(EYE_DUST, le.getX() + Math.cos(a) * 0.5, y + Math.sin(a) * 0.25, le.getZ(), 1, 0, 0, 0, 0);
             }
-            level.sendParticles(ParticleTypes.SCULK_SOUL, le.getX(), y, le.getZ(), 2, 0.05, 0.05, 0.05, 0.01);
+            level.sendParticles(Vfx.sculkSoul(), le.getX(), y, le.getZ(), 2, 0.05, 0.05, 0.05, 0.01);
             level.playSound(null, le.getX(), le.getY(), le.getZ(), SoundEvents.ELDER_GUARDIAN_CURSE, SoundSource.PLAYERS, 0.35F, 1.5F);
         }
     }
@@ -143,7 +143,7 @@ public final class CurseGlyphs {
                 return;
             }
             // Resistiu (chefe, grande demais ou jogador)
-            ctx.level().sendParticles(ParticleTypes.SMOKE, le.getX(), le.getY() + le.getBbHeight() * 0.6, le.getZ(), 10, 0.3, 0.3, 0.3, 0.02);
+            ctx.level().sendParticles(Vfx.smoke(), le.getX(), le.getY() + le.getBbHeight() * 0.6, le.getZ(), 10, 0.3, 0.3, 0.3, 0.02);
             if (ctx.caster() instanceof Player p) OaUtil.actionbar(p, "frogify_resist", le.getDisplayName());
         }
     }

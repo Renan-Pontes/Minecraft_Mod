@@ -22,6 +22,7 @@ import com.renanpontes.isekaimahou.glyph.SpellCaster;
 import com.renanpontes.isekaimahou.glyph.SpellRecipe;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -360,7 +361,7 @@ public abstract class PatronEntity extends Monster implements GeoEntity {
                 sealFx(level);
                 if (phaseTicks >= SEAL_TICKS) {
                     ElementFx.burst(level, position().add(0, getBbHeight() * 0.5, 0), kind().element, 60, 1.2);
-                    level.sendParticles(ParticleTypes.REVERSE_PORTAL, getX(), getY() + 1.5, getZ(), 80, 0.6, 1.2, 0.6, 0.05);
+                    level.sendParticles(Vfx.reversePortal(), getX(), getY() + 1.5, getZ(), 80, 0.6, 1.2, 0.6, 0.05);
                     level.playSound(null, getX(), getY(), getZ(), SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.HOSTILE, 1.5F, 0.6F);
                     discard();
                 }
@@ -424,7 +425,7 @@ public abstract class PatronEntity extends Monster implements GeoEntity {
     private void sealFx(ServerLevel level) {
         if (phaseTicks % 3 == 0) {
             level.sendParticles(ElementFx.signature(kind().element), getX(), getY() + getBbHeight() * 0.5, getZ(), 6, 0.5, 1.0, 0.5, 0.05);
-            level.sendParticles(ParticleTypes.ENCHANT, getX(), getY() + 1.0, getZ(), 10, 0.6, 1.2, 0.6, 0.5);
+            level.sendParticles(Vfx.enchant(), getX(), getY() + 1.0, getZ(), 10, 0.6, 1.2, 0.6, 0.5);
         }
     }
 
@@ -497,7 +498,7 @@ public abstract class PatronEntity extends Monster implements GeoEntity {
         else emptyTicks = 0;
         if (emptyTicks > 1200) {
             // Ninguém por perto há 1 minuto: volta para o seu plano.
-            level.sendParticles(ParticleTypes.REVERSE_PORTAL, getX(), getY() + 1.5, getZ(), 60, 0.6, 1.2, 0.6, 0.05);
+            level.sendParticles(Vfx.reversePortal(), getX(), getY() + 1.5, getZ(), 60, 0.6, 1.2, 0.6, 0.05);
             discard();
         }
     }
@@ -637,7 +638,7 @@ public abstract class PatronEntity extends Monster implements GeoEntity {
         if (isBound() && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             // A barreira do círculo protege (e prende) o Patrono.
             if (level() instanceof ServerLevel level && source.getEntity() instanceof Player) {
-                level.sendParticles(ParticleTypes.ENCHANTED_HIT, getX(), getY() + getBbHeight() * 0.5, getZ(), 12, 0.5, 0.8, 0.5, 0.2);
+                level.sendParticles(Vfx.magicCrit(), getX(), getY() + getBbHeight() * 0.5, getZ(), 12, 0.5, 0.8, 0.5, 0.2);
                 level.playSound(null, getX(), getY(), getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.HOSTILE, 1.0F, 0.6F);
             }
             return false;
@@ -682,7 +683,7 @@ public abstract class PatronEntity extends Monster implements GeoEntity {
         ++deathTime;
         if (level() instanceof ServerLevel level && deathTime % 3 == 0) {
             level.sendParticles(ElementFx.signature(kind().element), getX(), getY() + 1.0, getZ(), 6, 0.6, 1.0, 0.6, 0.05);
-            level.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + 0.5, getZ(), 3, 0.5, 0.3, 0.5, 0.02);
+            level.sendParticles(Vfx.largeSmoke(), getX(), getY() + 0.5, getZ(), 3, 0.5, 0.3, 0.5, 0.02);
         }
         if (deathTime >= 40 && !level().isClientSide() && !isRemoved()) {
             level().broadcastEntityEvent(this, (byte) 60);

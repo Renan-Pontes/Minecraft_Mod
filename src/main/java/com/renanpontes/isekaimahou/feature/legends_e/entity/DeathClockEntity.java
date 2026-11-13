@@ -11,8 +11,8 @@ import com.renanpontes.isekaimahou.feature.legends_e.LeUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -85,7 +85,7 @@ public class DeathClockEntity extends LeSpellEntity {
             if (age % MARK_TICKS == MARK_TICKS / 2) LeFx.sound(level, c.add(0, height(), 0), SoundEvents.NOTE_BLOCK_HAT, 2.5F, 0.6F);
             if (age % 6 == 0) {
                 double a = random.nextDouble() * Math.PI * 2, r = Math.sqrt(random.nextDouble()) * area;
-                LeFx.send(level, ParticleTypes.SOUL, c.x + Math.cos(a) * r, c.y + 0.3, c.z + Math.sin(a) * r, 1, 0.1, 0.1, 0.1, 0.03);
+                LeFx.send(level, Vfx.soul(), c.x + Math.cos(a) * r, c.y + 0.3, c.z + Math.sin(a) * r, 1, 0.1, 0.1, 0.1, 0.03);
             }
         }
         if (age == DURATION) execute(level, ctx, c, area);
@@ -119,7 +119,7 @@ public class DeathClockEntity extends LeSpellEntity {
             } else {
                 LeUtil.execute(ctx, e, s, this);
             }
-            LeFx.send(level, ParticleTypes.SCULK_SOUL, at, 10, 0.3, 0.06);
+            LeFx.send(level, Vfx.sculkSoul(), at, 10, 0.3, 0.06);
             LeFx.send(level, LeFx.fade(0x8A1A2A, 0x000000, 1.5F), at, 24, 0.4, 0.04);
         }
         if (caster != null && !s.silent) {
@@ -133,7 +133,7 @@ public class DeathClockEntity extends LeSpellEntity {
         LeFx.sound(level, c, SoundEvents.WITHER_DEATH, 2.5F, 0.6F);
         LeFx.ring(level, c.add(0, 0.3, 0), new Vec3(0, 1, 0), area * 1.15F, 0xC0182E, 20);
         LeFx.ring(level, top, new Vec3(0, 1, 0), area * 0.9F, 0xFF3A4A, 16);
-        LeFx.send(level, ParticleTypes.SOUL, c.x, c.y + 0.5, c.z, 80, area * 0.5, 0.5, area * 0.5, 0.08);
+        LeFx.send(level, Vfx.soul(), c.x, c.y + 0.5, c.z, 80, area * 0.5, 0.5, area * 0.5, 0.08);
     }
 
     /** Ângulo do ponteiro em marcas (0..12), com o "tique" de relógio: anda rápido no começo de cada segundo e para. */

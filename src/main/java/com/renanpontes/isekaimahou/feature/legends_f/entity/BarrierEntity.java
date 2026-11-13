@@ -11,7 +11,7 @@ import com.renanpontes.isekaimahou.feature.legends_f.LfUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -110,7 +110,7 @@ public class BarrierEntity extends LfSpellEntity {
             Vec3 next = now.add(p.getDeltaMovement());
             if (!inside(now) && (inside(next) || next.distanceToSqr(c) < (r + 0.6) * (r + 0.6))) {
                 Vec3 at = c.add(now.subtract(c).normalize().scale(r));
-                level.sendParticles(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, 10, 0.2, 0.2, 0.2, 0.1);
+                level.sendParticles(Vfx.electric(), at.x, at.y, at.z, 10, 0.2, 0.2, 0.2, 0.1);
                 LfUtil.sound(level, at, SoundEvents.AMETHYST_BLOCK_HIT, 1.0F, 1.5F);
                 p.discard();
                 absorb(level, 6F);
@@ -147,7 +147,7 @@ public class BarrierEntity extends LfSpellEntity {
     }
 
     private void fade(ServerLevel level) {
-        level.sendParticles(ParticleTypes.END_ROD, getX(), getY() + radius() * 0.5, getZ(), 20, radius() * 0.5, radius() * 0.4, radius() * 0.5, 0.02);
+        level.sendParticles(Vfx.endRod(), getX(), getY() + radius() * 0.5, getZ(), 20, radius() * 0.5, radius() * 0.4, radius() * 0.5, 0.02);
         LfUtil.sound(level, position(), SoundEvents.BEACON_DEACTIVATE, 0.8F, 1.6F);
         discard();
     }
@@ -164,7 +164,7 @@ public class BarrierEntity extends LfSpellEntity {
             if (!(victim == b.ctx.caster() || b.friendly(victim)) || b.friendly(attacker)) continue;
             Vec3 dir = from.subtract(b.position()).normalize();
             Vec3 at = b.position().add(dir.scale(b.radius()));
-            level.sendParticles(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, 12, 0.25, 0.25, 0.25, 0.12);
+            level.sendParticles(Vfx.electric(), at.x, at.y, at.z, 12, 0.25, 0.25, 0.25, 0.12);
             LfUtil.sound(level, at, SoundEvents.AMETHYST_BLOCK_HIT, 1.2F, 1.3F);
             b.absorb(level, amount);
             return true;

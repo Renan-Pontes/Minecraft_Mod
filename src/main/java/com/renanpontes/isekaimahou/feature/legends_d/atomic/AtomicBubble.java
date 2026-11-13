@@ -14,7 +14,7 @@ import com.renanpontes.isekaimahou.feature.legends_d.LdRegistry;
 import com.renanpontes.isekaimahou.feature.legends_d.LdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -181,7 +181,7 @@ public final class AtomicBubble {
             LdUtil.sound(sl, c, SoundEvents.BEACON_POWER_SELECT, 1.2F, 1.6F);
             LdUtil.sound(sl, c, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.4F, 1.3F);
             LdUtil.send(sl, LdUtil.dust(COLOR, 1.3F), c, 16, radiusFor(e) * 0.7, 0);
-            LdUtil.send(sl, ParticleTypes.END_ROD, c, 6, radiusFor(e) * 0.6, 0.02);
+            LdUtil.send(sl, Vfx.endRod(), c, 6, radiusFor(e) * 0.6, 0.02);
         }
         return true;
     }
@@ -248,7 +248,7 @@ public final class AtomicBubble {
         LdUtil.sound(sl, c, SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1.6F, 0.7F);
         LdUtil.sound(sl, c, SoundEvents.AMETHYST_BLOCK_BREAK, 0.8F, 1.6F);
         LdUtil.send(sl, LdUtil.dust(COLOR, 1.1F), c, 14, radiusFor(e) * 0.8, 0);
-        LdUtil.send(sl, ParticleTypes.END_ROD, c, 4, radiusFor(e) * 0.6, 0.05);
+        LdUtil.send(sl, Vfx.endRod(), c, 4, radiusFor(e) * 0.6, 0.05);
     }
 
     // =====================================================================================

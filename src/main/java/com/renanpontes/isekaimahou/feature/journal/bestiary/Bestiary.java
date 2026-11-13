@@ -76,6 +76,26 @@ public final class Bestiary {
                 // v1.0: companheiros e mestres das classes
                 "ranger_wolf", "ranger_eagle", "ranger_steed", "steelball_mentor", "zanpakuto_spirit");
         put(Category.WORLD, "quincy_npc");
+
+        // ---- v1.0 release: tudo o que entrou da v1.6 até as ondas 1–4 e ainda estava em "Outros" (ou fora do livro).
+        // Montarias novas, os invasores da Queda de Meteoro, as Profundezas e os lacaios de chefe.
+        put(Category.WORLD, "land_drake", "nightmare", "aurora_stag",
+                "world_events_alien_larva", "world_events_alien_grunt", "world_events_alien_spitter",
+                "depths_burrower", "depths_lost_delver", "vault_mimic", "hex_cat", "archmage_illusion", "false_hydra_head",
+                "afterlife_reaper");
+        // Cidadela Demoníaca (Nether), Biblioteca do Vazio (End) e as Câmaras de Provação.
+        put(Category.DIMENSION, "demon_knight", "demon_succubus", "void_scribe", "star_wisp", "trial_guard");
+        // Titãs, horrores, chefes de masmorra/torre, os Espada, a Sombra da Ascensão e o Arauto Estelar.
+        put(Category.BOSS, "ascension_shadow", "swamp_hydra", "desert_basilisk", "ruin_colossus", "wyvern_king",
+                "false_hydra", "mimic_king", "manticore", "depths_worm_king", "tower_kobold_lord", "demon_lord",
+                "star_devourer", "grimmjow", "barragan", "ulquiorra", "world_events_alien_overseer",
+                "trial_champion", "city_champion");
+        // O Familiar, o povo das cidades (dos reinos e do jogador), os anões e as invocações lendárias.
+        put(Category.ALLY, "familiar_spirit",
+                "citizen", "city_guard", "city_merchant", "city_lord",
+                "settlement_resident", "settlement_builder", "settlement_guard", "settlement_militia", "settlement_merchant", "settlement_tradesman",
+                "dwarf_merchant", "dwarf_smith",
+                "hellfire_imp", "twilight_clone", "dark_young", "kodama", "forest_god", "shadow_soldier", "spectral_colossus");
     }
 
     private static void put(Category c, String... ids) {

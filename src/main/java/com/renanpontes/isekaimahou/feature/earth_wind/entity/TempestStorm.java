@@ -12,8 +12,8 @@ import com.renanpontes.isekaimahou.feature.earth_wind.EwUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -114,7 +114,7 @@ public class TempestStorm extends SpellBoundEntity {
             if (c != null) c.damage(target, 7.0F * power, new SpellStats(), this, Element.WIND);
             else target.hurt(level.damageSources().lightningBolt(), 7.0F * power);
             target.addEffect(new MobEffectInstance(CoreRegistries.STUNNED, 20, 0), ownerEntity());
-            level.sendParticles(ParticleTypes.ELECTRIC_SPARK, at.x, at.y + 1, at.z, 20, 0.4, 0.8, 0.4, 0.2);
+            level.sendParticles(Vfx.electric(), at.x, at.y + 1, at.z, 20, 0.4, 0.8, 0.4, 0.2);
         }
         BlockPos ground = BlockPos.containing(at).below();
         EwFx.debris(level, at.add(0, 0.2, 0), EwFx.groundState(level, ground), 10, 0.4);
@@ -128,7 +128,7 @@ public class TempestStorm extends SpellBoundEntity {
     @Override
     protected void expire() {
         if (level() instanceof ServerLevel level) {
-            level.sendParticles(ParticleTypes.CLOUD, getX(), getY() + CLOUD_HEIGHT, getZ(), 60, radius() * 0.5, 0.5, radius() * 0.5, 0.05);
+            level.sendParticles(Vfx.cloud(), getX(), getY() + CLOUD_HEIGHT, getZ(), 60, radius() * 0.5, 0.5, radius() * 0.5, 0.05);
             EwFx.sound(level, position(), SoundEvents.LIGHTNING_BOLT_THUNDER, 2.0F, 1.2F);
         }
         discard();
@@ -140,7 +140,7 @@ public class TempestStorm extends SpellBoundEntity {
 
     private void clientFx() {
         Level level = level();
-        boolean reduced = MahouConfig.REDUCED_PARTICLES.get();
+        boolean reduced = !com.renanpontes.isekaimahou.client.fx.FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         double r = radius();
         int left = life() - tickCount;
         double fade = left < 30 ? Math.max(0.15, left / 30.0) : Math.min(1.0, tickCount / 20.0 + 0.2);
@@ -148,24 +148,24 @@ public class TempestStorm extends SpellBoundEntity {
         for (int i = 0; i < clouds; i++) {
             double a = random.nextDouble() * Math.PI * 2;
             double d = Math.sqrt(random.nextDouble()) * r;
-            level.addParticle(ParticleTypes.LARGE_SMOKE, getX() + Math.cos(a) * d, getY() + CLOUD_HEIGHT + random.nextDouble(),
+            level.addParticle(Vfx.largeSmoke(), getX() + Math.cos(a) * d, getY() + CLOUD_HEIGHT + random.nextDouble(),
                     getZ() + Math.sin(a) * d, Math.cos(a + 1.5) * 0.05, -0.01, Math.sin(a + 1.5) * 0.05);
         }
         int rain = (int) ((reduced ? 6 : 18) * fade);
         for (int i = 0; i < rain; i++) {
             double a = random.nextDouble() * Math.PI * 2;
             double d = Math.sqrt(random.nextDouble()) * r;
-            level.addParticle(ParticleTypes.FALLING_WATER, getX() + Math.cos(a) * d, getY() + 2 + random.nextDouble() * (CLOUD_HEIGHT - 2),
+            level.addParticle(Vfx.water(), getX() + Math.cos(a) * d, getY() + 2 + random.nextDouble() * (CLOUD_HEIGHT - 2),
                     getZ() + Math.sin(a) * d, 0, -0.5, 0);
         }
         if (random.nextInt(3) == 0) {
             double a = tickCount * 0.2 + random.nextDouble();
             double d = r * (0.3 + random.nextDouble() * 0.7);
-            level.addParticle(ParticleTypes.CLOUD, getX() + Math.cos(a) * d, getY() + 0.5 + random.nextDouble() * 3,
+            level.addParticle(Vfx.cloud(), getX() + Math.cos(a) * d, getY() + 0.5 + random.nextDouble() * 3,
                     getZ() + Math.sin(a) * d, -Math.sin(a) * 0.3, 0.02, Math.cos(a) * 0.3);
         }
         if (random.nextInt(5) == 0) {
-            level.addParticle(ParticleTypes.ELECTRIC_SPARK, getX() + (random.nextDouble() - 0.5) * r,
+            level.addParticle(Vfx.electric(), getX() + (random.nextDouble() - 0.5) * r,
                     getY() + CLOUD_HEIGHT - 0.5, getZ() + (random.nextDouble() - 0.5) * r, 0, -0.1, 0);
         }
         if (random.nextInt(4) == 0) {

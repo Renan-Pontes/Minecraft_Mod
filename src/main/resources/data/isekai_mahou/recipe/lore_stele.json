@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "C",
+    "S",
+    "S"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:chiseled_stone_bricks"
+    },
+    "S": {
+      "item": "minecraft:stone_bricks"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:lore_stele",
+    "count": 1
+  }
+}

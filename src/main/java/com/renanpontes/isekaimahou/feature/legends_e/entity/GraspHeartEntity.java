@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.feature.legends_e.LeUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -75,7 +76,7 @@ public class GraspHeartEntity extends LeSpellEntity implements GeoEntity {
         e.zo = e.getZ();
         level.addFreshEntity(e);
         LeFx.sound(level, target.position(), SoundEvents.SOUL_ESCAPE.value(), 1.6F, 0.6F);
-        LeFx.send(level, ParticleTypes.SCULK_SOUL, e.position(), 6, 0.3, 0.02);
+        LeFx.send(level, Vfx.sculkSoul(), e.position(), 6, 0.3, 0.02);
     }
 
     /** Fica entre o alvo e o conjurador, na altura do peito, com a palma virada para o alvo. */
@@ -97,7 +98,7 @@ public class GraspHeartEntity extends LeSpellEntity implements GeoEntity {
     @Override
     protected void serverTick(ServerLevel level, SpellContext ctx) {
         if (target == null || !target.isAlive() || target.level() != level) {
-            if (age < SQUEEZE) LeFx.send(level, ParticleTypes.SCULK_SOUL, position(), 8, 0.3, 0.03);
+            if (age < SQUEEZE) LeFx.send(level, Vfx.sculkSoul(), position(), 8, 0.3, 0.03);
             discard();
             return;
         }
@@ -129,7 +130,7 @@ public class GraspHeartEntity extends LeSpellEntity implements GeoEntity {
         LeFx.send(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.REDSTONE_BLOCK.defaultBlockState()), c, 30, 0.25, 0.25);
         LeFx.send(level, LeFx.dust(0xB0102A, 1.8F), c, 26, 0.35, 0.05);
         LeFx.send(level, LeFx.fade(0xFF3A4A, 0x200008, 1.2F), c, 16, 0.5, 0.1);
-        LeFx.send(level, ParticleTypes.SCULK_SOUL, c, 6, 0.2, 0.05);
+        LeFx.send(level, Vfx.sculkSoul(), c, 6, 0.2, 0.05);
         LeFx.sound(level, c, SoundEvents.SLIME_BLOCK_BREAK, 2.0F, 0.5F);
         LeFx.sound(level, c, SoundEvents.HONEY_BLOCK_BREAK, 1.6F, 0.6F);
         LeFx.sound(level, c, SoundEvents.WARDEN_HEARTBEAT, 2.5F, 0.5F);
@@ -138,7 +139,7 @@ public class GraspHeartEntity extends LeSpellEntity implements GeoEntity {
     @Override
     protected void clientTick() {
         if (age < SQUEEZE && random.nextInt(3) == 0) {
-            level().addParticle(ParticleTypes.SOUL_FIRE_FLAME, getX() + (random.nextDouble() - 0.5) * 0.6, getY() + random.nextDouble() * 0.9,
+            level().addParticle(Vfx.soulFlame(), getX() + (random.nextDouble() - 0.5) * 0.6, getY() + random.nextDouble() * 0.9,
                     getZ() + (random.nextDouble() - 0.5) * 0.6, 0, 0.01, 0);
         }
     }

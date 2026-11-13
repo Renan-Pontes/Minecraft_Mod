@@ -13,6 +13,7 @@ public class BossesGClient implements ClientModule {
     public void initClient(IEventBus modBus) {
         modBus.addListener(this::onRenderers);
         MemoryFog.init();
+        SongGlitch.init();
         BgPayloads.onMemoryWipe = MemoryFog::start;
     }
 

@@ -1,0 +1,893 @@
+{
+  "layout": 2,
+  "branches": [
+    {
+      "id": "hexes",
+      "color": "B45CFF"
+    },
+    {
+      "id": "cauldron",
+      "color": "5FD08A"
+    },
+    {
+      "id": "night",
+      "color": "5A6BD8"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "evil_eye",
+      "branch": 0,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:fermented_spider_eye",
+      "effects": [
+        {
+          "stat": "on_hit.weakness",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "thorn_tongue",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:spider_eye",
+      "effects": [
+        {
+          "stat": "on_hit.poison",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "cold_hands",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:cobweb",
+      "effects": [
+        {
+          "stat": "on_hit.slowness",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "greedy_eye",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:poisonous_potato",
+      "effects": [
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.07
+        }
+      ]
+    },
+    {
+      "id": "spite",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:iron_axe",
+      "effects": [
+        {
+          "stat": "execute",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "grand_hex",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "isekai_mahou:essence_shadow",
+      "effects": [
+        {
+          "stat": "spell_damage.shadow",
+          "amount": 0.015
+        },
+        {
+          "stat": "crit_chance",
+          "amount": 0.006
+        }
+      ]
+    },
+    {
+      "id": "slow_rot",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:wither_rose",
+      "effects": [
+        {
+          "stat": "on_hit.wither",
+          "amount": 0.25
+        }
+      ],
+      "exclusive": [
+        "bloodletting"
+      ]
+    },
+    {
+      "id": "bloodletting",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:red_dye",
+      "effects": [
+        {
+          "stat": "on_hit.bleed",
+          "amount": 0.25
+        }
+      ],
+      "exclusive": [
+        "slow_rot"
+      ]
+    },
+    {
+      "id": "ill_omen",
+      "branch": 0,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:poisonous_potato",
+      "effects": [
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "rag_doll",
+      "branch": 0,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:blaze_powder",
+      "effects": [
+        {
+          "stat": "combo",
+          "amount": 0.02
+        },
+        {
+          "stat": "crit_fury",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "epidemic",
+      "branch": 0,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:dragon_breath",
+      "effects": [
+        {
+          "stat": "plague",
+          "amount": 1.0
+        },
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "mastery_hexes",
+      "branch": 0,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "all_damage",
+          "amount": 0.004
+        }
+      ]
+    },
+    {
+      "id": "right_herb",
+      "branch": 1,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:honey_bottle",
+      "effects": [
+        {
+          "stat": "healing_received",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "low_fire",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:sweet_berries",
+      "effects": [
+        {
+          "stat": "regen_health",
+          "amount": 0.2
+        }
+      ]
+    },
+    {
+      "id": "keep_stirring",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:glowstone_dust",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:mana_regen",
+          "amount": 0.02,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "thick_broth",
+      "branch": 1,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:glow_berries",
+      "effects": [
+        {
+          "stat": "heal_on_cast",
+          "amount": 0.8
+        },
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 2.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "full_pantry",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:lapis_lazuli",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 8.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "house_elixir",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:glistering_melon_slice",
+      "effects": [
+        {
+          "stat": "heal_on_kill",
+          "amount": 0.4
+        },
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 0.6,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "bitter_tonic",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:turtle_helmet",
+      "effects": [
+        {
+          "stat": "low_health_resist",
+          "amount": 0.15
+        }
+      ],
+      "exclusive": [
+        "sweet_syrup"
+      ]
+    },
+    {
+      "id": "sweet_syrup",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:tinted_glass",
+      "effects": [
+        {
+          "stat": "barrier",
+          "amount": 6.0
+        },
+        {
+          "attribute": "minecraft:generic.max_absorption",
+          "amount": 6.0,
+          "op": "add_value"
+        }
+      ],
+      "exclusive": [
+        "bitter_tonic"
+      ]
+    },
+    {
+      "id": "rolling_boil",
+      "branch": 1,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "mana_on_kill",
+          "amount": 2.0
+        }
+      ]
+    },
+    {
+      "id": "secret_recipe",
+      "branch": 1,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:ender_pearl",
+      "effects": [
+        {
+          "stat": "cast_refund",
+          "amount": 0.05
+        },
+        {
+          "stat": "healing_received",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "elixir_of_life",
+      "branch": 1,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:totem_of_undying",
+      "effects": [
+        {
+          "stat": "cheat_death",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "id": "mastery_cauldron",
+      "branch": 1,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 0.5,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "moon_bath",
+      "branch": 2,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:clock",
+      "effects": [
+        {
+          "stat": "night_power",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "black_cat",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:rabbit_foot",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.luck",
+          "amount": 0.2,
+          "op": "add_value"
+        },
+        {
+          "stat": "dodge",
+          "amount": 0.005
+        }
+      ]
+    },
+    {
+      "id": "swift_broom",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:sugar",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.movement_speed",
+          "amount": 0.01,
+          "op": "add_multiplied_base"
+        },
+        {
+          "attribute": "minecraft:generic.safe_fall_distance",
+          "amount": 1.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "cats_shadow",
+      "branch": 2,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:wind_charge",
+      "effects": [
+        {
+          "stat": "dodge_power",
+          "amount": 0.1
+        },
+        {
+          "stat": "dodge",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "dark_tide",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "isekai_mahou:essence_water",
+      "effects": [
+        {
+          "stat": "spell_damage.water",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "witching_hour",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:clock",
+      "effects": [
+        {
+          "stat": "night_power",
+          "amount": 0.02
+        },
+        {
+          "attribute": "isekai_mahou:spell_power",
+          "amount": 0.006,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "moons_daughter",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:clock",
+      "effects": [
+        {
+          "stat": "night_power",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "day_and_night"
+      ]
+    },
+    {
+      "id": "day_and_night",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:nether_star",
+      "effects": [
+        {
+          "stat": "all_damage",
+          "amount": 0.05
+        }
+      ],
+      "exclusive": [
+        "moons_daughter"
+      ]
+    },
+    {
+      "id": "low_flight",
+      "branch": 2,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:rabbit_hide",
+      "effects": [
+        {
+          "stat": "run_power",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "sabbath",
+      "branch": 2,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:blaze_rod",
+      "effects": [
+        {
+          "stat": "kill_fury",
+          "amount": 0.04
+        },
+        {
+          "stat": "mana_on_kill",
+          "amount": 3.0
+        }
+      ]
+    },
+    {
+      "id": "endless_midnight",
+      "branch": 2,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:beacon",
+      "effects": [
+        {
+          "stat": "ult_power",
+          "amount": 0.25
+        },
+        {
+          "stat": "charge_on_kill",
+          "amount": 2.0
+        }
+      ]
+    },
+    {
+      "id": "mastery_night",
+      "branch": 2,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 4.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "dirty_nails",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "witch_hexer",
+      "icon": "minecraft:wither_rose",
+      "effects": [
+        {
+          "stat": "on_hit.wither",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "sharp_tongue",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "witch_hexer",
+      "icon": "minecraft:poisonous_potato",
+      "effects": [
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "bad_omen",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "witch_hexer",
+      "icon": "minecraft:iron_axe",
+      "effects": [
+        {
+          "stat": "execute",
+          "amount": 0.08
+        },
+        {
+          "stat": "crit_fury",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "family_curse",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "witch_hexer",
+      "icon": "minecraft:netherite_axe",
+      "effects": [
+        {
+          "stat": "cull",
+          "amount": 0.08
+        },
+        {
+          "stat": "kill_cdr",
+          "amount": 1.0
+        }
+      ]
+    },
+    {
+      "id": "fresh_herbs",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "witch_apothecary",
+      "icon": "minecraft:glow_berries",
+      "effects": [
+        {
+          "stat": "heal_on_cast",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "id": "sturdy_flask",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "witch_apothecary",
+      "icon": "minecraft:golden_apple",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 2.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "antidote",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "witch_apothecary",
+      "icon": "minecraft:turtle_helmet",
+      "effects": [
+        {
+          "stat": "low_health_resist",
+          "amount": 0.08
+        },
+        {
+          "stat": "full_health_power",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "panacea",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "witch_apothecary",
+      "icon": "minecraft:totem_of_undying",
+      "effects": [
+        {
+          "stat": "second_wind",
+          "amount": 6.0
+        },
+        {
+          "stat": "cast_ward",
+          "amount": 0.15
+        }
+      ]
+    }
+  ],
+  "subclasses": [
+    {
+      "id": "witch_hexer",
+      "color": "B45CFF",
+      "icon": "minecraft:fermented_spider_eye",
+      "effects": [
+        {
+          "stat": "on_hit.weakness",
+          "amount": 0.25
+        },
+        {
+          "stat": "on_hit.poison",
+          "amount": 0.25
+        },
+        {
+          "stat": "execute",
+          "amount": 0.15
+        },
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.2
+        },
+        {
+          "stat": "plague",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "id": "witch_apothecary",
+      "color": "5FD08A",
+      "icon": "minecraft:honey_bottle",
+      "effects": [
+        {
+          "stat": "healing_received",
+          "amount": 0.25
+        },
+        {
+          "stat": "regen_health",
+          "amount": 1.5
+        },
+        {
+          "stat": "heal_on_kill",
+          "amount": 2.0
+        },
+        {
+          "stat": "heal_on_cast",
+          "amount": 2.0
+        },
+        {
+          "stat": "barrier",
+          "amount": 8.0
+        },
+        {
+          "attribute": "minecraft:generic.max_absorption",
+          "amount": 8.0,
+          "op": "add_value"
+        }
+      ]
+    }
+  ]
+}

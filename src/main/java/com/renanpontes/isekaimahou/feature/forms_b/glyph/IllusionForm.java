@@ -8,7 +8,7 @@ import com.renanpontes.isekaimahou.glyph.FormGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -62,7 +62,7 @@ public class IllusionForm extends FormGlyph {
             clone.setYHeadRot(stagePoint != null ? yaw : caster.getYHeadRot());
             clone.setYBodyRot(yaw);
             level.addFreshEntity(clone);
-            level.sendParticles(ParticleTypes.LARGE_SMOKE, pos.x, pos.y + 1, pos.z, 14, 0.3, 0.6, 0.3, 0.02);
+            level.sendParticles(Vfx.largeSmoke(), pos.x, pos.y + 1, pos.z, 14, 0.3, 0.6, 0.3, 0.02);
             level.sendParticles(FormsBUtil.dust(rgb, 1.2F), pos.x, pos.y + 1, pos.z, 16, 0.3, 0.7, 0.3, 0);
         }
         level.playSound(null, base.x, base.y, base.z, SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.PLAYERS, 1.0F, 1.0F);

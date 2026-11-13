@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "I I",
+    "III",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "isekai_mahou:adamantite_ingot"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:adamantite_chestplate",
+    "count": 1
+  }
+}

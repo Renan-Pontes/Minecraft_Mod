@@ -103,6 +103,18 @@ public class SettlementHeartBlock extends BaseEntityBlock {
             if (s == SettlementStyle.DESERT) {
                 level.addParticle(ParticleTypes.WAX_ON, x + (random.nextDouble() - 0.5) * 1.2, y + random.nextDouble() * 0.8,
                         z + (random.nextDouble() - 0.5) * 1.2, 0.0, 0.03, 0.0);
+            } else if (s == SettlementStyle.ORIENTAL) {
+                level.addParticle(ParticleTypes.CHERRY_LEAVES, x + (random.nextDouble() - 0.5) * 1.4, y + 0.9,
+                        z + (random.nextDouble() - 0.5) * 1.4, 0.0, -0.02, 0.0);
+            } else if (s == SettlementStyle.ELVEN) {
+                level.addParticle(ParticleTypes.HAPPY_VILLAGER, x + (random.nextDouble() - 0.5) * 1.2, y + random.nextDouble() * 0.8,
+                        z + (random.nextDouble() - 0.5) * 1.2, 0.0, 0.02, 0.0);
+            } else if (s == SettlementStyle.GOTHIC) {
+                level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, x + (random.nextDouble() - 0.5) * 1.0, y + random.nextDouble() * 0.6,
+                        z + (random.nextDouble() - 0.5) * 1.0, 0.0, 0.02, 0.0);
+            } else if (s == SettlementStyle.DWARVEN) {
+                level.addParticle(ParticleTypes.SMALL_FLAME, x + (random.nextDouble() - 0.5) * 0.8, y + 0.3,
+                        z + (random.nextDouble() - 0.5) * 0.8, 0.0, 0.02, 0.0);
             } else if (s == SettlementStyle.NORDIC) {
                 level.addParticle(ParticleTypes.SNOWFLAKE, x + (random.nextDouble() - 0.5) * 1.4, y + 0.9,
                         z + (random.nextDouble() - 0.5) * 1.4, 0.0, -0.02, 0.0);

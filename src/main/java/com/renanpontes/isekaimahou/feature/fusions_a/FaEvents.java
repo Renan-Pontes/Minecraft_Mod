@@ -4,6 +4,7 @@ import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.feature.fusions_a.effect.FaEffects;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -107,7 +108,7 @@ public final class FaEvents {
         if (atk != null && atk.hasEffect(FaRegistries.OVERCHARGE) && src.getDirectEntity() == atk
                 && !src.is(CoreRegistries.SPELL_DAMAGE)) {
             e.setAmount(e.getAmount() * 1.2F);
-            sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, victim.getX(), victim.getY() + victim.getBbHeight() * 0.5,
+            sl.sendParticles(Vfx.electric(), victim.getX(), victim.getY() + victim.getBbHeight() * 0.5,
                     victim.getZ(), 10, 0.3, 0.3, 0.3, 0.2);
         }
         if (src.is(DamageTypeTags.IS_FIRE)) {
@@ -122,7 +123,7 @@ public final class FaEvents {
                 e.setAmount(e.getAmount() * 0.5F);
                 removeLater(victim, FaRegistries.ICE_ARMOR);
                 victim.clearFire();
-                FaUtil.around(sl, victim, ParticleTypes.CLOUD, 16, 0.05);
+                FaUtil.around(sl, victim, Vfx.cloud(), 16, 0.05);
                 FaUtil.sound(sl, victim.position(), SoundEvents.FIRE_EXTINGUISH, 0.8F, 1.2F);
             }
         }
@@ -144,7 +145,7 @@ public final class FaEvents {
         if (pool <= 0.01F) {
             // A bolha estoura (o escudo já zerou; o efeito sai na próxima tick)
             removeLater(victim, FaRegistries.PROTECTIVE_BUBBLE);
-            FaUtil.sphere(sl, c, ParticleTypes.SPLASH, r, 40);
+            FaUtil.sphere(sl, c, Vfx.splash(), r, 40);
             FaUtil.sphere(sl, c, ParticleTypes.BUBBLE_POP, r, 25);
             FaUtil.sound(sl, c, SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1.5F, 0.7F);
             FaUtil.sound(sl, c, SoundEvents.PLAYER_SPLASH, 0.8F, 1.4F);
@@ -179,7 +180,7 @@ public final class FaEvents {
         // Sono dos Esporos: acorda ao levar dano (de verdade: veneno e outros danos "de fundo" não acordam)
         if (victim.hasEffect(FaRegistries.SPORE_SLEEP) && wakesUp(src)) {
             removeLater(victim, FaRegistries.SPORE_SLEEP);
-            FaUtil.around(sl, victim, ParticleTypes.SPORE_BLOSSOM_AIR, 10, 0.02);
+            FaUtil.around(sl, victim, Vfx.sporeAir(), 10, 0.02);
         }
 
         LivingEntity atk = meleeAttackerOf(src, victim);
@@ -189,7 +190,7 @@ public final class FaEvents {
             atk.igniteForSeconds(4 + magma.getAmplifier());
             atk.hurt(victim.damageSources().thorns(victim), 2.0F + magma.getAmplifier());
             sl.sendParticles(ParticleTypes.LAVA, atk.getX(), atk.getY() + atk.getBbHeight() * 0.5, atk.getZ(), 6, 0.3, 0.3, 0.3, 0);
-            sl.sendParticles(ParticleTypes.FLAME, atk.getX(), atk.getY() + atk.getBbHeight() * 0.5, atk.getZ(), 10, 0.3, 0.3, 0.3, 0.03);
+            sl.sendParticles(Vfx.flame(), atk.getX(), atk.getY() + atk.getBbHeight() * 0.5, atk.getZ(), 10, 0.3, 0.3, 0.3, 0.03);
             FaUtil.sound(sl, atk.position(), SoundEvents.MAGMA_CUBE_SQUISH, 0.9F, 0.8F);
         }
         MobEffectInstance ice = victim.getEffect(FaRegistries.ICE_ARMOR);
@@ -255,7 +256,7 @@ public final class FaEvents {
                 if (!le.isAlive()) return;
                 le.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 0));
                 le.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60, 0));
-                FaUtil.around(sl, le, ParticleTypes.SMOKE, 10, 0.02);
+                FaUtil.around(sl, le, Vfx.smoke(), 10, 0.02);
                 FaUtil.sound(sl, le.position(), SoundEvents.BEACON_DEACTIVATE, 0.6F, 1.6F);
             });
         }
@@ -272,7 +273,7 @@ public final class FaEvents {
         if (le.level().getGameTime() <= until) {
             e.setDamageMultiplier(0F);
             if (le.level() instanceof ServerLevel sl && e.getDistance() > 3) {
-                sl.sendParticles(ParticleTypes.CLOUD, le.getX(), le.getY() + 0.1, le.getZ(), 12, 0.4, 0.05, 0.4, 0.03);
+                sl.sendParticles(Vfx.cloud(), le.getX(), le.getY() + 0.1, le.getZ(), 12, 0.4, 0.05, 0.4, 0.03);
             }
         }
         le.getPersistentData().remove(CUSHION_KEY);

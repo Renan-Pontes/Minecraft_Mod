@@ -1,4 +1,7 @@
 {
   "command.isekai_mahou.spellfx.demo": "Vitrine de efeitos: %s, tier %s",
-  "command.isekai_mahou.spellfx.bad_element": "Elemento desconhecido."
+  "command.isekai_mahou.spellfx.bad_element": "Elemento desconhecido.",
+  "command.isekai_mahou.spellfx.bad_kind": "Tipo de efeito desconhecido. Use: %s",
+  "command.isekai_mahou.spellfx.bad_reaction": "Reação desconhecida.",
+  "command.isekai_mahou.spellfx.reaction": "Vitrine de reações: %s efeito(s)"
 }

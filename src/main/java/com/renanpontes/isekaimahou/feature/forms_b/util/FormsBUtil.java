@@ -20,6 +20,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
@@ -374,15 +375,15 @@ public final class FormsBUtil {
     // =====================================================================================
 
     /** Partícula de pó com uma cor RGB qualquer (a cor escolhida para a magia). */
-    public static DustParticleOptions dust(int rgb, float size) {
-        return new DustParticleOptions(new Vector3f(((rgb >> 16) & 255) / 255F, ((rgb >> 8) & 255) / 255F,
-                (rgb & 255) / 255F), size);
+    public static ParticleOptions dust(int rgb, float size) {
+        // v1.3: brilho fx aditivo (mesmo tamanho do pó do vanilla; respeita o preset gráfico no cliente)
+        return com.renanpontes.isekaimahou.core.ElementFx.glow(rgb, size);
     }
 
     /** Configuração de cliente "reduzir partículas" (falso se a config não estiver carregada). */
     public static boolean reducedParticles() {
         try {
-            return MahouConfig.REDUCED_PARTICLES.get();
+            return !com.renanpontes.isekaimahou.client.fx.FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         } catch (RuntimeException e) {
             return false;
         }

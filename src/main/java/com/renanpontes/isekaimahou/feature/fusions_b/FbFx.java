@@ -4,6 +4,7 @@ import org.joml.Vector3f;
 
 import com.renanpontes.isekaimahou.core.Element;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -42,8 +43,9 @@ public final class FbFx {
     /** Cores do prisma (Prisma Refletor). */
     public static final int[] RAINBOW = {0xFF4040, 0xFF9A30, 0xFFE840, 0x50E060, 0x40A0FF, 0x9A5CFF};
 
-    public static DustParticleOptions dust(int rgb, float size) {
-        return new DustParticleOptions(vec(rgb), Math.min(4F, size));
+    public static ParticleOptions dust(int rgb, float size) {
+        // v1.3: brilho fx aditivo (mesmo tamanho do pó do vanilla; respeita o preset gráfico no cliente)
+        return com.renanpontes.isekaimahou.core.ElementFx.glow(rgb, size);
     }
 
     public static DustColorTransitionOptions fade(int from, int to, float size) {
@@ -58,26 +60,26 @@ public final class FbFx {
     public static ParticleOptions parentA(Element e) {
         return switch (e) {
             case CRYSTAL -> new BlockParticleOption(ParticleTypes.BLOCK, Blocks.AMETHYST_BLOCK.defaultBlockState());
-            case ASTRAL -> ParticleTypes.CLOUD;
-            case HELLFIRE -> ParticleTypes.FLAME;
+            case ASTRAL -> Vfx.cloud();
+            case HELLFIRE -> Vfx.flame();
             case ABYSS -> ParticleTypes.BUBBLE_POP;
             case GRAVITY -> new BlockParticleOption(ParticleTypes.BLOCK, Blocks.COARSE_DIRT.defaultBlockState());
-            case VOID -> ParticleTypes.PORTAL;
-            case TWILIGHT -> ParticleTypes.END_ROD;
-            default -> ParticleTypes.ENCHANT;
+            case VOID -> Vfx.portal();
+            case TWILIGHT -> Vfx.endRod();
+            default -> Vfx.enchant();
         };
     }
 
     public static ParticleOptions parentB(Element e) {
         return switch (e) {
-            case CRYSTAL -> ParticleTypes.WAX_ON;
-            case ASTRAL -> ParticleTypes.END_ROD;
-            case HELLFIRE -> ParticleTypes.SOUL_FIRE_FLAME;
-            case ABYSS -> ParticleTypes.SQUID_INK;
-            case GRAVITY -> ParticleTypes.REVERSE_PORTAL;
-            case VOID -> ParticleTypes.REVERSE_PORTAL;
-            case TWILIGHT -> ParticleTypes.WITCH;
-            default -> ParticleTypes.ENCHANT;
+            case CRYSTAL -> Vfx.waxOn();
+            case ASTRAL -> Vfx.endRod();
+            case HELLFIRE -> Vfx.soulFlame();
+            case ABYSS -> Vfx.ink();
+            case GRAVITY -> Vfx.reversePortal();
+            case VOID -> Vfx.reversePortal();
+            case TWILIGHT -> Vfx.witch();
+            default -> Vfx.enchant();
         };
     }
 

@@ -13,8 +13,8 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -175,7 +175,8 @@ public final class DruidTechniques {
                 if (!level.noCollision(k, k.getBoundingBox())) k.moveTo(base.x, base.y, base.z, 0, 0);
                 k.setup(owner, life, heal);
                 level.addFreshEntity(k);
-                level.sendParticles(ParticleTypes.SPORE_BLOSSOM_AIR, p.x, p.y + 0.4, p.z, 6, 0.2, 0.3, 0.2, 0.01);
+                level.sendParticles(Vfx.sporeAir(), p.x, p.y + 0.4, p.z, 6, 0.2, 0.3, 0.2, 0.01);
+                com.renanpontes.isekaimahou.core.ElementFx.impactFx(level, p.add(0, 0.2, 0), Element.NATURE, 0x9AE070, 1, null, 0.6F);
             }
             LfUtil.sound(level, base, SoundEvents.BAMBOO_WOOD_HIT, 1.0F, 1.8F);
             LfUtil.sound(level, base, SoundEvents.AZALEA_LEAVES_PLACE, 1.0F, 1.2F);

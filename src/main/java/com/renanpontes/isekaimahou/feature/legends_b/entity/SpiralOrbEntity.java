@@ -17,6 +17,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -274,7 +275,7 @@ public class SpiralOrbEntity extends LegendSpellEntity {
         c.impact(contact, dir(), t);
         LbFx.sound(sl, contact, SoundEvents.BREEZE_WHIRL, 1.3F, 1.3F);
         LbFx.sound(sl, contact, SoundEvents.PLAYER_ATTACK_STRONG, 1.0F, 0.8F);
-        LbFx.send(sl, ParticleTypes.CLOUD, contact, 10, 0.2, 0.15);
+        LbFx.send(sl, Vfx.cloud(), contact, 10, 0.2, 0.15);
     }
 
     private void grindTick(ServerLevel sl, SpellContext c) {
@@ -322,7 +323,7 @@ public class SpiralOrbEntity extends LegendSpellEntity {
             Vec3 tc = LbUtil.center(t);
             LbFx.send(sl, ParticleTypes.SWEEP_ATTACK, tc, 1, 0.2, 0);
             LbFx.send(sl, LbFx.dust(LbFx.lighten(color(), 0.5F), 1.0F), tc, 8, 0.35, 0);
-            LbFx.send(sl, ParticleTypes.CLOUD, hold, 4, 0.15, 0.08);
+            LbFx.send(sl, Vfx.cloud(), hold, 4, 0.15, 0.08);
             LbFx.sound(sl, tc, SoundEvents.PLAYER_ATTACK_SWEEP, 0.8F, 1.3F + 0.07F * hitsDone);
         }
         whirl(sl, position(), 1);
@@ -363,7 +364,7 @@ public class SpiralOrbEntity extends LegendSpellEntity {
         LbFx.ring(sl, at, new Vec3(0, 1, 0), 3.2F, rgb, 10);
         LbFx.send(sl, ParticleTypes.GUST_EMITTER_LARGE, at, 1, 0, 0);
         LbFx.send(sl, ParticleTypes.EXPLOSION, at, 2, 0.3, 0);
-        LbFx.send(sl, ParticleTypes.CLOUD, at, 30, 0.5, 0.25);
+        LbFx.send(sl, Vfx.cloud(), at, 30, 0.5, 0.25);
         LbFx.send(sl, LbFx.dust(rgb, 1.6F), at, 20, 0.8, 0);
         LbFx.sound(sl, at, SoundEvents.WIND_CHARGE_BURST, 1.8F, 0.7F);
         LbFx.sound(sl, at, SoundEvents.GENERIC_EXPLODE, 0.6F, 1.5F);
@@ -382,7 +383,7 @@ public class SpiralOrbEntity extends LegendSpellEntity {
     /** Rastro de vento seguindo o alvo arremessado. */
     private static void trail(ServerLevel sl, LivingEntity t, int ticksLeft) {
         if (ticksLeft <= 0 || !t.isAlive() || t.level() != sl) return;
-        LbFx.send(sl, ParticleTypes.CLOUD, LbUtil.center(t), 2, 0.2, 0.02);
+        LbFx.send(sl, Vfx.cloud(), LbUtil.center(t), 2, 0.2, 0.02);
         LbFx.send(sl, ParticleTypes.SMALL_GUST, LbUtil.center(t), 1, 0.1, 0);
         SpellScheduler.schedule(1, () -> trail(sl, t, ticksLeft - 1));
     }
@@ -402,7 +403,7 @@ public class SpiralOrbEntity extends LegendSpellEntity {
     /** Some sem estrondo (substituída, conjurador sumiu, tempo acabou). */
     private void poof(ServerLevel sl) {
         Vec3 p = position();
-        LbFx.send(sl, ParticleTypes.CLOUD, p, 12, 0.2, 0.08);
+        LbFx.send(sl, Vfx.cloud(), p, 12, 0.2, 0.08);
         LbFx.send(sl, LbFx.dust(color(), 1.0F), p, 8, 0.3, 0);
         LbFx.sound(sl, p, SoundEvents.BREEZE_DEFLECT, 0.7F, 1.5F);
     }

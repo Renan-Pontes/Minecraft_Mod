@@ -5,6 +5,7 @@ import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.feature.fire_water.FwRegistries;
 import com.renanpontes.isekaimahou.feature.fire_water.FwUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -24,7 +25,7 @@ public final class FwMobEffects {
     /** Brasa Persistente: a cada segundo causa dano de brasa e reacende o alvo. Água/Encharcado apaga. */
     public static class LingeringEmber extends MobEffect {
         public LingeringEmber() {
-            super(MobEffectCategory.HARMFUL, 0xFF7A1F, ParticleTypes.SMALL_FLAME);
+            super(MobEffectCategory.HARMFUL, 0xFF7A1F, Vfx.smallFlame());
         }
 
         @Override
@@ -36,14 +37,14 @@ public final class FwMobEffects {
         public boolean applyEffectTick(LivingEntity e, int amplifier) {
             if (!(e.level() instanceof ServerLevel sl)) return true;
             if (e.isInWaterRainOrBubble() || e.hasEffect(CoreRegistries.SOAKED)) {
-                sl.sendParticles(ParticleTypes.LARGE_SMOKE, e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(),
+                sl.sendParticles(Vfx.largeSmoke(), e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(),
                         10, 0.3, 0.3, 0.3, 0.02);
                 FwUtil.sound(sl, e.position(), SoundEvents.FIRE_EXTINGUISH, 0.6F, 1.2F);
                 return false; // as brasas apagaram
             }
             if (e.getRemainingFireTicks() < 30) e.igniteForSeconds(2F);
             e.hurt(FwUtil.source(e, FwRegistries.EMBER_BURN), 1.0F + amplifier);
-            FwUtil.around(sl, e, ParticleTypes.FLAME, 6, 0.02);
+            FwUtil.around(sl, e, Vfx.flame(), 6, 0.02);
             sl.sendParticles(ParticleTypes.LAVA, e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 1, 0.2, 0.2, 0.2, 0);
             return true;
         }
@@ -52,7 +53,7 @@ public final class FwMobEffects {
     /** Chama Azul: fogo de alma mágico. Não apaga na água e queima até criaturas imunes a fogo. */
     public static class AzureFlame extends MobEffect {
         public AzureFlame() {
-            super(MobEffectCategory.HARMFUL, 0x3FC8FF, ParticleTypes.SOUL_FIRE_FLAME);
+            super(MobEffectCategory.HARMFUL, 0x3FC8FF, Vfx.soulFlame());
         }
 
         @Override
@@ -65,7 +66,7 @@ public final class FwMobEffects {
             if (!(e.level() instanceof ServerLevel sl)) return true;
             e.invulnerableTime = 0;
             e.hurt(FwUtil.source(e, FwRegistries.AZURE_BURN), 1.5F + 0.75F * amplifier);
-            FwUtil.around(sl, e, ParticleTypes.SOUL_FIRE_FLAME, 8, 0.03);
+            FwUtil.around(sl, e, Vfx.soulFlame(), 8, 0.03);
             if (sl.random.nextInt(3) == 0) FwUtil.around(sl, e, ParticleTypes.SOUL, 1, 0.02);
             return true;
         }
@@ -140,7 +141,7 @@ public final class FwMobEffects {
             if (e instanceof Player && e.tickCount % 2 == 0) e.hurtMarked = true;
             e.resetFallDistance();
             if (e.tickCount % 2 == 0) {
-                sl.sendParticles(ParticleTypes.SPLASH, e.getX(), e.getY() + 0.1, e.getZ(), 5, 0.35, 0.05, 0.35, 0.1);
+                sl.sendParticles(Vfx.splash(), e.getX(), e.getY() + 0.1, e.getZ(), 5, 0.35, 0.05, 0.35, 0.1);
                 sl.sendParticles(ParticleTypes.FISHING, e.getX(), e.getY() + 0.15, e.getZ(), 2, 0.3, 0.02, 0.3, 0.02);
             }
             return true;
@@ -162,7 +163,7 @@ public final class FwMobEffects {
         public boolean applyEffectTick(LivingEntity e, int amplifier) {
             if (!(e.level() instanceof ServerLevel sl)) return true;
             sl.sendParticles(ParticleTypes.BUBBLE_POP, e.getX(), e.getEyeY(), e.getZ(), 3, 0.2, 0.15, 0.2, 0.01);
-            sl.sendParticles(ParticleTypes.FALLING_WATER, e.getX(), e.getEyeY() - 0.1, e.getZ(), 1, 0.15, 0.05, 0.15, 0);
+            sl.sendParticles(Vfx.water(), e.getX(), e.getEyeY() - 0.1, e.getZ(), 1, 0.15, 0.05, 0.15, 0);
             return true;
         }
     }
@@ -170,7 +171,7 @@ public final class FwMobEffects {
     /** Espelho d'Água: brilho de água em volta; o reflexo é feito no evento de impacto de projétil. */
     public static class WaterMirror extends MobEffect {
         public WaterMirror() {
-            super(MobEffectCategory.BENEFICIAL, 0x7FE0FF, ParticleTypes.DRIPPING_WATER);
+            super(MobEffectCategory.BENEFICIAL, 0x7FE0FF, Vfx.water());
         }
 
         @Override
@@ -195,7 +196,7 @@ public final class FwMobEffects {
     /** Bênção da Fênix: brasas douradas subindo; o renascimento é feito no evento de morte. */
     public static class PhoenixBlessing extends MobEffect {
         public PhoenixBlessing() {
-            super(MobEffectCategory.BENEFICIAL, 0xFF9A2E, ParticleTypes.SMALL_FLAME);
+            super(MobEffectCategory.BENEFICIAL, 0xFF9A2E, Vfx.smallFlame());
         }
 
         @Override
@@ -207,7 +208,7 @@ public final class FwMobEffects {
         public boolean applyEffectTick(LivingEntity e, int amplifier) {
             if (!(e.level() instanceof ServerLevel sl)) return true;
             sl.sendParticles(FwUtil.dust(0xFFC23D, 1.0F), e.getX(), e.getY() + 0.2, e.getZ(), 2, 0.35, 0.1, 0.35, 0);
-            sl.sendParticles(ParticleTypes.FLAME, e.getX(), e.getY() + e.getBbHeight() + 0.1, e.getZ(), 1, 0.2, 0.05, 0.2, 0.01);
+            sl.sendParticles(Vfx.flame(), e.getX(), e.getY() + e.getBbHeight() + 0.1, e.getZ(), 1, 0.2, 0.05, 0.2, 0.01);
             return true;
         }
     }

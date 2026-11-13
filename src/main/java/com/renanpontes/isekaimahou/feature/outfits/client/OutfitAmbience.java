@@ -2,6 +2,7 @@ package com.renanpontes.isekaimahou.feature.outfits.client;
 
 import org.joml.Vector3f;
 
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.feature.outfits.OutfitArmorItem;
 import com.renanpontes.isekaimahou.feature.outfits.OutfitSet;
@@ -262,11 +263,7 @@ public final class OutfitAmbience {
     }
 
     private static boolean reducedParticles() {
-        try {
-            return MahouConfig.REDUCED_PARTICLES.get();
-        } catch (IllegalStateException e) {
-            return false; // config ainda não carregada
-        }
+        return !FxQuality.atLeast(MahouConfig.Graphics.HIGH);
     }
 
     private OutfitAmbience() {}

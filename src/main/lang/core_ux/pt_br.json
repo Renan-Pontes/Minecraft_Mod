@@ -62,5 +62,15 @@
   "screen.isekai_mahou.notices.chat.all": "Tudo",
   "screen.isekai_mahou.notices.chat.tip.minimal": "Mínimo: no chat só o essencial (erros, convites, falas de NPC, nível/Círculo, chefe derrotado, comandos). O resto fica aqui. Clique para mudar.",
   "screen.isekai_mahou.notices.chat.tip.normal": "Normal: quase tudo no chat; dicas, progresso e recompensas ficam aqui. Clique para mudar.",
-  "screen.isekai_mahou.notices.chat.tip.all": "Tudo: todas as mensagens do mod no chat, como antes. Clique para mudar."
+  "screen.isekai_mahou.notices.chat.tip.all": "Tudo: todas as mensagens do mod no chat, como antes. Clique para mudar.",
+  "key.isekai_mahou.peace_mode": "Modo Paz (liga/desliga)",
+  "message.isekai_mahou.peace.on": "☮ Modo Paz LIGADO — magias, esquiva e golpes em jogadores e NPCs travados",
+  "message.isekai_mahou.peace.off": "⚔ Modo Paz desligado — pronto para lutar",
+  "message.isekai_mahou.peace.blocked": "☮ Você está no Modo Paz — aperte a tecla do Modo Paz para conjurar",
+  "hud.isekai_mahou.peace": "☮ Paz [%s]",
+  "command.isekai_mahou.admin.ok": "✔ Você entrou como administrador nesta sessão.",
+  "command.isekai_mahou.admin.wrong": "Senha de administrador errada.",
+  "command.isekai_mahou.admin.locked": "Muitas tentativas. Tente de novo em %s s.",
+  "command.isekai_mahou.admin.logout": "Você saiu do modo administrador.",
+  "command.isekai_mahou.admin.required": "Comando de administrador. Entre antes com /mahou admin login <senha>."
 }

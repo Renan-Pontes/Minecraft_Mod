@@ -24,6 +24,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -88,9 +92,51 @@ public class WanderingMageEntity extends AbstractVillager implements GeoEntity {
     private int despawnDelay;
     private int spellCooldown;
     private int blinkCooldown;
+    /** Balão de fala (sincronizado): o texto e o tick de jogo em que começou. */
+    private static final EntityDataAccessor<Component> DATA_SPEECH = SynchedEntityData.defineId(WanderingMageEntity.class,
+            EntityDataSerializers.COMPONENT);
+    private static final EntityDataAccessor<Integer> DATA_SPEECH_AT = SynchedEntityData.defineId(WanderingMageEntity.class,
+            EntityDataSerializers.INT);
+    /** Quanto tempo o balão fica na tela (ticks). */
+    public static final int SPEECH_TICKS = 80;
+    /** Quantas falas existem em cada grupo (chaves entity.isekai_mahou.wandering_mage.line.<grupo>.<n>). */
+    private static final java.util.Map<String, Integer> LINES = java.util.Map.of(
+            "idle", 8, "greet", 5, "thanks", 5, "hurt", 4, "danger", 4, "leave", 3);
+    /** Não tagarela: no mínimo este tempo entre falas soltas. */
+    private int chatterCooldown = 200;
 
     public WanderingMageEntity(EntityType<? extends AbstractVillager> type, Level level) {
         super(type, level);
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_SPEECH, Component.empty());
+        builder.define(DATA_SPEECH_AT, 0);
+    }
+
+    // =====================================================================================
+    //  Fala (balão sobre a cabeça, como os NPCs da cidade)
+    // =====================================================================================
+    /** Fala uma linha aleatória do grupo (só no servidor). */
+    public void sayLine(String group) {
+        if (level().isClientSide) return;
+        int n = LINES.getOrDefault(group, 1);
+        entityData.set(DATA_SPEECH, Component.translatable("entity.isekai_mahou.wandering_mage.line." + group + "." + random.nextInt(n)));
+        entityData.set(DATA_SPEECH_AT, (int) level().getGameTime());
+        chatterCooldown = 300 + random.nextInt(300);
+    }
+
+    public float speechAge(float partialTick) {
+        return (float) ((int) level().getGameTime() - entityData.get(DATA_SPEECH_AT)) + partialTick;
+    }
+
+    /** O que está dizendo agora (null = calado). */
+    @javax.annotation.Nullable
+    public Component speech() {
+        Component c = entityData.get(DATA_SPEECH);
+        return c.getString().isEmpty() || speechAge(0) > SPEECH_TICKS ? null : c;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -130,6 +176,7 @@ public class WanderingMageEntity extends AbstractVillager implements GeoEntity {
             if (hand == InteractionHand.MAIN_HAND) player.awardStat(Stats.TALKED_TO_VILLAGER);
             if (!level().isClientSide) {
                 if (getOffers().isEmpty()) return InteractionResult.CONSUME;
+                sayLine("greet");
                 setTradingPlayer(player);
                 openTradingScreen(player, getDisplayName(), 1);
             }
@@ -245,6 +292,8 @@ public class WanderingMageEntity extends AbstractVillager implements GeoEntity {
         }
         if (spellCooldown > 0) spellCooldown--;
         if (blinkCooldown > 0) blinkCooldown--;
+        if (chatterCooldown > 0) chatterCooldown--;
+        if (despawnDelay == 100 && !isTrading()) sayLine("leave");
         if (despawnDelay > 0 && !isTrading() && --despawnDelay == 0) {
             vanishFx();
             discard();
@@ -269,6 +318,7 @@ public class WanderingMageEntity extends AbstractVillager implements GeoEntity {
         lookAt(threat, 360.0F, 360.0F);
         Vec3 d = threat.position().add(0, threat.getBbHeight() * 0.5, 0).subtract(getEyePosition());
         setXRot((float) (-(Mth.atan2(d.y, d.horizontalDistance()) * (180F / Math.PI))));
+        if (chatterCooldown <= 0 || random.nextInt(4) == 0) sayLine("danger");
         SpellCaster.castAsMob(this, Element.ARCANE, r, 1.0F);
         triggerAnim("action", "cast");
         spellCooldown = 40;
@@ -292,6 +342,7 @@ public class WanderingMageEntity extends AbstractVillager implements GeoEntity {
             if (new Vec3(x, y, z).distanceToSqr(from) < 36) continue;
             if (randomTeleport(x, y, z, false)) {
                 blinkCooldown = 80;
+                sayLine("hurt");
                 if (level() instanceof ServerLevel sl) {
                     sl.sendParticles(ElementFx.dust(Element.ARCANE, 1.4F), from.x, from.y + 1, from.z, 30, 0.4, 0.8, 0.4, 0);
                     sl.sendParticles(ParticleTypes.END_ROD, getX(), getY() + 1, getZ(), 20, 0.3, 0.8, 0.3, 0.05);
@@ -339,29 +390,53 @@ public class WanderingMageEntity extends AbstractVillager implements GeoEntity {
     // =====================================================================================
     //  Sons
     // =====================================================================================
+    // Antes: os sons do Vendedor Ambulante do vanilla (o resmungo "hmm" a cada poucos segundos) — irritava.
+    // Agora: sons mágicos baixinhos, raros, e uma fala em balão quando há alguém por perto.
     @Override
     protected SoundEvent getAmbientSound() {
-        return isTrading() ? SoundEvents.WANDERING_TRADER_TRADE : SoundEvents.WANDERING_TRADER_AMBIENT;
+        return SoundEvents.AMETHYST_BLOCK_CHIME;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 400;
+    }
+
+    /** Som "ambiente": só fala (e soa um sininho) se tiver jogador perto e não falou há pouco. */
+    @Override
+    public void playAmbientSound() {
+        if (level().isClientSide || isTrading() || chatterCooldown > 0) return;
+        Player near = level().getNearestPlayer(this, 10.0);
+        if (near == null || near.isSpectator()) return;
+        sayLine("idle");
+        playSound(SoundEvents.AMETHYST_BLOCK_CHIME, 0.5F, 1.1F + random.nextFloat() * 0.3F);
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.WANDERING_TRADER_HURT;
+        return SoundEvents.PLAYER_HURT;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.WANDERING_TRADER_DEATH;
+        return SoundEvents.EVOKER_DEATH;
     }
 
+    /** Ao colocar/tirar itens na tela de troca: um "plim" baixo em vez do "hmm". */
     @Override
     protected SoundEvent getTradeUpdatedSound(boolean yes) {
-        return yes ? SoundEvents.WANDERING_TRADER_YES : SoundEvents.WANDERING_TRADER_NO;
+        return yes ? SoundEvents.AMETHYST_BLOCK_CHIME : SoundEvents.AMETHYST_BLOCK_HIT;
     }
 
     @Override
     public SoundEvent getNotifyTradeSound() {
-        return SoundEvents.WANDERING_TRADER_YES;
+        return SoundEvents.AMETHYST_BLOCK_RESONATE;
+    }
+
+    @Override
+    public void notifyTrade(MerchantOffer offer) {
+        super.notifyTrade(offer);
+        if (speech() == null || random.nextInt(3) == 0) sayLine("thanks");
     }
 
     @Override

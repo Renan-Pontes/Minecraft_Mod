@@ -1655,6 +1655,12 @@ def lang():
     for kid, (npt, nen) in KINDS.items():
         pt[f"screen.isekai_mahou.character.kind.{kid}"] = npt
         en[f"screen.isekai_mahou.character.kind.{kid}"] = nen
+    # release 1.0: as chaves novas (altares, santuarios) moram no character_release.py — junta para nao perde-las
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import character_release
+    ept, een = character_release.extra_lang()
+    pt.update(ept)
+    en.update(een)
     assert set(pt) == set(en), set(pt) ^ set(en)
     write_json(os.path.join(LANG, "pt_br.json"), dict(sorted(pt.items())))
     write_json(os.path.join(LANG, "en_us.json"), dict(sorted(en.items())))
@@ -1703,7 +1709,7 @@ def main():
                 "C": {"item": "minecraft:crying_obsidian"}, "D": {"item": "minecraft:polished_deepslate"}},
         "result": {"id": f"{NS}:reincarnation_altar", "count": 1}})
     write_json(os.path.join(MERGE, "data/minecraft/tags/block/mineable/pickaxe.json"),
-               {"replace": False, "values": [f"{NS}:reincarnation_altar"]})
+               {"replace": False, "values": [f"{NS}:reincarnation_altar", f"{NS}:new_beginnings_altar"]})
     for rid, (iid, *_rest) in RELICS.items():
         RELIC_ART[rid]().save(os.path.join(A, "textures/item", iid + ".png"))
         item_model(A, iid)

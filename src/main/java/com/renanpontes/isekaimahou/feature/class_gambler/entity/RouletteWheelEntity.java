@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbFx;
+import com.renanpontes.isekaimahou.feature.class_gambler.GbFxNet;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbRegistries;
 import com.renanpontes.isekaimahou.feature.class_gambler.luck.LuckService;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
@@ -119,6 +120,7 @@ public class RouletteWheelEntity extends Entity implements GeoEntity {
             discard();
             return;
         }
+        if (tickCount == 1) GbFxNet.at(sl, GbFxNet.SPIN, position(), Vec3.ZERO, radius(), 0xD8303A, getId(), SPIN_TICKS);
         if (tickCount < SPIN_TICKS) {
             // clique da bolinha passando pelas casas, mais lento no fim
             int gap = 2 + tickCount / 12;

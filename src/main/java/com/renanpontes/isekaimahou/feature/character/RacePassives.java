@@ -57,8 +57,9 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
  *   <li><b>Elfo — Sangue Élfico:</b> visão no escuro; do II: +8/12/15% de dano com projéteis e de regeneração de recurso.</li>
  *   <li><b>Anão — Robustez Anã:</b> visão nas profundezas, +10/15/20/25% de mineração; do II: +2/3/4 de armadura; do III:
  *       imune a veneno, +15/25% de firmeza.</li>
- *   <li><b>Meio-Orc — Implacável:</b> +5/8/10/12% de dano corpo a corpo; do II: +4/6/8 de vida; do III: Implacável (1 de
- *       vida em vez de morrer, 1× a cada 5 min) e Sangue Quente (+20% abaixo de 35% de vida).</li>
+ *   <li><b>Meio-Orc — Faminto (v1.7, Geld):</b> +3/5/6/8% de dano corpo a corpo + os acúmulos de Fome Voraz
+ *       ({@link RaceKits}); do II: +4/6/8 de vida; do III: Implacável (1 de vida em vez de morrer, 1× a cada 5 min) e
+ *       Sangue Quente (+20% abaixo de 35% de vida).</li>
  *   <li><b>Demônio — Sangue Infernal:</b> visão no escuro, −20/35/50/50% de dano de fogo; do II: +8/12/15% com magias de
  *       fogo; do III: Repreensão Infernal e −15/25% de magias de fogo.</li>
  *   <li><b>Dracônico — Linhagem Dracônica:</b> −15/15/25/25% de dano de fogo e +1/1/2/2 de queda segura; do II: +8/12/15%
@@ -70,9 +71,14 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
  *       segura); do III: 10/15% de chance de golpes e projéteis o atravessarem.</li>
  *   <li><b>Anjo — Graça Celestial:</b> regenera +1 de vida a cada 5/4/3 s (+2 no IV); do II: +10/20/25% de dano em
  *       mortos-vivos; do IV: cai mais devagar.</li>
- *   <li><b>Slime — Corpo Gelatinoso:</b> regenera +1 de vida a cada 5/4/3 s (+2 no IV); do II: −25/50/75% de dano de
- *       queda (e quica, no cliente); do III: quem te golpeia gruda (Lentidão); do IV: +2 de armadura e +20% de firmeza.</li>
+ *   <li><b>Slime — Predador (v1.7, Rimuru):</b> regenera +1 de vida a cada 5/4/3 s (+2 no IV); do II: −25/50/75% de dano
+ *       de queda (e quica, no cliente); do III: quem te golpeia gruda (Lentidão); do IV: +2 de armadura e +20% de firmeza.
+ *       Mais as habilidades copiadas ({@link SlimePredator}): lobo = velocidade, morcego = visão no escuro, blaze = −40%
+ *       de fogo, zumbi = imune a Fome/Veneno, aranha = escalar (aqui e no cliente).</li>
  * </ul>
+ * v1.7 (raças de anime): o Aracnídeo (Kumoko) ganha Fio de Aranha, Armadilha e Olho Maligno ({@link KumoThreads}); o
+ * Dracônico (Dragon Slayer) devora o elemento; o Demônio (Anos) desfaz magias; o Elfo (Frieren) esconde a mana
+ * ({@link RaceKits}).
  * Modificadores de atributo permanentes com ids próprios ({@code isekai_mahou:character.race.*}), reaplicados ao subir
  * de nível. Jogadores da v0.9: os modificadores dos atributos antigos ({@code character.str.*} etc.) saem no login.
  */
@@ -150,7 +156,8 @@ public final class RacePassives {
         Race r = d.activeRace();
         int lv = r == null ? 0 : RaceProgress.level(sp);
         set(sp, Attributes.SCALE, RACE_SCALE, r == null ? 0 : r.scale, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-        double speed = r == Race.BEASTFOLK ? at(lv, 0.04F, 0.06F, 0.08F, 0.10F) : r == Race.ARACHNID && lv >= 4 ? 0.05 : 0;
+        double speed = r == Race.BEASTFOLK ? at(lv, 0.04F, 0.06F, 0.08F, 0.10F) : r == Race.ARACHNID && lv >= 4 ? 0.05
+                : SlimePredator.has(d, SlimePredator.Mimic.WOLF) ? 0.06 : 0;
         set(sp, Attributes.MOVEMENT_SPEED, RACE_SPEED, speed, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
         double fall = r == Race.BEASTFOLK ? at(lv, 1, 2, 3, 4) : r == Race.PHANTOM ? at(lv, 2, 4, 5, 6)
                 : r == Race.DRAGONBORN ? at(lv, 1, 1, 2, 2) : 0;
@@ -164,7 +171,7 @@ public final class RacePassives {
         double steady = r == Race.DWARF ? at(lv, 0, 0, 0.15F, 0.25F) : r == Race.SLIME && lv >= 4 ? 0.2 : 0;
         set(sp, Attributes.KNOCKBACK_RESISTANCE, RACE_STEADY, steady, AttributeModifier.Operation.ADD_VALUE);
         set(sp, Attributes.MAX_HEALTH, RACE_HEALTH, r == Race.HALF_ORC ? at(lv, 0, 4, 6, 8) : 0, AttributeModifier.Operation.ADD_VALUE);
-        set(sp, Attributes.ATTACK_DAMAGE, RACE_MELEE, r == Race.HALF_ORC ? at(lv, 0.05F, 0.08F, 0.10F, 0.12F) : 0,
+        set(sp, Attributes.ATTACK_DAMAGE, RACE_MELEE, r == Race.HALF_ORC ? at(lv, 0.03F, 0.05F, 0.06F, 0.08F) : 0,
                 AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         set(sp, CoreRegistries.SPELL_POWER, RACE_POWER, r == Race.HUMAN ? at(lv, 0, 0, 0.05F, 0.10F) : 0,
                 AttributeModifier.Operation.ADD_VALUE);
@@ -200,8 +207,9 @@ public final class RacePassives {
     // =====================================================================================
     //  A cada segundo / a cada poucos ticks (chamado pelo CharacterService)
     // =====================================================================================
-    /** Regeneração do Anjo e do Slime. */
+    /** Regeneração do Anjo e do Slime (e, v1.7, os kits de anime: {@link RaceKits#tickSecond}). */
     static void tickSecond(ServerPlayer sp, CharacterData d) {
+        RaceKits.tickSecond(sp, d);
         Race r = d.activeRace();
         if (r != Race.ANGEL && r != Race.SLIME) return;
         if (!sp.isAlive() || sp.getHealth() >= sp.getMaxHealth()) return;
@@ -215,9 +223,9 @@ public final class RacePassives {
         }
     }
 
-    /** Aracnídeo encostado na parede: não acumula queda e não é expulso por "voar". */
+    /** Aracnídeo (ou Slime com o Fio Pegajoso) encostado na parede: não acumula queda e não é expulso por "voar". */
     static void tickWall(ServerPlayer sp, CharacterData d) {
-        if (!d.is(Race.ARACHNID) || sp.onGround()) return;
+        if (!(d.is(Race.ARACHNID) || SlimePredator.has(d, SlimePredator.Mimic.SPIDER)) || sp.onGround()) return;
         if (!touchingWall(sp)) return;
         sp.resetFallDistance();
         MagicHover.allow(sp, 40);
@@ -324,7 +332,14 @@ public final class RacePassives {
             case PHANTOM -> {
                 if (lv >= 3 && dodgeable && tryDodge(sp, now, DODGE_GAP, at(lv, 0, 0, 0.10F, 0.15F), Race.PHANTOM)) e.setCanceled(true);
             }
+            case ARACHNID -> {
+                // Pendurado no Fio de Aranha: a queda logo depois do puxão não machuca
+                if (src.is(DamageTypeTags.IS_FALL) && KumoThreads.safeFall(sp)) e.setCanceled(true);
+            }
             case SLIME -> {
+                if (src.is(DamageTypeTags.IS_FIRE) && SlimePredator.has(vd, SlimePredator.Mimic.BLAZE)) {
+                    e.setAmount(e.getAmount() * 0.6F);
+                }
                 if (src.is(DamageTypeTags.IS_FALL)) {
                     e.setAmount(e.getAmount() * (1F - at(lv, 0F, 0.25F, 0.50F, 0.75F)));
                 } else if (melee && lv >= 3 && attacker instanceof LivingEntity la && la.isAlive()) {
@@ -429,7 +444,10 @@ public final class RacePassives {
             float bonus = at(lv, 0F, 0.08F, 0.12F, 0.15F);
             switch (cd.race()) {
                 case DRAGONBORN -> {
-                    if (e.element().matches(cd.ancestry())) e.setAmount(e.getAmount() * (1F + bonus));
+                    // v1.7 Dragon Slayer: Saciado (comeu o elemento há pouco) = +15%
+                    if (e.element().matches(cd.ancestry())) {
+                        e.setAmount(e.getAmount() * (1F + bonus + (RaceKits.fed(caster) ? 0.15F : 0F)));
+                    }
                 }
                 case DEMON -> {
                     if (e.element().matches(Element.FIRE)) e.setAmount(e.getAmount() * (1F + bonus));
@@ -450,6 +468,11 @@ public final class RacePassives {
         CharacterData td = raceData(e.target());
         if (td == null) return;
         int lv = RaceProgress.level((Player) e.target());
+        if (td.race() == Race.DEMON) {
+            // v1.7 Anos: Olhos Mágicos da Destruição (nível IV) — às vezes a magia some antes de acertar
+            RaceKits.onSpellAtDemon(e, (ServerPlayer) e.target(), lv);
+            if (e.isCanceled()) return;
+        }
         if (td.race() == Race.DRAGONBORN && lv >= 2 && e.element().matches(td.ancestry())) {
             e.setAmount(e.getAmount() * (1F - at(lv, 0F, 0.15F, 0.25F, 0.25F)));
         } else if (td.race() == Race.DEMON && lv >= 3 && e.element().matches(Element.FIRE)) {
@@ -460,13 +483,15 @@ public final class RacePassives {
     // =====================================================================================
     //  Efeitos
     // =====================================================================================
-    /** Anão (nível III+): imune a veneno. */
+    /** Anão (nível III+): imune a veneno. v1.7: Slime com a Resistência à Podridão (zumbi): imune a Veneno e Fome. */
     private static void onEffectApplicable(MobEffectEvent.Applicable e) {
         MobEffectInstance inst = e.getEffectInstance();
-        if (inst == null || !inst.is(MobEffects.POISON)) return;
+        if (inst == null || !(inst.is(MobEffects.POISON) || inst.is(MobEffects.HUNGER))) return;
         CharacterData d = raceData(e.getEntity());
-        if (d == null || d.race() != Race.DWARF || RaceProgress.level((Player) e.getEntity()) < 3) return;
-        e.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
+        if (d == null) return;
+        boolean immune = (d.race() == Race.DWARF && inst.is(MobEffects.POISON) && RaceProgress.level((Player) e.getEntity()) >= 3)
+                || SlimePredator.has(d, SlimePredator.Mimic.ZOMBIE);
+        if (immune) e.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
     }
 
     /** As asas somem junto com o efeito (leite, Determinação inimiga, fim do tempo). */
@@ -545,7 +570,9 @@ public final class RacePassives {
     /** A cada segundo: visão no escuro das raças que têm. */
     static void tickVision(ServerPlayer sp, CharacterData d) {
         Race race = d.activeRace();
-        boolean wants = race != null && race.darkvision != Race.Darkvision.NONE && d.darkvision() && inDark(sp, race);
+        // v1.7: o Slime que copiou o Ultrassom do morcego também enxerga no escuro
+        boolean sees = race != null && (race.darkvision != Race.Darkvision.NONE || SlimePredator.has(d, SlimePredator.Mimic.BAT));
+        boolean wants = sees && d.darkvision() && inDark(sp, race);
         MobEffectInstance cur = sp.getEffect(MobEffects.NIGHT_VISION);
         boolean ours = cur != null && cur.isAmbient() && !cur.isVisible() && !cur.showIcon();
         if (wants) {

@@ -8,8 +8,8 @@ import com.renanpontes.isekaimahou.glyph.FormGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -74,7 +74,7 @@ public class PortalForm extends FormGlyph {
         level.addFreshEntity(a);
         level.addFreshEntity(b);
         for (Vec3 p : new Vec3[] {entry, exit}) {
-            level.sendParticles(ParticleTypes.REVERSE_PORTAL, p.x, p.y + 1.1, p.z, 40, 0.4, 0.8, 0.4, 0.1);
+            level.sendParticles(Vfx.reversePortal(), p.x, p.y + 1.1, p.z, 40, 0.4, 0.8, 0.4, 0.1);
             level.sendParticles(FormsBUtil.dust(ctx.color() & 0xFFFFFF, 1.4F), p.x, p.y + 1.1, p.z, 20, 0.5, 0.9, 0.5, 0);
             level.playSound(null, p.x, p.y, p.z, SoundEvents.RESPAWN_ANCHOR_CHARGE, SoundSource.PLAYERS, 0.9F, 1.2F);
             level.playSound(null, p.x, p.y, p.z, SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 0.6F, 1.6F);

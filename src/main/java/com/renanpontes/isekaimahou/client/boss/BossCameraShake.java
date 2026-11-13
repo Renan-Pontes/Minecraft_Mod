@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.client.boss;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.core.boss.BossPayloads;
 
@@ -58,8 +59,9 @@ public final class BossCameraShake {
             k += (float) (a.intensity * fade * fall);
         }
         if (k < 0.01F) return;
-        k = Math.min(k, MAX_TOTAL);
-        if (MahouConfig.REDUCED_PARTICLES.get()) k *= 0.5F;
+        k = Math.min(k, MAX_TOTAL) * MahouConfig.shakeScale(); // v1.0: opção "tremor de tela"
+        if (k < 0.01F) return;
+        k *= FxQuality.shake(); // preset gráfico: PC fraco treme menos
         // Soma de senos de frequências "quebradas": balança orgânico, sem tremedeira dura
         double t = now;
         float pitch = (float) ((Math.sin(t * 1.7) * 0.6 + Math.sin(t * 3.1 + 1.3) * 0.4) * k);

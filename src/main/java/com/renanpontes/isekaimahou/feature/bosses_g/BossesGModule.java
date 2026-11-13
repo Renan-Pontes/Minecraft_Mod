@@ -6,7 +6,18 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementReactions;
 import com.renanpontes.isekaimahou.module.Module;
 
+import com.renanpontes.isekaimahou.feature.bosses_g.entity.GBossEntity;
+import com.renanpontes.isekaimahou.feature.bosses_g.entity.MimicKing;
+
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.TriState;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 /**
@@ -35,6 +46,25 @@ public class BossesGModule implements Module {
         modBus.addListener(BgPayloads::register);
         modBus.addListener(this::onCreativeTab);
         registerResistances();
+        NeoForge.EVENT_BUS.addListener(this::onPickup);
+        // v1.0: o chefe provoca quando derruba um jogador (a fala tem trava no próprio chefe)
+        NeoForge.EVENT_BUS.addListener((LivingDeathEvent e) -> {
+            if (e.getEntity() instanceof ServerPlayer && e.getSource().getEntity() instanceof GBossEntity b) b.onPlayerSlain();
+        });
+    }
+
+    /** v1.3 — Tesouro Falso do Rei Mímico: tentar pegar a isca morde (o item nunca vai para o inventário). */
+    private void onPickup(ItemEntityPickupEvent.Pre event) {
+        ItemEntity it = event.getItemEntity();
+        if (!it.getPersistentData().hasUUID(MimicKing.FAKE_LOOT_TAG)) return;
+        event.setCanPickup(TriState.FALSE);
+        if (!(it.level() instanceof ServerLevel sl) || !it.isAlive()) return;
+        Entity king = sl.getEntity(it.getPersistentData().getUUID(MimicKing.FAKE_LOOT_TAG));
+        if (king instanceof MimicKing mk) {
+            mk.baitSprung(sl, it, event.getPlayer());
+        } else {
+            it.discard();
+        }
     }
 
     private void onCreativeTab(BuildCreativeModeTabContentsEvent event) {

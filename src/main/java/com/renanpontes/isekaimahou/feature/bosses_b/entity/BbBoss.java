@@ -16,6 +16,7 @@ import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.core.api.Announce;
+import com.renanpontes.isekaimahou.feature.bosses_b.polish.BossShow;
 import com.renanpontes.isekaimahou.core.api.Cutscenes;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.BossRewards;
@@ -140,6 +141,8 @@ public abstract class BbBoss extends Monster implements GeoEntity {
     private int unreachableTicks;
     private long ccImmuneUntil;
     private boolean deathHandled;
+    /** v1.0: trava das falas reativas (provocação / último fôlego). */
+    private final BossShow.Voice voice = new BossShow.Voice();
     /** Golpes que travam a direção (cones corpo a corpo): o chefe não gira durante o aquecimento. */
     protected float lockedYaw;
     /** Voadores: enquanto true, o controle de voo não mexe na velocidade (investidas). */
@@ -250,6 +253,30 @@ public abstract class BbBoss extends Monster implements GeoEntity {
     }
 
     protected void onBossDeath(ServerLevel level) {
+    }
+
+    /** Duração da morte em ticks (o renderer usa para desfazer o corpo no fim). */
+    public int deathSpan() {
+        return deathDuration();
+    }
+
+    /** v1.0: câmera da derrota (cutscene curta no golpe final). Falso para quem já tem a própria cena de morte. */
+    protected boolean killCam() {
+        return true;
+    }
+
+    /**
+     * v1.0: o chefe diz as últimas palavras ao cair ("last_words") e a narração "defeated" fica para o estouro final —
+     * uma fala de cada vez. Falso = comportamento antigo (só a narração, na hora).
+     */
+    protected boolean hasLastWords() {
+        return true;
+    }
+
+    /** v1.0: um jogador caiu pelas mãos do chefe — provocação curta (com trava: nunca em rajada). */
+    public void onPlayerSlain() {
+        if (level().isClientSide || isDeadOrDying() || !introDone || !voice.taunt(this)) return;
+        announce("taunt", Announce.STYLE_BOSS);
     }
 
     /** Pausa entre golpes por fase. */
@@ -497,6 +524,8 @@ public abstract class BbBoss extends Monster implements GeoEntity {
         }
         if (tickCount % 20 == 0) lateIntros(sl);
         checkPhase(sl);
+        // v1.0: fala de último fôlego (uma vez por luta, fora das transições)
+        if (tickCount % 10 == 0 && transitionTicks <= 0 && voice.lastStand(this, 0.15F)) announce("last_stand", Announce.STYLE_BOSS);
         tickChains(sl);
         if (transitionTicks > 0) {
             transitionTicks--;
@@ -511,6 +540,8 @@ public abstract class BbBoss extends Monster implements GeoEntity {
         }
 
         tickBoss(sl);
+        // Arena protegida viva enquanto houver luta (pausas sem alvo, descanso, domínio, contra invocações)
+        if (tickCount % 40 == 0) BossKit.keepArena(this, 48);
 
         LivingEntity target = getTarget();
         if (target != null && !validTarget(target)) {
@@ -584,6 +615,8 @@ public abstract class BbBoss extends Monster implements GeoEntity {
         for (ServerPlayer p : sl.getPlayers(p -> p.distanceToSqr(this) < r * r)) introSeen.add(p.getUUID());
         announce("intro", Announce.STYLE_BOSS);
         BossKit.shake(sl, position(), 36, 1.0F, 30);
+        // A arena fica inquebrável desde a apresentação
+        BossKit.sealArena(this);
         onIntroStart(sl);
     }
 
@@ -1239,7 +1272,7 @@ public abstract class BbBoss extends Monster implements GeoEntity {
     /** Config de cliente "partículas reduzidas" (falso se não carregada). */
     protected static boolean reducedParticles() {
         try {
-            return MahouConfig.REDUCED_PARTICLES.get();
+            return !com.renanpontes.isekaimahou.client.fx.FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         } catch (RuntimeException e) {
             return false;
         }
@@ -1261,10 +1294,12 @@ public abstract class BbBoss extends Monster implements GeoEntity {
         Telegraph.cancelAll(this);
         // XP + contador boss.<id> para todo o grupo (inclusive quem ajudou de longe nos últimos 30 s).
         BossRewards.grant(this, rewardXp(), 48);
-        announce("defeated", Announce.STYLE_BOSS);
+        announce(hasLastWords() ? "last_words" : "defeated", Announce.STYLE_BOSS);
         if (bar != null) bar.removeAllPlayers();
         discardMinions(sl);
         BossKit.shake(sl, position(), 40, 1.5F, 40);
+        // v1.0: golpe final marcado + câmera da derrota (curta, não trava ninguém)
+        BossShow.deathStart(sl, this, bossRgb(), deathDuration(), killCam());
         onBossDeath(sl);
     }
 
@@ -1273,7 +1308,10 @@ public abstract class BbBoss extends Monster implements GeoEntity {
         deathTime++;
         if (level() instanceof ServerLevel sl) {
             deathFx(sl, deathTime);
+            BossShow.deathTick(sl, this, deathTime, deathDuration(), bossRgb());
             if (deathTime >= deathDuration() && !isRemoved()) {
+                if (hasLastWords()) announce("defeated", Announce.STYLE_BOSS);
+                BossShow.deathFinale(sl, this, bossRgb());
                 onFinalDeath(sl);
                 level().broadcastEntityEvent(this, (byte) 60);
                 remove(RemovalReason.KILLED);

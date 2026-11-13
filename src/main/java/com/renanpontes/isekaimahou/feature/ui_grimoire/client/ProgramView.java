@@ -18,6 +18,7 @@ import com.renanpontes.isekaimahou.glyph.ParsedSpell;
 import com.renanpontes.isekaimahou.glyph.SpellCost;
 import com.renanpontes.isekaimahou.glyph.SpellParser;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
+import com.renanpontes.isekaimahou.glyph.TransformLawGlyph;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -287,7 +288,7 @@ final class ProgramView {
             if (ly > bottom || ly + ln.h() < top) continue;
             switch (ln.kind()) {
                 case STAGE, PLACEHOLDER -> renderMedallion(g, zones, d, check, glyphs, ln, mx, my);
-                case LAWS -> renderLawMedallion(g, zones, ln);
+                case LAWS -> renderLawMedallion(g, zones, ln, transformLaws(glyphs));
                 case LINK, LEAP -> renderLinkLabel(g, zones, check, glyphs, ln, mx, my);
             }
             if (ln.kind() == Kind.PLACEHOLDER) renderPlaceholder(g, font, ln);
@@ -368,15 +369,22 @@ final class ProgramView {
         zones.addClipped(medX, cy - MED / 2, MED, MED, bx, by + 1, bw, bh - 2, null, () -> stageTip(check, glyphs, ln.stage()));
     }
 
-    private void renderLawMedallion(GuiGraphics g, HotZones zones, Line ln) {
+    /** v1.4: as leis da receita são Leis de Transformação (e não de Domínio)? */
+    private static boolean transformLaws(List<ResourceLocation> glyphs) {
+        for (ResourceLocation id : glyphs) if (GlyphRegistry.get(id) instanceof TransformLawGlyph) return true;
+        return false;
+    }
+
+    private void renderLawMedallion(GuiGraphics g, HotZones zones, Line ln, boolean transform) {
         int y = by + ln.medY() - off();
         int lc = GlyphIcons.kindColor(GlyphKind.LAW);
         Gfx.circle(g, medX + MED / 2, y + MED / 2, MED / 2, 0xFF1C1428);
         Gfx.ring(g, medX + MED / 2, y + MED / 2, MED / 2, 1, lc);
         GlyphIcons.kindIcon(g, GlyphKind.LAW, false, medX + 2, y + 2, MED - 4, true);
+        String key = transform ? "program.tlaws" : "program.laws";
         zones.addClipped(medX, y, MED, MED, bx, by + 1, bw, bh - 2, null,
-                () -> List.of(tr("program.laws").withColor(lc & 0xFFFFFF).withStyle(ChatFormatting.BOLD),
-                        tr("program.laws.tip").withStyle(ChatFormatting.GRAY)));
+                () -> List.of(tr(key).withColor(lc & 0xFFFFFF).withStyle(ChatFormatting.BOLD),
+                        tr(key + ".tip").withStyle(ChatFormatting.GRAY)));
     }
 
     private void renderPlaceholder(GuiGraphics g, Font font, Line ln) {

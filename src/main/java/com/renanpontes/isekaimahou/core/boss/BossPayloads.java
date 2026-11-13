@@ -100,6 +100,25 @@ public final class BossPayloads {
         public Type<? extends CustomPacketPayload> type() { return TYPE; }
     }
 
+    /**
+     * v1.3: clarão/tingimento da TELA de quem recebe (impactos, Julgamento, Supernova). {@code rgb} = cor; {@code alpha}
+     * = força no início (0..1); {@code ticks} = quanto dura o fade; {@code kind} 0 = tela toda, 1 = só as bordas (vinheta).
+     */
+    public record Flash(int rgb, float alpha, int ticks, int kind) implements CustomPacketPayload {
+        public static final Type<Flash> TYPE = new Type<>(IsekaiMahou.id("core_boss_flash"));
+        public static final StreamCodec<FriendlyByteBuf, Flash> STREAM_CODEC = StreamCodec.of(
+                (buf, p) -> {
+                    buf.writeInt(p.rgb);
+                    buf.writeFloat(p.alpha);
+                    buf.writeVarInt(p.ticks);
+                    buf.writeByte(p.kind);
+                },
+                buf -> new Flash(buf.readInt(), buf.readFloat(), buf.readVarInt(), buf.readByte()));
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    }
+
     static void register(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar r = event.registrar("core_boss-1");
         r.playToClient(Show.TYPE, Show.STREAM_CODEC,
@@ -110,6 +129,8 @@ public final class BossPayloads {
                 (p, c) -> com.renanpontes.isekaimahou.client.boss.TelegraphRenderer.lock(p));
         r.playToClient(Shake.TYPE, Shake.STREAM_CODEC,
                 (p, c) -> com.renanpontes.isekaimahou.client.boss.BossCameraShake.receive(p));
+        r.playToClient(Flash.TYPE, Flash.STREAM_CODEC,
+                (p, c) -> com.renanpontes.isekaimahou.client.boss.BossScreenFx.flash(p));
     }
 
     private BossPayloads() {}

@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.feature.fusions_b;
 import com.renanpontes.isekaimahou.feature.fusions_b.effect.Prism;
 import com.renanpontes.isekaimahou.feature.fusions_b.glyph.AstralGlyphs;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -66,7 +67,7 @@ public final class FbEvents {
         Vec3 at = attacker.position().add(0, attacker.getBbHeight() * 0.6, 0);
         sl.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.AMETHYST_SHARD)), at.x, at.y, at.z,
                 10, 0.25, 0.25, 0.25, 0.12);
-        sl.sendParticles(ParticleTypes.WAX_ON, at.x, at.y, at.z, 4, 0.2, 0.2, 0.2, 0.05);
+        sl.sendParticles(Vfx.waxOn(), at.x, at.y, at.z, 4, 0.2, 0.2, 0.2, 0.05);
         FbFx.sound(sl, victim.position(), SoundEvents.AMETHYST_BLOCK_HIT, 1.2F, 1.2F);
     }
 

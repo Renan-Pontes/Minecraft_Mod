@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_smith.SmithFx;
+import com.renanpontes.isekaimahou.feature.class_smith.SmithFxNet;
 import com.renanpontes.isekaimahou.glyph.FormGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
@@ -77,8 +78,7 @@ public class HammerSlamForm extends FormGlyph {
         int lines = Math.min(7, s.count());
         SmithFx.sound(sl, start, SoundEvents.ANVIL_LAND, 1.0F, 0.6F);
         SmithFx.sound(sl, start, SoundEvents.GENERIC_EXPLODE.value(), 0.4F, 1.4F);
-        SmithFx.forgeSparks(sl, start.add(0, 0.2, 0), SmithFx.MOLTEN, 24);
-        SmithFx.groundBurst(sl, start, 24);
+        SmithFxNet.at(sl, SmithFxNet.HAMMER_SLAM, start, flat, 1F, SmithFx.MOLTEN, caster.getId());
         for (int i = 0; i < lines; i++) {
             float yaw = lines == 1 ? 0F : (i - (lines - 1) / 2.0F) * 25.0F;
             Vec3 dir = com.renanpontes.isekaimahou.glyph.CoreGlyphs.rotate(flat, yaw, 0F);
@@ -99,9 +99,7 @@ public class HammerSlamForm extends FormGlyph {
                 Vec3 g = SmithFx.ground(sl, new Vec3(p.x, y[0] + 2.0, p.z), 5);
                 y[0] = g.y;
                 Vec3 at = new Vec3(p.x, y[0], p.z);
-                SmithFx.groundBurst(sl, at, 10);
-                sl.sendParticles(ParticleTypes.FLAME, at.x, at.y + 0.1, at.z, 3, 0.3, 0.05, 0.3, 0.02);
-                sl.sendParticles(SmithFx.spark(SmithFx.EMBER), at.x, at.y + 0.3, at.z, 6, 0.35, 0.2, 0.35, 0.05);
+                SmithFxNet.at(sl, SmithFxNet.QUAKE, at, dir, 1F, SmithFx.EMBER, -1);
                 if (k % 2 == 0) SmithFx.sound(sl, at, SoundEvents.STONE_BREAK, 0.6F, 0.7F);
                 List<LivingEntity> near = sl.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(HIT_RADIUS, 2.0, HIT_RADIUS),
                         e -> e.isAlive() && e != ctx.caster() && !e.isSpectator());

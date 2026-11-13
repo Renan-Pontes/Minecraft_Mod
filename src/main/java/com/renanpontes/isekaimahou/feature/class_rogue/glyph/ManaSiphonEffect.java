@@ -5,6 +5,7 @@ import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueFx;
+import com.renanpontes.isekaimahou.feature.class_rogue.RogueFxNet;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
@@ -81,7 +82,7 @@ public class ManaSiphonEffect extends EffectGlyph {
         }
         Vec3 a = RogueFx.center(le);
         Vec3 b = RogueFx.center(caster);
-        RogueFx.line(level, a, b, RogueFx.dust(RogueFx.MANA, 0.9F), 0.45);
+        RogueFxNet.at(level, RogueFxNet.DRAIN, a, Vec3.ZERO, 1F, RogueFx.MANA, caster.getId(), 1);
         level.sendParticles(ParticleTypes.SOUL, a.x, a.y, a.z, 4, 0.2, 0.2, 0.2, 0.02);
         level.sendParticles(ParticleTypes.ENCHANT, b.x, b.y + 0.3, b.z, 12, 0.3, 0.4, 0.3, 0.6);
         RogueFx.sound(level, b, SoundEvents.BEACON_POWER_SELECT, 0.4F, 1.8F);

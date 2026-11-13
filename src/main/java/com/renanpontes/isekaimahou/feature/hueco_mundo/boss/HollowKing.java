@@ -42,16 +42,55 @@ import net.minecraft.world.phys.Vec3;
  *       Senescência</b> (cone que seca: definhar, fraqueza, lentidão), <b>Legião de Ossos</b> (Vazios Rastejantes).</li>
  *   <li>Fase 2 (60%): <b>Ressurreição — Coroa do Fim</b>: vira só ossos, mais rápido; <b>Poças da Decadência</b>
  *       seguem cada jogador e ficam no chão.</li>
+ *   <li>v1.3 — <b>Ruína do Trono</b> (fase 2+): ergue o machado (cinzas se juntam na lâmina), crava no chão e QUATRO
+ *       ondas de decadência se espalham em anéis; quem pisa onde a onda já passou escapa das seguintes.</li>
  *   <li>Fase 3 (25%): <b>Respira</b> — o domínio da decadência cobre a arena; só as zonas verdes salvam. Depois ele
  *       fica exausto (janela de dano).</li>
  * </ul>
  */
 public class HollowKing extends HmBoss {
     private static final ResourceLocation SPEED_ID = IsekaiMahou.id("hm_hollow_king_resurrection");
-    private int busy, cleaveCd = 20, throwCd = 60, breathCd = 100, legionCd = 160, poolsCd = 60, respiraCd = 80, exhausted;
+    private int busy, cleaveCd = 20, throwCd = 60, breathCd = 100, legionCd = 160, poolsCd = 60, respiraCd = 80, ruinCd = 140, exhausted;
 
     public HollowKing(EntityType<? extends HollowKing> type, Level level) {
         super(type, level);
+    }
+
+    /**
+     * v1.3.2 — o Rei de Hueco Mundo agora é o próprio Barragan. Um Rei Vazio que já existe (mundo salvo, ovo, comando)
+     * vira, no primeiro tick do servidor, um Barragan JÁ em Arrogante (o rei de ossos, mesmo modelo) no mesmo lugar,
+     * com a mesma arena/vaga do palácio. Sem o módulo espada, continua sendo o Rei Vazio de sempre.
+     */
+    @Override
+    public void tick() {
+        if (!level().isClientSide && !isRemoved() && isAlive() && tickCount > 2 && level() instanceof ServerLevel sl && convertToBarragan(sl)) return;
+        super.tick();
+    }
+
+    private boolean convertToBarragan(ServerLevel sl) {
+        var type = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getOptional(IsekaiMahou.id("barragan"));
+        if (type.isEmpty()) return false;
+        net.minecraft.world.entity.Entity e = type.get().create(sl);
+        if (!(e instanceof net.minecraft.world.entity.Mob king)) return false;
+        king.moveTo(getX(), getY(), getZ(), getYRot(), 0F);
+        king.setYHeadRot(getYRot());
+        king.setYBodyRot(getYRot());
+        // Contrato com o módulo espada (EspadaBoss.START_FORM_KEY): nasce já na forma 1 = Arrogante.
+        king.getPersistentData().putInt("isekai_mahou.espada.start_form", 1);
+        Vec3 arena = BossKit.arenaCenter(this);
+        if (isSiteBoss()) {
+            com.renanpontes.isekaimahou.feature.hueco_mundo.HmSites.markSiteKing(king, arena != null ? arena : position(),
+                    BossKit.arenaRadius(this) > 0 ? BossKit.arenaRadius(this) : com.renanpontes.isekaimahou.feature.hueco_mundo.HmSites.KING_ARENA);
+        } else if (arena != null) {
+            BossKit.setArena(king, arena, BossKit.arenaRadius(this));
+        }
+        if (hasCustomName()) king.setCustomName(getCustomName());
+        king.finalizeSpawn(sl, sl.getCurrentDifficultyAt(blockPosition()), net.minecraft.world.entity.MobSpawnType.CONVERSION, null);
+        sl.addFreshEntity(king);
+        sl.sendParticles(ParticleTypes.SOUL, getX(), getY() + 1.5, getZ(), 30, 0.8, 1.2, 0.8, 0.03);
+        bar().removeAllPlayers();
+        discard();
+        return true;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -85,7 +124,7 @@ public class HollowKing extends HmBoss {
 
     @Override
     protected List<String> actionAnimations() {
-        return List.of("cleave", "throw", "breath", "summon", "respira", "resurrect");
+        return List.of("cleave", "throw", "breath", "summon", "respira", "resurrect", "slam");
     }
 
     @Override
@@ -153,10 +192,13 @@ public class HollowKing extends HmBoss {
         if (legionCd > 0) legionCd--;
         if (poolsCd > 0) poolsCd--;
         if (respiraCd > 0) respiraCd--;
+        if (ruinCd > 0) ruinCd--;
         if (target == null) return;
         double d = distanceTo(target);
         if (phase() >= 2 && respiraCd == 0) {
             respira(sl);
+        } else if (phase() >= 1 && ruinCd == 0 && d < 16) {
+            throneRuin(sl);
         } else if (phase() >= 1 && poolsCd == 0) {
             decayPools(sl);
         } else if (legionCd == 0) {
@@ -304,6 +346,70 @@ public class HollowKing extends HmBoss {
             busy = 60;
             hintOnce("exhausted");
         });
+    }
+
+    /**
+     * Ruína do Trono: antecipação (1,5 s: cinzas e ouro convergem para o machado, ronco subindo), impacto (clarão,
+     * cratera de pó de osso, tremor forte) e quatro anéis de decadência em sequência; rescaldo com cinza e ossos
+     * caindo devagar na arena.
+     */
+    private void throneRuin(ServerLevel sl) {
+        ruinCd = 340;
+        busy = 60;
+        action("slam");
+        Vec3 c = position();
+        for (int t = 0; t < 30; t += 3) {
+            final int tick = t;
+            BossKit.schedule(sl, t, () -> {
+                if (!isAlive()) return;
+                double r = 6.0 * (1 - tick / 30.0) + 0.8;
+                Vec3 hand = position().add(0, 3.6 + tick * 0.02, 0);
+                HmFx.ring(sl, hand, r, 18, ParticleTypes.ASH, 0.0);
+                HmFx.ring(sl, hand, r * 0.6, 10, HmFx.dust(0xC9A23A, 1.4F), 0.0);
+                if (tick % 9 == 0) playSound(SoundEvents.WITHER_AMBIENT, 1.6F, 0.4F + tick * 0.02F);
+            });
+        }
+        float dmg = scaled(13F);
+        for (int k = 0; k < 4; k++) {
+            final float inner = k == 0 ? 0F : 2F + 5F * k - 1F, outer = 2F + 5F * (k + 1);
+            final int warm = 30 + k * 7;
+            Telegraph.delayedRing(sl, c, inner, outer, warm, 0x6E5A2E, hits -> {
+                if (!isAlive()) return;
+                hurtAll(hits, dmg, true);
+                for (LivingEntity e : hits) {
+                    if (!isFoe(e)) continue;
+                    e.setDeltaMovement(e.getDeltaMovement().add(0, 0.55, 0));
+                    e.hurtMarked = true;
+                    e.addEffect(new MobEffectInstance(MobEffects.WITHER, 80, 1), this);
+                }
+                double mid = (inner + outer) / 2;
+                HmFx.ring(sl, c.add(0, 0.3, 0), mid, 48, new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK,
+                        net.minecraft.world.level.block.Blocks.BONE_BLOCK.defaultBlockState()), 0.15);
+                HmFx.ring(sl, c.add(0, 0.6, 0), mid, 40, HmFx.dust(0x6E5A2E, 2.0F), 0.0);
+                playSound(SoundEvents.GENERIC_EXPLODE.value(), 1.2F, 0.5F + inner * 0.02F);
+            });
+        }
+        BossKit.schedule(sl, 30, () -> {
+            if (!isAlive()) return;
+            sl.sendParticles(ParticleTypes.FLASH, c.x, c.y + 1, c.z, 2, 0.2, 0.2, 0.2, 0);
+            sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, c.x, c.y + 0.5, c.z, 1, 0, 0, 0, 0);
+            sl.sendParticles(new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK,
+                    net.minecraft.world.level.block.Blocks.BONE_BLOCK.defaultBlockState()), c.x, c.y + 0.4, c.z, 70, 1.6, 0.3, 1.6, 0.35);
+            playSound(SoundEvents.ANVIL_LAND, 2.0F, 0.4F);
+            playSound(SoundEvents.WARDEN_SONIC_BOOM, 1.4F, 0.6F);
+            BossKit.shake(sl, c, 34, 2.4F, 24);
+        });
+        // Rescaldo: cinza e lascas de osso caindo devagar sobre a arena.
+        for (int t = 60; t <= 120; t += 10) {
+            BossKit.schedule(sl, t, () -> {
+                double r = arenaRadius();
+                sl.sendParticles(ParticleTypes.ASH, c.x, c.y + 5, c.z, 30, r * 0.6, 2.0, r * 0.6, 0.0);
+                sl.sendParticles(new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.FALLING_DUST,
+                        net.minecraft.world.level.block.Blocks.BONE_BLOCK.defaultBlockState()), c.x, c.y + 6, c.z, 12, r * 0.5, 1.0, r * 0.5, 0);
+            });
+        }
+        announce("ruin");
+        hintOnce("ruin");
     }
 
     @Override

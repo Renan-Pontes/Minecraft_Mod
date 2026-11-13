@@ -14,6 +14,7 @@ import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -73,7 +74,7 @@ public final class GravityGlyphs {
                             e.getBbWidth() * 0.8, 0.05, e.getBbWidth() * 0.8, 0.2);
                 }
                 FbFx.shockwave(sl, feet.add(0, 0.15, 0), FbFx.dust(FbFx.GRAVITY, 1.6F), 24, 0.35);
-                sl.sendParticles(ParticleTypes.REVERSE_PORTAL, e.getX(), e.getY() + e.getBbHeight(), e.getZ(), 16,
+                sl.sendParticles(Vfx.reversePortal(), e.getX(), e.getY() + e.getBbHeight(), e.getZ(), 16,
                         e.getBbWidth() * 0.4, 0.3, e.getBbWidth() * 0.4, 0.02);
                 FbFx.sound(sl, feet, SoundEvents.MACE_SMASH_GROUND_HEAVY, 1.2F, 0.8F);
                 FbFx.sound(sl, feet, SoundEvents.ANVIL_LAND, 0.5F, 0.5F);
@@ -105,11 +106,11 @@ public final class GravityGlyphs {
                 if (FbUtil.untouchable(e)) continue;
                 boolean boss = FbUtil.isBoss(e);
                 e.addEffect(new MobEffectInstance(MobEffects.LEVITATION, boss ? ticks / 3 : ticks, boss ? 0 : 1), ctx.caster());
-                FbFx.column(sl, e.position(), ParticleTypes.REVERSE_PORTAL, 2.0, 8);
+                FbFx.column(sl, e.position(), Vfx.reversePortal(), 2.0, 8);
                 FbFx.ring(sl, e.position().add(0, 0.1, 0), FbFx.dust(FbFx.GRAVITY, 1.1F), e.getBbWidth() + 0.4, 10, 0);
             }
             FbFx.ring(sl, c.add(0, 0.1, 0), FbFx.fade(FbFx.GRAVITY, FbFx.VOID_BLACK, 1.5F), r, 36, 0);
-            FbFx.ring(sl, c.add(0, 0.2, 0), ParticleTypes.REVERSE_PORTAL, r * 0.8, 20, 0.05);
+            FbFx.ring(sl, c.add(0, 0.2, 0), Vfx.reversePortal(), r * 0.8, 20, 0.05);
             FbFx.sound(sl, c, SoundEvents.SHULKER_BULLET_HIT, 1.2F, 0.7F);
             FbFx.sound(sl, c, SoundEvents.EVOKER_CAST_SPELL, 0.9F, 0.8F);
         }
@@ -229,7 +230,7 @@ public final class GravityGlyphs {
                 e.addEffect(new MobEffectInstance(FbRegistries.INVERTED_GRAVITY, ticks, FbUtil.amp(ctx, stats), false, true, true), ctx.caster());
                 FbUtil.addMotion(e, new Vec3(0, 0.15, 0));
                 FbUtil.forgetTarget(e);
-                FbFx.column(sl, e.position(), ParticleTypes.REVERSE_PORTAL, e.getBbHeight() + 2, 14);
+                FbFx.column(sl, e.position(), Vfx.reversePortal(), e.getBbHeight() + 2, 14);
                 FbFx.ring(sl, e.position().add(0, 0.1, 0), FbFx.dust(FbFx.GRAVITY, 1.3F), e.getBbWidth() + 0.6, 16, 0);
                 FbFx.sound(sl, e.position(), SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 0.5F);
                 FbFx.sound(sl, e.position(), SoundEvents.SHULKER_SHOOT, 0.8F, 0.6F);

@@ -1,0 +1,45 @@
+{
+  "hint.isekai_mahou.combat_feel_finisher": "Inimigo cambaleando! Chegue perto e aperte %s para dar o golpe de misericórdia.",
+  "hint.isekai_mahou.combat_feel_combo": "Combo de magias: conjurar uma magia logo depois da outra aumenta um pouco o poder. Parou, zerou.",
+
+  "hud.isekai_mahou.combat_feel.combo": "Combo ×%s",
+  "hud.isekai_mahou.combat_feel.combo_bonus": "+%s%%",
+  "hud.isekai_mahou.combat_feel.finish": "[%s] Finalizar",
+
+  "command.isekai_mahou.combat_feel.info": "Golpe de misericórdia: %s (abaixo de %s%% de vida) · combo de magias: %s (agora ×%s, +%s%%) · conjuradores espertos: %s (%s por perto)",
+  "command.isekai_mahou.combat_feel.hitstop": "Micro-pausa de teste enviada: %s.",
+  "command.isekai_mahou.combat_feel.finisher": "%s ficou quase sem vida: mire nele de perto e aperte a tecla de usar.",
+  "command.isekai_mahou.combat_feel.no_mob": "Nenhum inimigo comum a até 12 blocos.",
+  "command.isekai_mahou.combat_feel.combo": "Combo de magias em ×%s (+%s%% de poder mágico).",
+  "command.isekai_mahou.combat_feel.caster": "%s: reflexo forçado (resultado: %s).",
+  "command.isekai_mahou.combat_feel.no_caster": "Nenhum conjurador esperto (tag isekai_mahou:smart_casters) a até 16 blocos.",
+
+  "isekai_mahou.configuration.section.isekai.mahou.feel.client.toml": "Combate: impacto (só você)",
+  "isekai_mahou.configuration.section.isekai.mahou.feel.client.toml.title": "Isekai Mahou — Combate: impacto",
+  "isekai_mahou.configuration.section.isekai.mahou.feel.common.toml": "Combate: impacto, regras",
+  "isekai_mahou.configuration.section.isekai.mahou.feel.common.toml.title": "Isekai Mahou — Combate: impacto, regras",
+
+  "isekai_mahou.configuration.hitStop": "Micro-pausa nos impactos",
+  "isekai_mahou.configuration.hitStop.tooltip": "A tela segura por 2 a 4 quadros em golpe pesado, crítico, aparo e explosão grande. Só visual, só na sua tela. Desligue se incomodar.",
+  "isekai_mahou.configuration.hitStopStrength": "Duração da micro-pausa (%)",
+  "isekai_mahou.configuration.hitStopStrength.tooltip": "100 = normal (2 a 4 quadros). Menos = mais curta, mais = mais longa.",
+  "isekai_mahou.configuration.showSpellCombo": "Mostrar o combo de magias",
+  "isekai_mahou.configuration.showSpellCombo.tooltip": "O contador \"Combo ×N\" ao lado da mira. Desligado, o bônus continua valendo.",
+  "isekai_mahou.configuration.finisherPrompt": "Aviso de finalizar",
+  "isekai_mahou.configuration.finisherPrompt.tooltip": "Uma linha logo acima da mira quando você mira de perto num inimigo comum quase morto.",
+
+  "isekai_mahou.configuration.finisherEnabled": "Golpe de misericórdia ligado",
+  "isekai_mahou.configuration.finisherEnabled.tooltip": "Inimigo comum quase morto pode ser finalizado com a tecla de usar, de perto. Chefes nunca.",
+  "isekai_mahou.configuration.finisherHealthPercent": "Vida para finalizar (%)",
+  "isekai_mahou.configuration.finisherHealthPercent.tooltip": "O inimigo comum pode ser finalizado quando a vida dele fica abaixo disto. Padrão: 10%.",
+  "isekai_mahou.configuration.spellComboEnabled": "Combo de magias ligado",
+  "isekai_mahou.configuration.spellComboEnabled.tooltip": "Conjurar em sequência rápida soma um contador com um bônus pequeno de poder mágico, que zera ao parar.",
+  "isekai_mahou.configuration.spellComboWindowTicks": "Tempo do combo (ticks)",
+  "isekai_mahou.configuration.spellComboWindowTicks.tooltip": "Quanto o combo espera pela próxima magia antes de zerar. 80 = 4 s.",
+  "isekai_mahou.configuration.spellComboBonusPercent": "Bônus por magia do combo (%)",
+  "isekai_mahou.configuration.spellComboBonusPercent.tooltip": "Poder mágico a mais por magia do combo depois da primeira. 2 = +2% cada.",
+  "isekai_mahou.configuration.spellComboMaxSteps": "Magias que contam para o bônus",
+  "isekai_mahou.configuration.spellComboMaxSteps.tooltip": "Depois deste tanto o contador continua subindo, mas o bônus para. 10 com 2% = no máximo +20%.",
+  "isekai_mahou.configuration.smartCasters": "Conjuradores espertos",
+  "isekai_mahou.configuration.smartCasters.tooltip": "Monstros conjuradores desviam de magias, recuam, se curam (bater neles cancela a cura) e pedem ajuda."
+}

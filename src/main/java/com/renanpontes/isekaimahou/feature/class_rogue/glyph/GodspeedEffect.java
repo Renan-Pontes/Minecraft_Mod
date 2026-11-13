@@ -6,6 +6,7 @@ import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueFx;
+import com.renanpontes.isekaimahou.feature.class_rogue.RogueFxNet;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueTechniques;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
@@ -70,8 +71,7 @@ public class GodspeedEffect extends EffectGlyph {
             bolt.setVisualOnly(true);
             sl.addFreshEntity(bolt);
         }
-        sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, 30, 0.4, 0.7, 0.4, 0.4);
-        sl.sendParticles(RogueFx.dust(COLOR, 1.3F), c.x, c.y, c.z, 16, 0.3, 0.6, 0.3, 0);
+        RogueFxNet.at(sl, RogueFxNet.GODSPEED, c, Vec3.ZERO, 1F, COLOR, le.getId());
         RogueFx.sound(sl, c, SoundEvents.TRIDENT_THUNDER.value(), 0.6F, 1.6F);
         if (!le.isAlive()) return;
         Statuses.apply(le, Statuses.Kind.SHOCKED, 1, stats.duration(60), caster, stats.power() * ctx.powerMult());

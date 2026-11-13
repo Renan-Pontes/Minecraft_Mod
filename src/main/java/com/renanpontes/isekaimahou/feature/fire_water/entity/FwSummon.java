@@ -10,8 +10,8 @@ import javax.annotation.Nullable;
 import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -182,7 +182,7 @@ public abstract class FwSummon extends PathfinderMob implements OwnableEntity, G
     public void vanish() {
         if (level() instanceof ServerLevel sl) {
             vanishFx(sl);
-            sl.sendParticles(ParticleTypes.POOF, getX(), getY() + getBbHeight() * 0.5, getZ(), 12, 0.3, 0.3, 0.3, 0.03);
+            sl.sendParticles(Vfx.poof(), getX(), getY() + getBbHeight() * 0.5, getZ(), 12, 0.3, 0.3, 0.3, 0.03);
         }
         discard();
     }

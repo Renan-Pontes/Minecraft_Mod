@@ -33,6 +33,12 @@ final class OnboardTasks {
         }));
     }
 
+    /** Há uma tarefa com esta chave agendada para o jogador? */
+    static boolean pending(UUID player, String key) {
+        for (Task t : TASKS) if (t.player.equals(player) && t.key.equals(key)) return true;
+        return false;
+    }
+
     static void cancel(UUID player, String key) {
         TASKS.removeIf(t -> t.player.equals(player) && t.key.equals(key));
     }

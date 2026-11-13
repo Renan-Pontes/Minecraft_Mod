@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " G ",
+    "MAM",
+    "CCC"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:golden_apple"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "A": {
+      "item": "minecraft:amethyst_block"
+    },
+    "C": {
+      "item": "minecraft:calcite"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:new_beginnings_altar",
+    "count": 1
+  }
+}

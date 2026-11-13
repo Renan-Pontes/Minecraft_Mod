@@ -1,0 +1,5 @@
+-Xms2G
+-Xmx6G
+-XX:+UseG1GC
+-XX:+ParallelRefProcEnabled
+-XX:MaxGCPauseMillis=200

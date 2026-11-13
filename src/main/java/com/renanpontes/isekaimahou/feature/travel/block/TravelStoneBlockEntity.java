@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.core.api.Onboarding;
@@ -346,7 +347,7 @@ public class TravelStoneBlockEntity extends BlockEntity implements GeoBlockEntit
             be.viewerNear = be.awake || level.getNearestPlayer(x, y + 1, z, 28.0, false) != null;
         }
         if (!be.viewerNear) return;
-        boolean reduced = MahouConfig.REDUCED_PARTICLES.get();
+        boolean reduced = !FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         RandomSource r = level.random;
         // Runas sendo puxadas para o fuste (partícula de encantamento voa do deslocamento até o centro)
         if (be.age % (reduced ? 10 : (be.awake ? 2 : 4)) == 0) {

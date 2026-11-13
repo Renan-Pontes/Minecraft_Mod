@@ -247,6 +247,7 @@ public final class ShinigamiEvents {
         if (!(e.getEntity() instanceof ServerPlayer sp) || sp.tickCount % 20 != 0) return;
         ShinigamiTechniques.secondTick(sp);
         if (Shinigami.isShinigami(sp)) Meditation.spiritualRegen(sp);
+        ReleaseForge.second(sp);
         if (sp.tickCount % 100 == 0) syncPassives(sp);
     }
 

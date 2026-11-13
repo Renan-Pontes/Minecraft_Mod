@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:gem_sapphire"
+    },
+    {
+      "item": "isekai_mahou:gem_sapphire"
+    },
+    {
+      "item": "isekai_mahou:gem_sapphire"
+    },
+    {
+      "item": "isekai_mahou:abyss_shard"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:gem_sapphire_flawless",
+    "count": 1
+  }
+}

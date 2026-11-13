@@ -14,9 +14,12 @@ import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
 import com.renanpontes.isekaimahou.feature.bosses_b.BbRegistries;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -347,6 +350,53 @@ public class Seraph extends BbBoss {
         if (t == 8) markJudgment(sl, 32);
         if (phase() >= 3 && t == 44) markJudgment(sl, 20);
         if (t == 30) BbFx.sound(sl, position(), SoundEvents.BELL_RESONATE, 2.0F, 1.2F);
+        // ASSINATURA — Olhar do Julgamento: a auréola acende; quem estiver OLHANDO para o Serafim quando ela explodir
+        // fica cego e exposto. Desvie o olhar (vire de costas) no momento certo.
+        if (t == 34) {
+            hint("gaze");
+            BbFx.sound(sl, position(), SoundEvents.BEACON_POWER_SELECT, 2.5F, 1.6F);
+            for (LivingEntity e : enemiesNear(position(), 40)) {
+                if (e instanceof ServerPlayer sp) BossKit.vignette(sp, 0xFFF2B0, 0.6F, 26);
+            }
+        }
+        if (t > 34 && t < 60 && t % 2 == 0) {
+            // Antecipação: a luz junta na auréola, cada vez mais rápida
+            Vec3 halo = position().add(0, getBbHeight() + 0.4, 0);
+            double r = 3.0 * (1.0 - (t - 34) / 26.0) + 0.3;
+            for (int i = 0; i < 4; i++) {
+                double a = t * 0.5 + i * Math.PI / 2;
+                sl.sendParticles(ParticleTypes.END_ROD, halo.x + Math.cos(a) * r, halo.y, halo.z + Math.sin(a) * r, 1, 0, 0, 0, 0);
+            }
+            if (t % 8 == 0) BbFx.sound(sl, halo, SoundEvents.AMETHYST_BLOCK_CHIME, 2.0F, 0.8F + (t - 34) / 30F);
+        }
+        if (t == 60) judgmentGaze(sl);
+    }
+
+    /** Quem tem linha de visão e está virado para o Serafim (≈ ±65°) é ofuscado; quem desviou só vê um brilho. */
+    private void judgmentGaze(ServerLevel sl) {
+        Vec3 halo = position().add(0, getBbHeight() + 0.4, 0);
+        sl.sendParticles(ParticleTypes.FLASH, halo.x, halo.y, halo.z, 2, 0.3, 0.3, 0.3, 0);
+        sl.sendParticles(ParticleTypes.END_ROD, halo.x, halo.y, halo.z, 80, 0.4, 0.4, 0.4, 0.6);
+        BbFx.sound(sl, halo, SoundEvents.TOTEM_USE, 1.6F, 1.5F);
+        BbFx.sound(sl, halo, SoundEvents.TRIDENT_THUNDER.value(), 1.4F, 1.6F);
+        for (LivingEntity e : enemiesNear(position(), 40)) {
+            Vec3 eye = e.getEyePosition();
+            Vec3 to = halo.subtract(eye).normalize();
+            boolean looking = e.getViewVector(1F).dot(to) > 0.42 && e.hasLineOfSight(this);
+            if (!looking) {
+                if (e instanceof ServerPlayer sp) BossKit.flash(sp, 0xFFF6D0, 0.25F, 10);
+                continue;
+            }
+            if (e.hurt(spellSource(null), attackPower() * 0.5F)) {
+                e.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 80, 0), this);
+                e.addEffect(new MobEffectInstance(CoreRegistries.EXPOSED, 120, 0), this);
+            }
+            if (e instanceof ServerPlayer sp) {
+                BossKit.flash(sp, 0xFFFFFF, 0.95F, 40);
+                sp.displayClientMessage(Component.translatable("message.isekai_mahou.bosses_b.gaze_blinded")
+                        .withStyle(ChatFormatting.GOLD), true);
+            }
+        }
     }
 
     private void markJudgment(ServerLevel sl, int warmup) {
@@ -694,7 +744,7 @@ public class Seraph extends BbBoss {
     // =====================================================================================
     @Override
     protected int deathDuration() {
-        return 80;
+        return 94; // v1.0: 4 s de animação + o corpo se desfazendo
     }
 
     @Override

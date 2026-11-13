@@ -167,7 +167,7 @@ public class WindTornado extends SpellBoundEntity {
 
     private void clientFx() {
         Level level = level();
-        boolean reduced = MahouConfig.REDUCED_PARTICLES.get();
+        boolean reduced = !com.renanpontes.isekaimahou.client.fx.FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         int n = reduced ? 6 : 16;
         double r = radius();
         int left = life() - tickCount;

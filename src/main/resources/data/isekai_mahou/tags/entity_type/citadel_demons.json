@@ -1,0 +1,31 @@
+{
+  "values": [
+    "isekai_mahou:demon_lord",
+    "isekai_mahou:demon_knight",
+    "isekai_mahou:demon_succubus",
+    {
+      "id": "isekai_mahou:ember_imp",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:summoned_imp",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:summoned_demon",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:patron_ember_lord",
+      "required": false
+    },
+    {
+      "id": "isekai_mahou:abyss_sovereign",
+      "required": false
+    },
+    "minecraft:blaze",
+    "minecraft:ghast",
+    "minecraft:wither_skeleton",
+    "minecraft:wither"
+  ]
+}

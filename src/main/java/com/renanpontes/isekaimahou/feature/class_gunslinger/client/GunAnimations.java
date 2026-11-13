@@ -7,7 +7,7 @@ import java.util.Map;
 import org.joml.Vector3f;
 
 import com.renanpontes.isekaimahou.IsekaiMahou;
-import com.renanpontes.isekaimahou.core.MahouConfig;
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GsNetwork;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GunKind;
 
@@ -194,7 +194,7 @@ public final class GunAnimations {
         double y = e.getY() + 1.35;
         DustParticleOptions dust = new DustParticleOptions(new Vector3f(((rgb >> 16) & 255) / 255F, ((rgb >> 8) & 255) / 255F,
                 (rgb & 255) / 255F), 1.2F);
-        int n = MahouConfig.REDUCED_PARTICLES.get() ? 4 : 12;
+        int n = FxQuality.count(12);
         for (int i = 0; i < n; i++) {
             level.addParticle(dust, x + (level.random.nextDouble() - 0.5) * 0.3, y + (level.random.nextDouble() - 0.5) * 0.3,
                     z + (level.random.nextDouble() - 0.5) * 0.3, 0, 0.02, 0);

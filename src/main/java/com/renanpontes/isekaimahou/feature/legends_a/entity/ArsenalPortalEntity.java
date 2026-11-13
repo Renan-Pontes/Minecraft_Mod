@@ -8,7 +8,7 @@ import com.renanpontes.isekaimahou.feature.legends_a.LegendFx;
 import com.renanpontes.isekaimahou.feature.legends_a.LegendsARegistry;
 import com.renanpontes.isekaimahou.feature.legends_a.glyph.ArsenalGate;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -201,11 +201,11 @@ public class ArsenalPortalEntity extends Entity {
         if (aimPoint != null) setAim(aimPoint.subtract(position()));
         if (tickCount == 1) {
             sl.sendParticles(LegendFx.dust(color(), 1.4F), getX(), getY(), getZ(), 16, 0.4, 0.4, 0.4, 0);
-            sl.sendParticles(ParticleTypes.END_ROD, getX(), getY(), getZ(), 4, 0.3, 0.3, 0.3, 0.02);
+            sl.sendParticles(Vfx.endRod(), getX(), getY(), getZ(), 4, 0.3, 0.3, 0.3, 0.02);
         }
         if (firesNow()) gate.fire(sl, this);
         if (tickCount >= lifetime()) {
-            sl.sendParticles(ParticleTypes.END_ROD, getX(), getY(), getZ(), 6, 0.3, 0.3, 0.3, 0.03);
+            sl.sendParticles(Vfx.endRod(), getX(), getY(), getZ(), 6, 0.3, 0.3, 0.3, 0.03);
             gate.portalGone(sl);
             discard();
         }

@@ -38,6 +38,7 @@ public class ClassEnchanterClient implements ClientModule {
     @Override
     public void initClient(IEventBus modBus) {
         EnchanterArmorItem.renderFactory = ArmorProvider::new;
+        EnchFxClient.init();
         EnchanterCodexItem.openScreen = ClassEnchanterClient::openTab;
         modBus.addListener(EntityRenderersEvent.RegisterRenderers.class,
                 e -> e.registerEntityRenderer(EnchRegistries.SANCTUM.get(), SanctumRenderer::new));

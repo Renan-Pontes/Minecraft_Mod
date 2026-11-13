@@ -1,0 +1,28 @@
+{
+  "offers": [
+    {
+      "rank": "F",
+      "price": 4,
+      "item": {
+        "id": "isekai_mahou:return_scroll",
+        "count": 2
+      }
+    },
+    {
+      "rank": "E",
+      "price": 30,
+      "item": {
+        "id": "isekai_mahou:alchemist_bag",
+        "count": 1
+      }
+    },
+    {
+      "rank": "D",
+      "price": 70,
+      "item": {
+        "id": "isekai_mahou:mana_necklace",
+        "count": 1
+      }
+    }
+  ]
+}

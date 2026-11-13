@@ -19,6 +19,7 @@ import com.renanpontes.isekaimahou.core.api.Cutscenes;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.BossRewards;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
+import com.renanpontes.isekaimahou.feature.bosses_c.polish.BossShow;
 import com.renanpontes.isekaimahou.core.item.GlyphScrollItem;
 import com.renanpontes.isekaimahou.glyph.CoreGlyphs;
 import com.renanpontes.isekaimahou.glyph.Glyph;
@@ -95,7 +96,8 @@ public abstract class ClassBossEntity extends Monster implements GeoEntity, Bone
     public static final String MINION_TAG = "isekai_mahou_class_boss_minion";
 
     protected static final int INTRO_TICKS = 60;
-    private static final int DEATH_TICKS = 50;
+    /** v1.0: 64 (era 50) — a morte nova tem 3 s de animação + o corpo se desfazendo. */
+    private static final int DEATH_TICKS = 64;
     private static final double WAKE_RANGE = 16.0;
     private static final double BAR_RANGE = 48.0;
     private static final double REWARD_RANGE = 48.0;
@@ -182,6 +184,8 @@ public abstract class ClassBossEntity extends Monster implements GeoEntity, Bone
                     Component.translatable(langKey("boss", "phase" + phase)), bossColor(), 50, null);
         }
         announce("phase" + phase);
+        // v1.0: toda troca de fase tem a sua onda (mesmo as que não têm cutscene)
+        BossShow.phaseBurst(level, this, bossColor());
     }
 
     protected boolean phaseCutscene(int phase) {
@@ -236,6 +240,9 @@ public abstract class ClassBossEntity extends Monster implements GeoEntity, Bone
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, p -> isAwake()));
     }
 
+    /** v1.0: trava das falas reativas (provocação / último fôlego). */
+    private final BossShow.Voice voice = new BossShow.Voice();
+
     private ServerBossEvent bar() {
         if (bar == null) {
             bar = new ServerBossEvent(getDisplayName(), barColor(), BossEvent.BossBarOverlay.NOTCHED_10);
@@ -275,6 +282,8 @@ public abstract class ClassBossEntity extends Monster implements GeoEntity, Bone
         }
         // Dormindo, a vida não muda (ver hurt), então as fases só andam com a luta em curso.
         if (isAwake()) checkPhase(sl);
+        // v1.0: fala de último fôlego (uma vez por luta)
+        if (isAwake() && tickCount % 10 == 0 && voice.lastStand(this, 0.15F)) announce("last_stand");
         if (tickCount % 10 == 0) {
             updateBarPlayers(sl);
             if (!isAwake()) {
@@ -326,6 +335,8 @@ public abstract class ClassBossEntity extends Monster implements GeoEntity, Bone
         for (ServerPlayer p : sl.getPlayers(p -> p.distanceToSqr(this) < 40 * 40)) introSeen.add(p.getUUID());
         updateBarPlayers(sl);
         announce("intro");
+        // A arena fica inquebrável desde a apresentação
+        BossKit.sealArena(this);
         onIntroStart(sl);
     }
 
@@ -469,6 +480,8 @@ public abstract class ClassBossEntity extends Monster implements GeoEntity, Bone
             return;
         }
         if (target != null) watchForCheese(sl, target);
+        // Arena protegida viva enquanto ele estiver acordado e houver gente lutando por perto
+        if (tickCount % 40 == 0) BossKit.keepArena(this, PARTY_RANGE);
         tickCombat(sl, target);
     }
 
@@ -574,11 +587,34 @@ public abstract class ClassBossEntity extends Monster implements GeoEntity, Bone
 
     /** Derrota de verdade: XP + contador boss.<id> para todo o grupo, fala final, some com as invocações. */
     protected void onDefeated(ServerLevel sl) {
+        if (lastActionAnim != null) stopTriggeredAnim("action", lastActionAnim);
         Telegraph.cancelAll(this);
         BossRewards.grant(this, REWARD_XP, REWARD_RANGE);
         announce("death");
         bar().removeAllPlayers();
         dismissMinions(sl);
+        // v1.0: golpe final marcado + câmera da derrota (curta, não trava ninguém)
+        BossShow.deathStart(sl, this, bossColor(), DEATH_TICKS, true);
+    }
+
+    /** v1.0: último golpe disparado no controlador "action" — interrompido na morte para não cobrir a animação "death". */
+    @Nullable private String lastActionAnim;
+
+    @Override
+    public void triggerAnim(String controllerName, String animName) {
+        if ("action".equals(controllerName)) lastActionAnim = animName;
+        GeoEntity.super.triggerAnim(controllerName, animName);
+    }
+
+    /** v1.0: um jogador caiu pelas mãos do chefe — provocação curta (com trava: nunca em rajada). */
+    public void onPlayerSlain() {
+        if (level().isClientSide || isDeadOrDying() || !isAwake() || introTicks() > 0 || !voice.taunt(this)) return;
+        announce("taunt");
+    }
+
+    /** Duração da morte em ticks (o renderer usa para desfazer o corpo no fim). */
+    public int deathSpan() {
+        return DEATH_TICKS;
     }
 
     @Override
@@ -593,13 +629,14 @@ public abstract class ClassBossEntity extends Monster implements GeoEntity, Bone
         deathTime++;
         if (level() instanceof ServerLevel sl) {
             Vec3 c = position().add(0, getBbHeight() * 0.5, 0);
-            if (deathTime % 3 == 0) {
-                sl.sendParticles(BossFx.dust(bossColor(), 1.6F), c.x, c.y, c.z, 10, getBbWidth() * 0.4, getBbHeight() * 0.3,
-                        getBbWidth() * 0.4, 0.0);
+            if (deathTime % 4 == 0) {
                 sl.sendParticles(ParticleTypes.SMOKE, c.x, c.y, c.z, 4, getBbWidth() * 0.3, getBbHeight() * 0.3, getBbWidth() * 0.3, 0.01);
             }
+            // v1.0: morte em três atos (vaza, converge, estoura)
+            BossShow.deathTick(sl, this, deathTime, DEATH_TICKS, bossColor());
             if (deathTime >= DEATH_TICKS && !isRemoved()) {
-                BossFx.sphere(sl, c, getBbHeight() * 0.6, 60, BossFx.dust(bossColor(), 2.0F));
+                BossShow.deathFinale(sl, this, bossColor());
+                BossFx.sphere(sl, c, getBbHeight() * 0.6, 40, BossFx.dust(bossColor(), 2.0F));
                 sl.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y, c.z, 2, 0.3, 0.3, 0.3, 0.0);
                 sl.broadcastEntityEvent(this, (byte) 60);
                 remove(RemovalReason.KILLED);

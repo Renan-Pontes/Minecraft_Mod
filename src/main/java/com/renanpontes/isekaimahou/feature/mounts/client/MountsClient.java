@@ -2,7 +2,10 @@ package com.renanpontes.isekaimahou.feature.mounts.client;
 
 import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.feature.mounts.MountsRegistries;
+import com.renanpontes.isekaimahou.feature.mounts.entity.AuroraStag;
 import com.renanpontes.isekaimahou.feature.mounts.entity.Griffin;
+import com.renanpontes.isekaimahou.feature.mounts.entity.LandDrake;
+import com.renanpontes.isekaimahou.feature.mounts.entity.Nightmare;
 import com.renanpontes.isekaimahou.feature.mounts.entity.Pegasus;
 import com.renanpontes.isekaimahou.feature.mounts.entity.SkyRay;
 import com.renanpontes.isekaimahou.feature.mounts.entity.Wyvern;
@@ -36,5 +39,11 @@ public class MountsClient implements ClientModule {
                 ctx -> new MountRenderer<Pegasus>(ctx, Pegasus.ID, true, true, 0.9F, 0.9F));
         e.registerEntityRenderer(MountsRegistries.WYVERN.get(),
                 ctx -> new MountRenderer<Wyvern>(ctx, Wyvern.ID, true, true, 1.2F, 1.0F));
+        e.registerEntityRenderer(MountsRegistries.LAND_DRAKE.get(),
+                ctx -> new GroundMountRenderer<LandDrake>(ctx, LandDrake.ID, false, 0.7F));
+        e.registerEntityRenderer(MountsRegistries.NIGHTMARE.get(),
+                ctx -> new GroundMountRenderer<Nightmare>(ctx, Nightmare.ID, true, 0.75F));
+        e.registerEntityRenderer(MountsRegistries.AURORA_STAG.get(),
+                ctx -> new GroundMountRenderer<AuroraStag>(ctx, AuroraStag.ID, true, 0.7F));
     }
 }

@@ -19,6 +19,7 @@ import com.renanpontes.isekaimahou.core.api.Cutscenes;
 import com.renanpontes.isekaimahou.core.api.Rewards;
 import com.renanpontes.isekaimahou.feature.class_enchanter.AntiMagic;
 import com.renanpontes.isekaimahou.feature.class_enchanter.EnchFx;
+import com.renanpontes.isekaimahou.feature.class_enchanter.EnchFxNet;
 import com.renanpontes.isekaimahou.feature.class_enchanter.EnchRegistries;
 import com.renanpontes.isekaimahou.feature.class_enchanter.Enchants;
 import com.renanpontes.isekaimahou.glyph.Glyph;
@@ -259,9 +260,8 @@ public final class EnchanterRite {
             sp.sendSystemMessage(Component.translatable("message.isekai_mahou.enchanter.rank_no_glyph").withStyle(ChatFormatting.DARK_GRAY));
         }
         Vec3 c = sp.position().add(0, 1, 0);
-        level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, c.x, c.y, c.z, 60, 0.6, 0.9, 0.6, 0.4);
-        level.sendParticles(ParticleTypes.ENCHANT, c.x, c.y, c.z, 120, 0.8, 1.0, 0.8, 1.2);
-        EnchFx.sigil(level, sp.position().add(0, 0.08, 0), 3.0, EnchFx.GOLD, EnchFx.TEAL, 0F);
+        level.sendParticles(ParticleTypes.ENCHANT, c.x, c.y, c.z, 40, 0.8, 1.0, 0.8, 1.2);
+        EnchFxNet.at(level, EnchFxNet.RITE_DONE, sp.position(), Vec3.ZERO, 1F, EnchFx.GOLD, sp.getId());
         EnchFx.sound(level, c, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 1.0F);
         EnchFx.sound(level, c, SoundEvents.PLAYER_LEVELUP, 1.0F, 0.8F);
     }

@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.core.classes.ClassResources;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GsFx;
+import com.renanpontes.isekaimahou.feature.class_gunslinger.GsFxNet;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GsRegistries;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GunCombat;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GunMarks;
@@ -166,7 +167,7 @@ public class ManaBulletEntity extends ThrowableProjectile {
         }
         super.tick();
         if (level().isClientSide) {
-            clientTrail();
+            GsFxNet.trail(this); // rastro desenhado no cliente (GsFxClient)
             return;
         }
         if (isRemoved()) return;
@@ -179,19 +180,6 @@ public class ManaBulletEntity extends ThrowableProjectile {
         if (ghost) noPhysics = true;
     }
 
-    /** Faíscas de pó no rastro (poucas; menos com "partículas reduzidas"). */
-    private void clientTrail() {
-        boolean low;
-        try {
-            low = com.renanpontes.isekaimahou.core.MahouConfig.REDUCED_PARTICLES.get();
-        } catch (RuntimeException e) {
-            low = false;
-        }
-        if (tickCount % (low ? 4 : 2) != 0) return;
-        Vec3 v = getDeltaMovement();
-        Vec3 at = position().add(0, getBbHeight() * 0.5, 0).subtract(v.scale(0.3));
-        level().addParticle(GsFx.dust(color(), 0.5F * size()), at.x, at.y, at.z, 0, 0, 0);
-    }
 
     private void steer(double range, double weight) {
         LivingEntity best = nearestEnemy(range);
@@ -256,8 +244,7 @@ public class ManaBulletEntity extends ThrowableProjectile {
             ctx.impact(at, getDeltaMovement(), target);
             if (impactRadius > 0) {
                 use.resolveArea(at, impactRadius, this, sensitive);
-                GsFx.impact(level, at, color(), true);
-                level.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+                GsFxNet.at(level, GsFxNet.EXPLOSION, at, Vec3.ZERO, (float) impactRadius, color(), -1);
             } else {
                 use.resolveOnEntity(target, this);
             }
@@ -273,9 +260,8 @@ public class ManaBulletEntity extends ThrowableProjectile {
                 le.knockback(knockback, -v.x, -v.z);
             }
         }
-        GsFx.impact(level, at, color(), true);
+        GsFxNet.at(level, GsFxNet.IMPACT, at, getDeltaMovement(), head ? 1.6F : 1F, color(), -1, 1);
         if (head) {
-            level.sendParticles(ParticleTypes.CRIT, at.x, at.y, at.z, 10, 0.15, 0.15, 0.15, 0.4);
             GsFx.sound(level, at, SoundEvents.ARROW_HIT_PLAYER, 0.8F, 1.6F);
         }
         if (owner instanceof ServerPlayer sp && target instanceof LivingEntity) GunCombat.onBulletHit(sp, target, head);
@@ -321,7 +307,7 @@ public class ManaBulletEntity extends ThrowableProjectile {
             if (impactRadius > 0) ctx.resolveArea(at, impactRadius, this, true);
             else ctx.resolveOnBlock(result, this);
         }
-        GsFx.impact(level, at, color(), false);
+        GsFxNet.at(level, GsFxNet.IMPACT, at, getDeltaMovement(), 1F, color(), -1, 0);
         discard();
     }
 

@@ -1,0 +1,35 @@
+{
+  "glyph.isekai_mahou.quarry": "Quarry",
+  "glyph.isekai_mahou.quarry.desc": "Digs a square area (7×7) layer by layer, going down and remembering where it stopped. Breaks a few blocks at a time (Amplify: more) and pays mana per block by hardness. Items go to the Arcane Collector/pedestal chests (by hand: to you). Never breaks chests, bedrock or protected areas. Stops 48 layers down (Extend: deeper; Persistent: to the bottom of the world) or at bedrock. Pedestal filter: digs only that block (with Invert: everything but it).",
+  "glyph.isekai_mahou.lumberjack": "Lumberjack",
+  "glyph.isekai_mahou.lumberjack.desc": "Fells whole trees in the area (trunk, branches and natural leaves) and replants a sapling at the base. The sapling comes from the pedestal filter (by hand: your off hand), the leaves themselves or the chests. 1 tree at a time (Amplify: more). Wooden houses without natural leaves stay standing.",
+  "glyph.isekai_mahou.arcane_fishing": "Arcane Fishing",
+  "glyph.isekai_mahou.arcane_fishing.desc": "Fishes in the area's water (needs 6+ source blocks) with an angler's luck: fish and some finds. Each pond gives a fish every 4 s. Amplify: more tries; Fortune: Luck of the Sea III.",
+  "glyph.isekai_mahou.illuminate": "Illuminate",
+  "glyph.isekai_mahou.illuminate.desc": "Places torches (or another light from your inventory/the pedestal chests) on the dark spots of the area, spaced out, so monsters don't spawn. Pedestal filter / off hand: uses only that light.",
+
+  "glyph.isekai_mahou.on_ripe": "On Ripe",
+  "glyph.isekai_mahou.on_ripe.desc": "Pedestal trigger: only casts when there are ripe crops in the area. By hand: the spell only goes off if something ripe is near you.",
+  "glyph.isekai_mahou.on_empty": "On Empty",
+  "glyph.isekai_mahou.on_empty.desc": "Pedestal trigger: only casts when there is empty farmland (or soul sand) in the area. Great with Sow.",
+  "glyph.isekai_mahou.on_items": "Items on the Ground",
+  "glyph.isekai_mahou.on_items.desc": "Pedestal trigger: only casts when there are loose items in the area. Great with Collect and Arcane Forge.",
+  "glyph.isekai_mahou.on_work": "When There Is Work",
+  "glyph.isekai_mahou.on_work.desc": "Pedestal trigger: only casts when some effect of the spell has something to do (the Quarry hasn't hit bottom, there's a tree, water, a dark spot, a ripe crop, empty soil, items...). Saves mana.",
+  "glyph.isekai_mahou.on_night": "At Nightfall",
+  "glyph.isekai_mahou.on_night.desc": "Pedestal trigger: only casts while it is night (never in the Nether/End).",
+  "glyph.isekai_mahou.on_day": "At Dawn",
+  "glyph.isekai_mahou.on_day.desc": "Pedestal trigger: only casts while it is day (never in the Nether/End).",
+  "glyph.isekai_mahou.on_monsters": "Monsters Nearby",
+  "glyph.isekai_mahou.on_monsters.desc": "Pedestal trigger: only casts when there is a monster in the area. For defense towers and mob farms.",
+
+  "message.isekai_mahou.auto_glyphs.condition_not_met": "⌛ Condition not met: %s",
+  "message.isekai_mahou.auto_glyphs.quarry_progress": "⛏ Quarry: layer Y %s · %s blocks · +%s mana",
+  "message.isekai_mahou.auto_glyphs.quarry_done": "⛏ The Quarry hit bottom (layer Y %s).",
+  "message.isekai_mahou.auto_glyphs.no_work_mana": "Not enough mana to keep working.",
+  "message.isekai_mahou.auto_glyphs.no_sapling": "No sapling to replant.",
+  "message.isekai_mahou.auto_glyphs.fishing_no_water": "Needs at least %s still water blocks to fish.",
+  "message.isekai_mahou.auto_glyphs.no_lights": "No torches (or other light) to place.",
+
+  "command.isekai_mahou.auto_glyphs.granted": "Farm glyphs learned (%s): %s"
+}

@@ -76,6 +76,15 @@ public final class Rewards {
         if (ench != null && !ench.isEmpty()) upgraded.set(net.minecraft.core.component.DataComponents.ENCHANTMENTS, ench);
         var name = old.get(net.minecraft.core.component.DataComponents.CUSTOM_NAME);
         if (name != null) upgraded.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, name);
+        // v1.0: os dados personalizados também seguem a arma (gemas engastadas, selo do kit, runas): antes a subida de
+        // tier apagava as gemas. O que a arma nova já traz de fábrica tem prioridade.
+        var oldData = old.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+        if (oldData != null && !oldData.isEmpty()) {
+            net.minecraft.nbt.CompoundTag merged = oldData.copyTag();
+            var newData = upgraded.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+            if (newData != null) merged.merge(newData.copyTag());
+            upgraded.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(merged));
+        }
         inv.setItem(bestSlot, upgraded);
         player.containerMenu.broadcastChanges();
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SMITHING_TABLE_USE, SoundSource.PLAYERS, 0.6F, 1.2F);

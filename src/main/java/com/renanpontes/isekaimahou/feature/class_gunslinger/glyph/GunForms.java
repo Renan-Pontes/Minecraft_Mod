@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GsFx;
+import com.renanpontes.isekaimahou.feature.class_gunslinger.GsFxNet;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GsNetwork;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GunCombat;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.entity.ManaBulletEntity;
@@ -110,7 +111,7 @@ public final class GunForms {
             if (caster != null) {
                 ServerLevel level = ctx.level();
                 Vec3 at = ctx.hasOrigin() ? ctx.eyePos() : GsFx.muzzle(caster, caster.getLookAngle(), 1);
-                level.sendParticles(ParticleTypes.SONIC_BOOM, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+                GsFxNet.at(level, GsFxNet.CHARGED_SHOT, at, caster.getLookAngle(), 1F, ctx.color() & 0xFFFFFF, caster.getId());
                 GsFx.sound(level, at, SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 1.0F, 0.6F);
                 GsFx.sound(level, at, SoundEvents.BLAZE_SHOOT, 0.6F, 0.7F);
                 if (caster instanceof ServerPlayer sp && !ctx.hasOrigin()) GsNetwork.anim(sp, GsNetwork.CHARGE, 0, ctx.color() & 0xFFFFFF);

@@ -1,7 +1,10 @@
 package com.renanpontes.isekaimahou.feature.hueco_mundo.boss;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -36,12 +39,14 @@ import net.minecraft.world.phys.Vec3;
  *       <b>Encanto da Rainha</b> (marcas que seguem os jogadores: tonteira, lentidão e puxão para ela) e
  *       <b>Corte Travessa</b> (fadas e cães de espinhos).</li>
  *   <li>Fase 2 (50%): <b>Chuva de Sementes</b>: sementes caem em volta de cada jogador e explodem em espinhos.</li>
+ *   <li>v1.3 — <b>Valsa das Pétalas</b> (fase 2+): abre as asas e gira; três braços de pétalas cortantes varrem a
+ *       arena em volta dela por 3 s (pule por cima do braço ou fique longe), e tudo termina numa explosão de pétalas.</li>
  *   <li>Fase 3 (20%): <b>Veredito da Lua</b>: só os círculos verdes salvam; quem fica fora vira estátua por instantes.</li>
  * </ul>
  */
 public class ThornQueen extends HmBoss {
     private static final int PETAL = 0xF29AD8, THORN = 0x5E8A3A, MOON = 0xCFE8FF;
-    private int busy, lanceCd = 30, petalCd = 60, charmCd = 120, courtCd = 160, seedCd = 40, verdictCd = 60;
+    private int busy, lanceCd = 30, petalCd = 60, charmCd = 120, courtCd = 160, seedCd = 40, verdictCd = 60, waltzCd = 60;
 
     public ThornQueen(EntityType<? extends ThornQueen> type, Level level) {
         super(type, level);
@@ -78,7 +83,7 @@ public class ThornQueen extends HmBoss {
 
     @Override
     protected List<String> actionAnimations() {
-        return List.of("lance", "petals", "charm", "summon", "seeds", "verdict");
+        return List.of("lance", "petals", "charm", "summon", "seeds", "verdict", "waltz");
     }
 
     @Override
@@ -132,10 +137,13 @@ public class ThornQueen extends HmBoss {
         if (courtCd > 0) courtCd--;
         if (seedCd > 0) seedCd--;
         if (verdictCd > 0) verdictCd--;
+        if (waltzCd > 0) waltzCd--;
         if (target == null) return;
         double d = distanceTo(target);
         if (phase() >= 2 && verdictCd == 0) {
             verdict(sl);
+        } else if (phase() >= 1 && waltzCd == 0 && d < 13) {
+            waltz(sl);
         } else if (phase() >= 1 && seedCd == 0) {
             seeds(sl);
         } else if (courtCd == 0) {
@@ -273,6 +281,88 @@ public class ThornQueen extends HmBoss {
             BossKit.shake(sl, c, arenaRadius() + 8, 1.4F, 24);
         });
         hintOnce("verdict");
+    }
+
+    /**
+     * Valsa das Pétalas: antecipação (1 s: pétalas se fecham em volta dela, sinos, as três linhas iniciais marcadas no
+     * chão), 3 s de giro com três braços de pétalas de 14 blocos (cada braço fere uma vez a cada meio segundo, sangra e
+     * empurra de lado) e o final: explosão de pétalas e luar; as pétalas ficam caindo por um tempo.
+     */
+    private void waltz(ServerLevel sl) {
+        waltzCd = 320;
+        busy = 90;
+        action("waltz");
+        final Vec3 c = position();
+        final double len = 14.0;
+        final float start = getYRot();
+        for (int i = 0; i < 3; i++) {
+            Vec3 dir = Vec3.directionFromRotation(0, start + i * 120F);
+            Telegraph.show(sl, Telegraph.Shape.line(c, c.add(dir.scale(len)), 1.6F).warmup(20).color(PETAL).owner(this).noRunes());
+        }
+        for (int t = 0; t < 20; t += 4) {
+            final int tick = t;
+            BossKit.schedule(sl, t, () -> {
+                if (!isAlive()) return;
+                HmFx.ring(sl, c.add(0, 1.2, 0), 4.0 - tick * 0.15, 20, ParticleTypes.CHERRY_LEAVES, 0.0);
+                if (tick % 8 == 0) playSound(SoundEvents.AMETHYST_BLOCK_CHIME, 2.0F, 0.6F + tick * 0.04F);
+            });
+        }
+        float dmg = scaled(8F);
+        Map<UUID, Long> lastHit = new HashMap<>();
+        for (int t = 0; t <= 60; t += 3) {
+            final int tick = t;
+            BossKit.schedule(sl, 20 + t, () -> {
+                if (!isAlive()) return;
+                double base = Math.toRadians(start + tick * 6.0);
+                for (int arm = 0; arm < 3; arm++) {
+                    double a = base + arm * Math.PI * 2 / 3;
+                    double dx = -Math.sin(a), dz = Math.cos(a);
+                    for (double r = 2; r <= len; r += 2.4) {
+                        if (r > len - 3) {
+                            sl.sendParticles(HmFx.dust(PETAL, 1.6F), c.x + dx * r, c.y + 1.0, c.z + dz * r, 2, 0.15, 0.15, 0.15, 0.02);
+                        } else {
+                            sl.sendParticles(ParticleTypes.CHERRY_LEAVES, c.x + dx * r, c.y + 1.0, c.z + dz * r, 2, 0.15, 0.15, 0.15, 0.02);
+                        }
+                    }
+                }
+                for (ServerPlayer p : BossKit.partyAround(this, len + 2)) {
+                    if (!isFoe(p)) continue;
+                    Vec3 rel = p.position().subtract(c);
+                    double dist = Math.sqrt(rel.x * rel.x + rel.z * rel.z);
+                    if (dist < 1.5 || dist > len || p.getY() > c.y + 2.2) continue;
+                    double pa = Math.atan2(-rel.x, rel.z);
+                    boolean onArm = false;
+                    for (int arm = 0; arm < 3; arm++) {
+                        double a = base + arm * Math.PI * 2 / 3;
+                        double diff = Math.abs(Math.atan2(Math.sin(pa - a), Math.cos(pa - a)));
+                        if (diff * dist < 1.3) onArm = true;
+                    }
+                    Long last = lastHit.get(p.getUUID());
+                    if (!onArm || (last != null && sl.getGameTime() - last < 10)) continue;
+                    lastHit.put(p.getUUID(), sl.getGameTime());
+                    p.hurt(damageSources().indirectMagic(this, this), dmg);
+                    p.addEffect(new MobEffectInstance(CoreRegistries.BLEEDING, 60, 0), this);
+                    Vec3 tangent = new Vec3(-rel.z, 0, rel.x).normalize().scale(0.8);
+                    p.setDeltaMovement(p.getDeltaMovement().add(tangent.x, 0.25, tangent.z));
+                    p.hurtMarked = true;
+                }
+                if (tick % 12 == 0) playSound(SoundEvents.CHERRY_LEAVES_BREAK, 1.8F, 0.8F + tick * 0.01F);
+            });
+        }
+        BossKit.schedule(sl, 82, () -> {
+            if (!isAlive()) return;
+            sl.sendParticles(ParticleTypes.FLASH, c.x, c.y + 1.5, c.z, 1, 0, 0, 0, 0);
+            HmFx.sphere(sl, c.add(0, 1.5, 0), 3.0, 70, HmFx.dust(PETAL, 1.8F));
+            HmFx.ring(sl, c.add(0, 0.4, 0), 6.0, 56, ParticleTypes.CHERRY_LEAVES, 0.3);
+            sl.sendParticles(ParticleTypes.END_ROD, c.x, c.y + 2, c.z, 30, 1.5, 1.0, 1.5, 0.15);
+            playSound(SoundEvents.ALLAY_ITEM_TAKEN, 2.0F, 0.4F);
+            BossKit.shake(sl, c, 24, 1.2F, 14);
+        });
+        for (int t = 90; t <= 150; t += 12) {
+            BossKit.schedule(sl, t, () -> sl.sendParticles(ParticleTypes.CHERRY_LEAVES, c.x, c.y + 6, c.z, 24, len * 0.5, 1.5, len * 0.5, 0));
+        }
+        announce("waltz");
+        hintOnce("waltz");
     }
 
     @Override

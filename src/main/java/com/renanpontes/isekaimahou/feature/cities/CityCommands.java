@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -50,6 +51,14 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
  * /mahou city siege [stop]                  começa/termina o Cerco na cidade onde você está
  * /mahou city wanted clear [jogadores]      tira o "Procurado" e as marcas de reincidência da guarda
  * /mahou city place capital|capital_sahra|capital_nordheim|city   gera uma capital/cidade AQUI
+ * --- release 1.0 ---
+ * /mahou city start info|find|here|tp|clear cidade inicial: estado / procura de novo a partir do nascimento original /
+ *                                           procura a partir de onde você está / teleporta para lá / desfaz
+ * /mahou city inn rest|rent &lt;dias&gt;|status|expire   estalagem sem estalajadeiro nem moedas (descanso, quarto, estado, vencer)
+ * /mahou city quest list|start &lt;id&gt;|step|status|reset   sidequests: modelos, começar com o morador mais perto, pular passo...
+ * /mahou city routine on|off|status          rotina dos moradores (taverna à noite, lojas fechadas de madrugada)
+ * /mahou city fixtures [retry]               blocos de serviço da praça (Quadro do Mercado; altares nas capitais): onde
+ *                                           estão / esquece os que sumiram e tenta pôr de novo agora
  * </pre>
  */
 public final class CityCommands {
@@ -78,7 +87,178 @@ public final class CityCommands {
                         .then(Commands.literal("capital").executes(c -> place(c, "capital_city")))
                         .then(Commands.literal("capital_sahra").executes(c -> place(c, "capital_sahra")))
                         .then(Commands.literal("capital_nordheim").executes(c -> place(c, "capital_nordheim")))
-                        .then(Commands.literal("city").executes(c -> place(c, "guild_city"))))));
+                        .then(Commands.literal("city").executes(c -> place(c, "guild_city"))))
+                // ---------------- release 1.0 ----------------
+                .then(Commands.literal("start")
+                        .then(Commands.literal("info").executes(CityCommands::startInfo))
+                        .then(Commands.literal("find").executes(c -> startFind(c, false)))
+                        .then(Commands.literal("here").executes(c -> startFind(c, true)))
+                        .then(Commands.literal("tp").executes(c -> {
+                            boolean ok = CityStart.teleport(c.getSource().getPlayerOrException());
+                            return feedback(c, ok, ok ? "start.tp" : "start.none");
+                        }))
+                        .then(Commands.literal("clear").executes(c -> {
+                            CityStart.clear(c.getSource().getServer());
+                            return feedback(c, true, "start.cleared");
+                        })))
+                .then(Commands.literal("inn")
+                        .then(Commands.literal("rest").executes(c -> {
+                            CityInn.applyRest(c.getSource().getPlayerOrException());
+                            return feedback(c, true, "inn.rested");
+                        }))
+                        .then(Commands.literal("rent").then(Commands.argument("days", IntegerArgumentType.integer(1, 30))
+                                .executes(c -> {
+                                    ServerPlayer p = c.getSource().getPlayerOrException();
+                                    CityInn.debugRent(p, IntegerArgumentType.getInteger(c, "days"));
+                                    return innStatus(c, p);
+                                })))
+                        .then(Commands.literal("status").executes(c -> innStatus(c, c.getSource().getPlayerOrException())))
+                        .then(Commands.literal("expire").executes(c -> {
+                            CityInn.expire(c.getSource().getPlayerOrException(), false);
+                            return feedback(c, true, "inn.expired");
+                        })))
+                .then(Commands.literal("quest")
+                        .then(Commands.literal("list").executes(c -> {
+                            c.getSource().sendSuccess(() -> Component.literal(String.join(", ", CityQuests.ids())), false);
+                            return CityQuests.ids().size();
+                        }))
+                        .then(Commands.literal("start").then(Commands.argument("id", StringArgumentType.word())
+                                .suggests((c, b) -> SharedSuggestionProvider.suggest(CityQuests.ids(), b))
+                                .executes(CityCommands::questStart)))
+                        .then(Commands.literal("step").executes(c -> {
+                            boolean ok = CityQuests.debugStep(c.getSource().getPlayerOrException());
+                            return feedback(c, ok, ok ? "quest.stepped" : "quest.no_active");
+                        }))
+                        .then(Commands.literal("status").executes(c -> {
+                            Component st = CityQuests.debugStatus(c.getSource().getPlayerOrException());
+                            if (st == null) return feedback(c, false, "quest.no_active");
+                            c.getSource().sendSuccess(() -> st, false);
+                            return 1;
+                        }))
+                        .then(Commands.literal("reset").executes(c -> {
+                            CityQuests.debugReset(c.getSource().getPlayerOrException());
+                            return feedback(c, true, "quest.reset");
+                        })))
+                .then(Commands.literal("fixtures")
+                        .executes(c -> fixtures(c, false))
+                        .then(Commands.literal("retry").executes(c -> fixtures(c, true))))
+                .then(Commands.literal("routine")
+                        .then(Commands.literal("on").executes(c -> routine(c, true)))
+                        .then(Commands.literal("off").executes(c -> routine(c, false)))
+                        .then(Commands.literal("status").executes(CityCommands::routineStatus)))));
+    }
+
+    // =====================================================================================
+    //  Release 1.0: cidade inicial, estalagem, sidequests e rotina
+    // =====================================================================================
+    /** Resposta curta de um comando de teste ({@code command.isekai_mahou.cities.<key>}). */
+    private static int feedback(CommandContext<CommandSourceStack> c, boolean ok, String key) {
+        Component msg = Component.translatable("command.isekai_mahou.cities." + key);
+        if (ok) c.getSource().sendSuccess(() -> msg, false);
+        else c.getSource().sendFailure(msg);
+        return ok ? 1 : 0;
+    }
+
+    private static int startInfo(CommandContext<CommandSourceStack> c) {
+        CityWorld w = CityWorld.get(c.getSource().getServer());
+        BlockPos spawn = c.getSource().getServer().overworld().getSharedSpawnPos();
+        String state = switch (w.startState) {
+            case CityWorld.START_SET -> "set";
+            case CityWorld.START_NONE -> "not_found";
+            case CityWorld.START_OFF -> "off";
+            default -> "undecided";
+        };
+        c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.cities.start.info",
+                Component.translatable("command.isekai_mahou.cities.start.state." + state),
+                spawn.getX(), spawn.getY(), spawn.getZ(),
+                w.originalSpawn == null ? "-" : w.originalSpawn.getX() + " " + w.originalSpawn.getY() + " " + w.originalSpawn.getZ()), false);
+        return w.startState == CityWorld.START_SET ? 1 : 0;
+    }
+
+    /** Procura de novo a cidade inicial: a partir do nascimento original ou ({@code here}) de onde o comando foi dado. */
+    private static int startFind(CommandContext<CommandSourceStack> c, boolean here) {
+        CityWorld w = CityWorld.get(c.getSource().getServer());
+        BlockPos from = here ? BlockPos.containing(c.getSource().getPosition())
+                : w.originalSpawn != null ? w.originalSpawn : c.getSource().getServer().overworld().getSharedSpawnPos();
+        boolean ok = CityStart.choose(c.getSource().getServer(), from);
+        if (!ok) return feedback(c, false, "start.not_found");
+        return startInfo(c);
+    }
+
+    private static int innStatus(CommandContext<CommandSourceStack> c, ServerPlayer p) {
+        Optional<BlockPos> room = CityInn.room(p);
+        if (room.isEmpty()) return feedback(c, false, "inn.no_room");
+        BlockPos b = room.get();
+        c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.cities.inn.status", b.getX(), b.getY(), b.getZ(),
+                CityInn.daysLeft(p)), false);
+        return 1;
+    }
+
+    /** Começa o pedido com o morador mais perto (até 24 blocos) como quem pediu, sem checar se ele ofereceria. */
+    private static int questStart(CommandContext<CommandSourceStack> c) throws CommandSyntaxException {
+        ServerPlayer p = c.getSource().getPlayerOrException();
+        CityQuests.Quest q = CityQuests.byId(StringArgumentType.getString(c, "id"));
+        if (q == null) return feedback(c, false, "quest.bad_id");
+        CityNpc best = null;
+        for (CityNpc n : p.serverLevel().getEntitiesOfClass(CityNpc.class, p.getBoundingBox().inflate(24), CityNpc::isAlive)) {
+            if (best == null || n.distanceToSqr(p) < best.distanceToSqr(p)) best = n;
+        }
+        if (best == null) return feedback(c, false, "quest.no_npc");
+        CityQuests.debugReset(p);
+        CityQuests.start(p, best, q);
+        CityNpc giver = best;
+        c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.cities.quest.started",
+                Component.translatable(CityQuests.KEY + q.id() + ".title"), giver.getDisplayName()), false);
+        return 1;
+    }
+
+    /** Blocos de serviço da praça da cidade onde o jogador está ({@link CityFixtures}). */
+    private static int fixtures(CommandContext<CommandSourceStack> c, boolean retry) throws CommandSyntaxException {
+        ServerPlayer p = c.getSource().getPlayerOrException();
+        ServerLevel sl = p.serverLevel();
+        CityHeartBlockEntity heart = heartAt(sl, p.blockPosition());
+        if (heart == null) return feedback(c, false, "not_in_city");
+        if (retry) {
+            int placed = CityFixtures.retry(sl, heart);
+            c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.cities.fixtures.retried", placed), true);
+        }
+        int found = 0;
+        for (CityFixtures.Kind kind : CityFixtures.Kind.values()) {
+            // Nome do bloco pelo registro (módulo ausente: mostra o id)
+            Component name = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getOptional(IsekaiMahou.id(kind.blockId))
+                    .<Component>map(net.minecraft.world.level.block.Block::getName).orElse(Component.literal(kind.blockId));
+            BlockPos at = heart.fixturePos(kind);
+            MutableComponent line;
+            if (at != null) {
+                boolean gone = sl.isLoaded(at) && !CityFixtures.present(sl, kind, at);
+                line = Component.translatable(gone ? "command.isekai_mahou.cities.fixtures.gone" : "command.isekai_mahou.cities.fixtures.at",
+                        name, at.getX(), at.getY(), at.getZ());
+                String tp = "/tp @s " + at.getX() + " " + at.getY() + " " + (at.getZ() + 2);
+                line.withStyle(s -> s.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, tp))
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(tp))));
+                if (!gone) found++;
+            } else if (!heart.fixtureDone(kind)) {
+                line = Component.translatable("command.isekai_mahou.cities.fixtures.pending", name);
+            } else {
+                line = Component.translatable(kind.capitalOnly && !heart.capital() ? "command.isekai_mahou.cities.fixtures.capital_only"
+                        : "command.isekai_mahou.cities.fixtures.no_room", name);
+            }
+            c.getSource().sendSuccess(() -> line, false);
+        }
+        return found;
+    }
+
+    private static int routine(CommandContext<CommandSourceStack> c, boolean on) {
+        CityRoutine.setEnabled(c.getSource().getServer(), on);
+        return routineStatus(c);
+    }
+
+    private static int routineStatus(CommandContext<CommandSourceStack> c) {
+        ServerLevel sl = c.getSource().getLevel();
+        c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.cities.routine.status",
+                Component.translatable(CityRoutine.enabled() ? "command.isekai_mahou.cities.routine.on" : "command.isekai_mahou.cities.routine.off"),
+                CityRoutine.phase(sl).name(), sl.getDayTime() % 24000L), false);
+        return 1;
     }
 
     private static int list(CommandContext<CommandSourceStack> c) {

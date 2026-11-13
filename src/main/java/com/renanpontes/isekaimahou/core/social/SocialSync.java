@@ -15,6 +15,8 @@ import com.renanpontes.isekaimahou.core.social.SocialData.PartyRec;
 import com.renanpontes.isekaimahou.core.social.SocialData.WarRec;
 import com.renanpontes.isekaimahou.core.social.SocialPayloads.ArenaInfo;
 import com.renanpontes.isekaimahou.core.social.SocialPayloads.Member;
+import com.renanpontes.isekaimahou.core.social.SocialPayloads.MemberPos;
+import com.renanpontes.isekaimahou.core.social.SocialPayloads.PartyPos;
 import com.renanpontes.isekaimahou.core.social.SocialPayloads.PartySync;
 import com.renanpontes.isekaimahou.core.social.SocialPayloads.Req;
 import com.renanpontes.isekaimahou.core.social.SocialPayloads.State;
@@ -34,6 +36,8 @@ final class SocialSync {
     private static boolean allStatesDirty;
     private static final Map<UUID, PartySync> LAST_PARTY = new HashMap<>();
     private static final Map<UUID, State> LAST_STATE = new HashMap<>();
+    /** Última lista de posições mandada a cada jogador (marcador dos amigos). */
+    private static final Map<UUID, PartyPos> LAST_POS = new HashMap<>();
 
     static void markParty(UUID partyId) {
         PARTY_DIRTY.add(partyId);
@@ -52,6 +56,7 @@ final class SocialSync {
         LAST_PARTY.remove(member);
         ServerPlayer sp = server.getPlayerList().getPlayer(member);
         if (sp != null) PacketDistributor.sendToPlayer(sp, PartySync.empty());
+        if (LAST_POS.remove(member) != null && sp != null) PacketDistributor.sendToPlayer(sp, PartyPos.empty());
         STATE_DIRTY.add(member);
     }
 
@@ -71,6 +76,7 @@ final class SocialSync {
                         PacketDistributor.sendToPlayer(p, packet);
                     }
                 }
+                if (periodicParty) syncPositions(online);
             }
             PARTY_DIRTY.clear();
         }
@@ -86,6 +92,25 @@ final class SocialSync {
             }
             STATE_DIRTY.clear();
             allStatesDirty = false;
+        }
+    }
+
+    /**
+     * Marcador dos amigos: a cada 0,5 s cada membro recebe o bloco onde estão os OUTROS membros online da mesma
+     * dimensão (só quando mudou). Grupo de até 8: custo desprezível.
+     */
+    private static void syncPositions(List<ServerPlayer> online) {
+        for (ServerPlayer p : online) {
+            List<MemberPos> list = new ArrayList<>();
+            for (ServerPlayer q : online) {
+                if (q == p || q.level() != p.level() || q.isSpectator()) continue;
+                list.add(new MemberPos(q.getUUID(), q.getBlockX(), q.getBlockY(), q.getBlockZ()));
+            }
+            PartyPos packet = new PartyPos(list);
+            PartyPos last = LAST_POS.get(p.getUUID());
+            if (last == null ? list.isEmpty() : packet.equals(last)) continue;
+            LAST_POS.put(p.getUUID(), packet);
+            PacketDistributor.sendToPlayer(p, packet);
         }
     }
 
@@ -145,6 +170,7 @@ final class SocialSync {
     static void forget(UUID player) {
         LAST_PARTY.remove(player);
         LAST_STATE.remove(player);
+        LAST_POS.remove(player);
         STATE_DIRTY.remove(player);
     }
 
@@ -153,6 +179,7 @@ final class SocialSync {
         STATE_DIRTY.clear();
         LAST_PARTY.clear();
         LAST_STATE.clear();
+        LAST_POS.clear();
         allStatesDirty = false;
     }
 

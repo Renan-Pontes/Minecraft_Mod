@@ -13,6 +13,7 @@ import com.renanpontes.isekaimahou.feature.fusions_d.FdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -73,11 +74,14 @@ public class AbyssalMawEntity extends FdSpellEntity implements GeoEntity {
         m.damage = 4F * stats.power();
         m.radius = Math.min(6F, stats.radius(2.8F));
         sl.addFreshEntity(m);
+        // v1.3: a bocarra abre num redemoinho escuro do abismo
+        com.renanpontes.isekaimahou.core.ElementFx.portal(sl, g.add(0, 0.08, 0), null, com.renanpontes.isekaimahou.core.Element.ABYSS, 0x2A4F9A, m.radius, 4, 40);
+        com.renanpontes.isekaimahou.core.ElementFx.impactFx(sl, g.add(0, 0.2, 0), com.renanpontes.isekaimahou.core.Element.ABYSS, 0x2A4F9A, 3, null, 1.0F);
         Destruction.sphere(sl, g.add(0, -1.2, 0), 2.4F, ctx.caster(), Destruction.Mode.BREAK);
         BlockState under = sl.getBlockState(BlockPos.containing(g).below());
         if (under.isAir()) under = Blocks.MUD.defaultBlockState();
         sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, under), g.x, g.y + 0.3, g.z, 60, 1.4, 0.4, 1.4, 0.3);
-        sl.sendParticles(ParticleTypes.SPLASH, g.x, g.y + 0.6, g.z, 60, 1.4, 0.8, 1.4, 0.3);
+        sl.sendParticles(Vfx.splash(), g.x, g.y + 0.6, g.z, 60, 1.4, 0.8, 1.4, 0.3);
         FdFx.sound(sl, g, SoundEvents.RAVAGER_ROAR, 1.6F, 0.5F);
         FdFx.sound(sl, g, SoundEvents.GENERIC_SPLASH, 1.6F, 0.5F);
         BossKit.shake(sl, g, 20, 1.0F, 14);
@@ -111,7 +115,7 @@ public class AbyssalMawEntity extends FdSpellEntity implements GeoEntity {
                     }
                     FdFx.sound(sl, c, SoundEvents.GENERIC_EAT, 1.6F, 0.4F);
                     FdFx.sound(sl, c, SoundEvents.ZOMBIE_ATTACK_WOODEN_DOOR, 0.7F, 0.5F);
-                    sl.sendParticles(ParticleTypes.SQUID_INK, c.x, c.y + 1.4, c.z, 10, 0.8, 0.3, 0.8, 0.05);
+                    sl.sendParticles(Vfx.ink(), c.x, c.y + 1.4, c.z, 10, 0.8, 0.3, 0.8, 0.05);
                 }
                 if (stateAge >= chewTicks) spit(sl, c);
             }
@@ -132,7 +136,7 @@ public class AbyssalMawEntity extends FdSpellEntity implements GeoEntity {
         }
         FdFx.sound(sl, c, SoundEvents.EVOKER_FANGS_ATTACK, 2F, 0.4F);
         FdFx.sound(sl, c, SoundEvents.RAVAGER_ATTACK, 1.6F, 0.5F);
-        sl.sendParticles(ParticleTypes.SPLASH, c.x, c.y + 2, c.z, 40, 1.2, 0.6, 1.2, 0.3);
+        sl.sendParticles(Vfx.splash(), c.x, c.y + 2, c.z, 40, 1.2, 0.6, 1.2, 0.3);
         BossKit.shake(sl, c, 16, 0.9F, 8);
     }
 
@@ -169,8 +173,8 @@ public class AbyssalMawEntity extends FdSpellEntity implements GeoEntity {
             FdUtil.setMotion(le, new Vec3(Math.cos(a) * 1.3, 1.25, Math.sin(a) * 1.3));
         }
         swallowed.clear();
-        sl.sendParticles(ParticleTypes.SPLASH, c.x, c.y + 2, c.z, 80, 0.8, 1, 0.8, 0.6);
-        sl.sendParticles(ParticleTypes.SQUID_INK, c.x, c.y + 2, c.z, 30, 0.6, 0.6, 0.6, 0.2);
+        sl.sendParticles(Vfx.splash(), c.x, c.y + 2, c.z, 80, 0.8, 1, 0.8, 0.6);
+        sl.sendParticles(Vfx.ink(), c.x, c.y + 2, c.z, 30, 0.6, 0.6, 0.6, 0.2);
         FdFx.sound(sl, c, SoundEvents.PLAYER_SPLASH_HIGH_SPEED, 2F, 0.5F);
         FdFx.sound(sl, c, SoundEvents.RAVAGER_STUNNED, 1.4F, 0.5F);
     }

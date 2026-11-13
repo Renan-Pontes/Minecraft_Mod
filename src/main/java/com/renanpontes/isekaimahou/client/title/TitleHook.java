@@ -28,6 +28,8 @@ public final class TitleHook {
         // Prioridade baixa: se outro mod trocar o menu antes, a tela dele vale
         NeoForge.EVENT_BUS.addListener(EventPriority.LOW, ScreenEvent.Opening.class, TitleHook::onOpening);
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Init.Post.class, TitleHook::onInit);
+        // v1.0 RELEASE: telas de carregamento com o céu do mod, o logo e dicas de jogo
+        LoadingArt.init();
     }
 
     private static boolean enabled() {

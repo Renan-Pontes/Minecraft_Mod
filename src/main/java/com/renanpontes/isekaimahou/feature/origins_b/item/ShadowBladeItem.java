@@ -5,10 +5,10 @@ import java.util.List;
 import com.renanpontes.isekaimahou.feature.origins_b.ObFx;
 import com.renanpontes.isekaimahou.feature.origins_b.ObRegistries;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -67,7 +67,7 @@ public class ShadowBladeItem extends SwordItem {
 
     /** Efeito de dissipar no lugar onde a lâmina estava. */
     public static void vanishFx(ServerLevel level, double x, double y, double z) {
-        level.sendParticles(ParticleTypes.SQUID_INK, x, y, z, 10, 0.2, 0.25, 0.2, 0.03);
+        level.sendParticles(Vfx.ink(), x, y, z, 10, 0.2, 0.25, 0.2, 0.03);
         level.sendParticles(ObFx.dust(ObFx.VIOLET, 1.0F), x, y, z, 12, 0.25, 0.3, 0.25, 0);
         level.playSound(null, x, y, z, SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.PLAYERS, 0.6F, 1.4F);
     }
@@ -98,7 +98,7 @@ public class ShadowBladeItem extends SwordItem {
         stack.set(ObRegistries.SHADOW_BLADE_TIMER.get(), new ShadowBladeTimer(left, t.total(), t.expires()));
         if (selected && level instanceof ServerLevel sl && level.getGameTime() % 20 == 0) {
             // Fumaça escorrendo da lâmina na mão
-            sl.sendParticles(ParticleTypes.SQUID_INK, entity.getX(), entity.getY() + 1.0, entity.getZ(), 1, 0.3, 0.2, 0.3, 0.0);
+            sl.sendParticles(Vfx.ink(), entity.getX(), entity.getY() + 1.0, entity.getZ(), 1, 0.3, 0.2, 0.3, 0.0);
         }
     }
 
@@ -107,7 +107,7 @@ public class ShadowBladeItem extends SwordItem {
         target.addEffect(new MobEffectInstance(MobEffects.WITHER, 50, 0), attacker);
         attacker.heal(1.0F);
         if (attacker.level() instanceof ServerLevel sl) {
-            sl.sendParticles(ParticleTypes.SQUID_INK, target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 6, 0.2, 0.3, 0.2, 0.04);
+            sl.sendParticles(Vfx.ink(), target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 6, 0.2, 0.3, 0.2, 0.04);
             sl.sendParticles(ObFx.dust(ObFx.VIOLET, 1.1F), target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 8, 0.3, 0.3, 0.3, 0);
         }
         return true;

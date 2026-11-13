@@ -11,6 +11,7 @@ import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbFx;
+import com.renanpontes.isekaimahou.feature.class_steelball.SbFxNet;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbPart;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbProgress;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbSpin;
@@ -142,8 +143,8 @@ public final class SbTechniqueGlyphs {
             } else {
                 caster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks, 1, false, true));
             }
-            SbFx.spinRing(level, caster.position().add(0, 0.1, 0), SbFx.GOLD, 1.6, 24);
-            SbFx.goldenSpiral(level, caster.position().add(0, 1.4, 0), caster.getLookAngle(), 1.6);
+            SbFxNet.at(level, SbFxNet.GOLDEN_RECT, caster.position().add(0, 1.4, 0), caster.getLookAngle(), 1.6F, SbFx.GOLD, caster.getId());
+            SbFxNet.at(level, SbFxNet.GALLOP, caster.position(), caster.getLookAngle(), 1F, SbFx.GOLD, caster.getId());
             SbFx.sound(level, caster.position(), SoundEvents.BEACON_POWER_SELECT, 0.8F, 1.7F);
             RUNS.put(caster.getUUID(), new Run(ctx, level.getGameTime() + ticks, mounted, new HashMap<>()));
             if (caster instanceof ServerPlayer sp) {
@@ -278,9 +279,8 @@ public final class SbTechniqueGlyphs {
                             le.getBbHeight() + 0.3, 12, k * 1.1F);
                 });
             }
-            SbFx.spiral(sl, le.position(), SbFx.HEAL, le.getBbWidth() * 0.8 + 0.4, le.getBbHeight() + 0.6, 30, 0F);
-            SbFx.spiral(sl, le.position(), SbFx.GOLD, le.getBbWidth() * 0.6 + 0.3, le.getBbHeight() + 0.6, 24, 3.1F);
-            SbFx.goldenSpiral(sl, le.position().add(0, le.getBbHeight() + 0.5, 0), new Vec3(0, 0, 1), 0.9);
+            SbFxNet.at(sl, SbFxNet.SPIN_HEAL, le.position(), Vec3.ZERO, 1F, SbFx.HEAL, le.getId());
+            SbFxNet.at(sl, SbFxNet.GOLDEN_RECT, le.position().add(0, le.getBbHeight() + 0.5, 0), new Vec3(0, 0, 1), 0.9F, SbFx.GOLD, le.getId());
             sl.sendParticles(ParticleTypes.HEART, le.getX(), le.getY() + le.getBbHeight() + 0.3, le.getZ(), 3, 0.3, 0.2, 0.3, 0);
             SbFx.sound(sl, le.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.9F, 1.2F);
             SbFx.sound(sl, le.position(), SoundEvents.BEACON_POWER_SELECT, 0.5F, 1.8F);

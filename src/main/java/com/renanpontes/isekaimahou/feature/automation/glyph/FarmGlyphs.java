@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.feature.automation.AutoFx;
+import com.renanpontes.isekaimahou.feature.automation.Pedestals;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
@@ -215,6 +216,8 @@ public final class FarmGlyphs {
     /**
      * Planta sementes na terra arada vazia da área (verruga do Nether na areia das almas), tirando do seu
      * inventário — ou, num pedestal, dos baús encostados nele. Repete a semente dos vizinhos para manter as fileiras.
+     * <p>v1.5: SEMENTE ESCOLHIDA — o item do FILTRO do pedestal (ou, na mão, a semente na mão secundária) vira a única
+     * semente plantada. Um filtro que não é semente é ignorado.
      */
     public static class Sow extends AreaEffect {
         public Sow() {
@@ -229,6 +232,7 @@ public final class FarmGlyphs {
             int r = AutoArea.radius(stats, 4.0F);
             List<IItemHandler> sources = AutoArea.sources(ctx, at);
             boolean creative = AutoArea.creative(ctx);
+            Item chosen = chosenSeed(ctx);
             int planted = 0;
             boolean emptySpot = false;
             for (BlockPos soil : AutoArea.disk(center, r, 2, 1)) {
@@ -237,10 +241,15 @@ public final class FarmGlyphs {
                 BlockPos spot = soil.above();
                 if (!level.isEmptyBlock(spot) || !AutoArea.mayEdit(ctx, spot)) continue;
                 emptySpot = true;
-                Item preferred = neighborSeed(level, spot);
-                ItemStack seed = preferred == null ? ItemStack.EMPTY
-                        : AutoArea.take(sources, st -> st.is(preferred) && plantable(st, level, spot), creative);
-                if (seed.isEmpty()) seed = AutoArea.take(sources, st -> plantable(st, level, spot), creative);
+                ItemStack seed;
+                if (chosen != null) {
+                    seed = AutoArea.take(sources, st -> st.is(chosen) && plantable(st, level, spot), creative);
+                } else {
+                    Item preferred = neighborSeed(level, spot);
+                    seed = preferred == null ? ItemStack.EMPTY
+                            : AutoArea.take(sources, st -> st.is(preferred) && plantable(st, level, spot), creative);
+                    if (seed.isEmpty()) seed = AutoArea.take(sources, st -> plantable(st, level, spot), creative);
+                }
                 if (seed.isEmpty()) continue;
                 BlockState plant = ((BlockItem) seed.getItem()).getBlock().defaultBlockState();
                 level.setBlock(spot, plant, Block.UPDATE_ALL);
@@ -254,6 +263,19 @@ public final class FarmGlyphs {
             } else if (emptySpot && AutoArea.firstThisTick(ctx, "sow_empty")) {
                 AutoFx.actionbar(ctx.caster(), Component.translatable("message.isekai_mahou.automation.no_seeds"));
             }
+        }
+
+        /**
+         * v1.5: semente escolhida — FILTRO do pedestal que está conjurando, ou (na mão) o item da mão secundária.
+         * null = sem escolha (ou o item não é semente de lavoura).
+         */
+        @Nullable
+        private static Item chosenSeed(SpellContext ctx) {
+            ItemStack f = Pedestals.currentFilter();
+            if (f.isEmpty() && ctx.casterPlayer() != null && !Pedestals.isPedestalCaster(ctx.caster())) f = ctx.casterPlayer().getOffhandItem();
+            if (f.isEmpty() || !(f.getItem() instanceof BlockItem bi)) return null;
+            BlockState plant = bi.getBlock().defaultBlockState();
+            return plant.is(BlockTags.CROPS) || bi.getBlock() instanceof NetherWartBlock ? f.getItem() : null;
         }
 
         /** Item que vira uma planta de lavoura (tag minecraft:crops ou verruga) e que sobrevive neste lugar. */

@@ -1,0 +1,13 @@
+{
+  "command.isekai_mahou.cities.fixtures.at": "%1$s: em %2$s %3$s %4$s",
+  "command.isekai_mahou.cities.fixtures.capital_only": "%s: só nas capitais.",
+  "command.isekai_mahou.cities.fixtures.gone": "%1$s: foi posto em %2$s %3$s %4$s, mas alguém tirou (não volta sozinho; use \"retry\").",
+  "command.isekai_mahou.cities.fixtures.no_room": "%s: nenhum lugar livre na praça (desistiu; use \"retry\" para tentar de novo).",
+  "command.isekai_mahou.cities.fixtures.pending": "%s: ainda não posto (a praça precisa estar carregada; ou o módulo do bloco não existe).",
+  "command.isekai_mahou.cities.fixtures.retried": "Nova tentativa: %s bloco(s) posto(s) agora.",
+  "hint.isekai_mahou.cities.capital_altars": "Na praça das capitais há dois altares, um de cada lado: o do Recomeço devolve os talentos; o da Reencarnação troca classe e raça.",
+  "hint.isekai_mahou.cities.inn": "Descansar na estalagem deixa você Bem Descansado. Alugar um quarto faz dele o seu ponto de renascimento.",
+  "hint.isekai_mahou.cities.market_board": "O Quadro do Mercado, na praça, abre o Mercado dos jogadores: compre e venda com Moedas da Guilda.",
+  "hint.isekai_mahou.cities.request": "Pedido aceito! Moradores das cidades fazem pedidos curtos: acompanhe em Objetivos (tecla J).",
+  "screen.isekai_mahou.guild.go_market": "Mercado"
+}

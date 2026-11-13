@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueContent;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueFx;
+import com.renanpontes.isekaimahou.feature.class_rogue.RogueFxNet;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 
@@ -112,6 +113,7 @@ public class RogueKnifeEntity extends ThrowableItemProjectile {
     @Override
     public void tick() {
         super.tick();
+        RogueFxNet.trail(this);
         if (!(level() instanceof ServerLevel sl)) return;
         if (mode() == MODE_SPELL) {
             if (tickCount > SPELL_LIFE) {
@@ -119,7 +121,6 @@ public class RogueKnifeEntity extends ThrowableItemProjectile {
                 discard();
                 return;
             }
-            if (tickCount % 2 == 0) sl.sendParticles(RogueFx.dust(color(), 0.7F), getX(), getY(), getZ(), 1, 0.02, 0.02, 0.02, 0);
         } else if (tickCount > KNIFE_LIFE) {
             discard();
         }

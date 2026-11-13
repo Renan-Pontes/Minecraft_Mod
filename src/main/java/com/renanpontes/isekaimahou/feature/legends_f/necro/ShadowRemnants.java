@@ -14,6 +14,7 @@ import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.feature.legends_f.entity.KodamaEntity;
 import com.renanpontes.isekaimahou.feature.legends_f.entity.ShadowSoldierEntity;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
@@ -133,7 +134,7 @@ public final class ShadowRemnants {
                 if (r.dim != level.dimension() || r.pos.distanceToSqr(sp.position()) > 32 * 32) continue;
                 double w = Math.max(0.3, r.width * 0.4);
                 level.sendParticles(sp, dust, false, r.pos.x, r.pos.y + 0.2, r.pos.z, 4, w, 0.1, w, 0);
-                level.sendParticles(sp, ParticleTypes.SMOKE, false, r.pos.x, r.pos.y + 0.3, r.pos.z, 2, w, 0.2, w, 0.01);
+                level.sendParticles(sp, Vfx.smoke(), false, r.pos.x, r.pos.y + 0.3, r.pos.z, 2, w, 0.2, w, 0.01);
                 if (now % 40 == 0) level.sendParticles(sp, ParticleTypes.SOUL, false, r.pos.x, r.pos.y + 0.5, r.pos.z, 1, w, 0.2, w, 0.02);
             }
         }

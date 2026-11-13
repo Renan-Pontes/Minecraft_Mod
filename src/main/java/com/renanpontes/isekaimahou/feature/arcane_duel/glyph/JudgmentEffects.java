@@ -20,6 +20,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -122,7 +123,7 @@ public final class JudgmentEffects {
             if (untouchable(le, ctx.damageSource(null))) {
                 // Protegido pelo jogo (funcionário da guilda, espírito guia...): a fenda não o alcança
                 DuelFx.spawn(level, DuelFxEntity.RIFT, c, rift * 0.6F, 10, DuelFx.VOID, 0F);
-                level.sendParticles(ParticleTypes.SMOKE, c.x, c.y, c.z, 10, 0.3, 0.4, 0.3, 0.01);
+                level.sendParticles(Vfx.smoke(), c.x, c.y, c.z, 10, 0.3, 0.4, 0.3, 0.01);
                 DuelFx.sound(level, c, SoundEvents.SHIELD_BLOCK, 0.6F, 0.8F);
                 return;
             }
@@ -153,9 +154,9 @@ public final class JudgmentEffects {
                                 AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
                     }
                     Vec3 p = DuelFx.center(le);
-                    level.sendParticles(ParticleTypes.REVERSE_PORTAL, p.x, p.y, p.z, 6, 0.4, 0.4, 0.4, 0.06);
+                    level.sendParticles(Vfx.reversePortal(), p.x, p.y, p.z, 6, 0.4, 0.4, 0.4, 0.06);
                     if (k == PULL_TICKS) {
-                        level.sendParticles(ParticleTypes.PORTAL, c.x, c.y, c.z, 50, 0.3, 0.3, 0.3, 1.2);
+                        level.sendParticles(Vfx.portal(), c.x, c.y, c.z, 50, 0.3, 0.3, 0.3, 1.2);
                         level.sendParticles(ParticleTypes.FLASH, c.x, c.y, c.z, 1, 0, 0, 0, 0);
                         DuelFx.sound(level, c, SoundEvents.ENDERMAN_TELEPORT, 1.0F, 0.4F);
                         DuelFx.sound(level, c, SoundEvents.ENDER_EYE_DEATH, 1.0F, 0.5F);
@@ -253,7 +254,7 @@ public final class JudgmentEffects {
                 Destruction.surface(level, feet, 1.4F + Math.min(1.6F, v.getBbWidth()), caster, Destruction.Mode.VITRIFY);
             }
             Vec3 c = DuelFx.center(v);
-            level.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 14, 0.3, v.getBbHeight() * 0.4, 0.3, 0.12);
+            level.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 14, 0.3, v.getBbHeight() * 0.4, 0.3, 0.12);
             level.sendParticles(ParticleTypes.FLASH, c.x, c.y, c.z, 1, 0, 0, 0, 0);
             if (index % 4 == 0) DuelFx.sound(level, feet, SoundEvents.TRIDENT_THUNDER.value(), 1.4F, 1.2F);
             if (DuelUtil.isBoss(v)) maim(v, src, 0.25F);

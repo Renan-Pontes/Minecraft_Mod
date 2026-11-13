@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.feature.fusions_d.FdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -61,7 +62,13 @@ public class BlackHoleEntity extends FdSpellEntity implements RubbleEntity.Ancho
         h.maxEat = Math.min(9F, 3.5F + 1.5F * pow + 1.5F * stats.aoe);
         h.entityData.set(RADIUS, Math.min(24F, stats.radius(12F)));
         sl.addFreshEntity(h);
-        FdFx.implode(sl, at.add(0, 0.75, 0), ParticleTypes.REVERSE_PORTAL, 4, 48, 0.4);
+        FdFx.implode(sl, at.add(0, 0.75, 0), Vfx.reversePortal(), 4, 48, 0.4);
+        // v1.3: o espaço se abre (portal escuro) e a luz em volta é sugada durante a vida inteira do buraco negro
+        float rr = Math.min(24F, stats.radius(12F));
+        com.renanpontes.isekaimahou.core.ElementFx.portal(sl, at.add(0, 0.75, 0), null, com.renanpontes.isekaimahou.core.Element.VOID,
+                0x5A2A8A, 2.2F, 5, Math.min(200, stats.duration(130)));
+        com.renanpontes.isekaimahou.core.ElementFx.gatherAt(sl, at.add(0, 0.75, 0), com.renanpontes.isekaimahou.core.Element.VOID,
+                0x9A70E0, Math.min(10F, rr * 0.6F), 5, Math.min(80, stats.duration(130)));
         FdFx.sound(sl, at, SoundEvents.WARDEN_SONIC_CHARGE, 2.0F, 0.4F);
         FdFx.sound(sl, at, SoundEvents.END_PORTAL_SPAWN, 1.2F, 0.6F);
         BossKit.shake(sl, at, 24, 0.8F, 20);
@@ -111,7 +118,7 @@ public class BlackHoleEntity extends FdSpellEntity implements RubbleEntity.Ancho
                 if (d < 2.4 + coreSize() && tickCount % 8 == 0) {
                     hit(le, damage, null);
                     le.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 2), owner());
-                    sl.sendParticles(ParticleTypes.CRIT, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 5, 0.2, 0.2, 0.2, 0.15);
+                    sl.sendParticles(Vfx.crit(), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 5, 0.2, 0.2, 0.2, 0.15);
                 }
             } else if (e instanceof Projectile && !(e instanceof ThrownTrident) && d < 1.0 + coreSize() * 0.5) {
                 // Projéteis inimigos que caem no horizonte de eventos somem (tridente não: o dono o perderia)
@@ -166,8 +173,10 @@ public class BlackHoleEntity extends FdSpellEntity implements RubbleEntity.Ancho
         Vec3 c = rubbleCenter();
         float r = 4F + coreSize() * 2F;
         sl.sendParticles(ParticleTypes.FLASH, c.x, c.y, c.z, 2, 0, 0, 0, 0);
-        sl.sendParticles(ParticleTypes.REVERSE_PORTAL, c.x, c.y, c.z, 120, 0.2, 0.2, 0.2, 1.2);
-        sl.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 60, 0.2, 0.2, 0.2, 0.6);
+        sl.sendParticles(Vfx.reversePortal(), c.x, c.y, c.z, 50, 0.2, 0.2, 0.2, 1.2);
+        sl.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 30, 0.2, 0.2, 0.2, 0.6);
+        // v1.3: o colapso vira uma nova do vazio (montada no cliente pelo preset gráfico)
+        com.renanpontes.isekaimahou.core.ElementFx.nova(sl, c, com.renanpontes.isekaimahou.core.Element.VOID, 0x5A2A8A, Math.max(5F, r * 1.4F), 5, false);
         FdFx.shockwave(sl, c, FdFx.fade(0xE8DFFF, FdFx.VOID, 2.5F), 48, 0.9);
         FdFx.shockwave(sl, c.add(0, 0.5, 0), ParticleTypes.SONIC_BOOM, 10, 0.6);
         FdFx.sound(sl, c, SoundEvents.GENERIC_EXPLODE.value(), 3F, 0.5F);

@@ -19,6 +19,7 @@ import com.renanpontes.isekaimahou.feature.legends_d.LdUtil;
 import com.renanpontes.isekaimahou.feature.legends_d.entity.LdSpellEntity;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -139,7 +140,7 @@ public final class TimeStop {
         LdUtil.sound(level, center, SoundEvents.BEACON_ACTIVATE, 4.0F, 0.4F);
         LdUtil.sound(level, center, SoundEvents.ILLUSIONER_MIRROR_MOVE, 4.0F, 0.5F);
         LdUtil.send(level, ParticleTypes.FLASH, center.add(0, 1, 0), 1, 0, 0);
-        LdUtil.send(level, ParticleTypes.REVERSE_PORTAL, center.add(0, 1, 0), 60, 1.5, 0.8);
+        LdUtil.send(level, Vfx.reversePortal(), center.add(0, 1, 0), 60, 1.5, 0.8);
         sync(z, true);
     }
 
@@ -271,8 +272,8 @@ public final class TimeStop {
         s.lastTick = now;
         s.hits++;
         if (s.source == null || event.getSource().getEntity() != null) s.source = event.getSource();
-        LdUtil.send(z.level, ParticleTypes.ENCHANTED_HIT, LdUtil.center(t), 6, t.getBbWidth() * 0.4, 0.0);
-        LdUtil.send(z.level, ParticleTypes.CRIT, LdUtil.center(t), 3, t.getBbWidth() * 0.4, 0.0);
+        LdUtil.send(z.level, Vfx.magicCrit(), LdUtil.center(t), 6, t.getBbWidth() * 0.4, 0.0);
+        LdUtil.send(z.level, Vfx.crit(), LdUtil.center(t), 3, t.getBbWidth() * 0.4, 0.0);
         LdUtil.sound(z.level, t.position(), SoundEvents.AMETHYST_BLOCK_HIT, 0.8F, 1.6F);
     }
 
@@ -388,7 +389,7 @@ public final class TimeStop {
                 z.brokenFree.add(id);
                 z.dirty = true;
                 releaseDamage(z, le);
-                LdUtil.send(z.level, ParticleTypes.REVERSE_PORTAL, LdUtil.center(le), 50, le.getBbWidth() * 0.6, 0.4);
+                LdUtil.send(z.level, Vfx.reversePortal(), LdUtil.center(le), 50, le.getBbWidth() * 0.6, 0.4);
                 LdUtil.sound(z.level, le.position(), SoundEvents.GLASS_BREAK, 2.0F, 0.5F);
                 Component msg = Component.translatable("message.isekai_mahou.legends_d.boss_breaks_time", le.getDisplayName())
                         .withStyle(ChatFormatting.RED);
@@ -487,8 +488,8 @@ public final class TimeStop {
         le.invulnerableTime = 0;
         le.hurt(s.source != null ? s.source : le.damageSources().magic(), s.total);
         Vec3 c = LdUtil.center(le);
-        LdUtil.send(z.level, ParticleTypes.CRIT, c, 10 + Math.min(30, s.hits * 3), le.getBbWidth() * 0.5, 0.4);
-        LdUtil.send(z.level, ParticleTypes.ENCHANTED_HIT, c, 10 + Math.min(30, s.hits * 3), le.getBbWidth() * 0.5, 0.4);
+        LdUtil.send(z.level, Vfx.crit(), c, 10 + Math.min(30, s.hits * 3), le.getBbWidth() * 0.5, 0.4);
+        LdUtil.send(z.level, Vfx.magicCrit(), c, 10 + Math.min(30, s.hits * 3), le.getBbWidth() * 0.5, 0.4);
         LdUtil.sound(z.level, le.position(), SoundEvents.PLAYER_ATTACK_CRIT, 1.4F, 0.7F);
         if (s.hits >= 4) LdUtil.sound(z.level, le.position(), SoundEvents.ANVIL_LAND, 0.6F, 1.6F);
         return true;

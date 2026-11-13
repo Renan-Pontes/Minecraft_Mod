@@ -124,8 +124,8 @@ public class ConeForm extends FormGlyph {
     /** Leque de partículas: arcos de pó colorido em camadas + jatos da partícula do elemento saindo para frente. */
     private static void drawFan(SpellContext ctx, Vec3 origin, FormAim.Frame frame, double half, double range) {
         ServerLevel level = ctx.level();
-        DustParticleOptions dust = FormsFx.dust(ctx.color(), 1.2F);
-        DustParticleOptions bright = FormsFx.dust(FormsFx.lighten(ctx.color(), 0.5F), 0.8F);
+        ParticleOptions dust = FormsFx.dust(ctx.color(), 1.2F);
+        ParticleOptions bright = FormsFx.dust(FormsFx.lighten(ctx.color(), 0.5F), 0.8F);
         ParticleOptions sig = FormsFx.jet(ctx.element());
         for (double d = 1.0; d <= range + 0.01; d += 0.9) {
             int n = Math.max(3, (int) (d * 2 * half * 1.5));

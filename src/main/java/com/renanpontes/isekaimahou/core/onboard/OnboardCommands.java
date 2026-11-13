@@ -27,6 +27,7 @@ import net.minecraft.server.level.ServerPlayer;
  * /mahou onboarding reset [jogadores]   – recomeça a entrada (sem classe: tela de classe; com classe: parabéns + tutorial)
  * /mahou onboarding skip [jogadores]    – pula o tutorial (TutorialDone) e fecha os diálogos
  * /mahou travel list                    – destinos conhecidos, custo pelo menu e situação
+ * /mahou onboarding status [jogadores]  – classe, etapas de criação pendentes e se a proteção da entrada está ativa
  * /mahou travel menu                    – abre a lista de viagem (como a aba Viagem)
  * /mahou travel go &lt;lugar&gt;              – viaja como pela pedra (sem recarga)
  * /mahou travel discover &lt;lugar|all&gt;     – marca lugar(es) como descoberto(s)
@@ -45,7 +46,12 @@ final class OnboardCommands {
                     .then(Commands.literal("skip")
                             .executes(c -> skip(c, List.of(c.getSource().getPlayerOrException())))
                             .then(Commands.argument("targets", EntityArgument.players())
-                                    .executes(c -> skip(c, EntityArgument.getPlayers(c, "targets"))))));
+                                    .executes(c -> skip(c, EntityArgument.getPlayers(c, "targets")))))
+                    // v1.0: em que ponto da criação do personagem cada um está (e se está protegido)
+                    .then(Commands.literal("status")
+                            .executes(c -> status(c, List.of(c.getSource().getPlayerOrException())))
+                            .then(Commands.argument("targets", EntityArgument.players())
+                                    .executes(c -> status(c, EntityArgument.getPlayers(c, "targets"))))));
 
             root.then(MahouCommands.op("travel")
                     .then(Commands.literal("list").executes(OnboardCommands::list))
@@ -87,6 +93,18 @@ final class OnboardCommands {
             Onboarding.skipTutorial(p);
         }
         c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.onboarding.skip", players.size()), true);
+        return players.size();
+    }
+
+    private static int status(CommandContext<CommandSourceStack> c, Collection<ServerPlayer> players) {
+        for (ServerPlayer p : players) {
+            List<String> pending = OnboardService.pendingCreationSteps(p);
+            Component line = Component.translatable("command.isekai_mahou.onboarding.status", p.getDisplayName(),
+                    com.renanpontes.isekaimahou.core.MagicApi.get(p).path().displayName(),
+                    pending.isEmpty() ? "-" : String.join(", ", pending),
+                    Component.translatable(EntryGuard.isProtected(p) ? "gui.yes" : "gui.no"));
+            c.getSource().sendSuccess(() -> line, false);
+        }
         return players.size();
     }
 

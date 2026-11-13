@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.api.Cutscenes;
+import com.renanpontes.isekaimahou.core.boss.BossCurses;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
 import com.renanpontes.isekaimahou.feature.bosses_c.BossesCRegistry;
@@ -228,6 +229,7 @@ public class Lich extends ClassBossEntity {
         phylacteryBroken = true;
         phylacteryId = null;
         announce("phylactery_broken");
+        releaseSouls(level);
         playSound(SoundEvents.WITHER_HURT, 2.0F, 0.5F);
         if (!isAwake()) {
             // Quebraram o filactério com ele adormecido: ele acorda furioso, já mortal.
@@ -474,10 +476,45 @@ public class Lich extends ClassBossEntity {
         }
         if (drainTicks % 8 == 0 && t.hurt(damageSources().indirectMagic(this, this), scaled(2.0F))) {
             heal(p2 ? 4.5F : 3.0F);
+            if (drainTicks % 16 == 0) drainSoul(level, t);
             level.sendParticles(ParticleTypes.DAMAGE_INDICATOR, chest.x, chest.y, chest.z, 2, 0.2, 0.2, 0.2, 0.1);
             playSound(SoundEvents.SOUL_ESCAPE.value(), 1.0F, 0.8F);
         }
         if (--drainTicks <= 0) drainTarget = null;
+    }
+
+    /**
+     * ASSINATURA — Alma Drenada: um pedaço da alma do alvo fica preso no filactério (−2 de vida MÁXIMA por nível, até
+     * −10). Só volta quando o filactério quebra ou o Lich cai. Dura 5 min (sai também ao morrer/beber leite).
+     */
+    private void drainSoul(ServerLevel level, LivingEntity t) {
+        if (phylacteryBroken) return;
+        BossCurses.stack(t, BossCurses.SOUL_DRAIN, 6000, BossCurses.SOUL_DRAIN_MAX_AMP);
+        Vec3 chest = t.position().add(0, t.getBbHeight() * 0.6, 0);
+        level.sendParticles(ParticleTypes.SCULK_SOUL, chest.x, chest.y, chest.z, 6, 0.2, 0.3, 0.2, 0.04);
+        // A alma voa até o filactério (fio visível)
+        if (phylacteryPos != null) BossFx.line(level, chest, phylacteryPos.add(0, 0.6, 0), ParticleTypes.SOUL, 2.5);
+        level.playSound(null, t.getX(), t.getY(), t.getZ(), SoundEvents.SOUL_ESCAPE.value(), net.minecraft.sounds.SoundSource.HOSTILE,
+                1.4F, 0.5F);
+        hintOnce(level, "soul_drain");
+    }
+
+    /** Devolve as almas: tira a Alma Drenada de todos por perto (filactério quebrado ou Lich derrotado). */
+    private void releaseSouls(ServerLevel level) {
+        for (ServerPlayer p : BossKit.partyAround(this, 64)) {
+            if (!p.hasEffect(BossCurses.SOUL_DRAIN)) continue;
+            BossCurses.cleanse(p, BossCurses.SOUL_DRAIN);
+            level.sendParticles(ParticleTypes.SOUL, p.getX(), p.getY() + 1, p.getZ(), 16, 0.3, 0.6, 0.3, 0.05);
+            p.displayClientMessage(Component.translatable("message.isekai_mahou.lich.souls_released")
+                    .withStyle(net.minecraft.ChatFormatting.AQUA), true);
+        }
+    }
+
+    /** Gelo da cripta: congelamento do vanilla (tela gelada, lento, dano de frio se travar) por {@code ticks}. */
+    private void freeze(ServerLevel level, LivingEntity e, int ticks) {
+        if (!e.canFreeze()) return;
+        e.setTicksFrozen(Math.max(e.getTicksFrozen(), e.getTicksRequiredToFreeze() + ticks));
+        level.sendParticles(ParticleTypes.SNOWFLAKE, e.getX(), e.getY() + 1, e.getZ(), 14, 0.4, 0.6, 0.4, 0.02);
     }
 
     // ------------------------------------------------------------------ Lamento
@@ -502,6 +539,7 @@ public class Lich extends ClassBossEntity {
             if (e.hurt(damageSources().indirectMagic(this, this), dmg)) {
                 e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 1), this);
                 e.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 0), this);
+                freeze(level, e, 120);
             }
         }
         for (int k = 1; k <= 3; k++) BossFx.ring(level, c.add(0, 0.3 * k, 0), 2.3 * k, 14 * k, ParticleTypes.SCULK_SOUL, 0.02);
@@ -674,6 +712,7 @@ public class Lich extends ClassBossEntity {
     @Override
     protected void onDefeated(ServerLevel level) {
         super.onDefeated(level);
+        releaseSouls(level);
         LichPhylactery p = phylacteryId == null ? null : (level.getEntity(phylacteryId) instanceof LichPhylactery lp ? lp : null);
         if (p != null) p.shatter();
     }

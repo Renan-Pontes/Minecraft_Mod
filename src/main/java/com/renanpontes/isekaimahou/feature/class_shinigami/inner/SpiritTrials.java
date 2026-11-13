@@ -51,6 +51,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * ensina a Máscara do Vazio e o Cero); no rank V o espírito ensina a última técnica, o <b>Mugetsu</b>.
  * Sem rank pronto: ele diz o que falta (ou conversa). Agachado + clicar = treino (luta sem prêmio, com XP 1× por dia).
  * Perder (a "morte" no Mundo Interior é cancelada) só leva de volta à praça. Diálogos pelo núcleo ({@link Dialogue}).
+ * v1.3 ({@link HollowFate}): antes da luta contra o Vazio Interior o jogador escolhe lutar ou ACEITAR o hollow interior;
+ * MORRER nessa luta não volta à praça — o Vazio toma o corpo e o Shinigami vira a classe Hollow (módulo class_hollow).
  */
 public final class SpiritTrials {
     public static final int SHIKAI = 1;
@@ -112,7 +114,8 @@ public final class SpiritTrials {
         if (!rankReady) {
             // técnicas avançadas: o Vazio Interior e a última lição
             if (ShinigamiTechniques.hollowReady(d)) {
-                show(sp, spirit, "hollow", () -> start(sp, spirit, HOLLOW),
+                // v1.3: antes da luta, a escolha — lutar ou ACEITAR o hollow interior (vira a classe Hollow)
+                show(sp, spirit, "hollow", () -> HollowFate.offer(sp, () -> start(sp, spirit, HOLLOW)),
                         page("hollow.1"), page("hollow.2", sp.getDisplayName()), page("hollow.3"));
                 return;
             }
@@ -322,8 +325,21 @@ public final class SpiritTrials {
         sp.clearFire();
     }
 
-    /** "Morte" no Mundo Interior: cancelada; volta à praça com metade da vida. */
+    /**
+     * "Morte" no Mundo Interior: cancelada; volta à praça com metade da vida. v1.3: morrer para o VAZIO INTERIOR é
+     * diferente — o Hollow toma conta ({@link HollowFate}): a máscara cobre o rosto e o Shinigami vira Hollow.
+     */
     public static void onFatal(ServerPlayer sp) {
+        Trial t = TRIALS.get(sp.getUUID());
+        // o gancho só agenda a hollowificação (a cena começa no próximo tick, já sem a prova)
+        if (t != null && t.kind == HOLLOW && HollowFate.defeated(sp)) {
+            end(sp, t);
+            sp.setHealth(Math.max(1F, sp.getMaxHealth() * 0.5F));
+            cleanse(sp);
+            ZanpakutoSpiritEntity spirit = InnerWorld.spirit(sp);
+            if (spirit != null) spirit.calm();
+            return;
+        }
         fail(sp);
         sp.setHealth(Math.max(1F, sp.getMaxHealth() * 0.5F));
         cleanse(sp);

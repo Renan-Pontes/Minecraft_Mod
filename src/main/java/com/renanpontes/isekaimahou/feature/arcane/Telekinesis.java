@@ -5,8 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -52,7 +53,7 @@ public final class Telekinesis {
         target.setDeltaMovement(dir.x * strength, Math.max(0.25, dir.y * strength + 0.25), dir.z * strength);
         target.hurtMarked = true;
         if (caster.level() instanceof ServerLevel level) {
-            level.sendParticles(ParticleTypes.CLOUD, target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ(),
+            level.sendParticles(Vfx.cloud(), target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ(),
                     8, 0.2, 0.2, 0.2, 0.05);
             level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.PLAYER_ATTACK_KNOCKBACK,
                     caster.getSoundSource(), 0.8F, 0.8F);
@@ -78,7 +79,7 @@ public final class Telekinesis {
                     || t.distanceToSqr(caster) > 48 * 48) {
                 if (t != null && t.isAlive()) {
                     t.resetFallDistance();
-                    if (level != null) level.sendParticles(ParticleTypes.REVERSE_PORTAL, t.getX(), t.getY() + t.getBbHeight() / 2,
+                    if (level != null) level.sendParticles(Vfx.reversePortal(), t.getX(), t.getY() + t.getBbHeight() / 2,
                             t.getZ(), 6, 0.2, 0.2, 0.2, 0.02);
                 }
                 it.remove();
@@ -94,7 +95,7 @@ public final class Telekinesis {
             if (t instanceof Mob m) m.getNavigation().stop();
 
             if (level.getGameTime() % 3 == 0) {
-                DustParticleOptions dust = ArcaneUtil.dust(h.color & 0xFFFFFF, 0.8F);
+                ParticleOptions dust = ArcaneUtil.dust(h.color & 0xFFFFFF, 0.8F);
                 Vec3 mid = ArcaneUtil.center(t);
                 level.sendParticles(dust, mid.x, mid.y, mid.z, 3, t.getBbWidth() * 0.4, t.getBbHeight() * 0.3, t.getBbWidth() * 0.4, 0);
                 Vec3 hand = caster.getEyePosition().add(caster.getLookAngle().scale(0.8)).subtract(0, 0.35, 0);

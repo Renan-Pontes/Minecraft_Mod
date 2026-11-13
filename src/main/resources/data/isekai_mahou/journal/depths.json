@@ -1,0 +1,111 @@
+{
+  "chapters": [
+    {
+      "id": "depths",
+      "order": 32,
+      "color": "#C8873E",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:depths_worm_king_fang",
+        "isekai_mahou:depths_pure_mana_shard",
+        "isekai_mahou:depths_dragonslayer"
+      ],
+      "steps": [
+        {
+          "id": "enter",
+          "condition": {
+            "type": "flag",
+            "flag": "depths.entered"
+          },
+          "xp": 150,
+          "icon": "minecraft:mossy_stone_bricks",
+          "locate": {
+            "structure": "isekai_mahou:depths_dungeon",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "floor3",
+          "condition": {
+            "type": "flag",
+            "flag": "depths.floor3"
+          },
+          "xp": 300,
+          "icon": "minecraft:deepslate_bricks",
+          "locate": {
+            "structure": "isekai_mahou:depths_dungeon",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "geode",
+          "condition": {
+            "type": "flag",
+            "flag": "depths.geode"
+          },
+          "optional": true,
+          "xp": 150,
+          "icon": "isekai_mahou:depths_mana_cluster"
+        },
+        {
+          "id": "puzzle",
+          "condition": {
+            "type": "flag",
+            "flag": "depths.puzzle"
+          },
+          "optional": true,
+          "xp": 150,
+          "icon": "isekai_mahou:depths_puzzle_core"
+        },
+        {
+          "id": "worm_king",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "depths_worm_king"
+            ],
+            "min": 1
+          },
+          "xp": 600,
+          "icon": "isekai_mahou:depths_worm_king_fang",
+          "locate": {
+            "structure": "isekai_mahou:depths_dungeon",
+            "dimension": "minecraft:overworld"
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 2
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:depths_worm_king"
+          ]
+        },
+        {
+          "id": "treasure",
+          "condition": {
+            "type": "flag",
+            "flag": "depths.treasure"
+          },
+          "optional": true,
+          "xp": 250,
+          "icon": "isekai_mahou:depths_goddess_knife"
+        }
+      ],
+      "rewards": {
+        "xp": 1900,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 12
+          }
+        ],
+        "glyph_scrolls": 1,
+        "glyph_tier": 3
+      }
+    }
+  ]
+}

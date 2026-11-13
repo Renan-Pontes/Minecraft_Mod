@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:gem_sapphire_chipped"
+    },
+    {
+      "item": "isekai_mahou:gem_sapphire_chipped"
+    },
+    {
+      "item": "isekai_mahou:gem_sapphire_chipped"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:gem_sapphire",
+    "count": 1
+  }
+}

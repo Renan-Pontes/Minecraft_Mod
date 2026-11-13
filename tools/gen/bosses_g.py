@@ -677,6 +677,13 @@ def build_hydra_head():
     for k, (x, rz) in enumerate(((-5, 25), (3, -25), (-1, 0))):
         m.cube("head", (x, 60, 0), (2, 7, 2), P(HY_FLESH_D, faces={"top": HY_EYE2}, deco=lambda fs: fs["top"].fill(H(HY_EYE2))),
                rotation=[-35, 0, rz], pivot=[x + 1, 60, 1])
+    # v1.3 — presas humanas demais saindo do lábio e um babado de pele com olhos
+    for k, x in enumerate((-4, -1.5, 1, 3.5)):
+        m.cube("head", (x, 51, -14.5), (1, 3, 1), P(HY_TOOTH, deco=solid(HY_TOOTH)))
+    for sx in (-1, 1):
+        m.cube("head", (sx * 5 - (1 if sx < 0 else 0), 55, -6), (1, 6, 7), P(HY_FLESH_D, deco=chain(veins(HY_VEIN, 27 + sx, 2),
+                                                                                                    eyes(HY_EYE2, [(3, 2)], faces=("left", "right")))),
+               rotation=[0, sx * 25, sx * 10], pivot=[sx * 5, 58, -3])
     m.bone("jaw", (0, 54, 0), "head")
 
     def jaw_deco(fs):
@@ -811,6 +818,25 @@ def build_mimic_king():
     for k, (x, z) in enumerate(((-4, -6.5), (2, -6.5), (-8.5, -1), (7.5, -1))):
         w, d = (2, 1) if z < -6 else (1, 2)
         m.cube("crown_gems", (x, 39, z), (w, 2, d), P(MK_GEM, deco=glow_faces(MK_GEM, core="#FF90A0")))
+    # ---- v1.3: mais detalhe ----
+    # fileira completa de presas na tampa e no baú (boca de tubarão), e ouro escorrendo dos cantos
+    for k, x in enumerate((-13, -5, -1, 3, 11)):
+        m.cube("lid", (x, 23, -14.8), (1, 3, 1), P(MK_TOOTH_C, deco=solid(MK_TOOTH_C)))
+    for k, x in enumerate((-16, -7, -3, 1, 5, 15)):
+        m.cube("body", (x, 26, -14.6), (1, 2, 1), P(MK_TOOTH_C, deco=solid(MK_TOOTH_C)))
+    for k, (x, z) in enumerate(((-18.6, -10), (17.6, -6), (-18.6, 6), (17.6, 9))):
+        m.cube("body", (x, 14 + k % 2 * 3, z), (1, 8, 2), P(MK_GOLD, deco=chain(speckle("#FFF0A0", 0.2, 120 + k), lambda fs: fs["bottom"].fill(H(MK_GOLD_D)))))
+    # fechadura-olho na frente da tampa (brilha) e cantoneiras douradas com rebites
+    m.cube("lid", (-2, 27, -15.2), (4, 5, 1), P(MK_GOLD, deco=chain(rim(MK_GOLD_D), lambda fs: fs["front"].rect(1, 1, 2, 3, H(MK_EYE), True))))
+    for sx in (-1, 1):
+        for zz in (-14.8, 13.8):
+            m.cube("lid", (sx * 18 - (1 if sx > 0 else 0), 26, zz), (1, 8, 1), P(MK_GOLD, deco=speckle(MK_GOLD_D, 0.3, 130)))
+    # moedas e joias grudadas na língua (o "tesouro falso")
+    m.cube("tongue2", (-1, 25.4, -2), (2, 1, 2), P(MK_GOLD, deco=glow_faces(MK_GOLD, core="#FFF0A0")))
+    m.cube("tongue3", (0, 25, -6), (1, 1, 1), P(MK_GEM, deco=glow_faces(MK_GEM)))
+    # coroa: ponta central alta e pérolas
+    m.cube("crown", (-1, 42, -1), (2, 6, 2), P(MK_GOLD, deco=lambda fs: fs["top"].fill(H("#FFF0A0"))))
+    m.cube("crown_gems", (-1, 47.5, -1), (2, 2, 2), P(MK_GEM, deco=glow_faces(MK_GEM, core="#FF90A0")))
     m.save(bounds=(4, 4), seed=91)
 
     a = {}
@@ -945,6 +971,17 @@ def build_vault_mimic():
     m.cube("lid", (-7.5, 11, -7.5), (15, 5, 15), P(wood, deco=lid))
     m.bone("tongue", (0, 10.5, -4), "body")
     m.cube("tongue", (-1.5, 10, -10), (3, 1, 6), P(MK_TONGUE, deco=speckle(MK_TONGUE_D, 0.3, 6)))
+    # v1.3 — presas de verdade saltando da borda, garras nas patas, fechadura-olho e moedas grudadas
+    for k, x in enumerate((-6, -3, 1, 4)):
+        m.cube("lid", (x, 9.5, -7.4), (1, 2, 1), P(MK_TOOTH_C, deco=solid(MK_TOOTH_C)))
+    for k, x in enumerate((-5, -1, 3)):
+        m.cube("body", (x, 10, -7.3), (1, 2, 1), P(MK_TOOTH_C, deco=solid(MK_TOOTH_C)))
+    m.cube("lid", (-1, 12, -8), (2, 3, 1), P("#C8C8D0", deco=lambda fs: fs["front"].set(0, 1, H(MK_EYE), True) or fs["front"].set(1, 1, H(MK_EYE), True)))
+    for name, x, z in (("leg_fl", -5, -5), ("leg_fr", 5, -5), ("leg_bl", -5, 5), ("leg_br", 5, 5)):
+        m.cube(name, (x - 1.5, 0, z - 2.5), (1, 1, 1), P(MK_TOOTH_C))
+        m.cube(name, (x + 0.5, 0, z - 2.5), (1, 1, 1), P(MK_TOOTH_C))
+    m.cube("body", (-6, 10.4, 1), (2, 1, 2), P(MK_GOLD, deco=glow_faces(MK_GOLD, core="#FFF0A0")))
+    m.cube("body", (3, 10.4, -1), (2, 1, 2), P(MK_GOLD, deco=glow_faces(MK_GOLD, core="#FFF0A0")))
     m.save(bounds=(2, 2), seed=95)
     a = {}
     a["idle"] = anim(2.0, {"lid": {"rotation": cyc(2.0, lambda p: [-6 - 6 * abs(S(p)), 0, 0])},
@@ -1066,6 +1103,32 @@ def build_manticore():
     for k, (dx, dy, rx, rz) in enumerate(((-3, 4, -30, 30), (2, 4, -30, -30), (-3, -1, 30, 30), (2, -1, 30, -30), (-0.5, 6, -60, 0))):
         m.cube("stinger", (dx, 22 + dy, 49), (1, 4, 1), P(MT_SPIKE, deco=glow_faces(MT_SPIKE, core="#E8FFB0")),
                rotation=[rx, 0, rz], pivot=[dx + 0.5, 22 + dy, 49.5])
+    # ---- v1.3: mais detalhe ----
+    # espinhos de reserva ao longo da cauda (os do "leque" saem daqui)
+    for k, (bone, z) in enumerate((("tail1", 17), ("tail1", 21), ("tail2", 26), ("tail2", 29), ("tail3", 34), ("tail3", 37), ("tail4", 42))):
+        y = 26 if bone == "tail1" else 25.5 if bone != "tail4" else 25
+        for sx in (-1, 1):
+            m.cube(bone, (sx * 1.5 - 0.5, y - 1, z), (1, 3, 1), P(MT_SPIKE, deco=glow_faces(MT_SPIKE, core="#E8FFB0") if k % 2 else None),
+                   rotation=[-35, 0, sx * -25], pivot=[sx * 1.5, y - 1, z + 0.5])
+    # chifres de carneiro curvados e presas de sabre
+    for sx in (-1, 1):
+        m.cube("head", (sx * 6 - 1, 25, -22), (2, 2, 6), P("#E8DCC0", deco=speckle("#B8A880", 0.3, 60 + sx)), rotation=[20, sx * 30, 0], pivot=[sx * 6, 26, -20])
+        m.cube("head", (sx * 8 - 1, 23, -18), (2, 4, 2), P("#E8DCC0", deco=lambda fs: fs["bottom"].fill(H("#FFFFFF"))),
+               rotation=[30, 0, sx * 15], pivot=[sx * 8, 25, -17])
+        m.cube("jaw", (sx * 3 - 0.5, 13, -27), (1, 4, 1), P("#F4ECD2"), rotation=[-10, 0, 0], pivot=[sx * 3, 16, -26.5])
+        # garras retráteis brilhando nas patas da frente
+        leg = "leg_fl" if sx < 0 else "leg_fr"
+        lx = -5 if sx < 0 else 5
+        for j, dx in enumerate((-2, 0, 2)):
+            m.cube(leg, (lx + dx - 0.5, 0, -14.5), (1, 1, 2), P("#F4ECD2"))
+        # cotovelo da asa com esporão
+        wing = "wing_left" if sx > 0 else "wing_right"
+        wx = 28 if sx > 0 else -30
+        m.cube(wing, (wx, 23.5, -8), (2, 3, 2), P("#E8DCC0"))
+    # juba mais volumosa (tufos) e cicatriz
+    for k, (x, y) in enumerate(((-11, 20), (9, 20), (-9, 28), (7, 28), (-2, 30))):
+        m.cube("body", (x, y, -17), (4, 4, 6), P(MT_MANE, deco=fur(MT_MANE_D, "#B04030", 70 + k, density=0.45)))
+    m.cube("body", (-1, 25, -6), (2, 2, 18), P(MT_FUR_D, deco=speckle(MT_SPIKE, 0.15, 80)))
     m.save(bounds=(4, 4), seed=99)
 
     a = {}
@@ -2107,6 +2170,16 @@ def write_lang():
             ("manticore_den.warn_2", "Não olhe", "Don't look"),
             ("manticore_den.warn_3", "para cima.", "up.")):
         t(f"sign.isekai_mahou.{key}", pt, en)
+
+    # v1.3 — Tesouro Falso, canto ao vivo
+    t("announce.isekai_mahou.mimic_king.bait", "Olhem quanto tesouro! Peguem, peguem... hehehe.",
+      "Look at all this treasure! Take it, take it... hehehe.")
+    t("announce.isekai_mahou.mimic_king.bait_laugh", "HAHAHA! Ganância tem dentes!", "HAHAHA! Greed has teeth!")
+    t("message.isekai_mahou.mimic_king.bait", "Tesouro Falso! O que solta fumaça ou pisca um olho vermelho é isca — não pegue.",
+      "Fake Treasure! Anything smoking or blinking a red eye is bait — don't pick it up.")
+    t("message.isekai_mahou.mimic_king.bait_bite", "Era falso! O tesouro mordeu você.", "It was fake! The treasure bit you.")
+    t("attack.isekai_mahou.mimic_king.bait", "Tesouro Falso", "Fake Treasure")
+    t("hud.isekai_mahou.false_hydra.song", "O canto apaga sua memória — FIRA O CORPO!", "The song is erasing your memory — HIT THE BODY!")
 
     lang = os.path.join(ROOT, "src/main/lang/bosses_g")
     write_json(os.path.join(lang, "pt_br.json"), {k: v[0] for k, v in sorted(L.items())})

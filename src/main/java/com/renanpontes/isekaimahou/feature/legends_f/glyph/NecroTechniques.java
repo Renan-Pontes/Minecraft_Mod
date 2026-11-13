@@ -3,6 +3,7 @@ package com.renanpontes.isekaimahou.feature.legends_f.glyph;
 import java.util.List;
 
 import com.renanpontes.isekaimahou.core.Element;
+import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.legends_f.LfNet;
@@ -15,6 +16,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -81,6 +83,10 @@ public final class NecroTechniques {
                 return;
             }
             LfUtil.banner(sp, "announce.isekai_mahou.legends_f.arise", COLOR, true);
+            // v1.3: o chão inteiro vira sombra e a energia corre para a mão do Monarca antes de as sombras subirem
+            ElementFx.area(level, c, Element.SHADOW, 0x6A3DD8, radius, 4, 60);
+            ElementFx.gather(level, sp, Element.SHADOW, 0x8A4FF0, 3.5F, 4, 16);
+            ElementFx.shake(level, c, radius + 16, 0.6F, 24);
             LfUtil.sound(level, sp.position(), SoundEvents.WARDEN_SONIC_CHARGE, 1.0F, 0.6F);
             int playerLevel = MagicApi.get(sp).level();
             int max = 4 + Math.max(0, stats.amplify) * 2 + stats.count() - 1;
@@ -108,7 +114,7 @@ public final class NecroTechniques {
                 } else {
                     r.tries--;
                     LfUtil.ring(level, r.pos.add(0, 0.1, 0), 0x3A2A4A, 14, 1.8F);
-                    level.sendParticles(net.minecraft.core.particles.ParticleTypes.SMOKE, r.pos.x, r.pos.y + 0.5, r.pos.z, 14, 0.4, 0.4, 0.4, 0.02);
+                    level.sendParticles(Vfx.smoke(), r.pos.x, r.pos.y + 0.5, r.pos.z, 14, 0.4, 0.4, 0.4, 0.02);
                     if (r.tries <= 0) {
                         ShadowRemnants.remove(r);
                         LfUtil.chat(sp, Component.translatable("message.isekai_mahou.legends_f.arise_lost").withStyle(ChatFormatting.GRAY));
@@ -328,8 +334,8 @@ public final class NecroTechniques {
             s.getNavigation().stop();
             LfUtil.sound(level, a, SoundEvents.ENDERMAN_TELEPORT, 1.0F, 0.5F);
             LfUtil.sound(level, b, SoundEvents.SCULK_CLICKING, 1.2F, 0.6F);
-            level.sendParticles(net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE, b.x, b.y + 1, b.z, 16, 0.4, 0.6, 0.4, 0.02);
-            level.sendParticles(net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE, a.x, a.y + 1, a.z, 16, 0.4, 0.6, 0.4, 0.02);
+            level.sendParticles(Vfx.largeSmoke(), b.x, b.y + 1, b.z, 16, 0.4, 0.6, 0.4, 0.02);
+            level.sendParticles(Vfx.largeSmoke(), a.x, a.y + 1, a.z, 16, 0.4, 0.6, 0.4, 0.02);
         }
     }
 

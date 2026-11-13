@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.feature.fusions_d.FdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -97,8 +98,8 @@ public class StarfallStarEntity extends FdSpellEntity {
         }
         Destruction.crater(sl, c, crater, owner());
         sl.sendParticles(ParticleTypes.FLASH, c.x, c.y + 0.5, c.z, 1, 0, 0, 0, 0);
-        sl.sendParticles(ParticleTypes.END_ROD, c.x, c.y + 0.5, c.z, 30, 0.3, 0.3, 0.3, 0.35);
-        sl.sendParticles(ParticleTypes.FIREWORK, c.x, c.y + 0.5, c.z, 20, 0.2, 0.2, 0.2, 0.25);
+        sl.sendParticles(Vfx.endRod(), c.x, c.y + 0.5, c.z, 30, 0.3, 0.3, 0.3, 0.35);
+        sl.sendParticles(Vfx.firework(), c.x, c.y + 0.5, c.z, 20, 0.2, 0.2, 0.2, 0.25);
         FdFx.shockwave(sl, c.add(0, 0.2, 0), FdFx.fade(FdFx.STAR_WHITE, FdFx.ASTRAL, 1.8F), 24, 0.45);
         FdFx.sound(sl, c, SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 1.8F, 0.7F);
         FdFx.sound(sl, c, SoundEvents.AMETHYST_BLOCK_BREAK, 1.2F, 1.5F);
@@ -108,7 +109,7 @@ public class StarfallStarEntity extends FdSpellEntity {
     @Override
     protected void clientTick() {
         Vec3 p = position();
-        level().addParticle(ParticleTypes.END_ROD, p.x, p.y, p.z, 0, 0.02, 0);
-        level().addParticle(ParticleTypes.FIREWORK, p.x + (random.nextDouble() - 0.5) * 0.4, p.y, p.z + (random.nextDouble() - 0.5) * 0.4, 0, 0, 0);
+        level().addParticle(Vfx.endRod(), p.x, p.y, p.z, 0, 0.02, 0);
+        level().addParticle(Vfx.firework(), p.x + (random.nextDouble() - 0.5) * 0.4, p.y, p.z + (random.nextDouble() - 0.5) * 0.4, 0, 0, 0);
     }
 }

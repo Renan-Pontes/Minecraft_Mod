@@ -7,12 +7,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.renanpontes.isekaimahou.core.Element;
+import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.api.Destruction;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.feature.legends_a.entity.CraterBlastEntity;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -131,7 +134,8 @@ public final class CraterQueue {
 
         if (!full) {
             sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, center.x, center.y + 1.0, center.z, 1, 0, 0, 0, 0);
-            sl.sendParticles(ParticleTypes.FLAME, center.x, center.y + 1.0, center.z, 30, R * 0.4, R * 0.3, R * 0.4, 0.15);
+            // v1.3: impacto de fogo montado no cliente (escala com o preset gráfico) no lugar das 30 chamas soltas
+            ElementFx.impactFx(sl, center.add(0, 0.3, 0), Element.FIRE, color, 4, null, Math.min(3F, R / 3F));
             LegendFx.sound(sl, center, SoundEvents.GENERIC_EXPLODE, 3.0F, 0.6F);
             return;
         }
@@ -172,9 +176,12 @@ public final class CraterQueue {
         LegendFx.far(sl, ParticleTypes.FLASH, center.x, center.y + 1.0, center.z, 3, V * 0.2, V * 0.2, V * 0.2, 0);
         LegendFx.far(sl, ParticleTypes.FLASH, center.x, center.y + V * 2.0, center.z, 2, V * 0.3, V * 0.3, V * 0.3, 0);
         LegendFx.far(sl, ParticleTypes.EXPLOSION_EMITTER, center.x, center.y + 1.0, center.z, 2 + (int) (V / 2), V * 0.4, V * 0.25, V * 0.4, 0);
-        LegendFx.far(sl, ParticleTypes.FLAME, center.x, center.y + 1.0, center.z, (int) (40 + V * 10), V * 0.45, V * 0.3, V * 0.45, 0.25);
-        LegendFx.far(sl, ParticleTypes.LAVA, center.x, center.y + 0.5, center.z, (int) (10 + V * 3), V * 0.35, 0.4, V * 0.35, 0);
-        LegendFx.far(sl, LegendFx.dust(color, 3.0F), center.x, center.y + 1.5, center.z, (int) (30 + V * 6), V * 0.5, V * 0.4, V * 0.5, 0);
+        LegendFx.far(sl, Vfx.flame(), center.x, center.y + 1.0, center.z, (int) (16 + V * 4), V * 0.45, V * 0.3, V * 0.45, 0.25);
+        LegendFx.far(sl, ParticleTypes.LAVA, center.x, center.y + 0.5, center.z, (int) (6 + V * 2), V * 0.35, 0.4, V * 0.35, 0);
+        // v1.3: nova de fogo (clarões em camadas, 3 ondas, pilar carmesim, detritos, chão fervendo) montada no
+        // cliente pelo preset gráfico — substitui o "pó" vermelho que vinha do servidor; o tremor já é o de baixo
+        ElementFx.nova(sl, center, Element.FIRE, color, Math.min(40F, V * 1.4F), 5, false);
+        ElementFx.pillar(sl, center, LegendFx.CRIMSON, Math.max(1.0F, V * 0.18F), Math.min(64F, V * 4F), 34);
         BlockPos groundPos = BlockPos.containing(center.x, center.y - 0.05, center.z);
         BlockState st = sl.getBlockState(groundPos);
         if (!st.isAir()) {
@@ -199,7 +206,9 @@ public final class CraterQueue {
             final float front = reach * step / 8F;
             final int s = step;
             BossKit.schedule(sl, step * 2, () -> {
-                int n = Math.min(96, (int) (front * 3));
+                // v1.3: a frente da onda é um anel fx (1 partícula) + poeira mais rala (era até 96 por passo)
+                if (s % 2 == 1) ElementFx.shockwave(sl, center.add(0, 0.3, 0), 0xFF8A40, front + reach / 8F, 6, null);
+                int n = Math.min(40, (int) (front * 1.2));
                 for (int i = 0; i < n; i++) {
                     double a = Math.PI * 2 * i / n;
                     LegendFx.far(sl, ParticleTypes.CAMPFIRE_COSY_SMOKE, center.x + Math.cos(a) * front, center.y + 0.4,

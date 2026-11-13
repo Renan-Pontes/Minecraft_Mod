@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -53,14 +54,14 @@ public final class SunGlyphs {
                 Vec3 base = t.position();
                 Vec3 sky = base.add(0, 14, 0);
                 FaUtil.line(sl, sky, base, FaUtil.dustFade(0xFFF7C2, 0xFFB300, 1.6F), 3);
-                FaUtil.line(sl, sky, base, ParticleTypes.END_ROD, 1.2);
+                FaUtil.line(sl, sky, base, Vfx.endRod(), 1.2);
                 float dmg = 7.0F;
                 if (sunny(sl, base)) dmg *= 1.5F;
                 if (FaUtil.isUndead(t)) dmg *= 1.25F;
                 FaUtil.hurt(ctx, t, dmg, stats, null);
                 t.igniteForSeconds(stats.duration(60) / 20F);
                 sl.sendParticles(ParticleTypes.FLASH, base.x, base.y + 1, base.z, 1, 0, 0, 0, 0);
-                sl.sendParticles(ParticleTypes.FLAME, base.x, base.y + 0.2, base.z, 16, 0.4, 0.1, 0.4, 0.05);
+                sl.sendParticles(Vfx.flame(), base.x, base.y + 0.2, base.z, 16, 0.4, 0.1, 0.4, 0.05);
                 FaUtil.ring(sl, base.add(0, 0.1, 0), FaUtil.dust(0xFFC83A, 1.2F), 1.0, 16, 0);
                 FaUtil.sound(sl, base, SoundEvents.BEACON_ACTIVATE, 0.9F, 1.7F);
                 FaUtil.sound(sl, base, SoundEvents.BLAZE_SHOOT, 0.7F, 1.2F);
@@ -86,8 +87,8 @@ public final class SunGlyphs {
                 t.igniteForSeconds(2);
                 Vec3 c = t.position().add(0, t.getBbHeight() * 0.5, 0);
                 FaUtil.spiral(sl, t, FaUtil.dustFade(0xFFF3B0, 0xFFB300, 1.2F), 2, 26);
-                sl.sendParticles(ParticleTypes.FLAME, c.x, c.y, c.z, 14, 0.3, 0.4, 0.3, 0.03);
-                sl.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 6, 0.3, 0.4, 0.3, 0.05);
+                sl.sendParticles(Vfx.flame(), c.x, c.y, c.z, 14, 0.3, 0.4, 0.3, 0.03);
+                sl.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 6, 0.3, 0.4, 0.3, 0.05);
                 FaUtil.sound(sl, c, SoundEvents.FIRECHARGE_USE, 0.9F, 1.2F);
                 FaUtil.sound(sl, c, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 0.8F);
             }
@@ -114,7 +115,7 @@ public final class SunGlyphs {
                 le.igniteForSeconds(stats.duration(80) / 20F);
                 le.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, stats.duration(120), 0), ctx.caster());
                 FaUtil.hurt(ctx, le, 3.0F, stats, null);
-                FaUtil.around(sl, le, ParticleTypes.FLAME, 12, 0.03);
+                FaUtil.around(sl, le, Vfx.flame(), 12, 0.03);
                 return;
             }
             int ticks = stats.duration(400);
@@ -123,7 +124,7 @@ public final class SunGlyphs {
             Vec3 head = le.position().add(0, le.getBbHeight() + 0.3, 0);
             FaUtil.ring(sl, head, FaUtil.dust(0xFFC83A, 1.2F), 0.45, 14, 0);
             FaUtil.shockwave(sl, le.position().add(0, 0.2, 0), FaUtil.dustFade(0xFFF3B0, 0xFF9A1F, 1.3F), 32, 0.3);
-            sl.sendParticles(ParticleTypes.END_ROD, head.x, head.y, head.z, 10, 0.3, 0.2, 0.3, 0.05);
+            sl.sendParticles(Vfx.endRod(), head.x, head.y, head.z, 10, 0.3, 0.2, 0.3, 0.05);
             FaUtil.sound(sl, head, SoundEvents.BEACON_POWER_SELECT, 1.0F, 1.2F);
             FaUtil.sound(sl, head, SoundEvents.FIRECHARGE_USE, 0.6F, 1.5F);
         }
@@ -161,19 +162,19 @@ public final class SunGlyphs {
                 if (FaUtil.isUndead(e)) {
                     FaUtil.hurt(ctx, e, 10.0F, stats, null);
                     e.igniteForSeconds(6);
-                    FaUtil.around(sl, e, ParticleTypes.FLAME, 16, 0.05);
+                    FaUtil.around(sl, e, Vfx.flame(), 16, 0.05);
                 } else {
                     FaUtil.hurt(ctx, e, 3.0F, stats, null);
                 }
             }
             // Clarão + anéis de luz que se expandem
             sl.sendParticles(ParticleTypes.FLASH, c.x, c.y, c.z, 3, 0.5, 0.5, 0.5, 0);
-            sl.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 60, 0.3, 0.3, 0.3, 0.45);
+            sl.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 60, 0.3, 0.3, 0.3, 0.45);
             for (int i = 0; i < 4; i++) {
                 final double rr = r * (i + 1) / 4.0;
                 SpellScheduler.schedule(1 + i * 2, () -> {
                     FaUtil.ring(sl, c, FaUtil.dustFade(0xFFFFFF, 0xFFC83A, 1.6F), rr, (int) (rr * 10), 0);
-                    FaUtil.ring(sl, c.add(0, 0.6, 0), ParticleTypes.END_ROD, rr * 0.8, (int) (rr * 4), 0.01);
+                    FaUtil.ring(sl, c.add(0, 0.6, 0), Vfx.endRod(), rr * 0.8, (int) (rr * 4), 0.01);
                 });
             }
             FaUtil.sound(sl, c, SoundEvents.BEACON_ACTIVATE, 1.4F, 1.4F);

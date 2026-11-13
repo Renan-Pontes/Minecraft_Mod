@@ -203,7 +203,7 @@ public final class SbLoveTrain {
             });
         }
         rays(sl, p, 8, 16, 0F);
-        sl.sendParticles(ParticleTypes.END_ROD, p.x, p.y + 1, p.z, 60, 0.5, 1.0, 0.5, 0.12);
+        SbFxNet.at(sl, SbFxNet.LEARN, p, sp.getLookAngle(), 1F, GOLD, sp.getId());
         // um vislumbre da cortina (3 s, sem proteção)
         LoveTrainEntity.spawnPreview(sl, sp, 70);
     }
@@ -253,10 +253,9 @@ public final class SbLoveTrain {
         SbFx.sound(sl, p, SoundEvents.BELL_BLOCK, 1.2F, 0.7F);
         SbFx.sound(sl, p, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.2F, 1.2F);
         SbFx.sound(sl, p, SoundEvents.ILLUSIONER_CAST_SPELL, 0.8F, 1.6F);
-        rays(sl, p, 10, 14, 0F);
-        SbFx.spinRing(sl, p.add(0, 0.1, 0), RGB, 2.2, 36);
-        SbFx.spinRing(sl, p.add(0, 0.1, 0), GOLD, 3.0, 40);
-        sl.sendParticles(ParticleTypes.END_ROD, p.x, p.y + 1, p.z, 40, 0.4, 0.9, 0.4, 0.1);
+        rays(sl, p, 6, 12, 0F);
+        // a cortina de luz descendo, as batidas do coração e o clarão: coreografia do cliente
+        SbFxNet.at(sl, SbFxNet.LOVE_TRAIN, p, Vec3.ZERO, 3.0F, GOLD, c.getId());
         if (c instanceof ServerPlayer sp) {
             SbTechniques.callout(sp, Component.translatable("callout.isekai_mahou.steelball.love_train"),
                     Component.translatable("callout.isekai_mahou.steelball.love_train.sub"), RGB);

@@ -1,5 +1,7 @@
 package com.renanpontes.isekaimahou.feature.class_enchanter;
 
+import com.renanpontes.isekaimahou.feature.class_enchanter.EnchFxNet;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,9 +96,8 @@ public final class HeavenlyRestriction {
         if (self.level() instanceof ServerLevel level) {
             Vec3 feet = self.position().add(0, 0.1, 0);
             // a "explosão" de um corpo sem energia: poeira e pressão, nada de brilho
-            for (int k = 0; k < 3; k++) EnchFx.ring(level, feet, 1.2 + k * 1.1, k == 1 ? EnchFx.RED : EnchFx.STEEL, 20 + 8 * k, 1.2F);
-            level.sendParticles(ParticleTypes.CLOUD, self.getX(), self.getY() + 0.2, self.getZ(), 24, 1.2, 0.1, 1.2, 0.08);
-            level.sendParticles(ParticleTypes.CRIT, self.getX(), self.getY() + 1.0, self.getZ(), 30, 0.5, 0.7, 0.5, 0.5);
+            level.sendParticles(ParticleTypes.CLOUD, self.getX(), self.getY() + 0.2, self.getZ(), 8, 1.2, 0.1, 1.2, 0.08);
+            EnchFxNet.at(level, EnchFxNet.HEAVENLY, self.position(), Vec3.ZERO, 1F, EnchFx.STEEL, self.getId());
             EnchFx.sound(level, feet, SoundEvents.WARDEN_HEARTBEAT, 1.2F, 0.7F);
             EnchFx.sound(level, feet, SoundEvents.PLAYER_ATTACK_STRONG, 1.0F, 0.5F);
             EnchFx.sound(level, feet, SoundEvents.RAVAGER_ROAR, 0.5F, 1.6F);

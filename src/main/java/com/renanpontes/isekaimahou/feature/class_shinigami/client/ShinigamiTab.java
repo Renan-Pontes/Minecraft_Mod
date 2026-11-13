@@ -11,6 +11,7 @@ import com.renanpontes.isekaimahou.client.menu.StatusScreen;
 import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_shinigami.Archetype;
+import com.renanpontes.isekaimahou.feature.class_shinigami.ReleaseForge;
 import com.renanpontes.isekaimahou.feature.class_shinigami.Shinigami;
 import com.renanpontes.isekaimahou.feature.class_shinigami.ShinigamiNetwork;
 import com.renanpontes.isekaimahou.feature.class_shinigami.ShinigamiRanks;
@@ -34,7 +35,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * Aba "Shinigami" do menu B. À esquerda: rank do Caminho da Zanpakutō, o espírito (nome e arquétipo), o estado da
- * lâmina, os bônus de classe e o botão "Meditar (Jinzen)". À direita (rola): os 5 ranks com requisitos/progresso/
+ * lâmina, os bônus de classe, o botão "Moldar liberação" (release 1.0: a receita de Transformação que entra por cima da
+ * Shikai/Bankai — abre a aba Votos no espaço certo) e o botão "Meditar (Jinzen)". À direita (rola): os 5 ranks com requisitos/progresso/
  * recompensas (e se terminam numa luta no Mundo Interior), as TÉCNICAS AVANÇADAS (Getsuga Tenshō, Kurohitsugi, Máscara
  * do Vazio + Cero, Vasto Lorde, Mugetsu — como cada uma chega e o progresso), os 5 arquétipos de Shikai e o guia.
  */
@@ -122,9 +124,22 @@ public class ShinigamiTab implements MenuTab {
         ly += 4;
         g.drawString(font, Component.translatable("screen.isekai_mahou.shinigami.bonuses").withStyle(ChatFormatting.GOLD), x + 7, ly, MahouUi.GOLD, false);
         ly += 11;
-        int bottomLimit = y + h - (shinigami ? 26 : 6);
+        // release 1.0: com a Shikai liberada aparece o botão "Moldar liberação" (dois, lado a lado, com a Bankai)
+        boolean shape = shinigami && Shinigami.hasShikai(d);
+        int bottomLimit = y + h - (shape ? 44 : shinigami ? 26 : 6);
         for (int i = 1; i <= 5 && ly < bottomLimit - 10; i++) {
             ly = wrap(g, font, Component.literal("• ").append(Component.translatable(BONUS_KEY + i)), x + 7, ly, listW - 14, MahouUi.TEXT_DIM, bottomLimit);
+        }
+        if (shape) {
+            boolean can = ReleaseForge.canShape(d);
+            int bx = x + 7, bw = listW - 14, by = y + h - 40;
+            if (Shinigami.hasBankai(d)) {
+                int half = (bw - 3) / 2;
+                shapeButton(g, font, d, bx, by, half, ReleaseForge.SHIKAI, "shape_shikai", can, mx, my);
+                shapeButton(g, font, d, bx + half + 3, by, bw - half - 3, ReleaseForge.BANKAI, "shape_bankai", can, mx, my);
+            } else {
+                shapeButton(g, font, d, bx, by, bw, ReleaseForge.SHIKAI, "shape", can, mx, my);
+            }
         }
         if (shinigami) {
             boolean inside = Minecraft.getInstance().level != null && InnerWorld.is(Minecraft.getInstance().level);
@@ -139,6 +154,13 @@ public class ShinigamiTab implements MenuTab {
             wrap(g, font, Component.translatable("screen.isekai_mahou.shinigami.not_shinigami").withStyle(ChatFormatting.ITALIC), x + 7, ly + 2,
                     listW - 14, 0xFFE0A070, y + h - 6);
         }
+    }
+
+    /** Botão "Moldar liberação" de um espaço de receita (apagado, com o motivo na dica, sem a forma Transformação). */
+    private void shapeButton(GuiGraphics g, Font font, MagicData d, int bx, int by, int bw, String slot, String label, boolean can,
+                             int mx, int my) {
+        button(g, font, bx, by, bw, 15, Component.translatable("screen.isekai_mahou.release_forge." + label), can, ReleaseShaper.COLOR,
+                mx, my, y, y + h, () -> ReleaseShaper.open(slot), ReleaseShaper.tip(d, slot));
     }
 
     private static int wrap(GuiGraphics g, Font font, Component text, int x, int y, int width, int color, int limit) {

@@ -21,6 +21,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -186,8 +187,8 @@ public final class AstralGlyphs {
             FbUtil.teleport(c, dest);
             Vec3 to = dest.add(0, c.getBbHeight() * 0.5, 0);
             FbFx.line(sl, from, to, FbFx.dust(FbFx.ASTRAL_LIGHT, 1.0F), 2.0);
-            FbFx.line(sl, from, to, ParticleTypes.END_ROD, 0.4);
-            sl.sendParticles(ParticleTypes.FIREWORK, to.x, to.y, to.z, 20, 0.3, 0.5, 0.3, 0.1);
+            FbFx.line(sl, from, to, Vfx.endRod(), 0.4);
+            sl.sendParticles(Vfx.firework(), to.x, to.y, to.z, 20, 0.3, 0.5, 0.3, 0.1);
             FbFx.sound(sl, to, SoundEvents.AMETHYST_BLOCK_CHIME, 1.2F, 1.6F);
             FbFx.sound(sl, to, SoundEvents.CHORUS_FRUIT_TELEPORT, 1.0F, 1.5F);
             if (!FbUtil.hasSafeFloor(c, dest)) {
@@ -232,9 +233,9 @@ public final class AstralGlyphs {
                 FbUtil.addMotion(le, new Vec3(0, 0.25, 0));
             }
             Vec3 feet = le.position().add(0, 0.1, 0);
-            FbFx.ring(sl, feet, ParticleTypes.CLOUD, le.getBbWidth() + 0.6, 14, 0.02);
+            FbFx.ring(sl, feet, Vfx.cloud(), le.getBbWidth() + 0.6, 14, 0.02);
             FbFx.ring(sl, feet, FbFx.dust(FbFx.ASTRAL_LIGHT, 1.1F), le.getBbWidth() + 0.9, 20, 0);
-            sl.sendParticles(ParticleTypes.END_ROD, le.getX(), le.getY() + 0.5, le.getZ(), 8, 0.3, 0.3, 0.3, 0.04);
+            sl.sendParticles(Vfx.endRod(), le.getX(), le.getY() + 0.5, le.getZ(), 8, 0.3, 0.3, 0.3, 0.04);
             FbFx.sound(sl, feet, SoundEvents.SHULKER_BULLET_HIT, 1.0F, 1.3F);
             FbFx.sound(sl, feet, SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.8F);
         }
@@ -323,7 +324,7 @@ public final class AstralGlyphs {
                 stars.add(e);
                 e.addEffect(new MobEffectInstance(MobEffects.GLOWING, duration - age + 5, 0, false, false, false), ctx.caster());
                 Vec3 p = star(e);
-                level.sendParticles(ParticleTypes.FIREWORK, p.x, p.y, p.z, 10, 0.1, 0.1, 0.1, 0.08);
+                level.sendParticles(Vfx.firework(), p.x, p.y, p.z, 10, 0.1, 0.1, 0.1, 0.08);
                 FbFx.sound(level, p, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.2F + stars.size() * 0.1F);
             }
 
@@ -354,7 +355,7 @@ public final class AstralGlyphs {
             private void draw() {
                 for (int i = 0; i < stars.size(); i++) {
                     Vec3 a = star(stars.get(i));
-                    level.sendParticles(ParticleTypes.END_ROD, a.x, a.y, a.z, 1, 0.02, 0.02, 0.02, 0.0);
+                    level.sendParticles(Vfx.endRod(), a.x, a.y, a.z, 1, 0.02, 0.02, 0.02, 0.0);
                     level.sendParticles(FbFx.dust(FbFx.ASTRAL_LIGHT, 1.5F), a.x, a.y, a.z, 2, 0.08, 0.08, 0.08, 0);
                     if (i + 1 < stars.size() || stars.size() >= 3) {
                         Vec3 b = star(stars.get((i + 1) % stars.size()));
@@ -369,8 +370,8 @@ public final class AstralGlyphs {
                     Vec3 p = FbUtil.center(e);
                     FbUtil.hurt(ctx, e, 5.0F * bonus, stats, null);
                     level.sendParticles(ParticleTypes.FLASH, p.x, p.y, p.z, 1, 0, 0, 0, 0);
-                    FbFx.column(level, e.position(), ParticleTypes.END_ROD, 8, 16);
-                    level.sendParticles(ParticleTypes.FIREWORK, p.x, p.y, p.z, 24, 0.2, 0.3, 0.2, 0.15);
+                    FbFx.column(level, e.position(), Vfx.endRod(), 8, 16);
+                    level.sendParticles(Vfx.firework(), p.x, p.y, p.z, 24, 0.2, 0.3, 0.2, 0.15);
                 }
                 Vec3 first = stars.get(0).position();
                 FbFx.sound(level, first, SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 1.5F, 1.2F);

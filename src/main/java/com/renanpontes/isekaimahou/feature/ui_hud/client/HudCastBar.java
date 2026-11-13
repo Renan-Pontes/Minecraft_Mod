@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.renanpontes.isekaimahou.client.GlyphArt;
 import com.renanpontes.isekaimahou.client.hud.HudLayout;
+import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.glyph.MoveTrigger;
 
 import net.minecraft.ChatFormatting;
@@ -42,7 +43,8 @@ final class HudCastBar {
 
     /** Altura ocupada abaixo da mira agora (0 = sem conjuração). */
     static int reservedHeight() {
-        return HudState.casting || HudState.castEndTicks > 0 ? BLOCK_H : 0;
+        if (!HudDraw.config(MahouConfig.HUD_CAST_BAR)) return 0;
+        return HudState.casting || HudState.castEndTicks > 0 ? HudScale.toReal(BLOCK_H) : 0;
     }
 
     static void render(GuiGraphics g, Minecraft mc, float partialTick) {
@@ -50,9 +52,10 @@ final class HudCastBar {
         if (!active && HudState.castEndTicks <= 0) return;
         Font font = mc.font;
 
-        int cx = g.guiWidth() / 2;
+        int gw = HudScale.w(g), gh = HudScale.h(g);
+        int cx = gw / 2;
         // Logo abaixo da mira, na região ARENA do HudLayout (depois do que reservou antes; o aviso da arena desce)
-        int x = cx - W / 2, y = g.guiHeight() / 2 + 24 + HudLayout.reservedBefore(HudLayout.Region.ARENA, RESERVE_ID);
+        int x = cx - W / 2, y = gh / 2 + 24 + HudScale.v(HudLayout.reservedBefore(HudLayout.Region.ARENA, RESERVE_ID));
         float progress, alpha = 1F;
         int color = HudState.castColor;
         boolean channeling = HudState.channelingPhase();
@@ -129,8 +132,8 @@ final class HudCastBar {
         // Cântico palavra por palavra, acima da mira (as linhas crescem para cima)
         if (chant != null && !chant.isBlank()) {
             float wordsProgress = active && !channeling ? Math.min(1F, progress / 0.85F) : 1F;
-            int width = Math.min(MAX_CHANT_WIDTH, g.guiWidth() - 40);
-            renderChant(g, font, chant, width, cx, g.guiHeight() / 2 - 12, wordsProgress, alpha);
+            int width = Math.min(MAX_CHANT_WIDTH, gw - 40);
+            renderChant(g, font, chant, width, cx, gh / 2 - 12, wordsProgress, alpha);
         }
     }
 

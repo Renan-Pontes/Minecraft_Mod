@@ -31,6 +31,7 @@ public class ClassGunslingerClient implements ClientModule {
         GunslingerArmorItem.renderFactory = GsArmorRenderer.Provider::new;
         GsNetwork.clientAnim = GunAnimations::receive;
         GunAnimations.init();
+        GsFxClient.init();
 
         modBus.addListener(EntityRenderersEvent.RegisterRenderers.class, e -> {
             e.registerEntityRenderer(GsRegistries.MANA_BULLET.get(), BulletRenderer::new);

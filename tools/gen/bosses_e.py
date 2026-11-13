@@ -552,6 +552,18 @@ def build_dragon():
     m.cube("tail4", [-0.5, 15, 66], [1, 10, 10], spine_paint(99))            # barbatana vertical
     m.cube("tail4", [-6, 19.5, 68], [12, 1, 6], horn_paint(100))             # lamina em pa
 
+    # ---- v1.3: mais detalhe (presas, espinhos laterais, esporões) ----
+    m.pair("head", "head", [-3.5, 19.5, -51.5], [1, 3, 1], claw_paint)          # presas de cima saindo do lábio
+    m.pair("jaw", "jaw", [-3, 21.5, -50.5], [1, 2, 1], claw_paint)              # presas de baixo
+    m.pair("jaw", "jaw", [-4.5, 18, -46], [1, 2, 2], horn_paint(55))           # espinhos do queixo
+    m.cube("jaw", [-0.5, 17, -48], [1, 2, 3], horn_paint(56))
+    for k, z in enumerate((-8, -2, 4)):
+        m.pair("body", "body", [-10, 21, z], [2, 2, 3], horn_paint(110 + k))    # espinhos ao longo dos flancos
+    m.pair("hips", "hips", [-9, 22, 16], [2, 2, 3], horn_paint(113))
+    m.pair("arm_r", "arm_l", [-11, 15, -9], [1, 3, 2], horn_paint(114))        # esporão do cotovelo
+    m.pair("leg_r", "leg_l", [-12, 15, 15], [1, 3, 3], horn_paint(115))        # esporão da coxa
+    m.pair("neck1", "neck1", [-5.5, 25, -18], [1, 2, 2], horn_paint(116))      # babado do pescoço
+    m.pair("neck2", "neck2", [-4.5, 25, -27], [1, 2, 2], horn_paint(117))
     m.layout(256)
     m.save_geo()
     for name, P in PHASES.items():

@@ -11,6 +11,7 @@ public class BossesEClient implements ClientModule {
     @Override
     public void initClient(IEventBus modBus) {
         modBus.addListener(this::renderers);
+        DragonSkyFx.init();
     }
 
     private void renderers(EntityRenderersEvent.RegisterRenderers e) {

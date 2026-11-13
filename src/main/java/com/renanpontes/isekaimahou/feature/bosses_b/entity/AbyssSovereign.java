@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.api.Announce;
+import com.renanpontes.isekaimahou.core.boss.BossCurses;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
 import com.renanpontes.isekaimahou.feature.bosses_b.BbRegistries;
@@ -21,6 +22,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -170,6 +172,9 @@ public class AbyssSovereign extends BbBoss {
                 .onEnd(this::clearTide));
         l.add(BossAttack.of("abyssal_leap", 50, 220, this::abyssalLeap).anim("leap").range(9, 22).weight(3).stationary()
                 .freeFacing().when(t -> onGround()));
+        // v1.3 ASSINATURA — Sussurros do Abismo: a visão escurece e pisca invertida, vozes; uma marca persegue cada um
+        l.add(BossAttack.of("whispers", 40, 480, this::whispers).anim("cast").range(0, 32).weight(4).stationary()
+                .when(t -> !BossCurses.has(t, BossCurses.WHISPERS)));
         l.add(BossAttack.of("eclipse", 60, 900, this::eclipse).anim("eclipse").phase(2).weight(3).stationary()
                 .when(t -> !eclipseActive()));
         l.add(BossAttack.of("eruption", 54, 260, this::eruption).anim("eruption").phase(2).range(0, 12).weight(4).stationary()
@@ -517,6 +522,54 @@ public class AbyssSovereign extends BbBoss {
         if (!onGround()) sl.sendParticles(BbFx.dust(BbFx.SHADOW, 1.6F), getX(), getY() + 1.5, getZ(), 3, 0.5, 0.8, 0.5, 0);
     }
 
+    /**
+     * Sussurros do Abismo (assinatura do Soberano): ele sussurra na mente de todos — a tela escurece, vozes vêm de trás
+     * e a visão PISCA invertida (gráficos Alto+). Ao mesmo tempo uma marca do vazio persegue cada um e trava no fim:
+     * continue se mexendo mesmo meio cego.
+     */
+    private void whispers(LivingEntity target, int t) {
+        ServerLevel sl = (ServerLevel) level();
+        if (t == 0) {
+            announce("whispers", Announce.STYLE_SPELL);
+            BbFx.sound(sl, position(), SoundEvents.WARDEN_NEARBY_CLOSEST, 2.5F, 0.5F);
+            for (LivingEntity e : enemiesNear(position(), 32)) {
+                if (e instanceof ServerPlayer sp) BossKit.vignette(sp, 0x3A0A6A, 0.8F, 20);
+            }
+        }
+        if (t < 16 && t % 2 == 0) {
+            // Antecipação: sombra sendo sugada para a boca do Soberano
+            Vec3 head = position().add(0, getBbHeight() * 0.85, 0);
+            for (int i = 0; i < 3; i++) {
+                double a = random.nextDouble() * Math.PI * 2;
+                Vec3 p = head.add(Math.cos(a) * 4, (random.nextDouble() - 0.3) * 2, Math.sin(a) * 4);
+                Vec3 v = head.subtract(p).normalize();
+                sl.sendParticles(ParticleTypes.SCULK_SOUL, p.x, p.y, p.z, 0, v.x, v.y, v.z, 0.3);
+            }
+        }
+        if (t != 16) return;
+        int amp = phase() >= 3 ? 1 : 0;
+        BbFx.sound(sl, position(), SoundEvents.SCULK_SHRIEKER_SHRIEK, 2.5F, 0.4F);
+        sl.sendParticles(ParticleTypes.SCULK_SOUL, getX(), getY() + getBbHeight() * 0.8, getZ(), 30, 1.5, 1.0, 1.5, 0.08);
+        for (LivingEntity e : enemiesNear(position(), 32)) {
+            BossCurses.apply(e, BossCurses.WHISPERS, 160 + 40 * phase(), amp);
+            e.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 80, 0), this);
+            int warm = 56 - 6 * phase();
+            strike(Telegraph.Shape.follow(e, 2.4F).warmup(warm).lock(14).color(Telegraph.VOID), foes -> {
+                Vec3 at = foes.isEmpty() ? e.position() : foes.get(0).position();
+                BbFx.column(sl, BbFx.dust(BbFx.SHADOW, 2.0F), at, 4.0, 12, 0.3);
+                sl.sendParticles(ParticleTypes.SCULK_SOUL, at.x, at.y + 1, at.z, 12, 0.6, 0.8, 0.6, 0.05);
+                BbFx.sound(sl, at, SoundEvents.WARDEN_ATTACK_IMPACT, 1.4F, 0.6F);
+                for (LivingEntity f : foes) {
+                    if (f.hurt(spellSource(null), attackPower() * 0.7F)) {
+                        BossCurses.apply(f, BossCurses.WHISPERS, 100, amp);
+                        f.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1), this);
+                    }
+                }
+            });
+        }
+        hint("whispers");
+    }
+
     // ---------------- Fase 2+ ----------------
 
     /** Eclipse: a escuridão engole a arena; tentáculos brotam em círculos marcados e o Soberano se regenera. */
@@ -536,6 +589,7 @@ public class AbyssSovereign extends BbBoss {
             for (LivingEntity e : enemiesNear(position(), 40)) {
                 e.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 340, 0), this);
                 e.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 30, 0), this);
+                BossCurses.apply(e, BossCurses.WHISPERS, 200, phase() >= 3 ? 1 : 0);
             }
             sl.sendParticles(ParticleTypes.SQUID_INK, getX(), getY() + 2, getZ(), 120, 3.0, 2.0, 3.0, 0.15);
             sl.sendParticles(ParticleTypes.SONIC_BOOM, getX(), getY() + 2, getZ(), 1, 0, 0, 0, 0);
@@ -713,7 +767,7 @@ public class AbyssSovereign extends BbBoss {
 
     @Override
     protected int deathDuration() {
-        return 80;
+        return 94; // v1.0: 4 s de animação + o corpo se desfazendo
     }
 
     @Override

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NMN",
+    "RFR",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "item": "minecraft:nether_bricks"
+    },
+    "M": {
+      "item": "minecraft:magma_block"
+    },
+    "R": {
+      "item": "minecraft:blaze_rod"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:demon_infernal_forge",
+    "count": 1
+  }
+}

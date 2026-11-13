@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.feature.forms_b.util.FormsBUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -200,7 +201,7 @@ public class SpellIllusionEntity extends PathfinderMob implements GeoEntity, Own
         ElementFx.burst(sl, center, element(), 40, 0.6);
         ElementFx.ring(sl, position(), element(), r, Math.max(18, (int) (r * 10)));
         sl.sendParticles(ParticleTypes.EXPLOSION, center.x, center.y, center.z, 1, 0, 0, 0, 0);
-        sl.sendParticles(ParticleTypes.LARGE_SMOKE, center.x, center.y, center.z, 16, 0.4, 0.6, 0.4, 0.02);
+        sl.sendParticles(Vfx.largeSmoke(), center.x, center.y, center.z, 16, 0.4, 0.6, 0.4, 0.02);
         sl.playSound(null, getX(), getY(), getZ(), SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.PLAYERS, 1.0F, 0.8F);
         sl.playSound(null, getX(), getY(), getZ(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.PLAYERS, 0.6F, 1.4F);
     }

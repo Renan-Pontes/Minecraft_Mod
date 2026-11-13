@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.Progression;
 import com.renanpontes.isekaimahou.core.classes.ClassResources;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbFx;
+import com.renanpontes.isekaimahou.feature.class_gambler.GbFxNet;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbRegistries;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
@@ -146,6 +147,7 @@ public class ThrownCardEntity extends ThrowableItemProjectile {
     @Override
     public void tick() {
         super.tick();
+        GbFxNet.trail(this);
         if (!(level() instanceof ServerLevel sl)) return;
         if (tickCount > LIFE) {
             if (ctx != null && mode() != Mode.PHYSICAL) ctx.end(position(), getDeltaMovement());
@@ -153,12 +155,7 @@ public class ThrownCardEntity extends ThrowableItemProjectile {
             return;
         }
         if (homing && tickCount > 2) steer();
-        if (tickCount % 2 == 0) {
-            sl.sendParticles(GbFx.dust(color(), 0.7F), getX(), getY(), getZ(), 1, 0.02, 0.02, 0.02, 0);
-            if (mode() != Mode.PHYSICAL && tickCount % 4 == 0) {
-                sl.sendParticles(ParticleTypes.ENCHANTED_HIT, getX(), getY(), getZ(), 1, 0.03, 0.03, 0.03, 0);
-            }
-        }
+        // rastro em fita desenhado no cliente (GbFxNet.trail)
     }
 
     /** Teleguiado (ou ficha): curva para o inimigo mais próximo ainda não atingido. */

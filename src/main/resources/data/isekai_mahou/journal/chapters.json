@@ -2716,45 +2716,113 @@
       "intro": true,
       "secret": true,
       "icon": [
-        "minecraft:nether_star",
-        "isekai_mahou:primordial_dragon_heart",
-        "minecraft:dragon_breath"
+        "isekai_mahou:abyss_core",
+        "isekai_mahou:shadow_fragment",
+        "minecraft:nether_star"
       ],
       "steps": [
+        {
+          "id": "abyss_enter",
+          "condition": {
+            "type": "counter",
+            "key": "abyss.floors",
+            "min": 1
+          },
+          "xp": 1500,
+          "icon": "isekai_mahou:abyss_shard",
+          "requires": [
+            "isekai_mahou:abyss_core"
+          ]
+        },
+        {
+          "id": "abyss_shadow",
+          "condition": {
+            "type": "counter",
+            "key": "abyss.shadow_wins",
+            "min": 1
+          },
+          "xp": 2000,
+          "icon": "isekai_mahou:shadow_fragment",
+          "requires": [
+            "isekai_mahou:abyss_core"
+          ]
+        },
+        {
+          "id": "abyss_floor_10",
+          "condition": {
+            "type": "counter",
+            "key": "abyss.best_floor",
+            "min": 10
+          },
+          "xp": 3000,
+          "icon": "isekai_mahou:abyss_core",
+          "requires": [
+            "isekai_mahou:abyss_core"
+          ]
+        },
+        {
+          "id": "abyss_floor_25",
+          "condition": {
+            "type": "counter",
+            "key": "abyss.best_floor",
+            "min": 25
+          },
+          "xp": 5000,
+          "icon": "isekai_mahou:abyss_core",
+          "requires": [
+            "isekai_mahou:abyss_core"
+          ]
+        },
+        {
+          "id": "abyss_floor_50",
+          "condition": {
+            "type": "counter",
+            "key": "abyss.best_floor",
+            "min": 50
+          },
+          "xp": 8000,
+          "icon": "minecraft:nether_star",
+          "requires": [
+            "isekai_mahou:abyss_core"
+          ]
+        },
+        {
+          "id": "abyss_shadows_10",
+          "condition": {
+            "type": "counter",
+            "key": "abyss.shadow_wins",
+            "min": 10
+          },
+          "optional": true,
+          "xp": 4000,
+          "icon": "isekai_mahou:shadow_fragment",
+          "requires": [
+            "isekai_mahou:abyss_core"
+          ]
+        },
+        {
+          "id": "abyss_floor_100",
+          "condition": {
+            "type": "counter",
+            "key": "abyss.best_floor",
+            "min": 100
+          },
+          "optional": true,
+          "xp": 12000,
+          "icon": "minecraft:dragon_breath",
+          "requires": [
+            "isekai_mahou:abyss_core"
+          ]
+        },
         {
           "id": "level_160",
           "condition": {
             "type": "level",
             "min": 160
           },
+          "optional": true,
           "xp": 2000,
           "icon": "minecraft:experience_bottle"
-        },
-        {
-          "id": "dragon_again",
-          "condition": {
-            "type": "counter",
-            "key": "boss.primordial_dragon",
-            "min": 2
-          },
-          "optional": true,
-          "xp": 3000,
-          "icon": "isekai_mahou:primordial_dragon_heart",
-          "locate": {
-            "structure": "isekai_mahou:twilight_arena",
-            "dimension": "isekai_mahou:twilight_rift"
-          }
-        },
-        {
-          "id": "class_master",
-          "condition": {
-            "type": "counter",
-            "key": "ritual_rank",
-            "min": 5
-          },
-          "optional": true,
-          "xp": 2000,
-          "icon": "minecraft:writable_book"
         },
         {
           "id": "level_180",
@@ -2762,26 +2830,9 @@
             "type": "level",
             "min": 180
           },
+          "optional": true,
           "xp": 3000,
           "icon": "minecraft:experience_bottle"
-        },
-        {
-          "id": "hollow_again",
-          "condition": {
-            "type": "counter",
-            "key": "boss.hollow_king",
-            "min": 2
-          },
-          "optional": true,
-          "xp": 2500,
-          "icon": "isekai_mahou:decay_axe",
-          "locate": {
-            "place": "hollow_palace",
-            "dimension": "isekai_mahou:hollow_world"
-          },
-          "requires": [
-            "isekai_mahou:hollow_king"
-          ]
         },
         {
           "id": "level_200",
@@ -2789,6 +2840,7 @@
             "type": "level",
             "min": 200
           },
+          "optional": true,
           "xp": 5000,
           "icon": "minecraft:nether_star"
         }

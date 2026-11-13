@@ -24,6 +24,7 @@ public class ClassSmithClient implements ClientModule {
         modBus.addListener(ClassSmithClient::renderers);
         modBus.addListener(ClassSmithClient::extensions);
         SmithOutfitItem.renderFactory = SmithOutfitRenderer.Provider::new;
+        SmithFxClient.init();
         SmithNet.clientOpen = pos -> Minecraft.getInstance().setScreen(new ArcaneAnvilScreen(pos));
         MenuTabs.register("smith_forge", 45, Component.translatable("tab.isekai_mahou.smith_forge"), SmithForgeTab::new);
     }

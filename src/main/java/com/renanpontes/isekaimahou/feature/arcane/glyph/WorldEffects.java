@@ -11,9 +11,9 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -64,6 +64,8 @@ public final class WorldEffects {
     /** O conjurador pode quebrar este bloco? Para jogadores dispara o BlockEvent.BreakEvent (mods de proteção). */
     static boolean mayBreak(SpellContext ctx, BlockPos pos, BlockState state) {
         ServerLevel level = ctx.level();
+        // v1.0 r9: torre em escalada / masmorra são indestrutíveis (nem blocos temporários de magia)
+        if (com.renanpontes.isekaimahou.core.api.Destruction.wardedFor(level, pos, ctx.caster())) return false;
         ServerPlayer sp = ctx.casterPlayer();
         if (sp != null) {
             if (!level.mayInteract(sp, pos)) return false;
@@ -127,7 +129,7 @@ public final class WorldEffects {
             }
             if (hit) {
                 Vec3 c = ArcaneUtil.center(le);
-                level.sendParticles(ParticleTypes.CRIT, c.x, c.y, c.z, 10, 0.3, 0.4, 0.3, 0.2);
+                level.sendParticles(Vfx.crit(), c.x, c.y, c.z, 10, 0.3, 0.4, 0.3, 0.2);
                 ArcaneUtil.sound(level, c, SoundEvents.ITEM_BREAK, 0.6F, 1.4F);
             }
         }
@@ -157,7 +159,7 @@ public final class WorldEffects {
                 level.sendParticles(ArcaneUtil.dust(ctx, 1.2F), at.x, at.y, at.z, 8 + broken * 2, 0.3 + r * 0.5, 0.3 + r * 0.5,
                         0.3 + r * 0.5, 0);
             } else if (tooHard) {
-                level.sendParticles(ParticleTypes.SMOKE, at.x, at.y, at.z, 10, 0.2, 0.2, 0.2, 0.02);
+                level.sendParticles(Vfx.smoke(), at.x, at.y, at.z, 10, 0.2, 0.2, 0.2, 0.02);
                 ArcaneUtil.sound(level, at, SoundEvents.SHIELD_BLOCK, 0.6F, 1.6F);
                 ArcaneUtil.actionbar(ctx.caster(), Component.translatable("message.isekai_mahou.arcane_too_hard"));
             }
@@ -260,7 +262,7 @@ public final class WorldEffects {
             if (n > 0) {
                 Vec3 at = Vec3.atCenterOf(center);
                 ArcaneUtil.ring(level, at.add(0, 0.6, 0), r + 0.3, ArcaneUtil.dust(ctx, 1.0F), 12 + r * 6);
-                level.sendParticles(ParticleTypes.HAPPY_VILLAGER, at.x, at.y + 0.8, at.z, 6 + n, r * 0.6, 0.3, r * 0.6, 0);
+                level.sendParticles(Vfx.happy(), at.x, at.y + 0.8, at.z, 6 + n, r * 0.6, 0.3, r * 0.6, 0);
                 ArcaneUtil.sound(level, at, SoundEvents.CROP_BREAK, 1.0F, 1.0F);
             }
         }
@@ -346,12 +348,12 @@ public final class WorldEffects {
             if (stats.inverted) {
                 if (le == ctx.caster()) return; // em você: só apaga as luzes em volta (no bloco), sem se cegar
                 ctx.status(le, MobEffects.BLINDNESS, 60, 0, stats);
-                level.sendParticles(ParticleTypes.SQUID_INK, c.x, c.y + 0.4, c.z, 10, 0.3, 0.2, 0.3, 0.01);
+                level.sendParticles(Vfx.ink(), c.x, c.y + 0.4, c.z, 10, 0.3, 0.2, 0.3, 0.01);
                 return;
             }
             if (le == ctx.caster()) ctx.status(le, MobEffects.NIGHT_VISION, 600, 0, stats);
             else le.addEffect(new MobEffectInstance(MobEffects.GLOWING, stats.duration(200), 0, false, false), ctx.caster());
-            level.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 6, 0.3, 0.4, 0.3, 0.02);
+            level.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 6, 0.3, 0.4, 0.3, 0.02);
         }
 
         @Override
@@ -365,7 +367,7 @@ public final class WorldEffects {
                 for (BlockPos p : BlockPos.betweenClosed(hit.getBlockPos().offset(-r, -r, -r), hit.getBlockPos().offset(r, r, r))) {
                     if (level.getBlockState(p).is(light)) {
                         level.removeBlock(p, false);
-                        level.sendParticles(ParticleTypes.SMOKE, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, 0.1, 0.1, 0.1, 0.01);
+                        level.sendParticles(Vfx.smoke(), p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, 0.1, 0.1, 0.1, 0.01);
                         n++;
                     }
                 }
@@ -379,7 +381,7 @@ public final class WorldEffects {
             if (!light.placeFor(level, pos, stats.duration(3600))) return;
             if (!confirmPlace(ctx, before, hit.getDirection())) return;
             Vec3 at = Vec3.atCenterOf(pos);
-            level.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 10, 0.2, 0.2, 0.2, 0.05);
+            level.sendParticles(Vfx.endRod(), at.x, at.y, at.z, 10, 0.2, 0.2, 0.2, 0.05);
             level.sendParticles(ArcaneUtil.dust(ctx, 1.0F), at.x, at.y, at.z, 8, 0.25, 0.25, 0.25, 0);
             ArcaneUtil.sound(level, at, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.4F);
         }
@@ -439,7 +441,7 @@ public final class WorldEffects {
                 if (!real) ArcaneUtil.sound(level, at, SoundEvents.AMETHYST_BLOCK_PLACE, 1.0F, 0.8F);
             } else if (c != null) {
                 Vec3 at = Vec3.atCenterOf(base);
-                level.sendParticles(ParticleTypes.SMOKE, at.x, at.y, at.z, 6, 0.2, 0.2, 0.2, 0.01);
+                level.sendParticles(Vfx.smoke(), at.x, at.y, at.z, 6, 0.2, 0.2, 0.2, 0.01);
             }
         }
 
@@ -526,7 +528,7 @@ public final class WorldEffects {
             for (int i = 1; i <= 3; i++) {
                 ArcaneUtil.ring(level, center.add(0, 0.2, 0), i * 2.0, ArcaneUtil.dust(ctx, 1.0F), 16 * i);
             }
-            level.sendParticles(ParticleTypes.END_ROD, center.x, center.y + 0.5, center.z, 12, 0.5, 0.5, 0.5, 0.08);
+            level.sendParticles(Vfx.endRod(), center.x, center.y + 0.5, center.z, 12, 0.5, 0.5, 0.5, 0.08);
             ArcaneUtil.sound(level, center, SoundEvents.BEACON_POWER_SELECT, 0.8F, 1.6F);
         }
 

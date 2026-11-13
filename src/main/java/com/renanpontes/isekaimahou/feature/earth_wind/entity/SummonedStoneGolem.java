@@ -1,6 +1,8 @@
 package com.renanpontes.isekaimahou.feature.earth_wind.entity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -56,8 +58,10 @@ public class SummonedStoneGolem extends PathfinderMob implements GeoEntity, Owna
     private static final RawAnimation WALK = RawAnimation.begin().thenLoop("animation.summoned_stone_golem.walk");
     private static final RawAnimation ATTACK = RawAnimation.begin().thenPlay("animation.summoned_stone_golem.attack");
     private static final RawAnimation SUMMON = RawAnimation.begin().thenPlay("animation.summoned_stone_golem.summon");
-    /** Golem atual de cada dono. */
-    private static final Map<UUID, UUID> ACTIVE = new HashMap<>();
+    /** Quantos golens um dono pode ter ao mesmo tempo (v1.0: Dividir no glifo chama mais de um). */
+    public static final int MAX_PER_OWNER = 2;
+    /** Golens atuais de cada dono (do mais antigo para o mais novo; no máximo {@link #MAX_PER_OWNER}). */
+    private static final Map<UUID, List<UUID>> ACTIVE = new HashMap<>();
     /** Tick de jogo em que foi invocado (o cliente toca a animacao de "sair do chao" so nesse momento). */
     private static final EntityDataAccessor<Long> BORN = SynchedEntityData.defineId(SummonedStoneGolem.class, EntityDataSerializers.LONG);
 
@@ -85,9 +89,22 @@ public class SummonedStoneGolem extends PathfinderMob implements GeoEntity, Owna
 
     /** Cria e coloca no mundo um golem para {@code owner}. Desfaz o golem anterior do mesmo dono. */
     public static SummonedStoneGolem summon(ServerLevel level, LivingEntity owner, Vec3 pos, int lifeTicks, float power) {
+        return summon(level, owner, pos, lifeTicks, power, 0);
+    }
+
+    /**
+     * Igual ao outro, mas deixa ficar até {@code keep} golens que o dono já tem (os mais novos); os demais desmoronam.
+     * O glifo usa isto para o Dividir: o 1º golem da conjuração troca os antigos, o 2º fica ao lado do 1º.
+     */
+    public static SummonedStoneGolem summon(ServerLevel level, LivingEntity owner, Vec3 pos, int lifeTicks, float power, int keep) {
         if (owner != null) {
-            UUID old = ACTIVE.get(owner.getUUID());
-            if (old != null && level.getEntity(old) instanceof SummonedStoneGolem g) g.crumble();
+            List<UUID> mine = ACTIVE.get(owner.getUUID());
+            int allowed = Math.max(0, Math.min(MAX_PER_OWNER - 1, keep));
+            while (mine != null && mine.size() > allowed) {
+                UUID old = mine.remove(0);
+                if (level.getEntity(old) instanceof SummonedStoneGolem g) g.crumble();
+                mine = ACTIVE.get(owner.getUUID());
+            }
         }
         SummonedStoneGolem g = new SummonedStoneGolem(EwRegistries.STONE_GOLEM.get(), level);
         g.ownerId = owner != null ? owner.getUUID() : null;
@@ -103,7 +120,7 @@ public class SummonedStoneGolem extends PathfinderMob implements GeoEntity, Owna
         g.setPersistenceRequired();
         g.entityData.set(BORN, level.getGameTime());
         level.addFreshEntity(g);
-        if (owner != null) ACTIVE.put(owner.getUUID(), g.getUUID());
+        if (owner != null) track(owner.getUUID(), g.getUUID());
         BlockPos ground = BlockPos.containing(pos).below();
         BlockState gs = EwFx.groundState(level, ground);
         EwFx.debris(level, pos.add(0, 0.5, 0), gs, 50, 0.8);
@@ -188,13 +205,10 @@ public class SummonedStoneGolem extends PathfinderMob implements GeoEntity, Owna
             crumble();
             return;
         }
-        // um golem mais novo do mesmo dono ja existe (este estava num chunk descarregado): desfaz este
-        if (ownerId != null) {
-            UUID current = ACTIVE.putIfAbsent(ownerId, getUUID());
-            if (current != null && !current.equals(getUUID())) {
-                crumble();
-                return;
-            }
+        // o dono ja tem o maximo de golens mais novos (este estava num chunk descarregado): desfaz este
+        if (ownerId != null && !track(ownerId, getUUID())) {
+            crumble();
+            return;
         }
         if (ownerId != null && getOwner() == null) {
             if (++ownerMissing > 200) {
@@ -268,9 +282,25 @@ public class SummonedStoneGolem extends PathfinderMob implements GeoEntity, Owna
         ACTIVE.clear();
     }
 
+    /** Põe o golem na lista do dono. false = a lista já está cheia de outros golens (este sobra). */
+    private static boolean track(UUID owner, UUID golem) {
+        List<UUID> mine = ACTIVE.computeIfAbsent(owner, k -> new ArrayList<>(MAX_PER_OWNER));
+        if (mine.contains(golem)) return true;
+        if (mine.size() >= MAX_PER_OWNER) return false;
+        mine.add(golem);
+        return true;
+    }
+
+    private static void untrack(UUID owner, UUID golem) {
+        List<UUID> mine = ACTIVE.get(owner);
+        if (mine == null) return;
+        mine.remove(golem);
+        if (mine.isEmpty()) ACTIVE.remove(owner);
+    }
+
     @Override
     public void remove(RemovalReason reason) {
-        if (ownerId != null && reason.shouldDestroy()) ACTIVE.remove(ownerId, getUUID());
+        if (ownerId != null && reason.shouldDestroy()) untrack(ownerId, getUUID());
         super.remove(reason);
     }
 
@@ -319,7 +349,7 @@ public class SummonedStoneGolem extends PathfinderMob implements GeoEntity, Owna
         super.readAdditionalSaveData(tag);
         ownerId = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
         life = tag.contains("Life") ? tag.getInt("Life") : 600;
-        if (ownerId != null) ACTIVE.putIfAbsent(ownerId, getUUID());
+        if (ownerId != null) track(ownerId, getUUID());
     }
 
     // =====================================================================================

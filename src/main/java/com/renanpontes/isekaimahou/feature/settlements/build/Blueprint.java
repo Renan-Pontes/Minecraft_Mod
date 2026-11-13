@@ -70,6 +70,46 @@ public record Blueprint(String key, SettlementStyle style, int minLevel, int poi
         return variant <= 0 ? template(style, key) : template(style, key + "_" + variant);
     }
 
+    /** Geração do visual dos prédios: 0 = moldes de antes da onda 8; 1 = visual novo ({@link LookBuildings}). */
+    public static final int LOOK_OLD = 0, LOOK_NEW = 1;
+
+    /**
+     * Molde de um prédio num NÍVEL para uma OBRA NOVA (construir, melhorar, reformar): onda 8 — o visual novo, em que
+     * cada nível é outro prédio ({@link LookBuildings}). Para o prédio que JÁ está de pé use
+     * {@link #template(int, int, int)} com a geração guardada no lote ({@code Settlement.bLooks}).
+     */
+    public ResourceLocation template(int variant, int level) {
+        return template(variant, level, LOOK_NEW);
+    }
+
+    /** Molde do prédio na geração de visual pedida (mundos antigos: o que está de pé continua no molde em que foi erguido). */
+    public ResourceLocation template(int variant, int level, int look) {
+        if (look >= LOOK_NEW && usesCell() && LookBuildings.supports(key)) return LookBuildings.id(style, key, level, variant);
+        return templateOld(variant, level);
+    }
+
+    /**
+     * Molde ANTIGO de um prédio num nível (v1.4): plantas procedurais crescem com o nível; as de molde .nbt ganham os
+     * enfeites do nível em volta ({@link ProcBuildings#ornaments}).
+     */
+    public ResourceLocation templateOld(int variant, int level) {
+        if (ProcBuildings.handles(key)) return Templates.procId(style, key, level);
+        ResourceLocation base;
+        if (Blueprints.CITY_LOTS.contains(key)) {
+            String palette = switch (style) {
+                case DESERT -> "desert";
+                case NORDIC -> "snowy";
+                case KINGDOM -> "plains";
+                // onda 5: os estilos novos não têm paleta de cidade de reino — o molde do lote é gerado para eles
+                default -> null;
+            };
+            base = palette == null ? template(style, "lot_" + key) : IsekaiMahou.id("city/" + palette + "/" + key);
+        } else {
+            base = template(variant);
+        }
+        return isWall() || isPlaza() ? base : Templates.leveledId(base, style, level);
+    }
+
     public static ResourceLocation template(SettlementStyle style, String piece) {
         return IsekaiMahou.id("settlements/" + style.id + "_" + piece);
     }

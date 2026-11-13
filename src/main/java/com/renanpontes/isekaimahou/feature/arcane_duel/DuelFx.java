@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 
 import com.renanpontes.isekaimahou.feature.arcane_duel.entity.DuelFxEntity;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
@@ -102,7 +103,7 @@ public final class DuelFx {
                 c.x, c.y, c.z, count, spread, spread, spread, 0.25);
         level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.LIGHT_BLUE_STAINED_GLASS.defaultBlockState()),
                 c.x, c.y, c.z, count / 2, spread, spread, spread, 0.25);
-        level.sendParticles(ParticleTypes.ENCHANTED_HIT, c.x, c.y, c.z, count / 2 + 4, spread, spread, spread, 0.4);
+        level.sendParticles(Vfx.magicCrit(), c.x, c.y, c.z, count / 2 + 4, spread, spread, spread, 0.4);
     }
 
     /** Vidro mágico estilhaçando com som (o visual principal das contramágicas do módulo). */

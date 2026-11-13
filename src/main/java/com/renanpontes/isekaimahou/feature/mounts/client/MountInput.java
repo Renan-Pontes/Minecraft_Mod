@@ -7,6 +7,7 @@ import com.renanpontes.isekaimahou.client.CoreKeys;
 import com.renanpontes.isekaimahou.feature.mounts.MountsNetwork;
 import com.renanpontes.isekaimahou.feature.mounts.entity.FlyingMount;
 import com.renanpontes.isekaimahou.feature.mounts.entity.MountFlight;
+import com.renanpontes.isekaimahou.feature.mounts.entity.RideMount;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -15,7 +16,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
-import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
@@ -24,11 +24,12 @@ import net.neoforged.neoforge.network.PacketDistributor;
  *   <li>Pulo = subir; Agachar no alto = descer. Enquanto o agachar é usado para descer, ele é "engolido"
  *       (não chega ao servidor), então ninguém desmonta no meio do voo. Pousou e soltou: agachar de novo
  *       desmonta normalmente. Perto do chão (menos de ~1,4 bloco), agachar desmonta.</li>
- *   <li>Tecla do módulo (padrão R) = habilidade da montaria.</li>
+ *   <li>Tecla do módulo (padrão R) = habilidade da montaria (voadora ou de chão). Só vale montado
+ *       ({@link MountKeyContext#RIDING}), por isso divide a tecla R com o Instinto Hollow sem conflito.</li>
  * </ul>
  */
 public final class MountInput {
-    public static final KeyMapping ABILITY = new KeyMapping("key.isekai_mahou.mount_ability", KeyConflictContext.IN_GAME,
+    public static final KeyMapping ABILITY = new KeyMapping("key.isekai_mahou.mount_ability", MountKeyContext.RIDING,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, CoreKeys.CATEGORY);
 
     /** O agachar atual começou no alto: continua valendo como "descer" até ser solto. */
@@ -52,7 +53,7 @@ public final class MountInput {
     static void onClientTick(ClientTickEvent.Post e) {
         Minecraft mc = Minecraft.getInstance();
         while (ABILITY.consumeClick()) {
-            if (mc.player == null || !(mc.player.getControlledVehicle() instanceof FlyingMount mount)) continue;
+            if (mc.player == null || !(mc.player.getControlledVehicle() instanceof RideMount mount)) continue;
             int cd = mount.abilityCooldown();
             if (cd > 0) {
                 mc.player.displayClientMessage(Component.translatable("message.isekai_mahou.mount_ability_cooldown",

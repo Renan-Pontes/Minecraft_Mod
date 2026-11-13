@@ -445,7 +445,10 @@ public class SpellContext {
     public void applyEffect(ParsedSpell.EffectEntry entry, Entity target) {
         SpellContext c = contextFor(entry.effect());
         schedule(entry.stats(), () -> {
-            if (target.isAlive()) entry.effect().onEntity(c, target, entry.stats());
+            if (!target.isAlive()) return;
+            entry.effect().onEntity(c, target, entry.stats());
+            // Maestria: uso real (o efeito caiu num alvo); o GlyphMastery decide se e quanto vale
+            GlyphMastery.onEntity(c, target);
         });
     }
 
@@ -455,7 +458,15 @@ public class SpellContext {
         for (ParsedSpell.EffectEntry entry : spell.effects()) {
             if (!(entry.effect().wantsBlocks() || sensitive || entry.stats().sensitive)) continue;
             SpellContext c = contextFor(entry.effect());
-            schedule(entry.stats(), () -> entry.effect().onBlock(c, hit, entry.stats()));
+            // Maestria: só efeitos FEITOS para blocos contam como trabalho (Sensível sozinho não)
+            boolean work = entry.effect().wantsBlocks();
+            schedule(entry.stats(), () -> {
+                // foto dos blocos antes: só vale como trabalho se o efeito MUDOU alguma coisa ali (null = nem confere)
+                net.minecraft.world.level.block.state.BlockState[] before =
+                        work ? GlyphMastery.blockSnapshot(c, hit.getBlockPos()) : null;
+                entry.effect().onBlock(c, hit, entry.stats());
+                if (before != null) GlyphMastery.onBlock(c, hit.getBlockPos(), before);
+            });
         }
     }
 
@@ -782,14 +793,17 @@ public class SpellContext {
         Element base = primary != null ? primary : el;
         SpellRecipe recipe = SpellRecipe.CODEC.parse(NbtOps.INSTANCE, tag.get("recipe")).result().orElse(null);
         if (recipe == null) return null;
+        UUID id = tag.hasUUID("caster") ? tag.getUUID("caster") : null;
+        LivingEntity caster = id != null && level.getEntity(id) instanceof LivingEntity le ? le : null;
+        // Magia de jogador guardada numa entidade (zona, torre...): mantém a maestria de quem conjurou, se ele está aqui
+        com.renanpontes.isekaimahou.core.MagicData mastery = tag.getBoolean("player") && caster instanceof ServerPlayer sp
+                && !(sp instanceof net.neoforged.neoforge.common.util.FakePlayer) ? MagicApi.get(sp) : null;
         // Com data null o elemento só serve para o custo (acréscimo multi-elemento): nunca invalida a magia
-        SpellParser.Result r = SpellParser.parse(recipe, base, null);
+        SpellParser.Result r = SpellParser.parse(recipe, base, null, mastery);
         if (!r.ok()) return null;
         int st = Math.max(0, tag.getInt("stage"));
         ParsedSpell spell = r.spell().stage(st);
         if (spell == null) return null;
-        UUID id = tag.hasUUID("caster") ? tag.getUUID("caster") : null;
-        LivingEntity caster = id != null && level.getEntity(id) instanceof LivingEntity le ? le : null;
         SpellContext ctx = new SpellContext(level, caster, id, base, recipe, spell);
         ctx.root = r.spell();
         ctx.stage = st;

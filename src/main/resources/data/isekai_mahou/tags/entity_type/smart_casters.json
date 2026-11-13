@@ -1,0 +1,18 @@
+{
+  "values": [
+    "minecraft:witch",
+    "minecraft:evoker",
+    "minecraft:illusioner",
+    { "id": "isekai_mahou:goblin_shaman", "required": false },
+    { "id": "isekai_mahou:cultist", "required": false },
+    { "id": "isekai_mahou:demon_succubus", "required": false },
+    { "id": "isekai_mahou:ember_imp", "required": false },
+    { "id": "isekai_mahou:hellfire_imp", "required": false },
+    { "id": "isekai_mahou:salamander", "required": false },
+    { "id": "isekai_mahou:undine", "required": false },
+    { "id": "isekai_mahou:sylph", "required": false },
+    { "id": "isekai_mahou:creeping_shade", "required": false },
+    { "id": "isekai_mahou:wandering_spirit", "required": false },
+    { "id": "isekai_mahou:solar_sentinel", "required": false }
+  ]
+}

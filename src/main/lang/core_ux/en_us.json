@@ -62,5 +62,15 @@
   "screen.isekai_mahou.notices.chat.all": "All",
   "screen.isekai_mahou.notices.chat.tip.minimal": "Minimal: only the essentials stay in chat (errors, invites, NPC lines, level/Circle, boss defeated, commands). Everything else goes here. Click to change.",
   "screen.isekai_mahou.notices.chat.tip.normal": "Normal: almost everything in chat; tips, progress and rewards go here. Click to change.",
-  "screen.isekai_mahou.notices.chat.tip.all": "All: every mod message in chat, like before. Click to change."
+  "screen.isekai_mahou.notices.chat.tip.all": "All: every mod message in chat, like before. Click to change.",
+  "key.isekai_mahou.peace_mode": "Peace Mode (toggle)",
+  "message.isekai_mahou.peace.on": "☮ Peace Mode ON — spells, dodge and hitting players and NPCs are locked",
+  "message.isekai_mahou.peace.off": "⚔ Peace Mode off — ready to fight",
+  "message.isekai_mahou.peace.blocked": "☮ You are in Peace Mode — press the Peace Mode key to cast",
+  "hud.isekai_mahou.peace": "☮ Peace [%s]",
+  "command.isekai_mahou.admin.ok": "✔ You are an administrator for this session.",
+  "command.isekai_mahou.admin.wrong": "Wrong administrator password.",
+  "command.isekai_mahou.admin.locked": "Too many attempts. Try again in %s s.",
+  "command.isekai_mahou.admin.logout": "You left administrator mode.",
+  "command.isekai_mahou.admin.required": "Administrator command. Log in first with /mahou admin login <password>."
 }

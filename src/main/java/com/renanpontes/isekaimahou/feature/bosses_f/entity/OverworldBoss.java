@@ -15,12 +15,14 @@ import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.api.Announce;
+import com.renanpontes.isekaimahou.core.api.BossThemed;
 import com.renanpontes.isekaimahou.core.api.BossArena;
 import com.renanpontes.isekaimahou.core.api.Cutscenes;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.BossRewards;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
+import com.renanpontes.isekaimahou.feature.bosses_f.polish.BossShow;
 import com.renanpontes.isekaimahou.core.item.GlyphScrollItem;
 import com.renanpontes.isekaimahou.glyph.CoreGlyphs;
 import com.renanpontes.isekaimahou.glyph.Glyph;
@@ -101,7 +103,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
  *       Os golpes do chefe também não mexem em blocos: crateras e valas são só partículas.</li>
  * </ul>
  */
-public abstract class OverworldBoss extends Monster implements GeoEntity, BfBones {
+public abstract class OverworldBoss extends Monster implements GeoEntity, BfBones, BossThemed {
     private static final EntityDataAccessor<Integer> DATA_INTRO = SynchedEntityData.defineId(OverworldBoss.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_PHASE = SynchedEntityData.defineId(OverworldBoss.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_AWAKE = SynchedEntityData.defineId(OverworldBoss.class, EntityDataSerializers.BOOLEAN);
@@ -182,6 +184,8 @@ public abstract class OverworldBoss extends Monster implements GeoEntity, BfBone
     protected void onPhaseChange(ServerLevel level, int phase) {
         Cutscenes.playNear(this, 48, "boss_phase", getDisplayName(), Component.translatable(langKey("boss", "phase" + phase)), bossColor(), 50, null);
         announce("phase" + phase);
+        // v1.0: toda troca de fase tem a sua onda
+        BossShow.phaseBurst(level, this, bossColor());
     }
 
     /** Partículas no cliente (ambiente). */
@@ -204,7 +208,12 @@ public abstract class OverworldBoss extends Monster implements GeoEntity, BfBone
 
     /** Duração da morte (ticks) — a animação "death" toca inteira. */
     protected int deathTicks() {
-        return 50;
+        return 64; // v1.0: 2,5 s de animação + o corpo se desfazendo
+    }
+
+    /** Duração da morte em ticks (o renderer usa para desfazer o corpo no fim). */
+    public int deathSpan() {
+        return deathTicks();
     }
 
     /** Verdadeiro enquanto um ataque está em preparo/execução (anti-trapaça e volta para casa esperam). */
@@ -261,6 +270,9 @@ public abstract class OverworldBoss extends Monster implements GeoEntity, BfBone
         if (home == null) home = blockPosition();
         return out;
     }
+
+    /** v1.0: trava das falas reativas (provocação / último fôlego). */
+    private final BossShow.Voice voice = new BossShow.Voice();
 
     private ServerBossEvent bar() {
         if (bar == null) {
@@ -355,6 +367,8 @@ public abstract class OverworldBoss extends Monster implements GeoEntity, BfBone
             return;
         }
         if (isAwake()) checkPhase(sl);
+        // v1.0: fala de último fôlego (uma vez por luta)
+        if (isAwake() && tickCount % 10 == 0 && voice.lastStand(this, 0.15F)) announce("last_stand");
         if (tickCount % 10 == 0) {
             updateBarPlayers(sl);
             if (!isAwake()) {
@@ -712,10 +726,28 @@ public abstract class OverworldBoss extends Monster implements GeoEntity, BfBone
     }
 
     protected void onDefeated(ServerLevel sl) {
+        if (lastActionAnim != null) stopTriggeredAnim("action", lastActionAnim);
         Telegraph.cancelAll(this);
         BossRewards.grant(this, rewardXp(), REWARD_RANGE);
         announce("death");
         bar().removeAllPlayers();
+        // v1.0: golpe final marcado + câmera da derrota (curta, não trava ninguém)
+        BossShow.deathStart(sl, this, bossColor(), deathTicks(), true);
+    }
+
+    /** v1.0: último golpe disparado no controlador "action" — interrompido na morte para não cobrir a animação "death". */
+    @Nullable private String lastActionAnim;
+
+    @Override
+    public void triggerAnim(String controllerName, String animName) {
+        if ("action".equals(controllerName)) lastActionAnim = animName;
+        GeoEntity.super.triggerAnim(controllerName, animName);
+    }
+
+    /** v1.0: um jogador caiu pelas mãos do chefe — provocação curta (com trava: nunca em rajada). */
+    public void onPlayerSlain() {
+        if (level().isClientSide || isDeadOrDying() || !isAwake() || introTicks() > 0 || !voice.taunt(this)) return;
+        announce("taunt");
     }
 
     @Override
@@ -729,12 +761,14 @@ public abstract class OverworldBoss extends Monster implements GeoEntity, BfBone
         deathTime++;
         if (level() instanceof ServerLevel sl) {
             Vec3 c = position().add(0, getBbHeight() * 0.5, 0);
-            if (deathTime % 3 == 0) {
-                sl.sendParticles(BfFx.dust(bossColor(), 1.8F), c.x, c.y, c.z, 10, getBbWidth() * 0.4, getBbHeight() * 0.3, getBbWidth() * 0.4, 0.0);
+            if (deathTime % 4 == 0) {
                 sl.sendParticles(ParticleTypes.SMOKE, c.x, c.y, c.z, 4, getBbWidth() * 0.3, getBbHeight() * 0.3, getBbWidth() * 0.3, 0.01);
             }
+            // v1.0: morte em três atos (vaza, converge, estoura)
+            BossShow.deathTick(sl, this, deathTime, deathTicks(), bossColor());
             if (deathTime >= deathTicks() && !isRemoved()) {
-                sl.sendParticles(BfFx.dust(bossColor(), 2.4F), c.x, c.y, c.z, 80, getBbWidth() * 0.6, getBbHeight() * 0.5, getBbWidth() * 0.6, 0);
+                BossShow.deathFinale(sl, this, bossColor());
+                sl.sendParticles(BfFx.dust(bossColor(), 2.4F), c.x, c.y, c.z, 40, getBbWidth() * 0.6, getBbHeight() * 0.5, getBbWidth() * 0.6, 0);
                 sl.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y, c.z, 3, 0.5, 0.5, 0.5, 0.0);
                 sl.broadcastEntityEvent(this, (byte) 60);
                 remove(RemovalReason.KILLED);
@@ -1009,5 +1043,11 @@ public abstract class OverworldBoss extends Monster implements GeoEntity, BfBone
         // Molde de estrutura sem "Home": a casa é onde ele for colocado (definida no 1º tick).
         home = NbtUtils.readBlockPos(b, "Home").orElse(null);
         if (bar != null) bar.setName(getDisplayName());
+    }
+
+    /** v1.3 — Música de chefe (lida no cliente): "beast" para as feras (os 4 chefes do Overworld). */
+    @Override
+    public String musicTheme() {
+        return "beast";
     }
 }

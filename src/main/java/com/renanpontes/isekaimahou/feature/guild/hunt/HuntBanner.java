@@ -147,7 +147,7 @@ public class HuntBanner extends Entity implements GeoEntity {
     private void clientFx() {
         int state = bannerState();
         Level level = level();
-        boolean reduced = MahouConfig.REDUCED_PARTICLES.get();
+        boolean reduced = !com.renanpontes.isekaimahou.client.fx.FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         int rgb = state == BATTLE ? 0xFF5B4A : color();
         Vector3f c = new Vector3f(((rgb >> 16) & 255) / 255F, ((rgb >> 8) & 255) / 255F, (rgb & 255) / 255F);
         DustParticleOptions dust = new DustParticleOptions(c, state == BATTLE ? 1.6F : 1.3F);

@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:mithril_ingot"
+    },
+    {
+      "item": "isekai_mahou:mithril_ingot"
+    },
+    {
+      "item": "isekai_mahou:mithril_ingot"
+    },
+    {
+      "item": "isekai_mahou:mithril_ingot"
+    },
+    {
+      "item": "isekai_mahou:mithril_ingot"
+    },
+    {
+      "item": "isekai_mahou:mithril_ingot"
+    },
+    {
+      "item": "isekai_mahou:mithril_ingot"
+    },
+    {
+      "item": "isekai_mahou:mithril_ingot"
+    },
+    {
+      "item": "isekai_mahou:mithril_ingot"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:mithril_block",
+    "count": 1
+  }
+}

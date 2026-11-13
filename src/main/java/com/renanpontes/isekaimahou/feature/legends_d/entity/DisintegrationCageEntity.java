@@ -13,6 +13,7 @@ import com.renanpontes.isekaimahou.feature.legends_d.LdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -120,7 +121,7 @@ public class DisintegrationCageEntity extends LdSpellEntity {
                 for (int i = 0; i < 4; i++) {
                     double ang = a + i * Math.PI / 2;
                     Vec3 p = base.add(Math.cos(ang) * r, random.nextDouble() * height(), Math.sin(ang) * r);
-                    LdUtil.send(sl, ParticleTypes.END_ROD, p, 1, 0.02, 0.01);
+                    LdUtil.send(sl, Vfx.endRod(), p, 1, 0.02, 0.01);
                 }
                 LdUtil.send(sl, LdUtil.dust(WHITE_GOLD, 1.0F), base.add(0, height() * 0.5, 0), 3, r * 0.5, 0);
             }
@@ -151,14 +152,14 @@ public class DisintegrationCageEntity extends LdSpellEntity {
                 // Desfeito: o corpo some em pó de luz (o loot cai normalmente)
                 e.setInvisible(true);
                 LdUtil.send(sl, LdUtil.fade(WHITE_GOLD, 0x000000, 1.8F), LdUtil.center(e), 40, e.getBbWidth() * 0.5, 0.06);
-                LdUtil.send(sl, ParticleTypes.WHITE_ASH, LdUtil.center(e), 30, e.getBbWidth() * 0.6, 0.05);
+                LdUtil.send(sl, Vfx.whiteAsh(), LdUtil.center(e), 30, e.getBbWidth() * 0.6, 0.05);
             }
         }
         LdUtil.sound(sl, base, SoundEvents.BEACON_POWER_SELECT, 3.0F, 0.5F);
         LdUtil.sound(sl, base, SoundEvents.TRIDENT_THUNDER, 4.0F, 1.4F);
         LdUtil.sound(sl, base, SoundEvents.AMETHYST_CLUSTER_BREAK, 3.0F, 0.6F);
         LdUtil.send(sl, ParticleTypes.FLASH, base.add(0, 1, 0), 2, 0.3, 0);
-        LdUtil.send(sl, ParticleTypes.END_ROD, base.add(0, height() * 0.5, 0), 60, r * 0.6, 0.25);
+        LdUtil.send(sl, Vfx.endRod(), base.add(0, height() * 0.5, 0), 60, r * 0.6, 0.25);
         LdNet.near(sl, base, 40, new LdNet.Fx(LdNet.HOLY_FLASH, base, r, getId(), 14));
         BossKit.shake(sl, base, 28, 0.9F, 14);
         // Terreno apagado num cilindro até o céu (do chão um pouco abaixo dos pés)
@@ -170,7 +171,7 @@ public class DisintegrationCageEntity extends LdSpellEntity {
         Vec3 ce = LdUtil.center(e);
         double w = e.getBbWidth() * 0.45, h = e.getBbHeight() * 0.45;
         LdUtil.send(sl, LdUtil.fade(WHITE_GOLD, GOLD, 1.3F), ce.x, ce.y, ce.z, 30, w, h, w, 0.03);
-        LdUtil.send(sl, ParticleTypes.END_ROD, ce.x, ce.y, ce.z, 14, w, h, w, 0.12);
+        LdUtil.send(sl, Vfx.endRod(), ce.x, ce.y, ce.z, 14, w, h, w, 0.12);
         LdUtil.send(sl, ParticleTypes.FLASH, ce, 1, 0, 0);
     }
 

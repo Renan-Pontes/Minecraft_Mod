@@ -52,6 +52,13 @@ ext.qolMods = [
         "maven.modrinth:xaeros-minimap:irjR7dHk",   // Xaero's Minimap 26.6.0
         "maven.modrinth:xaeros-world-map:SnQ4SoDe", // Xaero's World Map 1.47.0
         "maven.modrinth:mouse-tweaks:9I21YYxf",     // Mouse Tweaks 2.26.1
+        // v1.3 — desempenho (mais FPS e mais chunks sem lag). Todos sem dependências extras no Modrinth.
+        "maven.modrinth:sodium:uMOpc5uV",           // Sodium 0.8.13 (NeoForge oficial): renderizador de chunks muito mais rápido
+        "maven.modrinth:ferrite-core:x7kQWVju",     // FerriteCore 7.0.3: bem menos RAM usada
+        "maven.modrinth:modernfix:ZDZENbHH",        // ModernFix 5.27.27: carrega mais rápido, menos RAM, corrige travadas
+        "maven.modrinth:immediatelyfast:EJzmEPZV",  // ImmediatelyFast 1.6.15: HUD, textos e mapas desenhados mais rápido
+        "maven.modrinth:entityculling:eieYbWYb",    // Entity Culling 1.11.3: não desenha mobs/baús escondidos atrás de paredes
+        "maven.modrinth:distanthorizons:9w34y8ai",  // Distant Horizons 3.3.3: terreno distante em LOD (enxergar longe sem lag)
 ]
 
 configurations {
@@ -259,6 +266,10 @@ var deployToTLauncher = tasks.register('deployToTLauncher', Sync) {
         exclude "*Grwn5rUB*", "*yohfFbgD*", "*O5EpeqI3*", "*HJZB6bmA*"
         // versões antigas dos mods facilitadores que a gente instala
         exclude "jade-*.jar", "jei-*.jar", "appleskin-*.jar", "xaeros-minimap-*.jar", "xaeros-world-map-*.jar", "mouse-tweaks-*.jar"
+        // v1.3: mods de desempenho (versões antigas, inclusive baixadas à mão, são trocadas pelas nossas;
+        // Embeddium sai porque é incompatível com o Sodium)
+        exclude "sodium-*.jar", "ferrite-core-*.jar", "ferritecore-*.jar", "modernfix-*.jar", "immediatelyfast-*.jar",
+                "ImmediatelyFast-*.jar", "entityculling-*.jar", "distanthorizons-*.jar", "DistantHorizons-*.jar", "embeddium-*.jar"
     }
 }
 tasks.named('build') { finalizedBy deployToTLauncher }
@@ -357,3 +368,40 @@ var mergeData = tasks.register("mergeData") {
 }
 sourceSets.main.resources.srcDir(files(mergeOut).builtBy(mergeData))
 tasks.named('processResources') { dependsOn mergeData }
+
+
+// ---------------------------------------------------------------------------------------------
+// v1.0 RELEASE — pacotes prontos para distribuir (saem em output/):
+//   ./gradlew packFriends  → IsekaiMahou-<versão>-Amigos.zip    (pasta mods completa + LEIA-ME do TLauncher)
+//   ./gradlew packServer   → IsekaiMahou-<versão>-Servidor.zip  (servidor dedicado: mods, scripts, backup)
+// Os textos/scripts ficam em tools/pack/** (@VERSION@ e @NEO@ são trocados aqui).
+// ---------------------------------------------------------------------------------------------
+def packTokens = [VERSION: mod_version, NEO: neo_version]
+// Mods só de cliente (render/entrada): não vão para o servidor dedicado
+def clientOnlyMods = ['sodium', 'immediatelyfast', 'entityculling', 'mouse-tweaks', 'distanthorizons']
+tasks.register('packFriends', Zip) {
+    group = 'isekai'
+    description = 'Zip para os amigos: mod + bibliotecas + mods de ajuda + passo a passo.'
+    archiveFileName = "IsekaiMahou-${mod_version}-Amigos.zip"
+    destinationDirectory = layout.projectDirectory.dir('output')
+    filteringCharset = 'UTF-8'
+    from('tools/pack/friends') { filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: packTokens) }
+    into('mods') {
+        from tasks.named('jar')
+        from configurations.deployLibs
+    }
+}
+tasks.register('packServer', Zip) {
+    group = 'isekai'
+    description = 'Pasta de servidor dedicado: mods de servidor, server.properties, instalar/iniciar/backup.'
+    archiveFileName = "IsekaiMahou-${mod_version}-Servidor.zip"
+    destinationDirectory = layout.projectDirectory.dir('output')
+    filteringCharset = 'UTF-8'
+    from('tools/pack/server') { filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: packTokens) }
+    into('mods') {
+        from tasks.named('jar')
+        from(configurations.deployLibs) {
+            exclude { d -> clientOnlyMods.any { d.file.name.toLowerCase().contains(it) } }
+        }
+    }
+}

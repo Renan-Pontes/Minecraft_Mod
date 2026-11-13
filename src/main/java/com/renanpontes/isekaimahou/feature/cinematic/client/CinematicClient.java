@@ -71,6 +71,7 @@ public class CinematicClient implements ClientModule {
     /** Saiu do servidor/mundo: nada de câmera, fila ou balões pendurados. */
     private static void reset() {
         CutsceneDirector.stop();
+        CutsceneDirector.clearPending();
         CameraShake.clear();
         AnnounceOverlay.clear();
         WorldLabels.clear();

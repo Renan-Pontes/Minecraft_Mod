@@ -1,0 +1,16 @@
+{
+  "values": [
+    "minecraft:jungle",
+    "minecraft:sparse_jungle",
+    "minecraft:bamboo_jungle",
+    "minecraft:dark_forest",
+    "minecraft:old_growth_birch_forest",
+    "minecraft:swamp",
+    "minecraft:mangrove_swamp",
+    "minecraft:forest",
+    "minecraft:flower_forest",
+    "isekai_mahou:crystal_forest",
+    "isekai_mahou:haunted_swamp",
+    "isekai_mahou:twilight_grove"
+  ]
+}

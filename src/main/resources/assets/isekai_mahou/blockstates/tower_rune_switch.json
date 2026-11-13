@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "isekai_mahou:block/tower_rune_switch"
+    },
+    "lit=true": {
+      "model": "isekai_mahou:block/tower_rune_switch_lit"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": {
+    "item": "isekai_mahou:raw_mithril"
+  },
+  "result": {
+    "id": "isekai_mahou:mithril_ingot"
+  },
+  "experience": 1.0,
+  "cookingtime": 200
+}

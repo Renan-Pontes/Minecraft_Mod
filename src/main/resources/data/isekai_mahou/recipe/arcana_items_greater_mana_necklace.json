@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CDC",
+    "ENE",
+    "CDC"
+  ],
+  "key": {
+    "C": {
+      "item": "isekai_mahou:mana_crystal_block"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    "N": {
+      "item": "isekai_mahou:mana_necklace"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:greater_mana_necklace",
+    "count": 1
+  }
+}

@@ -46,6 +46,7 @@ public class ClassGamblerModule implements Module {
         GamblerOutfits.register(modBus);
         GamblerGlyphs.register();
         modBus.addListener(GbNet::register);
+        modBus.addListener(GbFxNet::register);
         modBus.addListener(GamblerLegends::setup);
         modBus.addListener(ClassGamblerModule::creativeTab);
 

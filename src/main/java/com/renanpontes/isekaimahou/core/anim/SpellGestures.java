@@ -17,6 +17,8 @@ import com.renanpontes.isekaimahou.glyph.ParsedSpell;
  *   <li>suprema (tecla G), lendária, domínio → pose de carga com braços abertos e liberação</li>
  * </ul>
  * Formas de ARMA DE FOGO ({@code gun_*}) ficam sem gesto: o Pistoleiro já anima a arma.
+ * <p>
+ * v1.3: antes da regra geral, {@link TechniqueGestures} dá gestos próprios às técnicas das classes (por id do glifo).
  */
 public final class SpellGestures {
     private static final String[] BEAM = {"beam", "ray", "cone", "cero", "breath", "laser", "stellar_burst", "black_star",
@@ -43,6 +45,9 @@ public final class SpellGestures {
         if (form == null) return MahouAnims.CAST_BOLT;
         String p = form.id().getPath();
         if (p.startsWith("gun_")) return null;
+        // v1.3: técnica de classe/transformação com gesto próprio (Cero, Excalibur, Kaioken...) vem antes da regra geral
+        String technique = TechniqueGestures.release(spell);
+        if (technique != null) return technique;
         if (spell.isUltimate() || form.isUltimate() || form.isLegendary() || any(p, GRAND)) return MahouAnims.CAST_ULT_RELEASE;
         boolean big = form.tier() >= 4 || spell.baseCost() >= 45;
         if (spell.formStats() != null && spell.formStats().channel) return MahouAnims.CAST_BEAM;
@@ -58,6 +63,8 @@ public final class SpellGestures {
 
     /** Pose mantida enquanto a magia carrega ({@code sustain = false}) ou é canalizada sem parar ({@code true}). */
     public static String hold(ParsedSpell spell, boolean sustain) {
+        String technique = TechniqueGestures.hold(spell, sustain);
+        if (technique != null) return technique;
         FormGlyph form = spell.form();
         if (form != null && (spell.isUltimate() || form.isUltimate() || form.isLegendary() || any(form.id().getPath(), GRAND))) {
             return MahouAnims.CAST_ULT_CHARGE;

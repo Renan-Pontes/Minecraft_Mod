@@ -3,7 +3,7 @@ package com.renanpontes.isekaimahou.feature.legends_a.entity;
 import com.renanpontes.isekaimahou.feature.legends_a.LegendFx;
 import com.renanpontes.isekaimahou.feature.legends_a.LegendsARegistry;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -120,7 +120,7 @@ public class ExplosionSigilEntity extends Entity {
         if (level() instanceof ServerLevel sl) {
             Vec3 p = position();
             LegendFx.far(sl, LegendFx.dust(color(), 2.5F), p.x, p.y + GAP, p.z, 60, radius() * 0.6, GAP, radius() * 0.6, 0);
-            LegendFx.far(sl, ParticleTypes.END_ROD, p.x, p.y, p.z, 30, radius() * 0.5, 1.0, radius() * 0.5, 0.05);
+            LegendFx.far(sl, Vfx.endRod(), p.x, p.y, p.z, 30, radius() * 0.5, 1.0, radius() * 0.5, 0.05);
             LegendFx.sound(sl, p, SoundEvents.BEACON_POWER_SELECT, 3.0F, 0.6F);
         }
     }
@@ -130,7 +130,7 @@ public class ExplosionSigilEntity extends Entity {
         stateTicks = 0;
         if (level() instanceof ServerLevel sl) {
             Vec3 p = position();
-            sl.sendParticles(ParticleTypes.SMOKE, p.x, p.y, p.z, 30, radius() * 0.5, 1.0, radius() * 0.5, 0.02);
+            sl.sendParticles(Vfx.smoke(), p.x, p.y, p.z, 30, radius() * 0.5, 1.0, radius() * 0.5, 0.02);
             LegendFx.sound(sl, p, SoundEvents.BEACON_DEACTIVATE, 2.0F, 1.2F);
         }
     }

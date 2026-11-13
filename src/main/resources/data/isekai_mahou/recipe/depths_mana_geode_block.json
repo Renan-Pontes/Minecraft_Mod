@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    {
+      "item": "minecraft:amethyst_block"
+    }
+  ],
+  "result": {
+    "id": "isekai_mahou:depths_mana_geode_block",
+    "count": 2
+  }
+}

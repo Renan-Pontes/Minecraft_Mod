@@ -15,6 +15,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -79,7 +80,12 @@ public final class WitchTechniques {
             level.addFreshEntity(b);
             p.startRiding(b, true);
             p.resetFallDistance();
-            level.sendParticles(net.minecraft.core.particles.ParticleTypes.CHERRY_LEAVES, p.getX(), p.getY() + 0.5, p.getZ(), 24, 0.6, 0.3, 0.6, 0.03);
+            level.sendParticles(Vfx.cherry(), p.getX(), p.getY() + 0.5, p.getZ(), 24, 0.6, 0.3, 0.6, 0.03);
+            // v1.3: a vassoura sai de um pequeno selo de bruxa no chão, num redemoinho de pétalas
+            com.renanpontes.isekaimahou.core.ElementFx.portal(level, p.position().add(0, 0.06, 0), new Vec3(0, 1, 0),
+                    com.renanpontes.isekaimahou.core.Element.NATURE, 0xF0C8E8, 1.4F, 2, 16);
+            com.renanpontes.isekaimahou.core.ElementFx.impactFx(level, p.position().add(0, 0.3, 0),
+                    com.renanpontes.isekaimahou.core.Element.WIND, 0xF0C8E8, 2, null, 0.8F);
             LfUtil.sound(level, p.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.2F, 1.2F);
             LfUtil.sound(level, p.position(), SoundEvents.ELYTRA_FLYING, 0.4F, 1.6F);
             LfUtil.banner(p, "announce.isekai_mahou.legends_f.broom", 0xF0C8E8, false);
@@ -123,7 +129,7 @@ public final class WitchTechniques {
             }
             LfStates.set(le, LfNet.S_SLEEP, ticks, 0);
             ServerLevel level = ctx.level();
-            level.sendParticles(net.minecraft.core.particles.ParticleTypes.CHERRY_LEAVES, le.getX(), le.getY() + le.getBbHeight(), le.getZ(), 16, 0.4, 0.3, 0.4, 0.02);
+            level.sendParticles(Vfx.cherry(), le.getX(), le.getY() + le.getBbHeight(), le.getZ(), 16, 0.4, 0.3, 0.4, 0.02);
             LfUtil.sound(level, le.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 0.6F);
             LfUtil.sound(level, le.position(), SoundEvents.SWEET_BERRY_BUSH_PLACE, 1.0F, 0.7F);
             if (le instanceof ServerPlayer sp) {

@@ -62,8 +62,8 @@ public class DesertBasilisk extends OverworldBoss {
     private static final int BURROW_TICKS = 20;
     private static final int TUNNEL_WARMUP = 38;
     private static final int EMERGE_TICKS = 18;
-    /** Cos do ângulo em que o jogador "está olhando" para o Basilisco (~60°). */
-    private static final double LOOK_DOT = 0.5;
+    /** Cos do ângulo em que o jogador "está olhando" para o Basilisco (~60°). O aviso do cliente usa o mesmo. */
+    public static final double LOOK_DOT = 0.5;
 
     private int gazeCd = 80, gazeAllCd = 0, biteCd = 0, tailCd = 30, burrowCd = 160, sandCd = 120;
     private int attackTimer;
@@ -153,7 +153,7 @@ public class DesertBasilisk extends OverworldBoss {
     }
 
     /** Olhos (para as linhas do olhar e o teste de visão). */
-    private Vec3 eyes() {
+    public Vec3 eyes() {
         Vec3 fwd = Vec3.directionFromRotation(0, yBodyRot);
         return position().add(fwd.scale(2.6)).add(0, 1.3, 0);
     }

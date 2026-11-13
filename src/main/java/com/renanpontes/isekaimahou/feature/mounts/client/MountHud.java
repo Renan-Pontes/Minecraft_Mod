@@ -2,6 +2,7 @@ package com.renanpontes.isekaimahou.feature.mounts.client;
 
 import com.renanpontes.isekaimahou.feature.mounts.entity.FlyingMount;
 import com.renanpontes.isekaimahou.feature.mounts.entity.MountFlight;
+import com.renanpontes.isekaimahou.feature.mounts.entity.RideMount;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -11,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 /**
- * Painel pequeno à esquerda da barra de itens enquanto se pilota uma montaria voadora:
+ * Painel pequeno à esquerda da barra de itens enquanto se pilota uma montaria (voadora ou de chão):
  * tecla + nome da habilidade, barra de recarga (pulsa enquanto o efeito está ativo) e a altura
  * sobre o chão quando está voando.
  */
@@ -23,7 +24,7 @@ public final class MountHud {
     static void render(GuiGraphics g, DeltaTracker delta) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.options.hideGui || mc.player == null || mc.player.isSpectator()) return;
-        if (!(mc.player.getControlledVehicle() instanceof FlyingMount mount)) return;
+        if (!(mc.player.getControlledVehicle() instanceof RideMount mount)) return;
         Font font = mc.font;
         int w = g.guiWidth();
         int h = g.guiHeight();
@@ -63,7 +64,7 @@ public final class MountHud {
         }
 
         // Altura sobre o chão (só voando)
-        if (mount.flight().isAirborne()) {
+        if (mount instanceof FlyingMount flyer && flyer.flight().isAirborne()) {
             double alt = MountFlight.heightAboveGround(mount.asMob(), 64.0);
             Component altText = alt > 64.0 ? Component.translatable("hud.isekai_mahou.mount_altitude_high")
                     : Component.translatable("hud.isekai_mahou.mount_altitude", (int) Math.round(alt));

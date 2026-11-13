@@ -105,7 +105,7 @@ public final class BfFx {
     /** Opção "reduzir partículas" do cliente (só chamar no cliente). */
     public static boolean reduced() {
         try {
-            return MahouConfig.REDUCED_PARTICLES.get();
+            return !com.renanpontes.isekaimahou.client.fx.FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         } catch (IllegalStateException e) {
             return false;
         }

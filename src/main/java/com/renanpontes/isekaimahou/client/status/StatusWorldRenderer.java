@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.renanpontes.isekaimahou.client.GlyphArt;
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 
@@ -37,7 +38,8 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
  * vanilla não está aparecendo), fileira de ícones com acúmulos sobre a cabeça e os textos das reações.
  */
 final class StatusWorldRenderer {
-    private static final double SHELL_RANGE = 48.0;
+    /** Lista reaproveitada (cópia dos ids) — sem alocar a cada quadro. */
+    private static final List<Integer> IDS = new ArrayList<>();
     private static final double ICON_RANGE = 24.0;
     private static final ResourceLocation ICE = ResourceLocation.withDefaultNamespace("block/ice");
     private static final ResourceLocation STONE = ResourceLocation.withDefaultNamespace("block/stone");
@@ -58,15 +60,18 @@ final class StatusWorldRenderer {
 
         if (hasStatuses) {
             boolean icons = !mc.options.hideGui && !ClientStatuses.worldIconsHandledExternally() && iconsEnabled();
-            List<Integer> ids = new ArrayList<>(ClientStatuses.trackedIds());
-            for (int id : ids) {
+            // v1.3: alcance das cascas (gelo/pedra/chamas) pelo preset: 32 no Fraco/OK, 64 no Bom, 96 no Ultra
+            double shellRange = Math.max(32.0, FxQuality.range());
+            IDS.clear();
+            IDS.addAll(ClientStatuses.trackedIds());
+            for (int id : IDS) {
                 Entity ent = mc.level.getEntity(id);
                 if (!(ent instanceof LivingEntity le) || le.isRemoved() || le.isInvisibleTo(mc.player)) continue;
                 List<ClientStatuses.Entry> list = ClientStatuses.get(le);
                 if (list.isEmpty()) continue;
                 Vec3 pos = le.getPosition(pt);
                 double dist = pos.distanceTo(camPos);
-                if (dist > SHELL_RANGE) continue;
+                if (dist > shellRange) continue;
                 boolean firstPerson = le == cam.getEntity() && !cam.isDetached();
                 if (!firstPerson) shells(ps, le, list, pos, camPos, cam, pt);
                 if (icons && dist <= ICON_RANGE && le != mc.player) iconRow(ps, le, list, pos, camPos, cam, dist);

@@ -4,7 +4,7 @@ import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.feature.fusions_b.FbFx;
 import com.renanpontes.isekaimahou.feature.fusions_b.FbUtil;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -104,8 +104,8 @@ public final class Prism {
         for (int c : FbFx.RAINBOW) {
             sl.sendParticles(FbFx.dust(c, 1.1F), at.x, at.y, at.z, 3, 0.25, 0.25, 0.25, 0);
         }
-        sl.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 4, 0.1, 0.1, 0.1, 0.08);
-        sl.sendParticles(ParticleTypes.WAX_ON, at.x, at.y, at.z, 3, 0.2, 0.2, 0.2, 0.05);
+        sl.sendParticles(Vfx.endRod(), at.x, at.y, at.z, 4, 0.1, 0.1, 0.1, 0.08);
+        sl.sendParticles(Vfx.waxOn(), at.x, at.y, at.z, 3, 0.2, 0.2, 0.2, 0.05);
     }
 
     private Prism() {}

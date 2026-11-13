@@ -1,0 +1,97 @@
+{
+  "chapters": [
+    {
+      "id": "dwarf_hold",
+      "order": 34,
+      "color": "#E0A040",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:mithril_ingot",
+        "isekai_mahou:dwarf_rune_forge",
+        "isekai_mahou:hero_shield"
+      ],
+      "steps": [
+        {
+          "id": "enter",
+          "condition": {
+            "type": "flag",
+            "flag": "dwarf_hold.entered"
+          },
+          "xp": 200,
+          "icon": "isekai_mahou:mithril_block",
+          "locate": {
+            "structure": "isekai_mahou:dwarf_hold"
+          }
+        },
+        {
+          "id": "trade",
+          "condition": {
+            "type": "flag",
+            "flag": "dwarf_hold.trade"
+          },
+          "xp": 100,
+          "icon": "minecraft:emerald",
+          "locate": {
+            "structure": "isekai_mahou:dwarf_hold"
+          }
+        },
+        {
+          "id": "mithril",
+          "condition": {
+            "type": "counter",
+            "key": "dwarf_hold.mithril",
+            "min": 3
+          },
+          "optional": true,
+          "xp": 200,
+          "icon": "isekai_mahou:raw_mithril"
+        },
+        {
+          "id": "rune",
+          "condition": {
+            "type": "flag",
+            "flag": "dwarf_hold.rune"
+          },
+          "xp": 250,
+          "icon": "isekai_mahou:dwarf_rune_forge",
+          "locate": {
+            "structure": "isekai_mahou:dwarf_hold"
+          }
+        },
+        {
+          "id": "treasure",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "item",
+                "item": "isekai_mahou:hero_shield"
+              },
+              {
+                "type": "item",
+                "item": "isekai_mahou:appraisal_monocle"
+              }
+            ]
+          },
+          "optional": true,
+          "xp": 400,
+          "icon": "isekai_mahou:hero_shield",
+          "locate": {
+            "structure": "isekai_mahou:dwarf_hold"
+          }
+        }
+      ],
+      "rewards": {
+        "xp": 1500,
+        "items": [
+          {
+            "id": "isekai_mahou:mithril_ingot",
+            "count": 4
+          }
+        ],
+        "glyph_scrolls": 1,
+        "glyph_tier": 3
+      }
+    }
+  ]
+}

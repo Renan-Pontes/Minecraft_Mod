@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
@@ -28,8 +29,9 @@ public final class LsFx {
         return new Vector3f(((rgb >> 16) & 255) / 255F, ((rgb >> 8) & 255) / 255F, (rgb & 255) / 255F);
     }
 
-    public static DustParticleOptions dust(int rgb, float size) {
-        return new DustParticleOptions(vec(rgb), size);
+    public static ParticleOptions dust(int rgb, float size) {
+        // v1.3: brilho fx aditivo (mesmo tamanho do pó do vanilla; respeita o preset gráfico no cliente)
+        return com.renanpontes.isekaimahou.core.ElementFx.glow(rgb, size);
     }
 
     public static DustColorTransitionOptions fade(int from, int to, float size) {
@@ -85,8 +87,8 @@ public final class LsFx {
 
     /** Nuvem de fumaça sombria (sumir/aparecer). */
     public static void shadowPuff(ServerLevel level, Vec3 pos, double h) {
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, pos.x, pos.y + h * 0.5, pos.z, 18, 0.3, h * 0.35, 0.3, 0.02);
-        level.sendParticles(ParticleTypes.SQUID_INK, pos.x, pos.y + h * 0.5, pos.z, 12, 0.3, h * 0.3, 0.3, 0.05);
+        level.sendParticles(Vfx.largeSmoke(), pos.x, pos.y + h * 0.5, pos.z, 18, 0.3, h * 0.35, 0.3, 0.02);
+        level.sendParticles(Vfx.ink(), pos.x, pos.y + h * 0.5, pos.z, 12, 0.3, h * 0.3, 0.3, 0.05);
         level.sendParticles(dust(VIOLET, 1.4F), pos.x, pos.y + h * 0.5, pos.z, 16, 0.35, h * 0.35, 0.35, 0);
         level.sendParticles(ElementFx.style(Element.SHADOW, 1.4F), pos.x, pos.y + h * 0.4, pos.z, 10, 0.35, h * 0.3, 0.35, 0.03);
     }
@@ -94,7 +96,7 @@ public final class LsFx {
     /** Explosão de luz sagrada. */
     public static void holyBurst(ServerLevel level, Vec3 pos, int count, double spread) {
         level.sendParticles(dust(GOLD, 1.5F), pos.x, pos.y, pos.z, count, spread, spread, spread, 0);
-        level.sendParticles(ParticleTypes.END_ROD, pos.x, pos.y, pos.z, Math.max(1, count / 2), spread, spread, spread, 0.06);
+        level.sendParticles(Vfx.endRod(), pos.x, pos.y, pos.z, Math.max(1, count / 2), spread, spread, spread, 0.06);
         level.sendParticles(ElementFx.style(Element.LIGHT, 1.2F), pos.x, pos.y, pos.z, Math.max(1, count / 3), spread, spread, spread, 0.08);
         if (count >= 16) ElementFx.flash(level, pos, GOLD, (float) Math.min(3.0, 0.8 + spread));
     }

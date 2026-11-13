@@ -8,7 +8,7 @@ import com.renanpontes.isekaimahou.glyph.FormGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
@@ -77,6 +77,6 @@ public class ArsenalGateForm extends FormGlyph {
         Vec3 center = gate.slotPos(slots / 2);
         ArsenalPortalEntity.openSound(sl, center);
         sl.sendParticles(LegendFx.dust(color, 1.6F), center.x, center.y, center.z, 30, 1.6, 0.8, 1.6, 0);
-        sl.sendParticles(ParticleTypes.END_ROD, center.x, center.y, center.z, 12, 1.4, 0.6, 1.4, 0.02);
+        sl.sendParticles(Vfx.endRod(), center.x, center.y, center.z, 12, 1.4, 0.6, 1.4, 0.02);
     }
 }

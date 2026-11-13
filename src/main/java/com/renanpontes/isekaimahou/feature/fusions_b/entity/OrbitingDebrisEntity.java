@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.feature.fusions_b.FbUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -193,7 +194,7 @@ public class OrbitingDebrisEntity extends FbSpellEntity {
         if (isRemoved()) return;
         BlockState s = blockState();
         sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, s), getX(), getY() + 0.3, getZ(), 18, 0.25, 0.25, 0.25, 0.15);
-        sl.sendParticles(ParticleTypes.REVERSE_PORTAL, getX(), getY() + 0.3, getZ(), 6, 0.2, 0.2, 0.2, 0.05);
+        sl.sendParticles(Vfx.reversePortal(), getX(), getY() + 0.3, getZ(), 6, 0.2, 0.2, 0.2, 0.05);
         FbFx.sound(sl, position(), s.getSoundType(sl, blockPosition(), this).getBreakSound(), 1.0F, 0.8F);
         discard();
     }
@@ -217,7 +218,7 @@ public class OrbitingDebrisEntity extends FbSpellEntity {
             level().addParticle(new BlockParticleOption(ParticleTypes.FALLING_DUST, blockState()), getX(), getY() + 0.3, getZ(), 0, 0, 0);
         }
         if (random.nextInt(8) == 0) {
-            level().addParticle(ParticleTypes.REVERSE_PORTAL, getX(), getY() + 0.3, getZ(), 0, 0.02, 0);
+            level().addParticle(Vfx.reversePortal(), getX(), getY() + 0.3, getZ(), 0, 0.02, 0);
         }
     }
 

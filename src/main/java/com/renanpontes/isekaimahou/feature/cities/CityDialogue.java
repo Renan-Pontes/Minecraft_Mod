@@ -26,6 +26,8 @@ import net.minecraft.world.entity.Entity;
 /**
  * Diálogo com os NPCs da cidade (servidor): escolhe a fala pela reputação, monta os botões (Conversar / Trocar /
  * Serviços / Rumores / Despedir-se) e responde aos cliques da tela do cliente.
+ * <p>Release 1.0: botão "Pedido" (sidequests, {@link CityQuests}) e lojas fechadas de madrugada
+ * ({@link CityRoutine#shopClosed}).
  */
 public final class CityDialogue {
     private static final double MAX_DIST_SQR = 8.0 * 8.0;
@@ -47,6 +49,8 @@ public final class CityDialogue {
             line = CityLines.pick("guard.wanted", r);
         } else if (npc instanceof Citizen && wantedHere) {
             line = CityLines.pick("citizen.wanted", r);
+        } else if (npc instanceof CityMerchant cm && !mood.equals("hostile") && CityRoutine.shopClosed(cm)) {
+            line = CityRoutine.closedLine(r);
         } else if (npc instanceof CityMerchant m && !mood.equals("hostile")) {
             line = Component.translatable(CityLines.PREFIX + "merchant." + m.profession().id + ".greet."
                     + r.nextInt(CityLines.PROFESSION_GREETINGS), player.getDisplayName());
@@ -83,6 +87,10 @@ public final class CityDialogue {
             case "talk" -> send(player, npc, talkLine(player, npc, r));
             case "trade" -> {
                 if (!(npc instanceof CityMerchant m)) return;
+                if (CityRoutine.shopClosed(m)) {
+                    send(player, npc, CityRoutine.closedLine(r));
+                    return;
+                }
                 if (!Reputation.canTrade(player, m.faction())) {
                     player.level().playSound(null, npc.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 0.8F, 1.0F);
                     send(player, npc, CityLines.pick("merchant.refuse", r, Reputation.faction(m.faction()) != null
@@ -93,6 +101,7 @@ public final class CityDialogue {
             }
             case "rumor" -> send(player, npc, CityRumors.tell(player, npc));
             case "service" -> send(player, npc, CityServices.perform(player, npc, action.arg()));
+            case "quest" -> CityQuests.handle(player, npc, action.arg());
             case "close" -> {
                 if (!mood(player, npc).equals("hostile")) npc.playAction("wave");
             }
@@ -147,10 +156,12 @@ public final class CityDialogue {
         Reputation.Faction f = Reputation.faction(faction);
         Reputation.Standing st = Reputation.standing(player, faction);
         int buttons = CitiesNetwork.BTN_TALK;
-        if (npc instanceof CityMerchant) {
-            buttons |= Reputation.canTrade(player, faction) ? CitiesNetwork.BTN_TRADE : CitiesNetwork.BTN_TRADE_LOCKED;
+        if (npc instanceof CityMerchant m) {
+            if (CityRoutine.shopClosed(m)) buttons |= CitiesNetwork.BTN_TRADE_CLOSED;
+            else buttons |= Reputation.canTrade(player, faction) ? CitiesNetwork.BTN_TRADE : CitiesNetwork.BTN_TRADE_LOCKED;
         }
         if (rumorsFrom(npc)) buttons |= CitiesNetwork.BTN_RUMORS;
+        if (CityQuests.hasButton(player, npc)) buttons |= CitiesNetwork.BTN_QUEST;
         List<CitiesNetwork.Service> services = CityServices.list(player, npc);
         if (!services.isEmpty()) buttons |= CitiesNetwork.BTN_SERVICES;
         Component factionName = f != null ? f.name() : Component.literal(faction);
@@ -172,6 +183,22 @@ public final class CityDialogue {
         Component factionName = f != null ? f.name() : Component.literal(faction);
         CitiesNetwork.send(player, new CitiesNetwork.Dialogue(guard.getId(), guard.kindId(), guard.getDisplayName(), role(guard),
                 factionName, st.displayName(), f != null ? f.color() : 0x3F6FD8, line, CitiesNetwork.BTN_CONFRONT, options,
+                CityPlayer.coins(player), note));
+    }
+
+    /**
+     * Tela de escolha de um pedido (release 1.0): a fala do morador, {@code note} como linha de destaque (o título do
+     * pedido) e as opções como botões (aceitar/recusar, os dois desfechos, desistir).
+     */
+    public static void sendChoice(ServerPlayer player, CityNpc npc, Component line, List<CitiesNetwork.Service> options, Component note) {
+        // A história de um pedido é longa demais para o balão sobre a cabeça: só as falas curtas viram balão.
+        if (line.getString().length() <= 90) npc.say(line);
+        String faction = npc.faction();
+        Reputation.Faction f = Reputation.faction(faction);
+        Reputation.Standing st = Reputation.standing(player, faction);
+        Component factionName = f != null ? f.name() : Component.literal(faction);
+        CitiesNetwork.send(player, new CitiesNetwork.Dialogue(npc.getId(), npc.kindId(), npc.getDisplayName(), role(npc),
+                factionName, st.displayName(), f != null ? f.color() : 0x3F6FD8, line, CitiesNetwork.BTN_CHOICE, options,
                 CityPlayer.coins(player), note));
     }
 

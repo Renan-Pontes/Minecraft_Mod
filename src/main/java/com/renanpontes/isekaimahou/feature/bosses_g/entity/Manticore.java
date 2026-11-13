@@ -363,6 +363,20 @@ public class Manticore extends GBossEntity {
         Vec3 c = position();
         Telegraph.delayed(level, Telegraph.Shape.circle(c, 9F).warmup(24).color(FEAR_COLOR).owner(this)
                 .castName(attackName("roar")).tier(SpellStack.Tier.MAJOR).element(Element.SHADOW), hits -> fearRoar(level, c, hits));
+        // v1.3 — Puxa o ar: fumaça escura entrando na juba durante o aviso (o rugido vem quando ela para).
+        for (int k = 0; k < 4; k++) {
+            int at = 4 + k * 5;
+            BossKit.schedule(level, at, () -> {
+                if (!isAlive()) return;
+                Vec3 head = position().add(Vec3.directionFromRotation(0, getYRot()).scale(1.6)).add(0, 1.6, 0);
+                for (int i = 0; i < 10; i++) {
+                    double a = random.nextDouble() * Math.PI * 2;
+                    Vec3 from = head.add(Math.cos(a) * 3.5, random.nextDouble() * 1.5 - 0.5, Math.sin(a) * 3.5);
+                    Vec3 v = head.subtract(from).scale(0.12);
+                    level.sendParticles(ParticleTypes.SMOKE, from.x, from.y, from.z, 0, v.x, v.y, v.z, 1.0);
+                }
+            });
+        }
     }
 
     private void fearRoar(ServerLevel level, Vec3 c, List<LivingEntity> hits) {
@@ -387,6 +401,16 @@ public class Manticore extends GBossEntity {
         }
         BgFx.ring(level, c.add(0, 0.3, 0), 4.0, 32, BgFx.dust(FEAR_COLOR, 1.6F), 0.0);
         BgFx.ring(level, c.add(0, 0.3, 0), 8.0, 48, BgFx.dust(FEAR_COLOR, 1.6F), 0.0);
+        // v1.3 — Onda sônica visível saindo da boca + escuridão pulsando em quem ouviu (o medo "aperta" a tela).
+        Vec3 head = position().add(Vec3.directionFromRotation(0, getYRot()).scale(1.6)).add(0, 1.6, 0);
+        level.sendParticles(ParticleTypes.SONIC_BOOM, head.x, head.y, head.z, 1, 0, 0, 0, 0);
+        for (int k = 1; k <= 3; k++) {
+            int ring = k;
+            BossKit.schedule(level, k * 2, () -> BgFx.ring(level, c.add(0, 1.0, 0), 2.8 * ring, 6 + ring * 3, ParticleTypes.SONIC_BOOM, 0.0));
+        }
+        for (LivingEntity e : hits) {
+            if (isFoe(e) && e instanceof ServerPlayer sp) sp.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 60, 0), this);
+        }
     }
 
     // ------------------------------------------------------------------ Voo Curto

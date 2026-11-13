@@ -13,6 +13,7 @@ import com.renanpontes.isekaimahou.feature.fusions_c.glyph.FcCleansing;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -86,18 +87,18 @@ public class SacredSpringEntity extends FcSpellEntity implements GeoEntity {
                     Statuses.apply(le, Statuses.Kind.WET, 1, 100, owner(), power);
                     if (FcUtil.undead(le)) {
                         hit(le, 3F, Element.PURITY);
-                        sl.sendParticles(ParticleTypes.END_ROD, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 6, 0.3, 0.4, 0.3, 0.05);
+                        sl.sendParticles(Vfx.endRod(), le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 6, 0.3, 0.4, 0.3, 0.05);
                     }
                 }
             }
             // Pulso: anel de água benta no chão
             FcFx.ring(sl, c.add(0, 0.15, 0), FcFx.fade(FcFx.HOLY, FcFx.PURITY, 1.3F), r, Math.min(64, (int) (r * 8)), 0);
-            sl.sendParticles(ParticleTypes.SPLASH, c.x, c.y + 2.2, c.z, 20, 0.6, 0.2, 0.6, 0.2);
+            sl.sendParticles(Vfx.splash(), c.x, c.y + 2.2, c.z, 20, 0.6, 0.2, 0.6, 0.2);
             FcFx.sound(sl, c, cleansed > 0 ? SoundEvents.AMETHYST_BLOCK_CHIME : SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1.2F, 1.2F);
         }
         if (age % 4 == 0) {
-            sl.sendParticles(ParticleTypes.FALLING_WATER, c.x, c.y + 2.6, c.z, 3, 0.5, 0.1, 0.5, 0);
-            sl.sendParticles(ParticleTypes.END_ROD, c.x, c.y + 1.2, c.z, 1, r * 0.4, 0.6, r * 0.4, 0.01);
+            sl.sendParticles(Vfx.water(), c.x, c.y + 2.6, c.z, 3, 0.5, 0.1, 0.5, 0);
+            sl.sendParticles(Vfx.endRod(), c.x, c.y + 1.2, c.z, 1, r * 0.4, 0.6, r * 0.4, 0.01);
         }
     }
 
@@ -106,10 +107,10 @@ public class SacredSpringEntity extends FcSpellEntity implements GeoEntity {
         if (age() < RISE_TICKS) return;
         // Coluna de luz fina sobre a fonte
         if (random.nextInt(3) == 0) {
-            level().addParticle(ParticleTypes.END_ROD, getX() + (random.nextDouble() - 0.5) * 0.4, getY() + 2.4, getZ() + (random.nextDouble() - 0.5) * 0.4,
+            level().addParticle(Vfx.endRod(), getX() + (random.nextDouble() - 0.5) * 0.4, getY() + 2.4, getZ() + (random.nextDouble() - 0.5) * 0.4,
                     0, 0.12, 0);
         }
-        level().addParticle(ParticleTypes.SPLASH, getX() + (random.nextDouble() - 0.5) * 1.6, getY() + 0.9, getZ() + (random.nextDouble() - 0.5) * 1.6, 0, 0.1, 0);
+        level().addParticle(Vfx.splash(), getX() + (random.nextDouble() - 0.5) * 1.6, getY() + 0.9, getZ() + (random.nextDouble() - 0.5) * 1.6, 0, 0.1, 0);
     }
 
     // =====================================================================================

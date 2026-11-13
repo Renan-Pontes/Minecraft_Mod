@@ -1,0 +1,25 @@
+{
+  "values": [
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:forest",
+    "minecraft:birch_forest",
+    "minecraft:flower_forest",
+    "minecraft:savanna",
+    "minecraft:desert",
+    "minecraft:snowy_plains",
+    "minecraft:taiga",
+    "minecraft:swamp",
+    "minecraft:beach",
+    "minecraft:ocean",
+    "minecraft:deep_ocean",
+    "minecraft:lukewarm_ocean",
+    "minecraft:deep_lukewarm_ocean",
+    "minecraft:warm_ocean",
+    "minecraft:cold_ocean",
+    "minecraft:deep_cold_ocean",
+    "isekai_mahou:flat_lands_kingdom_meadows",
+    "isekai_mahou:flat_lands_golden_steppe",
+    "isekai_mahou:sakura_fields"
+  ]
+}

@@ -16,6 +16,7 @@ import com.renanpontes.isekaimahou.feature.fusions_c.FcUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -100,7 +101,7 @@ public class SupernovaEntity extends FcSpellEntity {
         done = true;
         entityData.set(FIZZLED, true);
         Vec3 c = position();
-        sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y, c.z, 30, 0.5, 0.5, 0.5, 0.05);
+        sl.sendParticles(Vfx.largeSmoke(), c.x, c.y, c.z, 30, 0.5, 0.5, 0.5, 0.05);
         FcFx.implode(sl, c, FcFx.dust(FcFx.SUN, 1.4F), 3, 24, 0.3);
         FcFx.sound(sl, c, SoundEvents.BEACON_DEACTIVATE, 2F, 0.6F);
         life = Math.min(life, 8);
@@ -118,7 +119,7 @@ public class SupernovaEntity extends FcSpellEntity {
                     Vec3 to = c.subtract(FcUtil.center(le));
                     if (to.lengthSqr() > 2.0) FcUtil.knock(le, to.normalize().scale(0.05));
                 }
-                sl.sendParticles(ParticleTypes.FLAME, c.x, c.y, c.z, 0, 0, 0, 0, 0);
+                sl.sendParticles(Vfx.flame(), c.x, c.y, c.z, 0, 0, 0, 0, 0);
                 FcFx.implode(sl, c, FcFx.dust(FcFx.SUN_WHITE, 1.2F), radius * 0.6, 10, 0.25);
             }
             if (age % 8 == 0) FcFx.sound(sl, c, SoundEvents.BEACON_POWER_SELECT, 1.6F, 0.5F + age / (float) CHARGE);
@@ -157,9 +158,9 @@ public class SupernovaEntity extends FcSpellEntity {
         FusionShockwaveEntity.visual(sl, ground.add(0, 0.1, 0), FusionShockwaveEntity.Kind.SOLAR, radius * 1.8F, 18);
         sl.sendParticles(ParticleTypes.FLASH, c.x, c.y, c.z, 2, 0, 0, 0, 0);
         sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, c.x, c.y, c.z, 1, 0, 0, 0, 0);
-        FcFx.sphere(sl, c, ParticleTypes.FLAME, radius * 0.4, 80, 0.6);
+        FcFx.sphere(sl, c, Vfx.flame(), radius * 0.4, 80, 0.6);
         FcFx.sphere(sl, c, FcFx.dust(FcFx.SUN, 2.4F), radius * 0.6, 60, 0.2);
-        FcFx.shockwave(sl, c, ParticleTypes.END_ROD, 48, 0.8);
+        FcFx.shockwave(sl, c, Vfx.endRod(), 48, 0.8);
         FcFx.sound(sl, c, SoundEvents.GENERIC_EXPLODE.value(), 4F, 0.6F);
         FcFx.sound(sl, c, SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 3F, 0.5F);
         FcFx.sound(sl, c, SoundEvents.BEACON_DEACTIVATE, 2F, 1.6F);

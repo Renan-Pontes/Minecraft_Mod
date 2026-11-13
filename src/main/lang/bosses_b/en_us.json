@@ -72,5 +72,21 @@
   "spell.isekai_mahou.twilight_verdict": "Twilight Verdict",
   "announce.isekai_mahou.abyss_sovereign.shadow_tide": "Shadow Tide!",
   "announce.isekai_mahou.seraph.cross_judgment": "Cross Judgment!",
-  "announce.isekai_mahou.twilight_herald.rupture": "Twilight Rupture!"
+  "announce.isekai_mahou.twilight_herald.rupture": "Twilight Rupture!",
+  "announce.isekai_mahou.abyss_sovereign.whispers": "Listen... the voices of the deep are calling you.",
+  "message.isekai_mahou.bosses_b.hint.whispers": "Abyssal Whispers! Your sight will fail — keep moving, a purple mark is chasing you.",
+  "message.isekai_mahou.bosses_b.hint.gaze": "The Seraph's halo is shining! TURN YOUR BACK on it when it bursts!",
+  "message.isekai_mahou.bosses_b.gaze_blinded": "You looked upon the Judgement... and were blinded!",
+  "announce.isekai_mahou.twilight_herald.time_stop": "Time... is MINE.",
+  "announce.isekai_mahou.twilight_herald.rewind": "This never happened.",
+  "message.isekai_mahou.bosses_b.hint.time_stop": "Twilight Time! Everyone is slowed except the Herald — back off and wait for the clock to run again.",
+  "message.isekai_mahou.bosses_b.hint.rewind": "The Herald rewound time and recovered health! It only happens ONCE — keep going!",
+  "announce.isekai_mahou.abyss_sovereign.taunt": "One more candle snuffed out.",
+  "announce.isekai_mahou.abyss_sovereign.last_stand": "The Abyss... bows... to no one!",
+  "announce.isekai_mahou.abyss_sovereign.last_words": "The darkness... only... sleeps...",
+  "announce.isekai_mahou.seraph.taunt": "Judged. And found wanting.",
+  "announce.isekai_mahou.seraph.last_stand": "My wings grow heavy... but the light does not yield!",
+  "announce.isekai_mahou.seraph.last_words": "So... you are worthy... of the stairway to heaven.",
+  "announce.isekai_mahou.twilight_herald.taunt": "One more summoned soul who will not see the dawn.",
+  "announce.isekai_mahou.twilight_herald.last_stand": "The twilight... is not... over yet!"
 }

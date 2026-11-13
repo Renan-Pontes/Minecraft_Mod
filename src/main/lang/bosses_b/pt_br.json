@@ -72,5 +72,21 @@
   "spell.isekai_mahou.twilight_verdict": "Sentença do Crepúsculo",
   "announce.isekai_mahou.abyss_sovereign.shadow_tide": "Maré Sombria!",
   "announce.isekai_mahou.seraph.cross_judgment": "Julgamento Cruzado!",
-  "announce.isekai_mahou.twilight_herald.rupture": "Ruptura Crepuscular!"
+  "announce.isekai_mahou.twilight_herald.rupture": "Ruptura Crepuscular!",
+  "announce.isekai_mahou.abyss_sovereign.whispers": "Ouçam... as vozes do fundo chamam por vocês.",
+  "message.isekai_mahou.bosses_b.hint.whispers": "Sussurros do Abismo! Sua visão vai falhar — continue se movendo, uma marca roxa te persegue.",
+  "message.isekai_mahou.bosses_b.hint.gaze": "A auréola do Serafim está brilhando! VIRE DE COSTAS para ele quando ela explodir!",
+  "message.isekai_mahou.bosses_b.gaze_blinded": "Você olhou para o Julgamento... e ficou cego!",
+  "announce.isekai_mahou.twilight_herald.time_stop": "O tempo... é MEU.",
+  "announce.isekai_mahou.twilight_herald.rewind": "Isso nunca aconteceu.",
+  "message.isekai_mahou.bosses_b.hint.time_stop": "Tempo Crepuscular! Todos ficam lentos, menos o Arauto — afaste-se e espere o relógio voltar a andar.",
+  "message.isekai_mahou.bosses_b.hint.rewind": "O Arauto voltou no tempo e recuperou vida! Isso só acontece UMA vez — continue!",
+  "announce.isekai_mahou.abyss_sovereign.taunt": "Mais uma vela apagada.",
+  "announce.isekai_mahou.abyss_sovereign.last_stand": "O Abismo... não se curva... a ninguém!",
+  "announce.isekai_mahou.abyss_sovereign.last_words": "A escuridão... só... adormece...",
+  "announce.isekai_mahou.seraph.taunt": "Julgado. E achado em falta.",
+  "announce.isekai_mahou.seraph.last_stand": "Minhas asas pesam... mas a luz não cede!",
+  "announce.isekai_mahou.seraph.last_words": "Então... vocês são dignos... da escada do céu.",
+  "announce.isekai_mahou.twilight_herald.taunt": "Mais um invocado que não verá a aurora.",
+  "announce.isekai_mahou.twilight_herald.last_stand": "O crepúsculo... ainda não... acabou!"
 }

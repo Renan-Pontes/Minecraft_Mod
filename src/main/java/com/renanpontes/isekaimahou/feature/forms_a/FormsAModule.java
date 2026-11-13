@@ -1,5 +1,6 @@
 package com.renanpontes.isekaimahou.feature.forms_a;
 
+import com.renanpontes.isekaimahou.core.fx.FxBatch;
 import com.renanpontes.isekaimahou.feature.forms_a.glyph.BeamForm;
 import com.renanpontes.isekaimahou.feature.forms_a.glyph.ConeForm;
 import com.renanpontes.isekaimahou.feature.forms_a.glyph.FallForm;
@@ -16,6 +17,9 @@ import net.neoforged.bus.api.IEventBus;
 /**
  * Modulo "forms_a": formas neutras (arcanas) Feixe, Cone, Corte, Nova, Onda, Queda, Chuva e Mira,
  * mais as entidades da Onda ({@code spell_wave}) e da Queda ({@code spell_falling}).
+ * <p>
+ * Release 1.0 (perf): este modulo tambem liga o LOTE de particulas de magia ({@link FxBatch}, usado pelo
+ * {@code ElementFx} do nucleo e pelo {@link FormsFx}) e os comandos de teste {@code /mahou fx}.
  */
 public class FormsAModule implements Module {
     @Override
@@ -26,6 +30,8 @@ public class FormsAModule implements Module {
     @Override
     public void init(IEventBus modBus) {
         FormsAEntities.register(modBus);
+        FxBatch.init(modBus);
+        PerfCommands.register();
 
         GlyphRegistry.register(new BeamForm());
         GlyphRegistry.register(new ConeForm());

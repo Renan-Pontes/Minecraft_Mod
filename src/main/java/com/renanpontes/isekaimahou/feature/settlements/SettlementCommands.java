@@ -28,6 +28,9 @@ import net.minecraft.world.item.ItemStack;
  * /mahou settlements day                     roda a conta diária agora (impostos/afinidade)
  * /mahou settlements oath &lt;jogador&gt;          completa o Juramento do jogador (dá o Selo)
  * /mahou settlements crown &lt;jogador&gt;         torna o jogador Senhor da cidade de reino onde ELE está
+ * /mahou settlements found                    (teste) funda uma cidade Reino onde você está, sem a tela
+ * /mahou settlements found sky [estilo]       (onda 7, teste) funda uma ILHA CELESTE acima de onde você está (dá a Carta e
+ *                                             o Núcleo Celeste se faltarem); estilo = kingdom, desert, nordic, oriental...
  * </pre>
  */
 public final class SettlementCommands {
@@ -39,6 +42,21 @@ public final class SettlementCommands {
                     p.getInventory().add(new ItemStack(SettlementsContent.FOUNDING_CHARTER.get()));
                     return 1;
                 }))
+                .then(Commands.literal("found").executes(c -> {
+                    // teste: funda uma cidade (estilo Reino) onde você está, sem a tela da Carta
+                    ServerPlayer p = c.getSource().getPlayerOrException();
+                    // onda 9: inventário cheio / lugar ruim não falham mais em silêncio — o motivo vai para o chat
+                    return report(c, SettlementService.giveFoundingItems(p, false), p, p.blockPosition(), SettlementStyle.KINGDOM, SkyCity.GROUND);
+                }).then(Commands.literal("sky").executes(c -> foundSky(c, SettlementStyle.KINGDOM))
+                        .then(Commands.argument("style", com.mojang.brigadier.arguments.StringArgumentType.word())
+                                .suggests((c, b) -> {
+                                    for (SettlementStyle st : SettlementStyle.values()) b.suggest(st.id);
+                                    return b.buildFuture();
+                                })
+                                .executes(c -> {
+                                    SettlementStyle st = SettlementStyle.byId(com.mojang.brigadier.arguments.StringArgumentType.getString(c, "style"));
+                                    return foundSky(c, st == null ? SettlementStyle.KINGDOM : st);
+                                }))))
                 .then(Commands.literal("finish").executes(c -> {
                     Settlement s = here(c);
                     ServerLevel sl = c.getSource().getLevel();
@@ -116,6 +134,29 @@ public final class SettlementCommands {
     private static int ok(CommandContext<CommandSourceStack> c, Settlement s) {
         c.getSource().sendSuccess(() -> Component.translatable("settlements.isekai_mahou.cmd.ok", SettlementService.cityName(
                 c.getSource().getServer(), s), s.level, s.affinity, s.treasury), true);
+        return 1;
+    }
+
+    /** Onda 7 (teste): funda uma Ilha Celeste do estilo dado acima de onde o jogador está, sem a tela. */
+    private static int foundSky(com.mojang.brigadier.context.CommandContext<net.minecraft.commands.CommandSourceStack> c, SettlementStyle style)
+            throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+        ServerPlayer p = c.getSource().getPlayerOrException();
+        return report(c, SettlementService.giveFoundingItems(p, true), p, p.blockPosition(), style, SkyCity.SKYLAND);
+    }
+
+    /**
+     * Onda 9 (fundar mais fácil): funda pelo comando e, se não der, diz o motivo NO CHAT (antes ele só piscava acima da
+     * barra de itens — com o inventário cheio parecia que o comando não fazia nada). {@code given} = problema ao dar a
+     * Carta/Núcleo (inventário cheio).
+     */
+    public static int report(com.mojang.brigadier.context.CommandContext<net.minecraft.commands.CommandSourceStack> c,
+                             @javax.annotation.Nullable Component given, ServerPlayer p, net.minecraft.core.BlockPos at, SettlementStyle style,
+                             String terrain) {
+        Component problem = given != null ? given : SettlementService.found(p, at, style, "", 0, terrain);
+        if (problem != null) {
+            c.getSource().sendFailure(problem);
+            return 0;
+        }
         return 1;
     }
 

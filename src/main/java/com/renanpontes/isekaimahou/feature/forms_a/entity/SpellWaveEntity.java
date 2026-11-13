@@ -11,6 +11,7 @@ import com.renanpontes.isekaimahou.feature.forms_a.FormsFx;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -157,7 +158,8 @@ public class SpellWaveEntity extends Entity {
         }
         float w = maxWidth * Math.min(1.0F, 0.5F + age / 16.0F);
         entityData.set(WIDTH, w);
-        if (homing) steer(c);
+        // Teleguiado: a busca de alvo (varre 12 blocos) roda tick sim, tick não — a curva compensa no steer
+        if (homing && (age & 1) == 0) steer(c);
 
         Vec3 next = position().add(dir.scale(speed));
         double g = FormAim.groundHeight(level(), next.x, getY(), next.z, STEP_UP, MAX_DROP);
@@ -203,7 +205,7 @@ public class SpellWaveEntity extends Entity {
         }
         if (best == null) return;
         Vec3 to = best.position().subtract(position());
-        dir = dir.lerp(new Vec3(to.x, 0, to.z).normalize(), 0.15).normalize();
+        dir = dir.lerp(new Vec3(to.x, 0, to.z).normalize(), 0.28).normalize();
     }
 
     /** Aplica nas entidades na faixa varrida pela frente da onda neste tick (uma vez por entidade). */
@@ -307,7 +309,7 @@ public class SpellWaveEntity extends Entity {
         BlockPos p = BlockPos.containing(x, getY() - 0.2, z);
         BlockState st = level.getBlockState(p);
         if (!st.getFluidState().isEmpty()) {
-            level.addParticle(ParticleTypes.SPLASH, x, getY() + 0.1, z, d.x * 0.2, 0.3, d.z * 0.2);
+            level.addParticle(Vfx.splash(), x, getY() + 0.1, z, d.x * 0.2, 0.3, d.z * 0.2);
         } else if (!st.isAir() && st.getRenderShape() != RenderShape.INVISIBLE) {
             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, st), x, getY() + 0.1, z, d.x * 0.25, 0.3, d.z * 0.25);
         }

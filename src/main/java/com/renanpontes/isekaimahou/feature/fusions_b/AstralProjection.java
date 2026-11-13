@@ -2,7 +2,7 @@ package com.renanpontes.isekaimahou.feature.fusions_b;
 
 import com.renanpontes.isekaimahou.core.Element;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -56,8 +56,8 @@ public final class AstralProjection {
         if (sp.isPassenger()) sp.stopRiding();
         ServerLevel sl = sp.serverLevel();
         Vec3 c = sp.position().add(0, 1, 0);
-        sl.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 40, 0.3, 0.8, 0.3, 0.08);
-        sl.sendParticles(ParticleTypes.SOUL, c.x, c.y, c.z, 12, 0.3, 0.6, 0.3, 0.04);
+        sl.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 40, 0.3, 0.8, 0.3, 0.08);
+        sl.sendParticles(Vfx.soul(), c.x, c.y, c.z, 12, 0.3, 0.6, 0.3, 0.04);
         FbFx.burst(sl, c, Element.ASTRAL, 24, 0.5);
         FbFx.sound(sl, c, SoundEvents.SOUL_ESCAPE.value(), 1.6F, 1.0F);
         FbFx.sound(sl, c, SoundEvents.BEACON_ACTIVATE, 1.0F, 1.6F);
@@ -93,7 +93,7 @@ public final class AstralProjection {
         }
         if (sp.tickCount % 10 == 0) {
             // O "corpo" que ficou para trás: um brilho fraco no lugar
-            body.sendParticles(ParticleTypes.END_ROD, anchor.x, anchor.y + 1.0, anchor.z, 2, 0.15, 0.5, 0.15, 0.01);
+            body.sendParticles(Vfx.endRod(), anchor.x, anchor.y + 1.0, anchor.z, 2, 0.15, 0.5, 0.15, 0.01);
             body.sendParticles(FbFx.dust(FbFx.ASTRAL, 1.0F), anchor.x, anchor.y + 0.9, anchor.z, 4, 0.2, 0.5, 0.2, 0);
         }
         if (left % 20 == 0) {
@@ -124,7 +124,7 @@ public final class AstralProjection {
         sp.setDeltaMovement(Vec3.ZERO);
         sp.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 40, 0, false, false, true));
         Vec3 c = sp.position().add(0, 1, 0);
-        body.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 30, 0.3, 0.8, 0.3, 0.05);
+        body.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 30, 0.3, 0.8, 0.3, 0.05);
         FbFx.burst(body, c, Element.ASTRAL, 16, 0.5);
         FbFx.sound(body, c, SoundEvents.BEACON_DEACTIVATE, 1.0F, 1.5F);
         sp.displayClientMessage(Component.translatable("message.isekai_mahou.astral_projection.return"), true);

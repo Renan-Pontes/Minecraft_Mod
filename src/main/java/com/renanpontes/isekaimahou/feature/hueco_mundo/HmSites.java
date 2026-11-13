@@ -4,17 +4,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.IsekaiMahou;
+import com.renanpontes.isekaimahou.core.api.BossArena;
 import com.renanpontes.isekaimahou.core.api.Places;
+import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.api.Travel;
 import com.renanpontes.isekaimahou.feature.hueco_mundo.boss.HmBoss;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -25,7 +31,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -40,8 +48,10 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Lugares fixos dos reinos, colocados UMA vez por mundo a partir dos moldes (.nbt) e guardados num SavedData do próprio
- * reino: o Mirante da Garganta (chegada do Mundo Oco), o Palácio da Noite Eterna (centro, dois chefes) e a Corte das
- * Fadas (chegada + arena da Rainha). Cada um vira um lugar do {@code Places}: hubs são destino da Viagem (zona segura),
+ * reino: o Mirante da Garganta (chegada do Mundo Oco), o Portão de Las Noches (o antigo "Palácio da Noite Eterna", id
+ * {@code hollow_palace}: centro, dois chefes — o módulo las_noches ergue a cúpula, a torre e as salas das Espada ao norte
+ * dele e estende a área do lugar por {@link #palaceBoxExtension}) e a Corte das Fadas (chegada + arena da Rainha).
+ * Cada um vira um lugar do {@code Places}: hubs são destino da Viagem (zona segura),
  * palácio e corte são protegidos pela {@code BossArena} (registrado no init do módulo). Os chefes do lugar voltam um dia
  * de jogo depois de derrotados, quando alguém se aproxima.
  */
@@ -63,6 +73,14 @@ public final class HmSites {
     static final Vec3i COURT_ARRIVAL = new Vec3i(30, 3, 53);
     /** Raio das arenas dos chefes (a BossArena usa no mínimo 24). */
     public static final double KING_ARENA = 17, EMPRESS_ARENA = 17, QUEEN_ARENA = 20;
+
+    /**
+     * v1.3: área extra do lugar {@code hollow_palace} (Las Noches inteira), a partir da origem do molde do palácio. Quem
+     * define é o módulo las_noches; null = só o palácio.
+     */
+    public static volatile Function<BlockPos, BoundingBox> palaceBoxExtension;
+    /** v1.3: avisados quando {@code /mahou hueco rebuild} manda refazer os moldes do reino (Las Noches refaz junto). */
+    public static final List<Consumer<ServerLevel>> RESET_LISTENERS = new CopyOnWriteArrayList<>();
 
     public static final class SiteData extends SavedData {
         boolean hubBuilt, palaceBuilt;
@@ -251,6 +269,8 @@ public final class HmSites {
         if (realm == HmRealm.HOLLOW && d.palaceOrigin != null) {
             BlockPos o = d.palaceOrigin;
             BoundingBox box = new BoundingBox(o.getX(), o.getY() - 4, o.getZ(), o.getX() + 80, o.getY() + 44, o.getZ() + 80);
+            Function<BlockPos, BoundingBox> ext = palaceBoxExtension;
+            if (ext != null) box = BoundingBox.encapsulatingBoxes(List.of(box, ext.apply(o))).orElse(box);
             put(level, new Places.Place(PALACE_PLACE, HmText.of("place.isekai_mahou.hueco_mundo", PALACE_PLACE),
                     LAIR_TYPE, "", realm.key, box, o.offset(PALACE_FLOOR).above(), false, 0xD9DCE8));
         }
@@ -275,6 +295,16 @@ public final class HmSites {
 
     // ------------------------------------------------------------------ Chefes dos lugares
 
+    /**
+     * v1.3.2 — o "Rei Hollow" do trono do palácio é o próprio <b>Barragan</b> (o antigo Rei de Hueco Mundo; começa na
+     * forma base e vira o rei de ossos em Arrogante). Invocado pelo id {@code isekai_mahou:barragan} (os módulos não se
+     * conhecem); sem o módulo espada, volta o Rei Vazio. A vaga do lugar continua com a chave {@code "hollow_king"}
+     * (respawn, diário, contador {@code boss.hollow_king}).
+     */
+    public static final String SITE_KING_TAG = "isekai_mahou.hm_site_king";
+    public static final String KING_ID = "hollow_king";
+    private static final String KING_ENTITY = "barragan";
+
     /** Chefe do lugar derrotado: volta depois de {@link #BOSS_RESPAWN_TICKS}. */
     public static void bossDefeated(ServerLevel level, String bossId) {
         SiteData d = data(level);
@@ -290,7 +320,9 @@ public final class HmSites {
             AABB zone = new AABB(o.getX() - 24, o.getY() - 16, o.getZ() - 24, o.getX() + 104, o.getY() + 60, o.getZ() + 104);
             if (anyoneIn(level, zone)) {
                 // Os dois olham para o sul (para o portão por onde os jogadores chegam).
-                ensureBoss(level, d, "hollow_king", HmRegistries.HOLLOW_KING, o.offset(KING_SPOT), KING_ARENA, 0F);
+                if (!ensureSiteKing(level, d, o.offset(KING_SPOT), KING_ARENA, 0F)) {
+                    ensureBoss(level, d, KING_ID, HmRegistries.HOLLOW_KING, o.offset(KING_SPOT), KING_ARENA, 0F);
+                }
                 ensureBoss(level, d, "sand_empress", HmRegistries.SAND_EMPRESS, o.offset(EMPRESS_SPOT), EMPRESS_ARENA, 0F);
             }
         } else if (realm == HmRealm.FEY && d.hubOrigin != null) {
@@ -334,12 +366,55 @@ public final class HmSites {
         }
     }
 
+    /**
+     * Rei do trono = Barragan (por id). Devolve false se o tipo não existe (então o chamador usa o Rei Vazio antigo).
+     * Não duplica: qualquer Barragan/Rei Vazio vivo perto do trono conta.
+     */
+    private static boolean ensureSiteKing(ServerLevel level, SiteData d, BlockPos spot, double arena, float yaw) {
+        Optional<EntityType<?>> type = BuiltInRegistries.ENTITY_TYPE.getOptional(IsekaiMahou.id(KING_ENTITY));
+        if (type.isEmpty()) return false;
+        Long at = d.defeatedAt.get(KING_ID);
+        if (at != null && level.getGameTime() - at < BOSS_RESPAWN_TICKS) return true;
+        if (!level.isLoaded(spot)) return true;
+        AABB box = new AABB(spot).inflate(72);
+        if (!level.getEntities(type.get(), box, Entity::isAlive).isEmpty()) return true;
+        if (!level.getEntities(HmRegistries.HOLLOW_KING.get(), box, Entity::isAlive).isEmpty()) return true;
+        Entity e = type.get().create(level);
+        if (!(e instanceof Mob boss)) return false;
+        boss.moveTo(spot.getX() + 0.5, spot.getY(), spot.getZ() + 0.5, yaw, 0F);
+        boss.setYHeadRot(yaw);
+        boss.setYBodyRot(yaw);
+        markSiteKing(boss, Vec3.atBottomCenterOf(spot), arena);
+        boss.finalizeSpawn(level, level.getCurrentDifficultyAt(spot), MobSpawnType.STRUCTURE, null);
+        level.addFreshEntity(boss);
+        if (at != null) {
+            d.defeatedAt.remove(KING_ID);
+            d.setDirty();
+            level.playSound(null, spot, SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 0.7F, 0.6F);
+            Component msg = Component.translatable("message.isekai_mahou.hueco_mundo.boss_returns", boss.getDisplayName()).withColor(0xC9A23A);
+            for (ServerPlayer p : level.players()) {
+                if (p.distanceToSqr(boss) < 96 * 96) p.displayClientMessage(msg, true);
+            }
+        }
+        return true;
+    }
+
+    /** Marca um mob como o Rei do trono: arena fixa (protegida), casa no trono e a tag que o {@link HmEvents} vigia. */
+    public static void markSiteKing(Mob boss, Vec3 home, double arena) {
+        boss.addTag(SITE_KING_TAG);
+        boss.addTag(BossArena.ARENA_TAG);
+        boss.setPersistenceRequired();
+        BossKit.setArena(boss, home, arena);
+        boss.restrictTo(BlockPos.containing(home), (int) Math.max(arena, BossArena.MIN_RADIUS));
+    }
+
     /** Recolocar os moldes (comando de teste): limpa a marca e reconstrói na próxima chegada. */
     public static void resetBuilt(ServerLevel level) {
         SiteData d = data(level);
         d.hubBuilt = false;
         d.palaceBuilt = false;
         d.setDirty();
+        for (Consumer<ServerLevel> l : RESET_LISTENERS) l.accept(level);
     }
 
     @Nullable

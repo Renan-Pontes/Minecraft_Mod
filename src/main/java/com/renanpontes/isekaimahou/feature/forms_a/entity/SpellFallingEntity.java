@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.feature.forms_a.FormsFx;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
@@ -217,7 +218,7 @@ public class SpellFallingEntity extends Entity {
         Vec3 up = at.add(0, 0.3, 0);
         FormsFx.burst(c, up, (int) (30 + radius * 10), radius * 0.35);
         FormsFx.send(level, radius >= 4.5F ? ParticleTypes.EXPLOSION_EMITTER : ParticleTypes.EXPLOSION, up, 2, radius * 0.2, 0);
-        FormsFx.send(level, ParticleTypes.LARGE_SMOKE, up, 16, radius * 0.3, 0.03);
+        FormsFx.send(level, Vfx.largeSmoke(), up, 16, radius * 0.3, 0.03);
         FormsFx.ring(c, at.add(0, 0.1, 0), radius, 3.0);
         FormsFx.ring(c, at.add(0, 0.1, 0), radius * 0.55, 2.5);
         BlockPos ground = BlockPos.containing(at.x, at.y - 0.2, at.z);
@@ -225,7 +226,7 @@ public class SpellFallingEntity extends Entity {
         if (!st.isAir() && st.getRenderShape() != RenderShape.INVISIBLE) {
             FormsFx.send(level, new BlockParticleOption(ParticleTypes.BLOCK, st), up, (int) (20 + radius * 8), radius * 0.3, 0.2);
         } else if (!st.getFluidState().isEmpty()) {
-            FormsFx.send(level, ParticleTypes.SPLASH, up, 40, radius * 0.3, 0.3);
+            FormsFx.send(level, Vfx.splash(), up, 40, radius * 0.3, 0.3);
         }
         int jets = (int) (8 + radius * 3);
         ParticleOptions sig = FormsFx.jet(c.element());
@@ -277,11 +278,11 @@ public class SpellFallingEntity extends Entity {
             level.addParticle(glow, x, y, z, 0, 0, 0);
             if (i % 2 == 0) level.addParticle(hot, x, y, z, 0, 0, 0);
             if (random.nextFloat() < 0.45F) level.addParticle(sig, x, y, z, (random.nextDouble() - 0.5) * 0.06, 0.02, (random.nextDouble() - 0.5) * 0.06);
-            if (random.nextFloat() < 0.25F) level.addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, 0, 0.03, 0);
+            if (random.nextFloat() < 0.25F) level.addParticle(Vfx.largeSmoke(), x, y, z, 0, 0.03, 0);
         }
         // Faíscas soltando do núcleo
         for (int i = 0; i < 2; i++) {
-            level.addParticle(ParticleTypes.END_ROD, cur.x, cur.y, cur.z,
+            level.addParticle(Vfx.endRod(), cur.x, cur.y, cur.z,
                     (random.nextDouble() - 0.5) * 0.12, (random.nextDouble() - 0.2) * 0.12, (random.nextDouble() - 0.5) * 0.12);
         }
     }

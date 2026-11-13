@@ -1,6 +1,6 @@
 package com.renanpontes.isekaimahou.feature.fusions_d.effect;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 
@@ -10,6 +10,6 @@ import net.minecraft.world.effect.MobEffectCategory;
  */
 public class SoulBurnEffect extends MobEffect {
     public SoulBurnEffect() {
-        super(MobEffectCategory.HARMFUL, 0x3FC8E8, ParticleTypes.SOUL_FIRE_FLAME);
+        super(MobEffectCategory.HARMFUL, 0x3FC8E8, Vfx.soulFlame());
     }
 }

@@ -1,0 +1,78 @@
+# W10 — Bleach move fixes (Desgarrón, Respira, Lanza del Relámpago, The Almighty)
+
+Owner request (2026-11-13): Desgarrón must be a *launched* claw slash (it was short), Respira must be 360°, the Lanza
+must end in a GIANT explosion, The Almighty needs much more shadow and the Almighty eyes.
+
+Compile: `bash tools/check-tree.sh fixbleach` → `COMPILOU OK (all)`. **Nothing was tested in game.**
+
+## 1. Desgarrón (Grimmjow)
+
+| | Before | After |
+|---|---|---|
+| Player legend `espada_desgarron` | generic glyphs `slash + slash_storm + amplify + split×2` (a short melee swipe) | new legendary form **`espada_tech_desgarron`** (+ `amplify`): 5 claw-mark blades (`EspadaBolt.CLAW`, the boss projectile) launched side by side, 1.3 apart, 1.6 blocks/tick, **30 blocks** (Expand +4, max 40), Split +1 blade (max 7). Each blade pierces, cuts each target once (max 12 per blade), 9 base dmg via the spell (Wind), Bleeding, stops at walls. Cast 6 t, cooldown 200 t, cost 40, C6 |
+| Boss (Grimmjow, Pantera) | 5 blades, range 22, speed 1.25, used at < 14 blocks | range **30**, speed **1.6**, used at < 22 blocks (telegraph lanes follow the range) |
+| Blade look (both) | crescent ~3.2 tall, 3 trail layers | crescent ~4 tall, wider, trail stretched with 6 layers (3 on Low/Medium) so it reads as a flying claw mark; hitbox 1.0×2.0 |
+| Hollow class, Pantera release (melee) | each hit splashed 35% to mobs within 2.5 blocks of the target | each hit **launches** 3 blue claw marks forward: 20 blocks, 1.5 b/t, stop at walls, 50% of the hit per cut, Bleeding, max 10 targets, once per 1.5 s; new client fx `HollowNetwork.CLAWS` (trail only on High+) |
+
+## 2. Respira (Barragan)
+
+| | Before | After |
+|---|---|---|
+| Boss | cone 60° (80° Arrogante), range 14/18, 8/11 puffs | **360°**: circle telegraph (radius 12 / 16 Arrogante), 20 / 26 puffs in all directions (60% in a near-ground ring, the rest in a ring tilted 30° up = a dome), same aging/Wither/projectile-crumble/fake-rot mechanics |
+| Player legend `espada_respira` | `cone + curse + weaken + darkness + extend + expand` | new legendary form **`espada_tech_respira`** (+ `expand`): 360° miasma dome from the caster, 20 puffs (+2/Expand, max 28), radius 10 (+2/Expand, max 18), lives 3 s (+1 s/Extend, max 6 s). Each target max once per 10 t: Aging +1, Wither I 3 s, Slowness II 2 s, 2.5 base Shadow dmg. Visual-only ground rot, never where `Destruction.warded/protectedAt`. Max 16 clouds server-wide, 24 hits per pulse. Cast 14 t, cooldown 300 t, cost 45, C7 |
+| Visuals | client simulated the fan of puffs | new packet kind `EspadaFx.BREATH_SPHERE`; client and server share `EspadaFx.respiraDirs(n)` so the cloud you see is the one that ages you; black core burst, purple shell, sepia dust ring, more black puffs |
+
+## 3. Lanza del Relámpago (Ulquiorra)
+
+| | Before | After |
+|---|---|---|
+| Boss blast | radius 9, visual 10, crater 3.5, shake 3.0/56 | core radius **12** (falloff), visual explosion **19** (giant path), crater 4.5 (via `Destruction.crater`, so sealed arenas, cities, towers/dungeons and world rules still apply; Lanza still not used inside Las Noches), shake 3.0/80, louder sound; **delayed shockwave** after 8 t out to **22** blocks (30% dmg, knockback, Slowness II), with its own ring telegraph |
+| Player legend `espada_lanza_relampago` | `projectile + hollow_cero + amplify×2 + pierce + expand` (only Hollows could use it) | new legendary form **`espada_tech_lanza`** (+ `amplify`): 1 s cast, throws the real Lanza projectile (48 blocks, 2.6 b/t); on impact the same giant blast with spell rules: core 10 (+1.5/Expand, max 16), shockwave 18 (+2/Expand, max 26), 30 base dmg core / 30% shock. **No block damage** (only fake floor cracks). Cooldown 400 t, cost 60, C8 |
+| Client giant path (radius ≥ 14) | pillar + rings | adds a growing green-white **dome** (3/6 tilted shock rings + a half-sphere shell of glows), a tall white core pillar, a dark mushroom of smoke, and the **delayed ground shockwave** timed with the server damage |
+| Hollow class, Murciélago Lance Cero | just a thicker Cero | the beam now ends in a big blast: radius 6 + 3·charge, 60% of the Cero, a 28-block green light pillar, shockwave and shake; 8 t later a shockwave to 2.4× radius (20%). No block damage, max 24 targets per wave |
+
+## 4. The Almighty (Yhwach, Quincy)
+
+Only visuals changed (mechanics untouched). All client-side, from the existing `QuincyFxNet` form/burst packets (multiplayer safe), scaled by `FxQuality` × vanilla particle setting:
+- **Shadow pool** under him (two ink layers turning/breathing), **ink tendrils** rising from the pool and writhing (3 / 5 / 7 by preset), **dark aura** blobs rising around the body, and rising shadow wisps (ink particles).
+- **Eyes**: a cloud of 6 / 9 / 14 multi-pupil eyes around and above him, opening one after another and then blinking, always facing the camera. New texture `quincy_fx_shadow_eye.png` (eye in an ink blot, dark-crimson iris, 7 pupils) and `quincy_fx_ink.png`, generated by `py -I tools/gen/fx_almighty.py`.
+- Activation: a big eye opens above the head, a ring of 8 eyes snaps open, ink splashes out and runs along the ground.
+- The holder's **two eyes glow** (blue-white with a horizontal flare) — seen by others / in 3rd person.
+- **User screen** on activation (1.8 s): ink vignette closes in and a faint big eye opens in the middle, then fades (scaled by the preset's flash/shake factor). The always-on screen edge during the form is darker ink.
+- In first person you only see the pool and short tendrils (nothing drawn against the camera). Server no longer sends the old eye/white particle rings (the client draws them now).
+
+## Getting the techniques (player)
+- Defeating an Espada now **teaches its technique glyph** to every player within 64 blocks (`EspadaLegends.teach`, message `message.isekai_mahou.espada.technique_learned`) and still drops the legend scroll. The new glyphs are `origin(NONE)` + legendary: never in shops/random loot, usable in any element slot.
+- Old scrolls/library copies keep their old recipe (generic glyphs) — re-copy the new scroll to get the new version.
+
+## Files
+- `feature/espada/EspadaTechniques.java` (new: the 3 forms + Respira cloud ticking)
+- `feature/espada/EspadaLegends.java` (new first variants, `teach`), `EspadaModule.java` (register)
+- `feature/espada/entity/EspadaBolt.java` (player spell context, target rules, claw hit cap/hitbox), `EspadaFx.java` (`BREATH_SPHERE`, `respiraDirs`), `Grimmjow.java`, `Barragan.java`, `Ulquiorra.java` (`lanzaBlast` rewrite + player overload)
+- `feature/espada/client/EspadaFxClient.java` (360° breath, giant dome), `BoltRenderer.java` (bigger claw)
+- `feature/class_hollow/tech/HollowMoves.java` (`lanceBlast`, `desgarron`), `HollowEvents.java` (Pantera), `HollowNetwork.java` (`CLAWS`), `client/HollowFxClient.java` (`drawClaws`)
+- `feature/class_quincy/client/QuincyFxClient.java`, `QuincyRenderTypes.java` (INK, SHADOW_EYE), `QuincyFinalForms.java` (removed duplicate server eye particles)
+- `tools/gen/fx_almighty.py` + `textures/entity/quincy_fx_ink.png`, `quincy_fx_shadow_eye.png`
+- Lang (pt_br + en_us): `src/main/lang/espada/*` (3 glyph names/descs, learn message, Respira/Lanza boss hints), `src/main/lang/class_hollow/*` (Pantera/Murciélago release descs)
+
+## How to test
+Player legends (op, ignores glyph knowledge):
+- `/mahou legend cast espada_desgarron` · `/mahou legend cast espada_respira` · `/mahou legend cast espada_lanza_relampago`
+- Normal path: `/mahou glyph learn isekai_mahou:espada_tech_desgarron` (or `_respira`, `_lanza`, or `/mahou unlock all`), `/mahou legend give espada_desgarron @s`, right-click the scroll, load it from Grimório → Lendas.
+- Learn-on-kill: `/mahou spawnboss grimmjow` (barragan / ulquiorra), kill it within 64 blocks → chat message + glyph learned.
+
+Boss versions (stand within 64 blocks of the boss):
+- Grimmjow: `/mahou spawnboss grimmjow`, `/mahou espada cast pantera`, then `/mahou espada cast desgarron`.
+- Barragan: `/mahou spawnboss barragan`, `/mahou espada cast respira` (Arrogante: `/mahou espada cast arrogante` first).
+- Ulquiorra: `/mahou spawnboss ulquiorra` **outside Las Noches**, `/mahou espada cast segunda`, then `/mahou espada cast lanza`.
+
+Hollow class: be an Arrancar (`/mahou hollow rank <n>`), pick the archetype `/mahou hollow release pantera` (or `murcielago`), do the Resurrección technique, then punch (Pantera) / charge-fire the Cero (Murciélago).
+
+The Almighty: `/mahou unlock all`, build a G-slot spell with *The Almighty* (`quincy_almighty`) in the Grimório and cast it; compare graphics presets Low/Medium/High/Ultra and first vs third person; watch from a second player.
+
+## Not verified
+- Nothing ran in game: visuals (claw size/trail, dome, ink/eyes, screen effect), balance, sounds and timings are untested.
+- Whether `/mahou espada cast desgarron/lanza` needs the form change first (assumed yes, as above).
+- Whether the boss Respira at 360° is still fair (escape = run out of the 12/16 circle in ~1.2 s + cloud travel time).
+- Hollow Pantera claws use `mobAttack` damage (to avoid re-triggering the melee hook); interaction with other on-hit systems not checked.
+- `teach` relies on `dropBossLoot` firing on a real kill.

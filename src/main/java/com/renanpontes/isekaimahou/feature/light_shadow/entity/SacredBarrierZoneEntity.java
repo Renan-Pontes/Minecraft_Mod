@@ -5,6 +5,7 @@ import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.feature.light_shadow.LsFx;
 import com.renanpontes.isekaimahou.feature.light_shadow.LsUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -47,7 +48,7 @@ public class SacredBarrierZoneEntity extends HolyZoneEntity {
             if (age % 10 == 0) {
                 LsUtil.spellHurt(level, e, 2.0F * power, this, LsUtil.owner(level, owner), Element.LIGHT);
                 e.igniteForSeconds(2);
-                level.sendParticles(ParticleTypes.END_ROD, e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 6, 0.3, 0.4, 0.3, 0.05);
+                level.sendParticles(Vfx.endRod(), e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 6, 0.3, 0.4, 0.3, 0.05);
                 LsFx.sound(level, e.position(), SoundEvents.AMETHYST_BLOCK_HIT, 0.8F, 0.6F);
             }
         }
@@ -73,7 +74,7 @@ public class SacredBarrierZoneEntity extends HolyZoneEntity {
     protected void clientTick() {
         Level lv = level();
         float r = radius();
-        boolean reduced = MahouConfig.REDUCED_PARTICLES.get();
+        boolean reduced = !com.renanpontes.isekaimahou.client.fx.FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         float fadeOut = 1F - Math.max(0F, (progress() - 0.85F) / 0.15F);
         // Pontos aleatórios na casca do domo
         int n = (int) ((reduced ? 3 : 9) * fadeOut) + 1;
@@ -96,7 +97,7 @@ public class SacredBarrierZoneEntity extends HolyZoneEntity {
         }
         if (!reduced && tickCount % 5 == 0) {
             double a = random.nextDouble() * Math.PI * 2;
-            lv.addParticle(ParticleTypes.END_ROD, getX() + Math.cos(a) * r, getY() + 0.1, getZ() + Math.sin(a) * r, 0, 0.08, 0);
+            lv.addParticle(Vfx.endRod(), getX() + Math.cos(a) * r, getY() + 0.1, getZ() + Math.sin(a) * r, 0, 0.08, 0);
         }
     }
 }

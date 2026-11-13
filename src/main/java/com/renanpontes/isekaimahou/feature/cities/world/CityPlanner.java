@@ -47,15 +47,27 @@ final class CityPlanner {
     private CityPlanner() {}
 
     static void build(StructurePiecesBuilder builder, StructureTemplateManager manager, CityGeometry geo, CityFrame frame,
-                      CityPalette palette, int gates, int clearHeight, long seed) {
-        builder.addPiece(new CityGroundPiece(geo, frame, palette, gates, clearHeight, seed));
+                      CityTerrace terrace, CityPalette palette, int gates, int clearHeight, long seed) {
+        builder.addPiece(new CityGroundPiece(geo, frame, terrace, palette, gates, clearHeight, seed));
         RandomSource r = RandomSource.create(seed);
-        Placer p = new Placer(builder, manager, frame, palette);
+        Placer p = new Placer(builder, manager, frame, terrace, palette);
         int pz = CityGeometry.PLAZA;
         p.add(geo.capital ? "plaza_capital" : "plaza", -pz, -pz, pz, pz, Direction.SOUTH, false);
         if (geo.capital) p.add("castle", -pz, -geo.blockEnd(3), pz, -geo.blockStart(2), Direction.SOUTH, false);
         for (Lot lot : plan(geo, r)) p.add(lot.template, lot.x0, lot.z0, lot.x1, lot.z1, lot.facing, lot.mirror);
         walls(p, geo, gates, r);
+    }
+
+    /**
+     * Frentes dos lotes (e do castelo) desta cidade, para a peça do chão pôr degraus na rua quando o terraço do
+     * quarteirão ficou mais alto ou mais baixo que ela. Refaz a mesma planta de {@link #build} (mesmo seed, mesma ordem
+     * de sorteio), então sai idêntica em qualquer chunk.
+     */
+    static List<Lot> fronts(CityGeometry geo, long seed) {
+        List<Lot> lots = new ArrayList<>(plan(geo, RandomSource.create(seed)));
+        int pz = CityGeometry.PLAZA;
+        if (geo.capital) lots.add(new Lot("castle", -pz, -geo.blockEnd(3), pz, -geo.blockStart(2), Direction.SOUTH, false));
+        return lots;
     }
 
     // ------------------------------------------------------------------------------------------ quarteirões
@@ -203,7 +215,7 @@ final class CityPlanner {
 
     /** Põe templates em retângulos do plano canônico, já girados para o mundo. */
     private record Placer(StructurePiecesBuilder builder, StructureTemplateManager manager, CityFrame frame,
-                          CityPalette palette) {
+                          CityTerrace terrace, CityPalette palette) {
 
         void add(String name, int x0, int z0, int x1, int z1, Direction facing, boolean mirror) {
             ResourceLocation id = IsekaiMahou.id("city/" + palette.id + "/" + name);
@@ -231,7 +243,9 @@ final class CityPlanner {
             // Centralizado no lote (os templates têm o tamanho exato do lote; isso só protege contra .nbt errado).
             int px = minX + (spanX - bb.getXSpan()) / 2 - bb.minX();
             int pz = minZ + (spanZ - bb.getZSpan()) / 2 - bb.minZ();
-            int py = frame.floorY() - GROUND_OFFSET.getOrDefault(name, 0);
+            // Piso do terraço da peça (quarteirão, praça, castelo, torre/portão): a mesma conta que a peça do chão usa
+            // para aplainar essas colunas. Qualquer coluna do retângulo serve — o canto (x0,z0) está sempre dentro.
+            int py = terrace.surface(x0, z0) - GROUND_OFFSET.getOrDefault(name, 0);
             builder.addPiece(new CityBuildingPiece(manager, id, new BlockPos(px, py, pz), rot, mir, palette));
         }
 

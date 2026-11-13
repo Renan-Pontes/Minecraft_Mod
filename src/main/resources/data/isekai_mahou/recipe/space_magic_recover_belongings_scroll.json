@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AEA",
+    "XTX",
+    "AEA"
+  ],
+  "key": {
+    "A": {
+      "item": "isekai_mahou:abyss_shard"
+    },
+    "E": {
+      "item": "minecraft:echo_shard"
+    },
+    "X": {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    "T": {
+      "item": "minecraft:totem_of_undying"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:glyph_scroll",
+    "count": 1,
+    "components": {
+      "isekai_mahou:glyph": "isekai_mahou:recover_belongings"
+    }
+  }
+}

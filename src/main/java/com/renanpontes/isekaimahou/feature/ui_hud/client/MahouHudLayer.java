@@ -2,6 +2,7 @@ package com.renanpontes.isekaimahou.feature.ui_hud.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.renanpontes.isekaimahou.core.MagicData;
+import com.renanpontes.isekaimahou.core.MahouConfig;
 import com.renanpontes.isekaimahou.network.ClientMagic;
 
 import net.minecraft.client.DeltaTracker;
@@ -16,6 +17,9 @@ import net.minecraft.client.gui.screens.ChatScreen;
  * condições de status do jogador ao lado), barra numérica de VIDA (canto de baixo à esquerda), cabeçalho "Loadout N/9"
  * com o seletor dos 9 loadouts, slots Z X C G e barra de conjuração. Tudo segue o {@code HudLayout} do núcleo (nada
  * por cima do minimapa). O Olho Analítico e os banners ficam na {@link MahouTopLayer}, registrada logo acima desta.
+ * <p>
+ * v1.0 RELEASE: cada parte pode ser desligada nas opções (Opções → Isekai Mahou) e a camada inteira segue a opção
+ * "Tamanho do HUD" ({@link HudScale}).
  */
 public class MahouHudLayer implements LayeredDraw.Layer {
     @Override
@@ -35,17 +39,27 @@ public class MahouHudLayer implements LayeredDraw.Layer {
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
+        // Tamanho do HUD: tudo desta camada é desenhado ampliado/reduzido numa tela virtual (ver HudScale)
+        HudScale.frame();
+        float scale = HudScale.get();
+        if (scale != 1F) {
+            g.pose().pushPose();
+            g.pose().scale(scale, scale, 1F);
+        }
         // Com o F3 aberto o canto esquerdo é do texto de depuração
         if (!mc.getDebugOverlay().showDebugScreen()) {
             HudCard.place();
-            HudCard.render(g, mc, d);
-            HudPlace.render(g, mc);
-            HudManaBar.render(g, mc, d);
-            HudPlayerStatuses.render(g, mc);
-            HudHealthBar.render(g, mc);
+            if (HudDraw.config(MahouConfig.HUD_CARD)) HudCard.render(g, mc, d);
+            if (HudDraw.config(MahouConfig.HUD_PLACE_NAME)) HudPlace.render(g, mc);
+            if (HudDraw.config(MahouConfig.HUD_RESOURCE_BAR)) {
+                HudManaBar.render(g, mc, d);
+                HudPlayerStatuses.render(g, mc);
+            }
+            if (HudDraw.config(MahouConfig.HUD_HEALTH_BAR)) HudHealthBar.render(g, mc);
         }
-        HudSpellBar.render(g, mc, d);
-        HudCastBar.render(g, mc, pt);
+        if (HudDraw.config(MahouConfig.HUD_SPELL_BAR)) HudSpellBar.render(g, mc, d);
+        if (HudDraw.config(MahouConfig.HUD_CAST_BAR)) HudCastBar.render(g, mc, pt);
+        if (scale != 1F) g.pose().popPose();
         RenderSystem.disableBlend();
     }
 }

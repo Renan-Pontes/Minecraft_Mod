@@ -1,0 +1,28 @@
+{
+  "offers": [
+    {
+      "rank": "F",
+      "price": 8,
+      "item": {
+        "id": "isekai_mahou:mount_whistle",
+        "count": 1
+      }
+    },
+    {
+      "rank": "F",
+      "price": 12,
+      "item": {
+        "id": "minecraft:saddle",
+        "count": 1
+      }
+    },
+    {
+      "rank": "E",
+      "price": 45,
+      "item": {
+        "id": "isekai_mahou:land_drake_reins",
+        "count": 1
+      }
+    }
+  ]
+}

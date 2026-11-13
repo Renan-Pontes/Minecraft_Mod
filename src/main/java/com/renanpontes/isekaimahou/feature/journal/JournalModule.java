@@ -1,5 +1,8 @@
 package com.renanpontes.isekaimahou.feature.journal;
 
+import com.renanpontes.isekaimahou.feature.journal.story.StoryCommands;
+import com.renanpontes.isekaimahou.feature.journal.story.StoryConfig;
+import com.renanpontes.isekaimahou.feature.journal.story.StoryService;
 import com.renanpontes.isekaimahou.module.Module;
 
 import net.neoforged.bus.api.IEventBus;
@@ -22,6 +25,8 @@ import net.neoforged.bus.api.IEventBus;
  *   <li>Contadores de magia {@code spell.linked|leap|multi_element|legend} ({@link JournalSpellCounters}) e de blocos colocados.</li>
  *   <li>Abas do menu B: "Diário" (50) e "Bestiário" (70) — ficam no cliente ({@code client/JournalClient}).</li>
  *   <li>Comandos {@code /mahou journal status|complete|reset|guide|locate|tutorial}.</li>
+ *   <li>v1.0 release: a CAMPANHA ({@code story/}: Atos, falas do Eco e cutscenes de marco, sempre puláveis), a seção
+ *       "Onde Conseguir" do Guia de Viagem ({@code guide/}) e o Bestiário completo. Comandos {@code /mahou story ...}.</li>
  * </ul>
  */
 public class JournalModule implements Module {
@@ -36,5 +41,9 @@ public class JournalModule implements Module {
         modBus.addListener(JournalNetwork::register);
         JournalEvents.register();
         JournalCommands.register();
+        // Campanha (v1.0 release): opções no menu do Minecraft, gatilhos nos marcos e comandos de teste.
+        StoryConfig.register();
+        StoryService.register();
+        StoryCommands.register();
     }
 }

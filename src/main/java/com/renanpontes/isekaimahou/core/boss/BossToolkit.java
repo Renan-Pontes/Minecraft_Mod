@@ -17,6 +17,11 @@ public final class BossToolkit {
         NeoForge.EVENT_BUS.addListener(BossKit::onFall);
         NeoForge.EVENT_BUS.addListener(BossRewards::onDamage);
         BossCommands.register();
+        // v1.3: maldições assinatura dos chefes e a proteção extra das arenas
+        BossCurses.register(modBus);
+        ArenaGuard.init();
+        // v1.0: invocações/aliados do jogador lutando contam como luta (a arena não abre, o chefe não reseta)
+        ArenaAllies.init();
     }
 
     private BossToolkit() {}

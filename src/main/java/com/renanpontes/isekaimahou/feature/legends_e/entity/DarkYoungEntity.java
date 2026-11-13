@@ -17,6 +17,7 @@ import com.renanpontes.isekaimahou.feature.legends_e.LeRegistry;
 import com.renanpontes.isekaimahou.feature.legends_e.LeUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -261,7 +262,7 @@ public class DarkYoungEntity extends PathfinderMob implements OwnableEntity, Geo
         triggerAnim("action", "attack");
         if (hit && level() instanceof ServerLevel sl) {
             if (target instanceof LivingEntity le) Statuses.apply(le, Statuses.Kind.CORRUPTED, 1, 80, this, power);
-            LeFx.send(sl, ParticleTypes.SQUID_INK, LeUtil.center(target), 10, 0.3, 0.05);
+            LeFx.send(sl, Vfx.ink(), LeUtil.center(target), 10, 0.3, 0.05);
             LeFx.sound(sl, target.position(), SoundEvents.SLIME_ATTACK, 1.2F, 0.5F);
         }
         return hit;
@@ -340,7 +341,7 @@ public class DarkYoungEntity extends PathfinderMob implements OwnableEntity, Geo
             BlockState below = sl.getBlockState(BlockPos.containing(at.subtract(0, 0.2, 0)));
             if (below.isAir()) below = Blocks.DIRT.defaultBlockState();
             LeFx.send(sl, new BlockParticleOption(ParticleTypes.DUST_PILLAR, below), at.x, at.y + 0.1, at.z, 70, STOMP_RADIUS * 0.6, 0.1, STOMP_RADIUS * 0.6, 0.3);
-            LeFx.send(sl, ParticleTypes.SQUID_INK, at.x, at.y + 0.3, at.z, 30, STOMP_RADIUS * 0.5, 0.2, STOMP_RADIUS * 0.5, 0.08);
+            LeFx.send(sl, Vfx.ink(), at.x, at.y + 0.3, at.z, 30, STOMP_RADIUS * 0.5, 0.2, STOMP_RADIUS * 0.5, 0.08);
             LeFx.ring(sl, at.add(0, 0.2, 0), new Vec3(0, 1, 0), STOMP_RADIUS + 1F, 0x8A4FC8, 12);
             LeFx.sound(sl, at, SoundEvents.GENERIC_EXPLODE, 1.6F, 0.6F);
             LeFx.sound(sl, at, SoundEvents.WARDEN_ATTACK_IMPACT, 2.0F, 0.6F);
@@ -362,13 +363,13 @@ public class DarkYoungEntity extends PathfinderMob implements OwnableEntity, Geo
             e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1), this);
             e.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 0), this);
         }
-        LeFx.send(sl, ParticleTypes.SCULK_SOUL, getX(), getY() + 3.2, getZ(), 20, 1.2, 0.8, 1.2, 0.05);
+        LeFx.send(sl, Vfx.sculkSoul(), getX(), getY() + 3.2, getZ(), 20, 1.2, 0.8, 1.2, 0.05);
     }
 
     private void clientFx() {
         if (entityData.get(DATA_EMERGING)) {
             if (random.nextInt(2) == 0) {
-                level().addParticle(ParticleTypes.SQUID_INK, getX() + (random.nextDouble() - 0.5) * 2.2, getY() + 0.1,
+                level().addParticle(Vfx.ink(), getX() + (random.nextDouble() - 0.5) * 2.2, getY() + 0.1,
                         getZ() + (random.nextDouble() - 0.5) * 2.2, 0, 0.15, 0);
             }
             return;
@@ -379,7 +380,7 @@ public class DarkYoungEntity extends PathfinderMob implements OwnableEntity, Geo
         double fx = -Math.sin(yaw) * 0.45, fz = Math.cos(yaw) * 0.45;
         level().addParticle(ParticleTypes.ITEM_SLIME, getX() + fx, getY() + 2.5, getZ() + fz, 0, -0.05, 0);
         if (random.nextInt(3) == 0) {
-            level().addParticle(ParticleTypes.SQUID_INK, getX() + (random.nextDouble() - 0.5) * 2, getY() + 3.5 + random.nextDouble(),
+            level().addParticle(Vfx.ink(), getX() + (random.nextDouble() - 0.5) * 2, getY() + 3.5 + random.nextDouble(),
                     getZ() + (random.nextDouble() - 0.5) * 2, 0, 0.02, 0);
         }
     }
@@ -390,8 +391,8 @@ public class DarkYoungEntity extends PathfinderMob implements OwnableEntity, Geo
 
     private void emergeFx(ServerLevel sl) {
         Vec3 c = position();
-        LeFx.send(sl, ParticleTypes.SQUID_INK, c.x, c.y + 0.2, c.z, 60, 1.2, 0.2, 1.2, 0.15);
-        LeFx.send(sl, ParticleTypes.SCULK_SOUL, c.x, c.y + 0.5, c.z, 20, 1.0, 0.5, 1.0, 0.05);
+        LeFx.send(sl, Vfx.ink(), c.x, c.y + 0.2, c.z, 60, 1.2, 0.2, 1.2, 0.15);
+        LeFx.send(sl, Vfx.sculkSoul(), c.x, c.y + 0.5, c.z, 20, 1.0, 0.5, 1.0, 0.05);
         LeFx.sound(sl, c, SoundEvents.WARDEN_EMERGE, 2.0F, 0.7F);
         LeFx.sound(sl, c, SoundEvents.ROOTED_DIRT_BREAK, 2.0F, 0.5F);
     }
@@ -400,7 +401,7 @@ public class DarkYoungEntity extends PathfinderMob implements OwnableEntity, Geo
     public void vanish() {
         if (level() instanceof ServerLevel sl) {
             Vec3 c = position();
-            LeFx.send(sl, ParticleTypes.SQUID_INK, c.x, c.y + 2, c.z, 80, 1.0, 1.6, 1.0, 0.08);
+            LeFx.send(sl, Vfx.ink(), c.x, c.y + 2, c.z, 80, 1.0, 1.6, 1.0, 0.08);
             LeFx.send(sl, LeFx.fade(0x2A0A3A, 0x000000, 1.5F), c.x, c.y + 2, c.z, 40, 1.0, 1.6, 1.0, 0.02);
             LeFx.sound(sl, c, SoundEvents.WARDEN_DIG, 1.8F, 0.6F);
         }

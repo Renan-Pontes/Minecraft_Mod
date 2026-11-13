@@ -14,6 +14,7 @@ import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.feature.class_ranger.RangerCompanions;
 import com.renanpontes.isekaimahou.feature.class_ranger.RangerFx;
+import com.renanpontes.isekaimahou.feature.class_ranger.RangerFxNet;
 import com.renanpontes.isekaimahou.feature.class_ranger.RangerGlyphIds;
 import com.renanpontes.isekaimahou.feature.class_ranger.entity.ChainTetherEntity;
 import com.renanpontes.isekaimahou.feature.class_ranger.entity.RangerWolfEntity;
@@ -155,12 +156,7 @@ public final class AnimeArrowEffects {
 
         /** Coluna de luz rosa-perolada e anel de purificação. */
         private static void light(ServerLevel level, Vec3 at, double r) {
-            for (int y = 0; y < 8; y++) {
-                level.sendParticles(WeaponFx.dust(y % 2 == 0 ? 0xFFB8E8 : 0xFFFFFF, 1.2F), at.x, at.y + y * 0.4, at.z, 2, 0.08, 0.1, 0.08, 0);
-            }
-            level.sendParticles(ParticleTypes.END_ROD, at.x, at.y + 0.5, at.z, 14, 0.3, 0.8, 0.3, 0.04);
-            RangerFx.ring(level, at.add(0, 0.1, 0), r, 28, WeaponFx.dust(0xFF9AD8, 1.3F), 0);
-            RangerFx.ring(level, at.add(0, 0.4, 0), r * 0.6, 20, WeaponFx.dust(0xFFFFFF, 1.0F), 0);
+            RangerFxNet.at(level, RangerFxNet.SACRED, at, Vec3.ZERO, (float) r, 0xFF9AD8, -1, r > 2.5 ? 1 : 0);
             RangerFx.sound(level, at, SoundEvents.BEACON_ACTIVATE, 0.8F, 1.8F);
             RangerFx.sound(level, at, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.2F);
             RangerFx.sound(level, at, SoundEvents.BELL_RESONATE, 0.5F, 1.6F);
@@ -231,8 +227,7 @@ public final class AnimeArrowEffects {
                 sp.displayClientMessage(Component.translatable("message.isekai_mahou.class_ranger.chain_bound", ticks / 20, stolen), true);
             }
             Vec3 c = mid(le);
-            RangerFx.ring(level, c.add(0, -0.3, 0), Math.max(0.7, le.getBbWidth()), 18, WeaponFx.dust(0xC8CCD6, 1.1F), 0);
-            RangerFx.ring(level, c.add(0, 0.3, 0), Math.max(0.7, le.getBbWidth()), 18, WeaponFx.dust(0xC8CCD6, 1.1F), 0);
+            RangerFxNet.at(level, RangerFxNet.CHAINS, c, Vec3.ZERO, 1F, 0xFFD86B, le.getId());
             RangerFx.sound(level, c, SoundEvents.CHAIN_PLACE, 1.2F, 0.7F);
             RangerFx.sound(level, c, SoundEvents.ANVIL_LAND, 0.4F, 1.8F);
         }

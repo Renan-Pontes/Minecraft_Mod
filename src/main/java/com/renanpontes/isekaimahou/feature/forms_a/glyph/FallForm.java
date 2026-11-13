@@ -9,7 +9,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
@@ -92,7 +92,7 @@ public class FallForm extends FormGlyph {
         // Portal de onde o meteoro sai
         FormsFx.ring(ctx, start.add(0, 0.4, 0), 1.3, 4.0);
         FormsFx.burst(ctx, start.add(0, 0.4, 0), 14, 0.5);
-        FormsFx.send(ctx.level(), ParticleTypes.REVERSE_PORTAL, start, 20, 0.6, 0.05);
+        FormsFx.send(ctx.level(), Vfx.reversePortal(), start, 20, 0.6, 0.05);
         FormsFx.sound(ctx, start, SoundEvents.ILLUSIONER_CAST_SPELL, 1.0F, 0.7F);
     }
 }

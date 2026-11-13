@@ -20,6 +20,10 @@ public final class OnboardClientHandlers {
         ClientOnboarding.applyState(p);
     }
 
+    public static void entryNudge() {
+        ClientOnboarding.entryNudge();
+    }
+
     public static void congrats(OnboardPayloads.Congrats p) {
         CongratsOverlay.show(p);
     }

@@ -9,6 +9,7 @@ import com.renanpontes.isekaimahou.feature.legends_b.LbUtil;
 import com.renanpontes.isekaimahou.feature.legends_b.LegendsBRegistry;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -129,7 +130,7 @@ public class SkyLancesEntity extends LegendSpellEntity {
         }
         if (age % 3 == 0 && t < active()) {
             Vec3 l = lensPos(random.nextInt(count()), age);
-            LbFx.send(sl, ParticleTypes.END_ROD, l.x, l.y - 0.3, l.z, 1, 0.6, 0.05, 0.6, 0.01);
+            LbFx.send(sl, Vfx.endRod(), l.x, l.y - 0.3, l.z, 1, 0.6, 0.05, 0.6, 0.01);
             LbFx.send(sl, LbFx.dust(color(), 1.0F), l.x, l.y, l.z, 2, 0.8, 0.05, 0.8, 0);
         }
         if (t >= 0 && t < active() && t % INTERVAL == 0) pulse(sl, c, t / INTERVAL);
@@ -172,7 +173,7 @@ public class SkyLancesEntity extends LegendSpellEntity {
             c.impact(aim, dir, e);
             c.resolveOnEntity(e, this);
             LbFx.send(sl, ParticleTypes.FLASH, aim, 1, 0, 0);
-            LbFx.send(sl, ParticleTypes.END_ROD, aim, 10, 0.25, 0.12);
+            LbFx.send(sl, Vfx.endRod(), aim, 10, 0.25, 0.12);
             LbFx.send(sl, LbFx.dust(LbFx.lighten(rgb, 0.4F), 1.4F), aim, 8, 0.3, 0);
             if (sounds++ < 4) LbFx.sound(sl, aim, SoundEvents.BEACON_POWER_SELECT, 1.0F, 1.9F);
             // O chão sob o alvo derrete em vidro
@@ -224,9 +225,9 @@ public class SkyLancesEntity extends LegendSpellEntity {
     }
 
     private void scorch(ServerLevel sl, Vec3 p, int rgb) {
-        LbFx.send(sl, ParticleTypes.END_ROD, p.x, p.y + 0.1, p.z, 6, 0.2, 0.05, 0.2, 0.06);
+        LbFx.send(sl, Vfx.endRod(), p.x, p.y + 0.1, p.z, 6, 0.2, 0.05, 0.2, 0.06);
         LbFx.send(sl, LbFx.dust(rgb, 1.2F), p.x, p.y + 0.1, p.z, 6, 0.35, 0.05, 0.35, 0);
-        LbFx.send(sl, ParticleTypes.SMOKE, p.x, p.y + 0.1, p.z, 3, 0.2, 0.05, 0.2, 0.01);
+        LbFx.send(sl, Vfx.smoke(), p.x, p.y + 0.1, p.z, 3, 0.2, 0.05, 0.2, 0.01);
     }
 
     // =====================================================================================

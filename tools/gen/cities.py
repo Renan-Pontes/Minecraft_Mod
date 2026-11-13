@@ -1525,7 +1525,7 @@ STRUCTURES = {
 PROF_NAMES = {
     "blacksmith": (("Ferreiro", "Ferreira"), "Blacksmith"), "alchemist": (("Alquimista", "Alquimista"), "Alchemist"),
     "scribe": (("Escriba da Academia", "Escriba da Academia"), "Academy Scribe"), "jeweler": (("Joalheiro", "Joalheira"), "Jeweler"),
-    "innkeeper": (("Taverneiro", "Taverneira"), "Innkeeper"), "priest": (("Sacerdote da Aurora", "Sacerdotisa da Aurora"), "Priest of the Dawn"),
+    "innkeeper": (("Estalajadeiro", "Estalajadeira"), "Innkeeper"), "priest": (("Sacerdote da Aurora", "Sacerdotisa da Aurora"), "Priest of the Dawn"),
     "fence": (("Receptador", "Receptadora"), "Fence"), "grocer": (("Quitandeiro", "Quitandeira"), "Grocer"),
     "tailor": (("Alfaiate", "Costureira"), "Tailor"),
 }
@@ -1745,7 +1745,7 @@ def translations():
         ("O Quadro do Reino, na praça, tem trabalhos pagos pela Coroa.", "The Kingdom Board in the plaza has jobs paid by the Crown."),
         ("O sacerdote da Igreja da Aurora cura feridas e abençoa viajantes.", "The priest of the Church of the Dawn heals wounds and blesses travelers."),
         ("Dizem que o receptador se esconde no beco... e compra de tudo.", "They say the fence hides in the alley... and buys anything."),
-        ("O escriba da Torre da Academia vende pergaminhos de glifos!", "The scribe at the Academy Tower sells glyph scrolls!"),
+        ("O escriba da Torre da Academia vende papel, tinta e livros. Glifos? Só explorando!", "The scribe at the Academy Tower sells paper, ink and books. Glyphs? Only by exploring!"),
         ("O ferreiro conserta qualquer arma. E vende as do Arsenal para quem tem fama.", "The blacksmith repairs any weapon. And sells Armory gear to the renowned."),
         ("Mexer nos baús das casas? Se alguém vir, o Reino não perdoa.", "Rummaging through house chests? If someone sees, the Kingdom won't forgive."),
     ])
@@ -1872,7 +1872,7 @@ def translations():
                       [("Hm, mais uma gota de verruga...", "Hm, one more drop of wart..."), ("Essa fumaça é normal. Acho.", "This smoke is normal. I think."),
                        ("Olhos de aranha frescos? Eu compro!", "Fresh spider eyes? I'm buying!")]),
         "scribe": ([("Saudações, %s. A Academia compartilha saber com quem merece.", "Greetings, %s. The Academy shares knowledge with the worthy."),
-                    ("Pergaminhos de glifos, livros... conhecimento tem preço.", "Glyph scrolls, books... knowledge has a price.")],
+                    ("Papel, tinta, livros... conhecimento tem preço.", "Paper, ink, books... knowledge has a price.")],
                    [("Este glifo está mal desenhado...", "This glyph is poorly drawn..."), ("Silêncio, por favor. Estou copiando.", "Silence, please. I'm copying."),
                     ("A Academia paga bem por papel.", "The Academy pays well for paper.")]),
         "jeweler": ([("Ah, %s! Veja como brilham estas pedras.", "Ah, %s! See how these stones shine."),

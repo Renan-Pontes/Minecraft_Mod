@@ -11,7 +11,7 @@ import com.renanpontes.isekaimahou.feature.fusions_b.FbUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -61,7 +61,7 @@ public class VoidRiftEntity extends FbSpellEntity {
         r.entityData.set(RADIUS, radius);
         sl.addFreshEntity(r);
         Vec3 mid = at.add(0, HEIGHT * 0.5, 0);
-        sl.sendParticles(ParticleTypes.PORTAL, mid.x, mid.y, mid.z, 50, 0.2, HEIGHT * 0.4, 0.2, 0.8);
+        sl.sendParticles(Vfx.portal(), mid.x, mid.y, mid.z, 50, 0.2, HEIGHT * 0.4, 0.2, 0.8);
         FbFx.sound(sl, mid, SoundEvents.ENDERMAN_TELEPORT, 1.2F, 0.4F);
         FbFx.sound(sl, mid, SoundEvents.ILLUSIONER_PREPARE_MIRROR, 1.0F, 0.6F);
     }
@@ -92,7 +92,7 @@ public class VoidRiftEntity extends FbSpellEntity {
             }
             if (pulse) {
                 hit(e, damage);
-                sl.sendParticles(ParticleTypes.REVERSE_PORTAL, e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 6,
+                sl.sendParticles(Vfx.reversePortal(), e.getX(), e.getY() + e.getBbHeight() * 0.5, e.getZ(), 6,
                         0.2, 0.3, 0.2, 0.05);
             }
         }
@@ -103,7 +103,7 @@ public class VoidRiftEntity extends FbSpellEntity {
     protected void onExpire(ServerLevel sl) {
         Vec3 mid = position().add(0, HEIGHT * 0.5, 0);
         FbFx.burst(sl, mid, Element.VOID, 20, 0.4);
-        sl.sendParticles(ParticleTypes.REVERSE_PORTAL, mid.x, mid.y, mid.z, 40, 0.1, HEIGHT * 0.4, 0.1, 0.15);
+        sl.sendParticles(Vfx.reversePortal(), mid.x, mid.y, mid.z, 40, 0.1, HEIGHT * 0.4, 0.1, 0.15);
         FbFx.sound(sl, mid, SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.6F);
     }
 
@@ -114,7 +114,7 @@ public class VoidRiftEntity extends FbSpellEntity {
         if (open <= 0) return;
         for (int i = 0; i < 2; i++) {
             double y = getY() + random.nextDouble() * HEIGHT;
-            level().addParticle(ParticleTypes.PORTAL, getX(), y, getZ(),
+            level().addParticle(Vfx.portal(), getX(), y, getZ(),
                     (random.nextDouble() - 0.5) * 1.5, (random.nextDouble() - 0.5) * 0.5, (random.nextDouble() - 0.5) * 1.5);
         }
         if (random.nextInt(3) == 0) {

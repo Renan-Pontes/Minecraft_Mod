@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbFx;
+import com.renanpontes.isekaimahou.feature.class_steelball.SbFxNet;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbRegistry;
 import com.renanpontes.isekaimahou.feature.class_steelball.SbSpin;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
@@ -89,9 +90,15 @@ public class BallBreakerEntity extends Entity implements GeoEntity {
         e.entityData.set(DATA_SIZE, Math.max(0.9F, Math.min(3.0F, Math.max(target.getBbWidth() * 1.2F, target.getBbHeight() * 0.6F))));
         e.follow(target);
         sl.addFreshEntity(e);
-        SbFx.sound(sl, target.position(), SoundEvents.BEACON_ACTIVATE, 1.0F, 0.6F);
         SbFx.sound(sl, target.position(), SoundEvents.WITHER_AMBIENT, 0.4F, 1.8F);
-        SbFx.goldenSpiral(sl, target.position().add(0, target.getBbHeight() + 0.8, 0), new Vec3(0, 0, 1), 1.6);
+        // a esfera espectral se forma sobre o alvo e cai (a coreografia é do cliente)
+        float r = e.size();
+        SbFxNet.at(sl, SbFxNet.BREAKER_CHARGE, target.position(), Vec3.ZERO, r, 0xFFB43A, target.getId());
+        com.renanpontes.isekaimahou.glyph.SpellScheduler.schedule(16, () -> {
+            if (target.isAlive() && target.level() == sl) {
+                SbFxNet.at(sl, SbFxNet.BREAKER_HIT, target.position().add(0, target.getBbHeight() * 0.5, 0), Vec3.ZERO, r, 0xFFB43A, target.getId());
+            }
+        });
     }
 
     @Override

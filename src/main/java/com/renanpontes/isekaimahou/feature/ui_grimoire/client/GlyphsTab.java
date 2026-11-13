@@ -15,6 +15,7 @@ import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphKind;
+import com.renanpontes.isekaimahou.glyph.GlyphMastery;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.TriggerGlyph;
 import com.renanpontes.isekaimahou.network.ClientMagic;
@@ -190,7 +191,7 @@ public class GlyphsTab implements MenuTab {
                 if (!all && i != elementFilter) continue;
                 Element e = els[i];
                 List<Glyph> list = new ArrayList<>();
-                for (Glyph gl : GlyphRegistry.byElement(e)) if (gl.origin() == null && passes(gl)) list.add(gl);
+                for (Glyph gl : GlyphRegistry.byElement(e)) if (gl.origin() == null && passes(gl) && GlyphIcons.listed(gl, d)) list.add(gl);
                 addSection(out, d, Component.literal(e.displayName().getString()), e.argb(), e, null, list);
             }
         }
@@ -202,7 +203,7 @@ public class GlyphsTab implements MenuTab {
             for (MagicPath p : order) {
                 if (cat != null && p.category() != cat) continue;
                 List<Glyph> list = new ArrayList<>();
-                for (Glyph gl : GlyphRegistry.all()) if (gl.origin() == p && passes(gl)) list.add(gl);
+                for (Glyph gl : GlyphRegistry.all()) if (gl.origin() == p && passes(gl) && GlyphIcons.listed(gl, d)) list.add(gl);
                 boolean foreign = p != d.path() && p != MagicPath.NONE;
                 Component title = foreign ? tr("section.origin_lesson", p.displayName()) : tr("section.origin", p.displayName());
                 addSection(out, d, title, p.argb(), null, p, list);
@@ -212,6 +213,7 @@ public class GlyphsTab implements MenuTab {
         totalKnown = 0;
         total = 0;
         for (Glyph gl : GlyphRegistry.all()) {
+            if (!GlyphIcons.listed(gl, d)) continue;
             total++;
             if (d.knowsGlyph(gl.id())) totalKnown++;
         }
@@ -393,6 +395,8 @@ public class GlyphsTab implements MenuTab {
                             | (GlyphIcons.isLesson(gl, d) ? GlyphIcons.LESSON : 0)
                             | (known && d.circle() < gl.minCircle() ? GlyphIcons.LOCKED : 0);
                     GlyphIcons.draw(g, gl, px, py, ICON, flags);
+                    // Maestria: barrinha fina embaixo do ícone (caminho I→X); só aparece depois do primeiro uso real
+                    GlyphIcons.masteryBar(g, d, gl, px, py, ICON);
                     zones.addClipped(px - 1, py - 1, ICON + 2, ICON + 2, scroll.x, scroll.y, scroll.w, scroll.h,
                             b -> clickGlyph(d, gl), () -> {
                                 List<Component> lines = GlyphIcons.tooltip(gl, d, true);
@@ -472,6 +476,17 @@ public class GlyphsTab implements MenuTab {
         Component status = known ? tr("status.known") : tr("status.unknown");
         g.drawString(font, status, tx, ty, known ? Gfx.GOOD : Gfx.TEXT_FAINT, false);
         ty += 10;
+        // Maestria do glifo: nível + barra do nível atual (os números e bônus ficam nas linhas abaixo)
+        int masteryBarY = -1;
+        if (known) {
+            int mxp = d.glyphXp(gl.id());
+            int mlv = GlyphMastery.level(mxp);
+            int mcol = GlyphIcons.masteryColor(mlv);
+            masteryBarY = Math.max(ty + 2, py + 42);
+            g.drawString(font, Component.translatable("screen.isekai_mahou.glyph.mastery", GlyphMastery.roman(mlv)), px + 5, masteryBarY, mcol, false);
+            int bw = pw - 10;
+            MahouUi.bar(g, px + 5, masteryBarY + 10, bw, 4, GlyphMastery.progress(mxp), mcol);
+        }
 
         List<Component> lines = new ArrayList<>();
         lines.add(gl.origin() != null ? Component.translatable("screen.isekai_mahou.glyph.origin_tag", gl.origin().displayName())
@@ -487,12 +502,36 @@ public class GlyphsTab implements MenuTab {
         lines.addAll(GlyphIcons.details(gl));
         lines.add(Component.empty());
         lines.add(gl.description().withStyle(ChatFormatting.ITALIC).withColor(0xBFE6FF));
+        if (known) {
+            // números da maestria (a barra já foi desenhada em cima): progresso, bônus e como evoluir
+            int mxp = d.glyphXp(gl.id());
+            int mlv = GlyphMastery.level(mxp);
+            lines.add(Component.empty());
+            // maestria infinita: só o teto do número salvo é "máxima"; depois do X o texto fica dourado
+            MutableComponent prog = GlyphIcons.masteryProgressText(mxp);
+            if (mlv >= GlyphMastery.LEVEL_CAP) prog.withColor(Gfx.GOLD & 0xFFFFFF);
+            else prog.withStyle(mlv >= GlyphMastery.MAX_LEVEL ? ChatFormatting.GOLD : ChatFormatting.GRAY);
+            lines.add(prog);
+            MutableComponent bonus = GlyphIcons.masteryBonus(gl, mlv);
+            if (bonus != null) lines.add(bonus.withColor(Gfx.GOOD & 0xFFFFFF));
+            if (mlv < GlyphMastery.MAX_LEVEL) {
+                lines.add(Component.translatable("screen.isekai_mahou.glyph.mastery.how").withStyle(ChatFormatting.DARK_GRAY));
+            } else {
+                lines.add(Component.translatable("screen.isekai_mahou.glyph.mastery.how_infinite").withStyle(ChatFormatting.DARK_GRAY));
+            }
+            // mutações despertas (com descrição) + a próxima como mistério
+            List<Component> muts = GlyphIcons.mutationLines(gl, mlv, true);
+            if (!muts.isEmpty()) {
+                lines.add(Component.empty());
+                lines.addAll(muts);
+            }
+        }
         if (!known) {
             lines.add(Component.empty());
             lines.add(tr("detail.how").withStyle(ChatFormatting.GOLD));
             lines.add(GlyphIcons.source(gl).copy().withStyle(ChatFormatting.GRAY));
         }
-        int ly = Math.max(ty + 2, py + 42);
+        int ly = masteryBarY >= 0 ? masteryBarY + 18 : Math.max(ty + 2, py + 42);
         for (Component c : lines) {
             if (c.getString().isEmpty()) {
                 ly += 4;

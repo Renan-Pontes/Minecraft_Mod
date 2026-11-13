@@ -1,0 +1,18 @@
+{
+  "type": "isekai_mahou:home_realm",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "isekai_mahou:home_realm",
+      "layers": [
+        {
+          "block": "minecraft:air",
+          "height": 1
+        }
+      ],
+      "lakes": false,
+      "features": false,
+      "structure_overrides": []
+    }
+  }
+}

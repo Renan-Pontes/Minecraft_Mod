@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -207,7 +208,7 @@ public class MarkForm extends FormGlyph {
     /** Nada na mira: a marca se desfaz (avisa o jogador, se foi ele quem mirou) e o estágio termina no fim da mira. */
     private static void fizzle(SpellContext ctx, Vec3 limit, Vec3 aim) {
         Vec3 p = ctx.eyePos().add(aim.scale(2.0));
-        FormsFx.send(ctx.level(), ParticleTypes.SMOKE, p, 10, 0.15, 0.02);
+        FormsFx.send(ctx.level(), Vfx.smoke(), p, 10, 0.15, 0.02);
         FormsFx.sound(ctx, p, SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.6F);
         ServerPlayer sp = ctx.casterPlayer();
         if (sp != null && !ctx.hasOrigin()) {

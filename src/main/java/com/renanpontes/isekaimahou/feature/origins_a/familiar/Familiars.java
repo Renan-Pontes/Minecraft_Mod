@@ -3,8 +3,8 @@ package com.renanpontes.isekaimahou.feature.origins_a.familiar;
 import com.renanpontes.isekaimahou.feature.origins_a.OaRegistries;
 import com.renanpontes.isekaimahou.feature.origins_a.OaUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -48,8 +48,8 @@ public final class Familiars {
         f.setYHeadRot(owner.getYRot());
         f.setup(owner, life, power);
         level.addFreshEntity(f);
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, pos.x, pos.y + 0.3, pos.z, 16, 0.25, 0.3, 0.25, 0.02);
-        level.sendParticles(ParticleTypes.WITCH, pos.x, pos.y + 0.4, pos.z, 24, 0.35, 0.35, 0.35, 0.1);
+        level.sendParticles(Vfx.largeSmoke(), pos.x, pos.y + 0.3, pos.z, 16, 0.25, 0.3, 0.25, 0.02);
+        level.sendParticles(Vfx.witch(), pos.x, pos.y + 0.4, pos.z, 24, 0.35, 0.35, 0.35, 0.1);
         level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS, 0.8F, 1.3F);
         level.playSound(null, pos.x, pos.y, pos.z, cat ? SoundEvents.CAT_AMBIENT : SoundEvents.PARROT_AMBIENT,
                 SoundSource.NEUTRAL, 1.0F, cat ? 1.0F : 0.55F);

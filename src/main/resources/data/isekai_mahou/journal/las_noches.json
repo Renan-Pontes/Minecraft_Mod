@@ -1,0 +1,138 @@
+{
+  "chapters": [
+    {
+      "id": "las_noches",
+      "order": 56,
+      "color": "#E8F0FF",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:arrancar_soul_shard",
+        "isekai_mahou:hollow_crystal",
+        "isekai_mahou:reishi_crystal"
+      ],
+      "steps": [
+        {
+          "id": "enter",
+          "condition": {
+            "type": "flag",
+            "flag": "visit.place.las_noches_dome"
+          },
+          "xp": 600,
+          "icon": "isekai_mahou:hollow_crystal",
+          "locate": {
+            "place": "las_noches_dome",
+            "dimension": "isekai_mahou:hollow_world"
+          }
+        },
+        {
+          "id": "throne",
+          "condition": {
+            "type": "flag",
+            "flag": "las_noches.throne"
+          },
+          "optional": true,
+          "xp": 400,
+          "icon": "minecraft:written_book",
+          "locate": {
+            "place": "las_noches_dome",
+            "dimension": "isekai_mahou:hollow_world"
+          }
+        },
+        {
+          "id": "grimmjow",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "grimmjow"
+            ],
+            "min": 1
+          },
+          "optional": true,
+          "xp": 1500,
+          "icon": "isekai_mahou:arrancar_soul_shard",
+          "locate": {
+            "place": "las_noches_dome",
+            "dimension": "isekai_mahou:hollow_world"
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 3
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:grimmjow"
+          ]
+        },
+        {
+          "id": "barragan",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "barragan"
+            ],
+            "min": 1
+          },
+          "optional": true,
+          "xp": 1800,
+          "icon": "isekai_mahou:decay_axe",
+          "locate": {
+            "place": "las_noches_dome",
+            "dimension": "isekai_mahou:hollow_world"
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:golden_apple",
+                "count": 3
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:barragan"
+          ]
+        },
+        {
+          "id": "ulquiorra",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "ulquiorra"
+            ],
+            "min": 1
+          },
+          "xp": 2500,
+          "icon": "isekai_mahou:reishi_crystal",
+          "locate": {
+            "place": "las_noches_dome",
+            "dimension": "isekai_mahou:hollow_world"
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:enchanted_golden_apple",
+                "count": 1
+              }
+            ]
+          },
+          "requires": [
+            "isekai_mahou:ulquiorra"
+          ]
+        }
+      ],
+      "rewards": {
+        "xp": 4000,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 24
+          }
+        ],
+        "glyph_scrolls": 1,
+        "glyph_tier": 5
+      }
+    }
+  ]
+}

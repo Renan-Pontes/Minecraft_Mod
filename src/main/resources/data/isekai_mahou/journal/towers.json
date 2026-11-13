@@ -1,0 +1,198 @@
+{
+  "chapters": [
+    {
+      "id": "towers",
+      "order": 26,
+      "color": "#7FD4FF",
+      "intro": true,
+      "icon": [
+        "isekai_mahou:tower_teleport_crystal",
+        "isekai_mahou:tower_twin_blade_noir",
+        "isekai_mahou:tower_floor_core"
+      ],
+      "steps": [
+        {
+          "id": "enter",
+          "condition": {
+            "type": "flag",
+            "flag": "towers.entered"
+          },
+          "xp": 60,
+          "icon": "minecraft:stone_bricks",
+          "locate": {
+            "tag": "isekai_mahou:towers",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "floors",
+          "condition": {
+            "type": "counter",
+            "key": "towers.floor",
+            "min": 3
+          },
+          "xp": 150,
+          "icon": "isekai_mahou:tower_floor_core",
+          "locate": {
+            "tag": "isekai_mahou:towers",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "puzzle",
+          "condition": {
+            "type": "flag",
+            "flag": "towers.puzzle"
+          },
+          "optional": true,
+          "xp": 100,
+          "icon": "isekai_mahou:tower_rune_switch",
+          "locate": {
+            "tag": "isekai_mahou:towers",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "summit",
+          "condition": {
+            "type": "counter",
+            "key": "towers.cleared",
+            "min": 1
+          },
+          "xp": 400,
+          "icon": "minecraft:bell",
+          "locate": {
+            "tag": "isekai_mahou:towers",
+            "dimension": "minecraft:overworld"
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "isekai_mahou:tower_teleport_crystal",
+                "count": 3
+              }
+            ]
+          }
+        },
+        {
+          "id": "kobold_lord",
+          "condition": {
+            "type": "bosses",
+            "ids": [
+              "tower_kobold_lord"
+            ],
+            "min": 1
+          },
+          "optional": true,
+          "xp": 350,
+          "icon": "minecraft:iron_axe",
+          "locate": {
+            "tag": "isekai_mahou:towers",
+            "dimension": "minecraft:overworld"
+          },
+          "requires": [
+            "isekai_mahou:tower_kobold_lord"
+          ]
+        },
+        {
+          "id": "crystal",
+          "condition": {
+            "type": "flag",
+            "flag": "towers.crystal"
+          },
+          "optional": true,
+          "xp": 50,
+          "icon": "isekai_mahou:tower_teleport_crystal"
+        },
+        {
+          "id": "starburst",
+          "condition": {
+            "type": "flag",
+            "flag": "towers.twin"
+          },
+          "optional": true,
+          "xp": 200,
+          "icon": "isekai_mahou:tower_twin_blade_noir"
+        },
+        {
+          "id": "three",
+          "condition": {
+            "type": "counter",
+            "key": "towers.cleared",
+            "min": 3
+          },
+          "optional": true,
+          "xp": 800,
+          "icon": "isekai_mahou:tower_twin_blade_azure",
+          "locate": {
+            "tag": "isekai_mahou:towers",
+            "dimension": "minecraft:overworld"
+          },
+          "rewards": {
+            "items": [
+              {
+                "id": "minecraft:diamond",
+                "count": 8
+              }
+            ]
+          }
+        },
+        {
+          "id": "affixes",
+          "condition": {
+            "type": "counter",
+            "key": "towers.affix_floor",
+            "min": 3
+          },
+          "optional": true,
+          "xp": 250,
+          "icon": "minecraft:blaze_powder",
+          "locate": {
+            "tag": "isekai_mahou:towers",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "record",
+          "condition": {
+            "type": "counter",
+            "key": "towers.records",
+            "min": 5
+          },
+          "optional": true,
+          "xp": 200,
+          "icon": "minecraft:clock",
+          "locate": {
+            "tag": "isekai_mahou:towers",
+            "dimension": "minecraft:overworld"
+          }
+        },
+        {
+          "id": "sky_island",
+          "condition": {
+            "type": "flag",
+            "flag": "towers.sky_island"
+          },
+          "optional": true,
+          "xp": 200,
+          "icon": "minecraft:feather",
+          "locate": {
+            "tag": "isekai_mahou:sky_islands",
+            "dimension": "minecraft:overworld"
+          }
+        }
+      ],
+      "rewards": {
+        "xp": 1000,
+        "items": [
+          {
+            "id": "isekai_mahou:mana_crystal",
+            "count": 12
+          }
+        ],
+        "glyph_scrolls": 1,
+        "glyph_tier": 3
+      }
+    }
+  ]
+}

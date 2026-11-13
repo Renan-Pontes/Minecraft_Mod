@@ -6,8 +6,8 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.feature.ritual_mage.research.Observation;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -66,7 +66,7 @@ public class ArcaneLensItem extends Item {
             server.sendParticles(ElementFx.dust(Element.ARCANE, 0.9F), focus.x + Math.cos(a) * radius, focus.y + 0.1,
                     focus.z + Math.sin(a) * radius, 1, 0, 0, 0, 0);
         }
-        server.sendParticles(ParticleTypes.ENCHANT, focus.x, focus.y + 0.5, focus.z, 4, 0.3, 0.3, 0.3, 0.4);
+        server.sendParticles(Vfx.enchant(), focus.x, focus.y + 0.5, focus.z, 4, 0.3, 0.3, 0.3, 0.4);
         if (elapsed % 12 == 0) {
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME,
                     SoundSource.PLAYERS, 0.35F, 1.4F + elapsed / 60F);

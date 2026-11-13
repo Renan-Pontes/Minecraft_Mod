@@ -6,9 +6,9 @@ import com.renanpontes.isekaimahou.feature.arcane_duel.DuelFx;
 import com.renanpontes.isekaimahou.feature.arcane_duel.DuelRegistry;
 import com.renanpontes.isekaimahou.feature.arcane_duel.entity.DuelFxEntity;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -59,7 +59,7 @@ public class DuelStatusEffect extends MobEffect {
                 double a = a0 * 1.7 + i * Math.PI * 2 / 3;
                 level.sendParticles(dust, e.getX() + Math.cos(a) * w, e.getY() + h + 0.2, e.getZ() + Math.sin(a) * w, 1, 0, 0, 0, 0);
             }
-            level.sendParticles(ParticleTypes.WAX_OFF, e.getX(), e.getY() + h * 0.5, e.getZ(), 1, w * 0.6, h * 0.4, w * 0.6, 0.02);
+            level.sendParticles(Vfx.waxOff(), e.getX(), e.getY() + h * 0.5, e.getZ(), 1, w * 0.6, h * 0.4, w * 0.6, 0.02);
         }
         return true;
     }

@@ -28,6 +28,7 @@ import com.renanpontes.isekaimahou.core.api.Reputation;
 import com.renanpontes.isekaimahou.core.api.Rewards;
 import com.renanpontes.isekaimahou.core.api.SpellStack;
 import com.renanpontes.isekaimahou.core.api.Statuses;
+import com.renanpontes.isekaimahou.core.api.BossArena;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.boss.BossRewards;
 import com.renanpontes.isekaimahou.core.boss.Telegraph;
@@ -95,6 +96,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -163,6 +165,8 @@ public class PrimordialDragon extends Monster implements GeoEntity {
     static final int ST_DORMANT = 0;
     static final int ST_EMERGING = 1;
     static final int ST_INTRO = 2;
+    /** Estado "intro" para o cliente (céu da luta). */
+    public static final int STATE_INTRO = ST_INTRO;
     static final int ST_FIGHT = 3;
     static final int ST_TRANSITION = 4;
 
@@ -171,6 +175,8 @@ public class PrimordialDragon extends Monster implements GeoEntity {
     private static final EntityDataAccessor<Boolean> DATA_GROUNDED = SynchedEntityData.defineId(PrimordialDragon.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> DATA_EXHAUSTED = SynchedEntityData.defineId(PrimordialDragon.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_CHARGING = SynchedEntityData.defineId(PrimordialDragon.class, EntityDataSerializers.BOOLEAN);
+    /** v1.3 — Sopro para o cliente: 0 nada, 1 carregando (o ar ondula), 2 soprando (distorção de calor forte). */
+    private static final EntityDataAccessor<Integer> DATA_BREATH = SynchedEntityData.defineId(PrimordialDragon.class, EntityDataSerializers.INT);
     /** Domínio próprio (reserva sem o módulo domain): ticks restantes, centro e raio — o cliente desenha a esfera. */
     private static final EntityDataAccessor<Integer> DATA_DOMAIN = SynchedEntityData.defineId(PrimordialDragon.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<BlockPos> DATA_DOMAIN_CENTER = SynchedEntityData.defineId(PrimordialDragon.class, EntityDataSerializers.BLOCK_POS);
@@ -270,6 +276,7 @@ public class PrimordialDragon extends Monster implements GeoEntity {
         builder.define(DATA_GROUNDED, true);
         builder.define(DATA_EXHAUSTED, 0);
         builder.define(DATA_CHARGING, false);
+        builder.define(DATA_BREATH, 0);
         builder.define(DATA_DOMAIN, 0);
         builder.define(DATA_DOMAIN_CENTER, BlockPos.ZERO);
         builder.define(DATA_DOMAIN_RADIUS, 20F);
@@ -306,6 +313,11 @@ public class PrimordialDragon extends Monster implements GeoEntity {
 
     public boolean isCharging() {
         return entityData.get(DATA_CHARGING);
+    }
+
+    /** Estado do sopro (cliente): 0 nada, 1 carregando, 2 soprando. */
+    public int breathState() {
+        return entityData.get(DATA_BREATH);
     }
 
     public boolean emerging() {
@@ -497,6 +509,11 @@ public class PrimordialDragon extends Monster implements GeoEntity {
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if (level().isClientSide) return super.hurt(source, amount);
+        // /kill (e quem mais usar o dano "genericKill"): some limpo, na hora — ver kill()
+        if (source.is(DamageTypes.GENERIC_KILL)) {
+            kill();
+            return true;
+        }
         if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             floorBypass = true;
             try {
@@ -1012,6 +1029,7 @@ public class PrimordialDragon extends Monster implements GeoEntity {
     private void finishAttack() {
         DragonAttack a = current;
         current = null;
+        entityData.set(DATA_BREATH, 0);
         manualVelocity = false;
         if (a != null && a.onEnd != null) a.onEnd.run();
         globalCooldown = pauseBetweenAttacks();
@@ -1024,6 +1042,7 @@ public class PrimordialDragon extends Monster implements GeoEntity {
     private void cancelAttack() {
         DragonAttack a = current;
         current = null;
+        entityData.set(DATA_BREATH, 0);
         manualVelocity = false;
         if (a != null && a.onEnd != null) a.onEnd.run();
         globalCooldown = 20;
@@ -1275,10 +1294,23 @@ public class PrimordialDragon extends Monster implements GeoEntity {
         holdFacing();
         Vec3 m = mouthPos();
         if (t < 20) {
+            entityData.set(DATA_BREATH, 1);
+            // Carga: a boca suga o ar (partículas convergindo) — leitura clara de "vai soprar"
             if (t % 3 == 0) sl.sendParticles(breathParticle(), m.x, m.y, m.z, 4, 0.4, 0.4, 0.4, 0.02);
+            if (t % 4 == 0) {
+                double a = t * 0.7;
+                Vec3 from = m.add(Math.cos(a) * 3.5, 1.2 * Math.sin(a * 1.7), Math.sin(a) * 3.5);
+                Vec3 v = m.subtract(from);
+                sl.sendParticles(DragonFx.dust(phase().rgb, 1.8F), from.x, from.y, from.z, 0, v.x, v.y, v.z, 0.25);
+            }
+            if (t == 12) DragonFx.sound(sl, m, SoundEvents.BLAZE_AMBIENT, 2.2F, 0.5F);
             return;
         }
-        if (attackTick >= breathUntil) return;
+        if (attackTick >= breathUntil) {
+            entityData.set(DATA_BREATH, 0);
+            return;
+        }
+        entityData.set(DATA_BREATH, 2);
         Vec3 dir = Vec3.directionFromRotation(0, aimYaw);
         Vec3 groundEnd = aimA.add(dir.scale(22));
         Vec3 flow = groundEnd.subtract(m).normalize();
@@ -2663,6 +2695,34 @@ public class PrimordialDragon extends Monster implements GeoEntity {
     // =====================================================================================
     //  Morte
     // =====================================================================================
+
+    /**
+     * {@code /kill}: o dragão SOME na hora e limpo — sem a cinemática de 10 s, sem recompensa (não foi uma vitória) — e
+     * leva junto barra, domínio, clones, correntes, maldições, o terreno temporário e a arena selada.
+     * <p>
+     * v1.0: antes o {@code /kill} passava pelo dano normal ({@code Float.MAX_VALUE} atravessando todos os ouvintes de
+     * dano e os limiares de fase) e, na prática, o dragão continuava lá — só jogá-lo no vazio o removia.
+     */
+    @Override
+    public void kill() {
+        if (!(level() instanceof ServerLevel sl)) {
+            super.kill();
+            return;
+        }
+        if (isRemoved()) return;
+        deathHandled = true; // se algo ainda chamar die(): sem prêmio
+        if (current != null) cancelAttack();
+        Telegraph.cancelAll(this);
+        entityData.set(DATA_CHARGING, false);
+        entityData.set(DATA_EXHAUSTED, 0);
+        ArenaTerraform.get(sl).releaseOwner(sl, getUUID(), homeCenter(), 4.0);
+        BossArena.release(this);
+        sl.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + 3, getZ(), 60, 2.5, 2, 2.5, 0.02);
+        sl.sendParticles(ParticleTypes.REVERSE_PORTAL, getX(), getY() + 3, getZ(), 80, 2.5, 2, 2.5, 0.1);
+        // remove(): tira barra, perigos, domínio, clones, correntes e maldições (ver override)
+        remove(RemovalReason.KILLED);
+        gameEvent(GameEvent.ENTITY_DIE);
+    }
 
     @Override
     public void die(DamageSource source) {

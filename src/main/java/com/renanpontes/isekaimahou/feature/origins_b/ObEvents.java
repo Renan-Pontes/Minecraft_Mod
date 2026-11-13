@@ -9,9 +9,9 @@ import com.renanpontes.isekaimahou.feature.origins_b.entity.ImpFireballEntity;
 import com.renanpontes.isekaimahou.feature.origins_b.entity.ObSummonEntity;
 import com.renanpontes.isekaimahou.feature.origins_b.item.ShadowBladeItem;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -107,7 +107,7 @@ public final class ObEvents {
             if (victim.level() instanceof ServerLevel sl) {
                 Vec3 mid = attacker.position().add(victim.position()).scale(0.5).add(0, victim.getBbHeight() * 0.6, 0);
                 ObFx.boneBurst(sl, mid, 8, 0.2);
-                sl.sendParticles(ParticleTypes.CRIT, attacker.getX(), attacker.getY() + attacker.getBbHeight() * 0.6, attacker.getZ(),
+                sl.sendParticles(Vfx.crit(), attacker.getX(), attacker.getY() + attacker.getBbHeight() * 0.6, attacker.getZ(),
                         6, 0.2, 0.2, 0.2, 0.2);
                 sl.playSound(null, victim.getX(), victim.getY(), victim.getZ(), SoundEvents.BONE_BLOCK_HIT, SoundSource.PLAYERS, 1.0F, 0.7F);
             }
@@ -174,7 +174,7 @@ public final class ObEvents {
 
         Vec3 corpse = dead.position().add(0, dead.getBbHeight() * 0.6, 0);
         level.sendParticles(ObFx.dust(ObFx.CRIMSON, 1.8F), corpse.x, corpse.y, corpse.z, 30, 0.4, 0.5, 0.4, 0);
-        level.sendParticles(ParticleTypes.SOUL, corpse.x, corpse.y, corpse.z, 10, 0.3, 0.4, 0.3, 0.05);
+        level.sendParticles(Vfx.soul(), corpse.x, corpse.y, corpse.z, 10, 0.3, 0.4, 0.3, 0.05);
         level.playSound(null, corpse.x, corpse.y, corpse.z, SoundEvents.SOUL_ESCAPE.value(), SoundSource.PLAYERS, 1.5F, 0.6F);
         if (owner.level() == level && owner.distanceToSqr(dead) < 48 * 48) {
             ObFx.soulStream(level, corpse, owner.position().add(0, owner.getBbHeight() * 0.6, 0), ObFx.CRIMSON);

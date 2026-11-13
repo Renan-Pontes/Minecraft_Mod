@@ -11,8 +11,8 @@ import javax.annotation.Nullable;
 import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.feature.fusions_b.FbUtil;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -129,7 +129,7 @@ public abstract class FbSummon extends PathfinderMob implements OwnableEntity {
     public void vanish() {
         if (level() instanceof ServerLevel sl) {
             vanishFx(sl);
-            sl.sendParticles(ParticleTypes.POOF, getX(), getY() + getBbHeight() * 0.5, getZ(), 10, 0.3, 0.3, 0.3, 0.03);
+            sl.sendParticles(Vfx.poof(), getX(), getY() + getBbHeight() * 0.5, getZ(), 10, 0.3, 0.3, 0.3, 0.03);
         }
         discard();
     }

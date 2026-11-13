@@ -1,7 +1,7 @@
 package com.renanpontes.isekaimahou.client.spellfx;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.renanpontes.isekaimahou.core.ElementFx;
+import com.renanpontes.isekaimahou.client.fx.FxQuality;
 import com.renanpontes.isekaimahou.glyph.fx.FxOptions;
 import com.renanpontes.isekaimahou.glyph.fx.SpellFxParticles;
 
@@ -9,9 +9,13 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -23,13 +27,30 @@ import net.neoforged.neoforge.registries.DeferredHolder;
  * ({@link SpellProjectileRenderer}) é registrado pelo núcleo ({@code IsekaiMahouClient}).
  */
 public final class SpellFxClient {
+    /**
+     * true enquanto o próprio cliente monta um efeito composto ({@link FxBurstClient}): as quantidades já vieram
+     * ajustadas por {@link FxQuality#count}, então os providers não cortam de novo.
+     */
+    static boolean LOCAL;
+    /** Artes do círculo mágico por magia (formas e depois símbolos, na ordem do fx_circle_style.json). */
+    @javax.annotation.Nullable
+    private static SpriteSet styleSprites;
+
     public static void init(IEventBus modBus) {
+        // opções de cliente dos efeitos (aura ao canalizar) em arquivo próprio; aparecem na tela de config do mod
+        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.CLIENT, SpellFxConfig.CLIENT_SPEC,
+                "isekai_mahou-spellfx-client.toml");
+        NeoForge.EVENT_BUS.addListener(ChannelAura::onClientTick);
         modBus.addListener(SpellFxClient::providers);
         NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent e) -> {
             // Partículas aditivas mudam a função de mistura: devolve o padrão para quem desenha depois
             if (e.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) RenderSystem.defaultBlendFunc();
         });
-        NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) -> FlatFxParticle.clear());
+        NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) -> {
+            FlatFxParticle.clear();
+            FxBurstClient.clear();
+        });
+        NeoForge.EVENT_BUS.addListener(FxBurstClient::onClientTick);
         NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.Clone e) -> FlatFxParticle.prune());
     }
 
@@ -56,6 +77,24 @@ public final class SpellFxClient {
                 FlatFxParticle.create(o, lvl, x, y, z, vx, vy, vz, s, false));
         e.registerSpriteSet(SpellFxParticles.PILLAR.get(), s -> (o, lvl, x, y, z, vx, vy, vz) ->
                 PillarParticle.create(o, lvl, x, y, z, s));
+        // Só carrega as artes no atlas (formas/símbolos do círculo por magia); nunca vira partícula
+        e.registerSpriteSet(SpellFxParticles.CIRCLE_STYLE.get(), s -> {
+            styleSprites = s;
+            return (o, lvl, x, y, z, vx, vy, vz) -> null;
+        });
+    }
+
+    /** Arte {@code index} do círculo por magia: 0..SHAPES-1 = formas, depois os símbolos. null se ainda não carregou. */
+    @javax.annotation.Nullable
+    static TextureAtlasSprite styleSprite(int index) {
+        int last = com.renanpontes.isekaimahou.glyph.CircleStyle.SHAPES + com.renanpontes.isekaimahou.glyph.CircleStyle.SYMBOLS - 1;
+        if (styleSprites == null || index < 0 || index > last) return null;
+        try {
+            return styleSprites.get(index, last);
+        } catch (RuntimeException ex) {
+            // pacote de recursos sem as artes: o círculo volta ao padrão
+            return null;
+        }
     }
 
     private static void loose(RegisterParticleProvidersEvent e, DeferredHolder<ParticleType<?>, ParticleType<FxOptions>> type,
@@ -63,9 +102,15 @@ public final class SpellFxClient {
         e.registerSpriteSet(type.get(), (SpriteSet s) -> new Provider(s, kind));
     }
 
-    /** Opção "reduzir partículas" do mod: metade das partículas soltas some. */
+    /**
+     * Partículas soltas vindas do servidor ({@code sendParticles}) não conhecem o preset: aqui elas são cortadas na
+     * proporção do {@link FxQuality} (LOW mantém 30%, MEDIUM 60%; HIGH/ULTRA tudo). Efeitos montados no cliente já
+     * vêm contados e passam direto.
+     */
     private static boolean skip() {
-        return ElementFx.reducedParticles() && Math.random() < 0.5;
+        if (LOCAL) return false;
+        float keep = FxQuality.particles();
+        return keep < 1F && Math.random() >= keep;
     }
 
     private record Provider(SpriteSet sprites, FxParticle.Kind kind) implements ParticleProvider<FxOptions> {

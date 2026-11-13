@@ -15,6 +15,7 @@ import com.renanpontes.isekaimahou.feature.fusions_c.FcUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -210,10 +211,10 @@ public class FusionBeamEntity extends FcSpellEntity {
             double t = random.nextDouble();
             Vec3 p = from.add(stop.subtract(from).scale(t));
             double s = w * t;
-            sl.sendParticles(ParticleTypes.CLOUD, p.x, p.y, p.z, 0, n.x + (random.nextDouble() - 0.5) * 0.3,
+            sl.sendParticles(Vfx.cloud(), p.x, p.y, p.z, 0, n.x + (random.nextDouble() - 0.5) * 0.3,
                     n.y + (random.nextDouble() - 0.5) * 0.3, n.z + (random.nextDouble() - 0.5) * 0.3, 0.4 + s * 0.1);
         }
-        sl.sendParticles(ParticleTypes.SPLASH, stop.x, stop.y, stop.z, 6, 0.4, 0.4, 0.4, 0.1);
+        sl.sendParticles(Vfx.splash(), stop.x, stop.y, stop.z, 6, 0.4, 0.4, 0.4, 0.1);
         if (age % 6 == 0) FcFx.sound(sl, from, SoundEvents.FIRE_EXTINGUISH, 0.9F, 0.6F);
         if (age % 10 == 0) FcFx.sound(sl, from, SoundEvents.LAVA_EXTINGUISH, 1F, 0.5F);
     }
@@ -238,7 +239,7 @@ public class FusionBeamEntity extends FcSpellEntity {
             }
         }
         Vec3 p = stop;
-        sl.sendParticles(ParticleTypes.FLAME, p.x, p.y, p.z, 4, 0.3, 0.3, 0.3, 0.06);
+        sl.sendParticles(Vfx.flame(), p.x, p.y, p.z, 4, 0.3, 0.3, 0.3, 0.06);
         sl.sendParticles(ParticleTypes.LAVA, p.x, p.y, p.z, 1, 0.2, 0.2, 0.2, 0);
         if (age % 2 == 0) sl.sendParticles(FcFx.dust(FcFx.SUN, 1.6F), p.x, p.y, p.z, 3, 0.4, 0.4, 0.4, 0);
         if (age % 8 == 0) FcFx.sound(sl, from, SoundEvents.BEACON_AMBIENT, 1.4F, 1.6F);

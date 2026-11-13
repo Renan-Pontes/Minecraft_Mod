@@ -13,6 +13,7 @@ public class BossesFClient implements ClientModule {
     @Override
     public void initClient(IEventBus modBus) {
         modBus.addListener(this::onRenderers);
+        BfAtmosphere.init();
     }
 
     private void onRenderers(EntityRenderersEvent.RegisterRenderers e) {

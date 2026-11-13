@@ -7,8 +7,8 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.AgeableMob;
@@ -46,7 +46,7 @@ public class FertilizeEffect extends EffectGlyph {
             am.ageUp((-am.getAge() + 19) / 20, true);
         }
         if (target instanceof Animal a) a.heal(4.0F * stats.power());
-        ctx.level().sendParticles(ParticleTypes.HAPPY_VILLAGER, target.getX(), target.getY() + target.getBbHeight() * 0.6,
+        ctx.level().sendParticles(Vfx.happy(), target.getX(), target.getY() + target.getBbHeight() * 0.6,
                 target.getZ(), 10, 0.4, 0.4, 0.4, 0);
         grow(ctx, BlockPos.containing(target.getX(), target.getY() + 0.2, target.getZ()), stats);
     }
@@ -89,8 +89,8 @@ public class FertilizeEffect extends EffectGlyph {
             }
         }
         Vec3 at = Vec3.atCenterOf(center).add(0, 0.6, 0);
-        level.sendParticles(ParticleTypes.HAPPY_VILLAGER, at.x, at.y, at.z, 12 + grown * 2, radius * 0.6, 0.4, radius * 0.6, 0);
-        level.sendParticles(ParticleTypes.COMPOSTER, at.x, at.y, at.z, 10, radius * 0.5, 0.2, radius * 0.5, 0);
+        level.sendParticles(Vfx.happy(), at.x, at.y, at.z, 12 + grown * 2, radius * 0.6, 0.4, radius * 0.6, 0);
+        level.sendParticles(Vfx.composter(), at.x, at.y, at.z, 10, radius * 0.5, 0.2, radius * 0.5, 0);
         EwFx.sound(level, at, SoundEvents.BONE_MEAL_USE, 1.0F, 0.9F);
         EwFx.sound(level, at, SoundEvents.ROOTED_DIRT_PLACE, 0.8F, 1.1F);
     }

@@ -1,0 +1,10 @@
+{
+  "values": [
+    "minecraft:gold_nugget",
+    "minecraft:emerald",
+    {
+      "id": "isekai_mahou:guild_coin",
+      "required": false
+    }
+  ]
+}

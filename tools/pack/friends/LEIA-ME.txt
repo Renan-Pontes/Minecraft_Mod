@@ -1,0 +1,36 @@
+﻿ISEKAI MAHOU @VERSION@ - como instalar (TLauncher)
+==================================================
+
+Você precisa de: Minecraft 1.21.1 com NeoForge @NEO@ e pelo menos 6 GB de RAM para o jogo.
+
+1) Abra o TLauncher. Na lista de versões escolha "NeoForge 1.21.1" (ou "Neo Forge 1.21.1")
+   e clique em Instalar / Entrar no jogo uma vez. Feche o jogo quando chegar no menu.
+
+2) No TLauncher clique no ícone da PASTA (abre a pasta do jogo).
+   Entre em:  versions  ->  Neo Forge - 1.21.1  ->  mods
+   (se a pasta "mods" não existir, crie uma com esse nome)
+   Se o seu TLauncher não usa pasta por versão, use a pasta "mods" que fica direto na pasta do jogo.
+
+3) Apague da pasta "mods" qualquer versão antiga do Isekai Mahou (isekai_mahou-....jar).
+
+4) Copie TUDO o que está dentro da pasta "mods" deste zip para a pasta "mods" do jogo.
+   São o mod, as 4 bibliotecas que ele precisa e os mods de ajuda (mapa, receitas, desempenho).
+
+5) No TLauncher, em Configurações -> memória (RAM), coloque 6 GB ou mais (6144 MB).
+
+6) Entre no jogo pela versão NeoForge 1.21.1.
+
+Para jogar no servidor do grupo: Multijogador -> Adicionar servidor -> cole o endereço que o dono mandou.
+
+Teclas principais
+-----------------
+  B  menu do mod (classe, magias, cidade, viagem...)
+  J  objetivos / guilda
+  N  Modo Paz (liga sozinho em lugar seguro)
+  As outras teclas estão em Opções -> Controles -> Isekai Mahou.
+  As configurações do mod ficam em Mods -> Isekai Mahou -> Config (menu do Minecraft).
+
+PC fraco? Em Mods -> Isekai Mahou -> Config escolha um Modo do PC mais leve.
+Se o jogo não abrir, confira se não ficou outro mod de desempenho repetido na pasta (Embeddium, Sodium antigo).
+
+Bom jogo!

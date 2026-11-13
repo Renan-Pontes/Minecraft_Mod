@@ -2,6 +2,7 @@ package com.renanpontes.isekaimahou.feature.journal;
 
 import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.feature.journal.data.JournalBook;
+import com.renanpontes.isekaimahou.feature.journal.story.StoryService;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
@@ -19,7 +20,8 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
  *   <li>{@link Book} (S→C): os capítulos (JSON) para a aba do Diário — no login e a cada /reload;</li>
  *   <li>{@link Target} (S→C): onde fica a estrutura do objetivo atual (seta do rastreador);</li>
  *   <li>{@link CallGuide} (C→S): botão "Chamar Espírito Guia" da aba;</li>
- *   <li>{@link Tutorial} (C→S): o cliente avisa os passos do tutorial que só ele enxerga (abriu o menu, montou uma magia).</li>
+ *   <li>{@link Tutorial} (C→S): o cliente avisa os passos do tutorial que só ele enxerga (abriu o menu, montou uma magia);</li>
+ *   <li>{@link StoryPrefs} (C→S): as opções da campanha do jogador (ligada? com cutscenes de marco?) — no login e quando mudam.</li>
  * </ul>
  */
 public final class JournalNetwork {
@@ -70,8 +72,16 @@ public final class JournalNetwork {
         @Override public Type<? extends CustomPacketPayload> type() { return TYPE; }
     }
 
+    /** Opções da campanha escolhidas no cliente (menu do Minecraft ou botão do Diário). */
+    public record StoryPrefs(boolean campaign, boolean scenes) implements CustomPacketPayload {
+        public static final Type<StoryPrefs> TYPE = new Type<>(IsekaiMahou.id("journal_story_prefs"));
+        public static final StreamCodec<ByteBuf, StoryPrefs> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.BOOL, StoryPrefs::campaign, ByteBufCodecs.BOOL, StoryPrefs::scenes, StoryPrefs::new);
+        @Override public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    }
+
     public static void register(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar r = event.registrar("journal-3");
+        PayloadRegistrar r = event.registrar("journal-4");
         // Só guardam dados: nada de classes de cliente aqui (a aba e o rastreador leem JournalBook/JournalTargets).
         r.playToClient(Book.TYPE, Book.STREAM_CODEC, (p, c) -> JournalBook.setClient(p.json()));
         r.playToClient(Target.TYPE, Target.STREAM_CODEC,
@@ -81,6 +91,9 @@ public final class JournalNetwork {
         });
         r.playToServer(Tutorial.TYPE, Tutorial.STREAM_CODEC, (p, c) -> {
             if (c.player() instanceof ServerPlayer sp) JournalService.tutorial(sp, p.key());
+        });
+        r.playToServer(StoryPrefs.TYPE, StoryPrefs.STREAM_CODEC, (p, c) -> {
+            if (c.player() instanceof ServerPlayer sp) StoryService.setPrefs(sp, p.campaign(), p.scenes());
         });
     }
 

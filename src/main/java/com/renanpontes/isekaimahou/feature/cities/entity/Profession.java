@@ -24,7 +24,9 @@ public enum Profession {
     PRIEST("priest", "church", 0xFFE9A8, Set.of("hood", "book", "skirt")),
     FENCE("fence", "underworld", 0x8A2B3A, Set.of("hood", "mask", "dagger")),
     GROCER("grocer", null, 0x8CC84B, Set.of("cap", "apron", "basket")),
-    TAILOR("tailor", null, 0xE070A8, Set.of("cap", "satchel", "cape"));
+    TAILOR("tailor", null, 0xE070A8, Set.of("cap", "satchel", "cape")),
+    /** Onda 10: Mecânico — veículos, peças e consertos (posto na praça pelo coração, ver CityMechanic). */
+    MECHANIC("mechanic", null, 0x5FB8D9, Set.of("cap", "apron", "goggles"));
 
     private static final Profession[] VALUES = values();
 

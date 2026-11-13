@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.feature.class_smith.SmithFx;
+import com.renanpontes.isekaimahou.feature.class_smith.SmithFxNet;
 import com.renanpontes.isekaimahou.feature.class_smith.SmithRegistries;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
@@ -79,8 +80,7 @@ public class RhoAiasEntity extends Entity {
         e.entityData.set(DATA_COLOR, color & 0xFFFFFF);
         e.entityData.set(DATA_CRACK, 0F);
         Vec3 c = e.position();
-        level.sendParticles(SmithFx.dust(color, 1.5F), c.x, c.y, c.z, 40, 1.0, 1.0, 1.0, 0);
-        level.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 20, 0.8, 0.8, 0.8, 0.05);
+        SmithFxNet.at(level, SmithFxNet.RHO_AIAS_UP, c, e.facing(), 1F, color, e.getId());
         SmithFx.sound(level, c, SoundEvents.BEACON_ACTIVATE, 1.0F, 1.6F);
         SmithFx.sound(level, c, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.2F, 0.8F);
         if (target instanceof ServerPlayer sp) {
@@ -168,8 +168,7 @@ public class RhoAiasEntity extends Entity {
             Vec3 at = p.position();
             p.discard();
             stopped++;
-            sl.sendParticles(SmithFx.dust(color(), 1.3F), at.x, at.y, at.z, 10, 0.2, 0.2, 0.2, 0);
-            sl.sendParticles(ParticleTypes.ENCHANTED_HIT, at.x, at.y, at.z, 6, 0.2, 0.2, 0.2, 0.2);
+            SmithFxNet.at(sl, SmithFxNet.RHO_AIAS_BLOCK, at, facing(), 1F, color(), getId());
             SmithFx.sound(sl, at, SoundEvents.SHIELD_BLOCK, 0.8F, 1.3F);
             absorb(6F);
         }
@@ -211,8 +210,7 @@ public class RhoAiasEntity extends Entity {
         int left = petals() - 1;
         entityData.set(DATA_PETALS, Math.max(0, left));
         Vec3 c = position();
-        sl.sendParticles(SmithFx.dust(color(), 1.8F), c.x, c.y, c.z, 30, 1.0, 1.0, 1.0, 0.05);
-        sl.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 12, 0.9, 0.9, 0.9, 0.12);
+        SmithFxNet.at(sl, SmithFxNet.RHO_AIAS_BREAK, c, facing(), 1F, color(), getId(), Math.max(0, left));
         SmithFx.sound(sl, c, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.2F, 0.9F + 0.08F * left);
         SmithFx.sound(sl, c, SoundEvents.GLASS_BREAK, 0.8F, 1.4F);
         if (owner instanceof ServerPlayer sp) {

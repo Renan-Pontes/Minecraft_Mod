@@ -73,6 +73,26 @@ public final class Destruction {
         DestructionRules.addProtection(p);
     }
 
+    /**
+     * v1.0 r9: área INDESTRUTÍVEL (torre durante a escalada, masmorra). Além de barrar a Destruction, as magias que
+     * mexem em blocos (temporários ou não — muros de terra, gelo, quebrar/colocar) consultam {@link #warded} e não agem
+     * ali. Predicado chamado por bloco na thread do servidor: seja rápido.
+     */
+    public static void addWard(BiPredicate<ServerLevel, BlockPos> p) {
+        DestructionRules.addWard(p);
+    }
+
+    /** A posição está numa área indestrutível (ver {@link #addWard})? */
+    public static boolean warded(ServerLevel level, BlockPos pos) {
+        return DestructionRules.warded(level, pos);
+    }
+
+    /** Área indestrutível para este conjurador? (jogador no criativo pode tudo — depuração) */
+    public static boolean wardedFor(ServerLevel level, BlockPos pos, @Nullable Entity caster) {
+        if (caster instanceof net.minecraft.world.entity.player.Player p && p.getAbilities().instabuild) return false;
+        return DestructionRules.warded(level, pos);
+    }
+
     /** Esfera de raio {@code radius} (máx. 64) em volta de {@code center}. */
     public static int sphere(ServerLevel l, Vec3 center, float radius, @Nullable Entity caster, Mode mode) {
         return DestructionQueue.sphere(l, center, radius, caster, mode);

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "isekai_mahou:block/depths_rune_tile_on"
+  }
+}

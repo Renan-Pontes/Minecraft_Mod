@@ -20,6 +20,8 @@ public final class BalanceCore {
         NeoForge.EVENT_BUS.addListener(EventPriority.LOW, false, EntityJoinLevelEvent.class, MobScaling::onJoin);
         // Antes das reduções (armadura etc. acontecem depois deste evento de qualquer jeito)
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, false, LivingIncomingDamageEvent.class, MobScaling::onIncomingDamage);
+        // Release 1.0: /mahou balance (tabela da curva de XP)
+        BalanceCommands.register();
     }
 
     private BalanceCore() {}

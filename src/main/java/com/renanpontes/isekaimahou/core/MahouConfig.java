@@ -1,6 +1,15 @@
 package com.renanpontes.isekaimahou.core;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.TranslatableEnum;
 
 /** Configurações (arquivo config/isekai_mahou-common.toml e -client.toml). */
 public final class MahouConfig {
@@ -35,7 +44,7 @@ public final class MahouConfig {
             .comment("Condições de status (Molhado, Em Chamas, Gelado...) também afetam jogadores")
             .define("statusOnPlayers", true);
     public static final ModConfigSpec.BooleanValue CITY_PROTECTION = COMMON
-            .comment("Cidades são zonas seguras: magias não destroem blocos lá e monstros não nascem naturalmente dentro")
+            .comment("Cidades são zonas seguras: monstros não nascem naturalmente dentro (os blocos podem ser destruídos normalmente)")
             .define("cityProtection", true);
     // ---- v1.0 ----
     public static final ModConfigSpec.BooleanValue BLOCK_MAP_TELEPORT = COMMON
@@ -101,7 +110,12 @@ public final class MahouConfig {
             .define("layoutAvoidMinimap", true);
     // ---- v1.1 (menos poluição na tela) ----
     /** Quanto do mod vai para o CHAT: o resto fica no registro "Avisos" do menu (B) e numa linha curta acima da hotbar. */
-    public enum ChatMode { MINIMAL, NORMAL, ALL }
+    public enum ChatMode implements TranslatableEnum {
+        MINIMAL, NORMAL, ALL;
+
+        @Override
+        public Component getTranslatedName() { return enumName("chat_mode", this); }
+    }
     public static final ModConfigSpec.EnumValue<ChatMode> CHAT_MESSAGES = CLIENT
             .comment("Mensagens do mod no chat:",
                     "  MINIMAL = só o essencial (erros/recusas, convites, falas de NPC, subir de nível/Círculo, chefe derrotado, respostas a comandos);",
@@ -115,6 +129,85 @@ public final class MahouConfig {
     public static final ModConfigSpec.BooleanValue PROGRESSIVE_MENU = CLIENT
             .comment("Menu (B) com revelação progressiva: as abas aparecem quando fazem sentido (\"Nova aba!\"). Falso = todas as abas desde o começo")
             .define("progressiveMenu", true);
+    // ---- v1.3 (desempenho) ----
+    /** Preset gráfico do mod: quantidade de partículas, alcance dos efeitos, sombras/brilhos extras. Ver client/FxQuality. */
+    public enum Graphics implements TranslatableEnum {
+        LOW, MEDIUM, HIGH, ULTRA;
+
+        @Override
+        public Component getTranslatedName() { return enumName("graphics", this); }
+    }
+    public static final ModConfigSpec.EnumValue<Graphics> GRAPHICS = CLIENT
+            .comment("Qualidade dos efeitos do mod:",
+                    "  LOW    = PC fraco: poucas partículas, efeitos curtos e perto, sem brilhos extras",
+                    "  MEDIUM = PC ok",
+                    "  HIGH   = padrão",
+                    "  ULTRA  = PC forte: tudo no máximo")
+            .defineEnum("graphicsPreset", Graphics.HIGH);
+    /** "Modo do PC" escolhido na tela de Desempenho (NONE = o jogador ajusta tudo à mão). */
+    public enum PcMode implements TranslatableEnum {
+        NONE, LOW, OK, GOOD, ULTRA;
+
+        @Override
+        public Component getTranslatedName() { return enumName("pc_mode", this); }
+    }
+    public static final ModConfigSpec.EnumValue<PcMode> PC_MODE = CLIENT
+            .comment("Modo do PC escolhido no menu (B) → engrenagem → Desempenho (Fraco/OK/Bom/Ultra).",
+                    "  Também controla o alcance do Distant Horizons, se instalado. NONE = suas próprias opções.")
+            .defineEnum("pcMode", PcMode.NONE);
+    public static final ModConfigSpec.BooleanValue PERF_SUGGESTION_SHOWN = CLIENT
+            .comment("A sugestão de Modo do PC (detectada pelo hardware) já foi mostrada uma vez")
+            .define("perfSuggestionShown", false);
+    // ---- v1.0 RELEASE (tela de opções no menu do Minecraft: Mods → Isekai Mahou → Config, e Opções → Isekai Mahou) ----
+    public static final ModConfigSpec.BooleanValue HUD_CARD = CLIENT
+            .comment("HUD: mostrar o cartão do canto superior esquerdo (classe, nível e Círculo)")
+            .define("hudCard", true);
+    public static final ModConfigSpec.BooleanValue HUD_PLACE_NAME = CLIENT
+            .comment("HUD: mostrar o nome do lugar atual (cidade, vila...) e o selo de Procurado embaixo do cartão")
+            .define("hudPlaceName", true);
+    public static final ModConfigSpec.BooleanValue HUD_RESOURCE_BAR = CLIENT
+            .comment("HUD: mostrar a barra de Mana/Vigor/Foco (e as suas condições de status ao lado dela)")
+            .define("hudResourceBar", true);
+    public static final ModConfigSpec.BooleanValue HUD_HEALTH_BAR = CLIENT
+            .comment("HUD: mostrar a barra de vida com números do mod. Desligado = voltam os corações do Minecraft")
+            .define("hudHealthBar", true);
+    public static final ModConfigSpec.BooleanValue HUD_SPELL_BAR = CLIENT
+            .comment("HUD: mostrar os slots de magia (Z X C G) e o loadout ao lado da barra de itens")
+            .define("hudSpellBar", true);
+    public static final ModConfigSpec.BooleanValue HUD_CAST_BAR = CLIENT
+            .comment("HUD: mostrar a barra de conjuração e o cântico abaixo da mira")
+            .define("hudCastBar", true);
+    public static final ModConfigSpec.BooleanValue HUD_LEVEL_BANNERS = CLIENT
+            .comment("HUD: mostrar a faixa de \"Subiu de nível\" / \"Novo Círculo\" no topo da tela")
+            .define("hudLevelBanners", true);
+    public static final ModConfigSpec.IntValue HUD_SCALE = CLIENT
+            .comment("Tamanho do HUD do mod, em % (100 = normal). Vale para cartão, barras e slots de magia")
+            .defineInRange("hudScalePercent", 100, 70, 130);
+    public static final ModConfigSpec.BooleanValue SHOW_HINTS = CLIENT
+            .comment("Dicas de primeira vez: uma linha discreta acima da barra de itens, uma por vez, que some sozinha e nunca repete")
+            .define("showHints", true);
+    public static final ModConfigSpec.BooleanValue LOADING_TIPS = CLIENT
+            .comment("Dicas de jogo no menu principal e nas telas de carregamento")
+            .define("loadingTips", true);
+    public static final ModConfigSpec.BooleanValue GUIDE_TUTORIAL = CLIENT
+            .comment("Tutorial do Espírito Guia para personagens novos. Desligado = o tutorial é pulado sozinho")
+            .define("guideTutorial", true);
+    public static final ModConfigSpec.BooleanValue PEACE_MODE_AUTO = CLIENT
+            .comment("Modo Paz automático: liga sozinho ao entrar numa cidade ou em casa. Desligado = só pela tecla")
+            .define("peaceModeAuto", true);
+    public static final ModConfigSpec.IntValue SCREEN_SHAKE = CLIENT
+            .comment("Tremor de tela (chefes, ultimates, impactos), em %. 0 = sem tremor")
+            .defineInRange("screenShakePercent", 100, 0, 100);
+    // ---- v1.0 RELEASE (costura): o que as ondas 1–2 deixaram sempre ligado ----
+    public static final ModConfigSpec.BooleanValue SHOW_PARTY_MARKERS = CLIENT
+            .comment("Grupo: mostrar o marcador (losango com nome e distância) dos amigos que estão longe")
+            .define("showPartyMarkers", true);
+    public static final ModConfigSpec.BooleanValue SHOW_FIGHT_TIMER = CLIENT
+            .comment("Chefes: mostrar o cronômetro da luta (e o seu melhor tempo) ao lado da barra do chefe")
+            .define("showFightTimer", true);
+    public static final ModConfigSpec.BooleanValue SHOW_PLAYER_TITLES = CLIENT
+            .comment("Renome: mostrar o título dos outros jogadores acima do nome deles")
+            .define("showPlayerTitles", true);
     public static final ModConfigSpec CLIENT_SPEC = CLIENT.build();
 
     /** Lê um valor sem quebrar se a config ainda não carregou (antes do arquivo ser lido, ou no menu principal): devolve o padrão. */
@@ -142,6 +235,79 @@ public final class MahouConfig {
         } catch (RuntimeException e) {
             return value.getDefault();
         }
+    }
+
+    /** Igual a {@link #safe(ModConfigSpec.BooleanValue)} para números inteiros. */
+    public static int safe(ModConfigSpec.IntValue value) {
+        try {
+            return value.get();
+        } catch (RuntimeException e) {
+            return value.getDefault();
+        }
+    }
+
+    // =====================================================================================
+    //  Leituras prontas para os outros módulos (v1.0 RELEASE)
+    // =====================================================================================
+    /**
+     * Multiplicador do tremor de tela escolhido pelo jogador (0 = desligado, 1 = normal). CLIENTE: multiplique a
+     * força de qualquer tremor de câmera por isto. No servidor dedicado devolve sempre 1.
+     */
+    public static float shakeScale() {
+        return Math.max(0, Math.min(100, safe(SCREEN_SHAKE))) / 100F;
+    }
+
+    /** Escala do HUD do mod (0.7..1.3). CLIENTE. */
+    public static float hudScale() {
+        return Math.max(70, Math.min(130, safe(HUD_SCALE))) / 100F;
+    }
+
+    /** Dicas de primeira vez ligadas? CLIENTE. */
+    public static boolean hintsEnabled() {
+        return safe(SHOW_HINTS);
+    }
+
+    // ---- Preferências por jogador que o SERVIDOR precisa saber (o cliente manda ao entrar e quando muda) ----
+    /** Bit de {@link #setPlayerPrefs}: Modo Paz liga sozinho nas zonas seguras. */
+    public static final int PREF_PEACE_AUTO = 1;
+    /** Bit de {@link #setPlayerPrefs}: quer o tutorial do Espírito Guia. */
+    public static final int PREF_TUTORIAL = 2;
+    private static final int PREF_DEFAULT = PREF_PEACE_AUTO | PREF_TUTORIAL;
+    private static final Map<UUID, Integer> PLAYER_PREFS = new ConcurrentHashMap<>();
+
+    /** Servidor: guarda as preferências que o cliente do jogador mandou (o módulo ui_hud chama). */
+    public static void setPlayerPrefs(UUID player, int bits) {
+        if (player != null) PLAYER_PREFS.put(player, bits);
+    }
+
+    /** Servidor: o jogador saiu (volta ao padrão na próxima entrada, até o cliente mandar de novo). */
+    public static void clearPlayerPrefs(UUID player) {
+        if (player != null) PLAYER_PREFS.remove(player);
+    }
+
+    private static boolean pref(@Nullable Player player, int bit) {
+        Integer bits = player == null ? null : PLAYER_PREFS.get(player.getUUID());
+        return ((bits == null ? PREF_DEFAULT : bits) & bit) != 0;
+    }
+
+    /** SERVIDOR: este jogador quer o Modo Paz ligando sozinho nas zonas seguras? (padrão: sim) */
+    public static boolean peaceAuto(@Nullable Player player) {
+        return pref(player, PREF_PEACE_AUTO);
+    }
+
+    /** SERVIDOR: este jogador quer o tutorial do Espírito Guia? (padrão: sim) */
+    public static boolean wantsTutorial(@Nullable Player player) {
+        return pref(player, PREF_TUTORIAL);
+    }
+
+    /** CLIENTE: os bits das preferências acima, lidos da config local. */
+    public static int localPlayerPrefs() {
+        return (safe(PEACE_MODE_AUTO) ? PREF_PEACE_AUTO : 0) | (safe(GUIDE_TUTORIAL) ? PREF_TUTORIAL : 0);
+    }
+
+    /** Nome traduzido de um valor de enum na tela de config ({@code isekai_mahou.configuration.enum.<tipo>.<valor>}). */
+    private static Component enumName(String type, Enum<?> value) {
+        return Component.translatable("isekai_mahou.configuration.enum." + type + "." + value.name().toLowerCase(java.util.Locale.ROOT));
     }
 
     private MahouConfig() {}

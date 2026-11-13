@@ -2,7 +2,7 @@ package com.renanpontes.isekaimahou.feature.fusions_c.effect;
 
 import com.renanpontes.isekaimahou.IsekaiMahou;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -31,7 +31,7 @@ public class PollenDrowsyEffect extends MobEffect {
     @Override
     public boolean applyEffectTick(LivingEntity e, int amplifier) {
         if (e.level() instanceof ServerLevel sl) {
-            sl.sendParticles(ParticleTypes.FALLING_SPORE_BLOSSOM, e.getX(), e.getY() + e.getBbHeight() + 0.3, e.getZ(),
+            sl.sendParticles(Vfx.sporeFall(), e.getX(), e.getY() + e.getBbHeight() + 0.3, e.getZ(),
                     1 + amplifier, 0.25, 0.05, 0.25, 0);
         }
         return true;

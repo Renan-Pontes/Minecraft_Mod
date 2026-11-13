@@ -12,6 +12,7 @@ import org.joml.Vector3f;
 
 import com.renanpontes.isekaimahou.feature.class_gambler.AnimeTricks;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbFx;
+import com.renanpontes.isekaimahou.feature.class_gambler.GbFxNet;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbRegistries;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
@@ -262,9 +263,7 @@ public class GumTetherEntity extends Entity {
             ctx.damage(target, IMPACT_DAMAGE, stats, this);
         }
         Vec3 p = target.position().add(0, target.getBbHeight() * 0.5, 0);
-        sl.sendParticles(ParticleTypes.EXPLOSION, p.x, p.y, p.z, 1, 0, 0, 0, 0);
-        sl.sendParticles(GbFx.dust(0xFF6EC7, 1.5F), p.x, p.y, p.z, 20, 0.5, 0.5, 0.5, 0);
-        sl.sendParticles(ParticleTypes.CRIT, p.x, p.y, p.z, 12, 0.4, 0.4, 0.4, 0.3);
+        GbFxNet.at(sl, GbFxNet.GUM_SNAP, p, Vec3.ZERO, 1F, 0xFF6EC7, target.getId());
         GbFx.sound(sl, p, SoundEvents.GENERIC_SMALL_FALL, 1.2F, 0.6F);
         GbFx.sound(sl, p, SoundEvents.SLIME_SQUISH, 1.2F, 0.5F);
         snap(true);

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "isekai_mahou:star_upgrade_smithing_template"
+  },
+  "base": {
+    "item": "minecraft:netherite_boots"
+  },
+  "addition": {
+    "item": "isekai_mahou:star_ingot"
+  },
+  "result": {
+    "id": "isekai_mahou:star_boots",
+    "count": 1
+  }
+}

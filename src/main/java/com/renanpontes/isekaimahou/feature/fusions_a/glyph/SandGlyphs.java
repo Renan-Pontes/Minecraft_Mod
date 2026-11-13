@@ -17,6 +17,7 @@ import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
@@ -119,7 +120,7 @@ public final class SandGlyphs {
                 t.addEffect(new MobEffectInstance(CoreRegistries.ROOTED, ticks, 0), ctx.caster());
                 FaShapes.cage(ctx, t, FaRegistries.GLASS_PRISON.get().defaultBlockState(), ticks);
                 Vec3 c = t.position().add(0, t.getBbHeight() * 0.5, 0);
-                sl.sendParticles(ParticleTypes.FLAME, c.x, c.y, c.z, 10, 0.4, 0.5, 0.4, 0.02);
+                sl.sendParticles(Vfx.flame(), c.x, c.y, c.z, 10, 0.4, 0.5, 0.4, 0.02);
                 sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.GLASS.defaultBlockState()), c.x, c.y, c.z,
                         16, 0.5, 0.6, 0.5, 0.1);
                 FaUtil.sound(sl, c, SoundEvents.GLASS_PLACE, 1.2F, 0.7F);
@@ -145,11 +146,11 @@ public final class SandGlyphs {
                 else continue;
                 if (FaTempBlocks.isTracked(sl, p) || !FaUtil.canBreak(ctx, p)) continue;
                 sl.setBlock(p, glass.defaultBlockState(), Block.UPDATE_ALL);
-                sl.sendParticles(ParticleTypes.FLAME, p.getX() + 0.5, p.getY() + 1.0, p.getZ() + 0.5, 2, 0.3, 0.05, 0.3, 0.01);
+                sl.sendParticles(Vfx.flame(), p.getX() + 0.5, p.getY() + 1.0, p.getZ() + 0.5, 2, 0.3, 0.05, 0.3, 0.01);
                 n++;
             }
             Vec3 c = Vec3.atCenterOf(center).add(0, 0.6, 0);
-            sl.sendParticles(ParticleTypes.FLAME, c.x, c.y, c.z, 12, r * 0.4, 0.2, r * 0.4, 0.02);
+            sl.sendParticles(Vfx.flame(), c.x, c.y, c.z, 12, r * 0.4, 0.2, r * 0.4, 0.02);
             if (n > 0) {
                 FaUtil.sound(sl, c, SoundEvents.GLASS_PLACE, 1.2F, 0.8F);
                 FaUtil.sound(sl, c, SoundEvents.FIRE_EXTINGUISH, 0.8F, 1.2F);

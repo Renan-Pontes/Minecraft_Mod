@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -79,7 +80,7 @@ public class VacuumEffect extends EffectGlyph {
                 double a = level.random.nextDouble() * Math.PI * 2;
                 double b = (level.random.nextDouble() - 0.5) * Math.PI;
                 Vec3 p = center.add(Math.cos(a) * Math.cos(b) * radius, Math.sin(b) * radius * 0.6, Math.sin(a) * Math.cos(b) * radius);
-                EwFx.moving(level, ParticleTypes.CLOUD, p, center.subtract(p).scale(0.12));
+                EwFx.moving(level, Vfx.cloud(), p, center.subtract(p).scale(0.12));
             }
             if (age % 4 == 0) level.sendParticles(ParticleTypes.SQUID_INK, center.x, center.y, center.z, 2, 0.15, 0.15, 0.15, 0.01);
             if (age % 20 == 0) EwFx.sound(level, center, SoundEvents.BREEZE_INHALE, 0.8F, 0.5F);
@@ -95,7 +96,7 @@ public class VacuumEffect extends EffectGlyph {
             ctx.damage(e, 3.0F, stats, null);
         }
         level.sendParticles(ParticleTypes.GUST_EMITTER_LARGE, center.x, center.y, center.z, 1, 0, 0, 0, 0);
-        level.sendParticles(ParticleTypes.POOF, center.x, center.y, center.z, 30, radius * 0.3, radius * 0.3, radius * 0.3, 0.1);
+        level.sendParticles(Vfx.poof(), center.x, center.y, center.z, 30, radius * 0.3, radius * 0.3, radius * 0.3, 0.1);
         EwFx.sound(level, center, SoundEvents.WIND_CHARGE_BURST.value(), 1.5F, 0.6F);
     }
 }

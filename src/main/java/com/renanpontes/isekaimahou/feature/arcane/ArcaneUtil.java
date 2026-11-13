@@ -11,9 +11,9 @@ import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.entity.SpellProjectileEntity;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -135,8 +135,8 @@ public final class ArcaneUtil {
                 e -> e.isAlive() && isMagicEntity(e) && e.distanceToSqr(center) <= radius * radius)) {
             if (!isHostileMagic(ctx, e)) continue;
             Vec3 p = e.position().add(0, e.getBbHeight() / 2, 0);
-            level.sendParticles(ParticleTypes.ENCHANTED_HIT, p.x, p.y, p.z, 14, 0.25, 0.25, 0.25, 0.3);
-            level.sendParticles(ParticleTypes.SMOKE, p.x, p.y, p.z, 8, 0.2, 0.2, 0.2, 0.02);
+            level.sendParticles(Vfx.magicCrit(), p.x, p.y, p.z, 14, 0.25, 0.25, 0.25, 0.3);
+            level.sendParticles(Vfx.smoke(), p.x, p.y, p.z, 8, 0.2, 0.2, 0.2, 0.02);
             e.discard();
             n++;
         }
@@ -218,20 +218,21 @@ public final class ArcaneUtil {
     //  Visual / mensagens
     // =====================================================================================
 
-    public static DustParticleOptions dust(int rgb, float size) {
-        return new DustParticleOptions(new Vector3f(((rgb >> 16) & 255) / 255F, ((rgb >> 8) & 255) / 255F, (rgb & 255) / 255F), size);
+    public static ParticleOptions dust(int rgb, float size) {
+        // v1.3: brilho fx aditivo (mesmo tamanho do pó do vanilla; respeita o preset gráfico no cliente)
+        return com.renanpontes.isekaimahou.core.ElementFx.glow(rgb, size);
     }
 
     /** Pó colorido com a cor da magia (a escolhida pelo jogador ou a do elemento). */
-    public static DustParticleOptions dust(SpellContext ctx, float size) {
+    public static ParticleOptions dust(SpellContext ctx, float size) {
         return dust(ctx.color(), size);
     }
 
     /** Explosão de "teleporte": portal + pó da magia, na altura do corpo. */
-    public static void teleportFx(ServerLevel level, Vec3 feet, float height, DustParticleOptions dust) {
+    public static void teleportFx(ServerLevel level, Vec3 feet, float height, ParticleOptions dust) {
         double cy = feet.y + height * 0.5;
-        level.sendParticles(ParticleTypes.PORTAL, feet.x, cy, feet.z, 28, 0.3, height * 0.4, 0.3, 0.4);
-        level.sendParticles(ParticleTypes.REVERSE_PORTAL, feet.x, cy, feet.z, 12, 0.25, height * 0.35, 0.25, 0.02);
+        level.sendParticles(Vfx.portal(), feet.x, cy, feet.z, 28, 0.3, height * 0.4, 0.3, 0.4);
+        level.sendParticles(Vfx.reversePortal(), feet.x, cy, feet.z, 12, 0.25, height * 0.35, 0.25, 0.02);
         level.sendParticles(dust, feet.x, cy, feet.z, 16, 0.3, height * 0.35, 0.3, 0);
     }
 
@@ -280,7 +281,7 @@ public final class ArcaneUtil {
     /** Visual de "resistiu" (chefes imunes a controle). */
     public static void resisted(ServerLevel level, Entity target, Entity caster) {
         Vec3 c = center(target);
-        level.sendParticles(ParticleTypes.SMOKE, c.x, c.y, c.z, 12, 0.4, 0.4, 0.4, 0.02);
+        level.sendParticles(Vfx.smoke(), c.x, c.y, c.z, 12, 0.4, 0.4, 0.4, 0.02);
         level.playSound(null, target.getX(), target.getY(), target.getZ(), net.minecraft.sounds.SoundEvents.SHIELD_BLOCK,
                 SoundSource.HOSTILE, 0.7F, 0.6F);
         actionbar(caster, Component.translatable("message.isekai_mahou.arcane_resisted", target.getDisplayName()));

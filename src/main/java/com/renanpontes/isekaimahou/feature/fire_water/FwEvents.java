@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.feature.fire_water.effect.FwMobEffects;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.entity.SpellProjectileEntity;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
@@ -103,10 +104,10 @@ public final class FwEvents {
             if (push.lengthSqr() > 1.0E-4) FwUtil.addMotion(t, push.normalize().scale(1.1).add(0, 0.45, 0));
         }
         sl.sendParticles(ParticleTypes.FLASH, c.x, c.y, c.z, 1, 0, 0, 0, 0);
-        sl.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, c.x, c.y, c.z, 70, 0.4, 0.7, 0.4, 0.5);
+        sl.sendParticles(Vfx.totem(), c.x, c.y, c.z, 70, 0.4, 0.7, 0.4, 0.5);
         sl.sendParticles(ParticleTypes.LAVA, c.x, c.y, c.z, 20, 0.6, 0.4, 0.6, 0);
-        FwUtil.shockwave(sl, le.position().add(0, 0.2, 0), ParticleTypes.FLAME, 48, 0.45);
-        FwUtil.shockwave(sl, c, ParticleTypes.FLAME, 32, 0.3);
+        FwUtil.shockwave(sl, le.position().add(0, 0.2, 0), Vfx.flame(), 48, 0.45);
+        FwUtil.shockwave(sl, c, Vfx.flame(), 32, 0.3);
         // Asas de fogo abrindo atrás do renascido
         float yaw = le.getYRot() * net.minecraft.util.Mth.DEG_TO_RAD;
         Vec3 right = new Vec3(Math.cos(yaw), 0, Math.sin(yaw));
@@ -116,7 +117,7 @@ public final class FwEvents {
             double h = Math.sin(t * Math.PI) * 0.9 + t * 0.4;
             for (int s = -1; s <= 1; s += 2) {
                 Vec3 p = c.add(back).add(right.scale(s * t * 1.8)).add(0, h, 0);
-                sl.sendParticles(ParticleTypes.FLAME, p.x, p.y, p.z, 2, 0.05, 0.05, 0.05, 0.01);
+                sl.sendParticles(Vfx.flame(), p.x, p.y, p.z, 2, 0.05, 0.05, 0.05, 0.01);
                 sl.sendParticles(FwUtil.dust(0xFFC23D, 1.5F), p.x, p.y - 0.2, p.z, 1, 0.05, 0.05, 0.05, 0);
             }
         }
@@ -167,7 +168,7 @@ public final class FwEvents {
 
         Vec3 c = holder.position().add(0, holder.getBbHeight() * 0.5, 0);
         FwUtil.ring(sl, c, FwUtil.dust(0xBFF4FF, 1.3F), holder.getBbWidth() * 0.5 + 0.6, 20, 0);
-        sl.sendParticles(ParticleTypes.SPLASH, out.x, out.y, out.z, 20, 0.3, 0.3, 0.3, 0.2);
+        sl.sendParticles(Vfx.splash(), out.x, out.y, out.z, 20, 0.3, 0.3, 0.3, 0.2);
         FwUtil.sound(sl, c, SoundEvents.AMETHYST_BLOCK_CHIME, 1.2F, 1.6F);
         FwUtil.sound(sl, c, SoundEvents.PLAYER_SPLASH, 0.7F, 1.4F);
         if (holder instanceof ServerPlayer sp) {
@@ -239,7 +240,7 @@ public final class FwEvents {
         if (inst == null || !inst.is(FwRegistries.BUBBLE_PRISON) || !(le.level() instanceof ServerLevel sl)) return;
         Vec3 c = le.position().add(0, le.getBbHeight() * 0.5, 0);
         FwUtil.sphere(sl, c, ParticleTypes.BUBBLE_POP, Math.max(le.getBbWidth(), le.getBbHeight()) * 0.5 + 0.3, 24);
-        sl.sendParticles(ParticleTypes.SPLASH, c.x, c.y, c.z, 20, 0.4, 0.4, 0.4, 0.1);
+        sl.sendParticles(Vfx.splash(), c.x, c.y, c.z, 20, 0.4, 0.4, 0.4, 0.1);
         FwUtil.sound(sl, c, SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1.2F, 0.9F);
         FwUtil.sound(sl, c, SoundEvents.GENERIC_SPLASH, 0.6F, 1.3F);
     }

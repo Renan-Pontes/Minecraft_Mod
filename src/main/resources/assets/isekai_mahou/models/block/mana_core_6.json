@@ -1,0 +1,6 @@
+{
+  "parent": "isekai_mahou:block/mana_core_0",
+  "textures": {
+    "side": "isekai_mahou:block/mana_core_side_6"
+  }
+}

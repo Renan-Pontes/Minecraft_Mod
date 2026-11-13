@@ -1,0 +1,882 @@
+{
+  "layout": 2,
+  "branches": [
+    {
+      "id": "bow",
+      "color": "A8DFFF"
+    },
+    {
+      "id": "blut",
+      "color": "5A8AD8"
+    },
+    {
+      "id": "reishi",
+      "color": "7FE8D0"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "steady_aim",
+      "branch": 0,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:bow",
+      "effects": [
+        {
+          "stat": "ranged_damage",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "heilig_pfeil",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "isekai_mahou:essence_light",
+      "effects": [
+        {
+          "stat": "spell_damage.light",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "weak_spot",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:spyglass",
+      "effects": [
+        {
+          "stat": "crit_chance",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "long_sight",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:spectral_arrow",
+      "effects": [
+        {
+          "stat": "far_damage",
+          "amount": 0.06
+        }
+      ]
+    },
+    {
+      "id": "long_shot",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:crossbow",
+      "effects": [
+        {
+          "stat": "first_strike",
+          "amount": 0.04
+        }
+      ]
+    },
+    {
+      "id": "licht_regen",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:diamond_sword",
+      "effects": [
+        {
+          "stat": "crit_damage",
+          "amount": 0.04
+        },
+        {
+          "stat": "ranged_damage",
+          "amount": 0.008
+        }
+      ]
+    },
+    {
+      "id": "still_archer",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:target",
+      "effects": [
+        {
+          "stat": "aim_power",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "moving_archer"
+      ]
+    },
+    {
+      "id": "moving_archer",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:rabbit_hide",
+      "effects": [
+        {
+          "stat": "run_power",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "still_archer"
+      ]
+    },
+    {
+      "id": "holy_arrow",
+      "branch": 0,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:enchanted_book",
+      "effects": [
+        {
+          "stat": "spell_damage_all",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "rain_of_light",
+      "branch": 0,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:blaze_powder",
+      "effects": [
+        {
+          "stat": "combo",
+          "amount": 0.02
+        },
+        {
+          "stat": "crit_mana",
+          "amount": 3.0
+        }
+      ]
+    },
+    {
+      "id": "arrow_of_judgment",
+      "branch": 0,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:bell",
+      "effects": [
+        {
+          "stat": "fifth_hit",
+          "amount": 0.7
+        },
+        {
+          "stat": "boss_damage",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "mastery_bow",
+      "branch": 0,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "all_damage",
+          "amount": 0.004
+        }
+      ]
+    },
+    {
+      "id": "blut_vene",
+      "branch": 1,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:iron_chestplate",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.armor",
+          "amount": 0.4,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "reishi_veins",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:shield",
+      "effects": [
+        {
+          "stat": "damage_resist",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "blut_arterie",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:amethyst_shard",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:spell_power",
+          "amount": 0.01,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "reishi_skin",
+      "branch": 1,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:tinted_glass",
+      "effects": [
+        {
+          "stat": "barrier",
+          "amount": 3.0
+        },
+        {
+          "attribute": "minecraft:generic.max_absorption",
+          "amount": 3.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "discipline",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:golden_apple",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 1.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "static_blood",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:arrow",
+      "effects": [
+        {
+          "stat": "projectile_resist",
+          "amount": 0.02
+        },
+        {
+          "stat": "magic_resist",
+          "amount": 0.012
+        }
+      ]
+    },
+    {
+      "id": "blut_vene_anhaben",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:diamond_chestplate",
+      "effects": [
+        {
+          "stat": "full_health_resist",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "full_blut_arterie"
+      ]
+    },
+    {
+      "id": "full_blut_arterie",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:tnt",
+      "effects": [
+        {
+          "stat": "reckless",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "blut_vene_anhaben"
+      ]
+    },
+    {
+      "id": "quincy_pride",
+      "branch": 1,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:netherite_chestplate",
+      "effects": [
+        {
+          "stat": "boss_resist",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "cold_blood",
+      "branch": 1,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:turtle_helmet",
+      "effects": [
+        {
+          "stat": "low_health_resist",
+          "amount": 0.07
+        },
+        {
+          "stat": "revenge",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "auswahlen",
+      "branch": 1,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:totem_of_undying",
+      "effects": [
+        {
+          "stat": "cheat_death",
+          "amount": 0.35
+        },
+        {
+          "stat": "ult_power",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "mastery_blut",
+      "branch": 1,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 0.5,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "gathering",
+      "branch": 2,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:prismarine_crystals",
+      "effects": [
+        {
+          "stat": "mana_on_hit",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "id": "hirenkyaku",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:sugar",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.movement_speed",
+          "amount": 0.01,
+          "op": "add_multiplied_base"
+        }
+      ]
+    },
+    {
+      "id": "absorption",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:glowstone_dust",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:mana_regen",
+          "amount": 0.02,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "reishi_field",
+      "branch": 2,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:lapis_block",
+      "effects": [
+        {
+          "stat": "high_mana_power",
+          "amount": 0.05
+        },
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 10.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "spirit_reserve",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:lapis_lazuli",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 8.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "sklaverei",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "mana_on_kill",
+          "amount": 2.0
+        },
+        {
+          "stat": "lifesteal",
+          "amount": 0.006
+        }
+      ]
+    },
+    {
+      "id": "total_harvest",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:end_crystal",
+      "effects": [
+        {
+          "stat": "charge_on_kill",
+          "amount": 2.0
+        }
+      ],
+      "exclusive": [
+        "dense_reishi"
+      ]
+    },
+    {
+      "id": "dense_reishi",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:ender_pearl",
+      "effects": [
+        {
+          "stat": "cast_refund",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "total_harvest"
+      ]
+    },
+    {
+      "id": "reishi_step",
+      "branch": 2,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:phantom_membrane",
+      "effects": [
+        {
+          "stat": "dodge",
+          "amount": 0.008
+        }
+      ]
+    },
+    {
+      "id": "letzt_stil",
+      "branch": 2,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:blaze_rod",
+      "effects": [
+        {
+          "stat": "kill_fury",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "vollstandig",
+      "branch": 2,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:beacon",
+      "effects": [
+        {
+          "stat": "ult_power",
+          "amount": 0.3
+        },
+        {
+          "stat": "kill_cdr",
+          "amount": 1.5
+        }
+      ]
+    },
+    {
+      "id": "mastery_reishi",
+      "branch": 2,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "attribute": "isekai_mahou:max_mana",
+          "amount": 4.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "schrift",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "quincy_sternritter",
+      "icon": "minecraft:diamond_sword",
+      "effects": [
+        {
+          "stat": "crit_damage",
+          "amount": 0.04
+        }
+      ]
+    },
+    {
+      "id": "eagle_eye",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "quincy_sternritter",
+      "icon": "minecraft:spectral_arrow",
+      "effects": [
+        {
+          "stat": "far_damage",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "heilig_bogen",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "quincy_sternritter",
+      "icon": "minecraft:target",
+      "effects": [
+        {
+          "stat": "aim_power",
+          "amount": 0.06
+        },
+        {
+          "stat": "crit_cdr",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "id": "falling_star",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "quincy_sternritter",
+      "icon": "minecraft:echo_shard",
+      "effects": [
+        {
+          "stat": "echo",
+          "amount": 0.15
+        },
+        {
+          "stat": "boss_damage",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "steel_veins",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "quincy_blut_guard",
+      "icon": "minecraft:iron_chestplate",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.armor",
+          "amount": 1.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "steady_pulse",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "quincy_blut_guard",
+      "icon": "minecraft:golden_apple",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 2.0,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "blood_reflex",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "quincy_blut_guard",
+      "icon": "minecraft:iron_door",
+      "effects": [
+        {
+          "stat": "guard_fortify",
+          "amount": 0.08
+        },
+        {
+          "stat": "parry_mana",
+          "amount": 8.0
+        }
+      ]
+    },
+    {
+      "id": "immortal_blood",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "quincy_blut_guard",
+      "icon": "minecraft:turtle_helmet",
+      "effects": [
+        {
+          "stat": "low_health_resist",
+          "amount": 0.15
+        },
+        {
+          "stat": "heal_on_kill",
+          "amount": 2.0
+        }
+      ]
+    }
+  ],
+  "subclasses": [
+    {
+      "id": "quincy_sternritter",
+      "color": "A8DFFF",
+      "icon": "minecraft:spectral_arrow",
+      "effects": [
+        {
+          "stat": "ranged_damage",
+          "amount": 0.15
+        },
+        {
+          "stat": "crit_chance",
+          "amount": 0.08
+        },
+        {
+          "stat": "spell_damage.light",
+          "amount": 0.1
+        },
+        {
+          "stat": "far_damage",
+          "amount": 0.15
+        },
+        {
+          "stat": "crit_fury",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "quincy_blut_guard",
+      "color": "5A8AD8",
+      "icon": "minecraft:diamond_chestplate",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.armor",
+          "amount": 4.0,
+          "op": "add_value"
+        },
+        {
+          "stat": "damage_resist",
+          "amount": 0.06
+        },
+        {
+          "stat": "mana_on_hit",
+          "amount": 2.0
+        },
+        {
+          "stat": "barrier",
+          "amount": 8.0
+        },
+        {
+          "attribute": "minecraft:generic.max_absorption",
+          "amount": 8.0,
+          "op": "add_value"
+        },
+        {
+          "stat": "on_struck.shock",
+          "amount": 0.5
+        }
+      ]
+    }
+  ]
+}

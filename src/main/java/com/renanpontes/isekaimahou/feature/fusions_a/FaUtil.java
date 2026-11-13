@@ -165,6 +165,8 @@ public final class FaUtil {
     /** Pode transformar/quebrar este bloco? (spawn, aventura, proteções, mobGriefing). */
     public static boolean canBreak(SpellContext ctx, BlockPos pos) {
         ServerLevel level = ctx.level();
+        // v1.0 r9: torre em escalada / masmorra são indestrutíveis (nem blocos temporários de magia)
+        if (com.renanpontes.isekaimahou.core.api.Destruction.wardedFor(level, pos, ctx.caster())) return false;
         if (!level.isLoaded(pos) || !level.getWorldBorder().isWithinBounds(pos)) return false;
         // Bloco que já é uma magia temporária: a permissão já foi checada quando ele foi criado
         if (FaTempBlocks.isTracked(level, pos)) return true;
@@ -182,6 +184,8 @@ public final class FaUtil {
     /** Pode colocar algo temporário aqui (posição de ar/planta)? */
     public static boolean canPlace(SpellContext ctx, BlockPos pos) {
         ServerLevel level = ctx.level();
+        // v1.0 r9: torre em escalada / masmorra são indestrutíveis (nem blocos temporários de magia)
+        if (com.renanpontes.isekaimahou.core.api.Destruction.wardedFor(level, pos, ctx.caster())) return false;
         if (!level.isLoaded(pos) || !level.getWorldBorder().isWithinBounds(pos)) return false;
         if (level.isOutsideBuildHeight(pos)) return false;
         LivingEntity caster = ctx.caster();
@@ -233,8 +237,9 @@ public final class FaUtil {
     //  Partículas e sons (servidor)
     // =====================================================================================
 
-    public static DustParticleOptions dust(int rgb, float size) {
-        return new DustParticleOptions(vec(rgb), Math.min(4F, size));
+    public static ParticleOptions dust(int rgb, float size) {
+        // v1.3: brilho fx aditivo (mesmo tamanho do pó do vanilla; respeita o preset gráfico no cliente)
+        return com.renanpontes.isekaimahou.core.ElementFx.glow(rgb, size);
     }
 
     public static DustColorTransitionOptions dustFade(int from, int to, float size) {
@@ -343,7 +348,7 @@ public final class FaUtil {
     /** Config de partículas reduzidas (lida no cliente). */
     public static boolean reducedParticles() {
         try {
-            return MahouConfig.REDUCED_PARTICLES.get();
+            return !com.renanpontes.isekaimahou.client.fx.FxQuality.atLeast(MahouConfig.Graphics.HIGH);
         } catch (RuntimeException e) {
             return false;
         }

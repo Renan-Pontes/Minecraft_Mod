@@ -1,0 +1,121 @@
+{
+  "chapters": [
+    {
+      "id": "mounts",
+      "order": 24,
+      "color": "#E8C25A",
+      "intro": true,
+      "icon": [
+        "minecraft:saddle",
+        "isekai_mahou:land_drake_reins",
+        "isekai_mahou:arcane_broom"
+      ],
+      "rewards": {
+        "xp": 100,
+        "items": [
+          {
+            "id": "isekai_mahou:mount_whistle",
+            "count": 1
+          }
+        ]
+      },
+      "steps": [
+        {
+          "id": "ride",
+          "xp": 150,
+          "icon": "isekai_mahou:land_drake_reins",
+          "condition": {
+            "type": "any",
+            "conditions": [
+              {
+                "type": "counter",
+                "key": "feat.mount_ride",
+                "min": 1
+              },
+              {
+                "type": "counter_prefix",
+                "prefix": "feat.tame_",
+                "min": 1
+              },
+              {
+                "type": "counter_prefix",
+                "prefix": "feat.mount_own.",
+                "min": 1
+              },
+              {
+                "type": "counter",
+                "key": "feat.vehicle_ride",
+                "min": 1
+              }
+            ]
+          }
+        },
+        {
+          "id": "ability",
+          "condition": {
+            "type": "counter",
+            "key": "feat.mount_ability",
+            "min": 1
+          },
+          "xp": 100,
+          "icon": "minecraft:golden_boots",
+          "optional": true
+        },
+        {
+          "id": "vehicle",
+          "condition": {
+            "type": "counter",
+            "key": "feat.vehicle_ride",
+            "min": 1
+          },
+          "xp": 200,
+          "icon": "isekai_mahou:flying_carpet",
+          "optional": true
+        },
+        {
+          "id": "tame",
+          "condition": {
+            "type": "counter_prefix",
+            "prefix": "feat.tame_",
+            "min": 1
+          },
+          "xp": 300,
+          "icon": "minecraft:cod",
+          "optional": true
+        },
+        {
+          "id": "stag",
+          "condition": {
+            "type": "flag",
+            "flag": "mounts.got.aurora_stag"
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:aurora_stag_reins",
+          "optional": true
+        },
+        {
+          "id": "nightmare",
+          "condition": {
+            "type": "flag",
+            "flag": "mounts.got.nightmare"
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:nightmare_reins",
+          "optional": true
+        },
+        {
+          "id": "fleet",
+          "condition": {
+            "type": "counter_prefix",
+            "prefix": "feat.vehicle.",
+            "min": 3,
+            "distinct": true
+          },
+          "xp": 300,
+          "icon": "isekai_mahou:mini_airship",
+          "optional": true
+        }
+      ]
+    }
+  ]
+}

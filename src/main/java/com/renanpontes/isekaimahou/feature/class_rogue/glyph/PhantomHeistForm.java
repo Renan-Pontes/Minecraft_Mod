@@ -1,5 +1,7 @@
 package com.renanpontes.isekaimahou.feature.class_rogue.glyph;
 
+import com.renanpontes.isekaimahou.core.anim.MahouAnims;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -147,6 +149,7 @@ public class PhantomHeistForm extends FormGlyph {
         }
         Vec3 at = caster.position();
         RogueFx.callingCard(level, at);
+        MahouAnims.play(caster, "taunt");
         RogueFx.sound(level, at, SoundEvents.FIREWORK_ROCKET_TWINKLE, 1.0F, 1.0F);
         RogueFx.sound(level, at, SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.3F);
         ctx.end(at, caster.getLookAngle());

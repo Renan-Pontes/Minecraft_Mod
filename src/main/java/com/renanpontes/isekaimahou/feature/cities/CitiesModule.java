@@ -28,6 +28,10 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
  * <p>v1.0: abordagem da guarda ({@link CityConfront}: quem vê saque/vandalismo/furto reclama, persuadir/propina/devolver,
  * reincidência = Procurado) e guerra de cidades ({@code Allegiance}: guardas e Lorde atacam, civis e mercadores fogem e
  * ninguém negocia). Membros de facção ALIADA não recebem dano do jogador pelas regras sociais do núcleo.
+ * <p>Release 1.0: cidade inicial ({@link CityStart}: jogador novo nasce na praça), estalagem ({@link CityInn}: descanso,
+ * quarto por dias, rumores pagos), sidequests ({@link CityQuests}), rotina simples dos moradores ({@link CityRoutine})
+ * e o Escriba sem Pergaminhos de Glifo. Costura da release: {@link CityFixtures} (Quadro do Mercado na praça e os dois
+ * altares das capitais) e, em {@code trade/CityTrades}, os itens das ondas 1–2 nos mercadores.
  */
 public class CitiesModule implements Module {
     @Override
@@ -41,6 +45,9 @@ public class CitiesModule implements Module {
         CitiesContent.register(modBus);
         modBus.addListener(CitiesNetwork::register);
         CityCommands.register();
+        CityStart.register();
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStartedEvent e) -> CityRoutine.load(e.getServer()));
+        NeoForge.EVENT_BUS.addListener(CityQuests::onDeath);
 
         NeoForge.EVENT_BUS.addListener(CityCrimes::onDamage);
         NeoForge.EVENT_BUS.addListener(CityCrimes::onDeath);
@@ -60,12 +67,13 @@ public class CitiesModule implements Module {
             if (e.getServer().getTickCount() % 5 == 0) CityConfront.tick(e.getServer());
         });
         NeoForge.EVENT_BUS.addListener((PlayerWakeUpEvent e) -> {
-            if (e.getEntity() instanceof ServerPlayer sp) CityServices.onWake(sp);
+            if (e.getEntity() instanceof ServerPlayer sp) CityInn.onWake(sp);
         });
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent e) -> {
             if (e.getEntity() instanceof ServerPlayer sp) {
                 CityRumors.sync(sp);
                 CityCrimes.syncWanted(sp);
+                CityQuests.sync(sp);
             }
         });
         NeoForge.EVENT_BUS.addListener((ServerTickEvent.Post e) -> {
@@ -73,9 +81,11 @@ public class CitiesModule implements Module {
             for (ServerPlayer sp : e.getServer().getPlayerList().getPlayers()) {
                 CityRumors.checkArrival(sp);
                 CityCrimes.tickWanted(sp);
+                CityQuests.tick(sp);
+                CityFixtures.hints(sp);
             }
             CitySiege.sweep(e.getServer());
-            CityServices.tickRooms(e.getServer());
+            CityInn.tickRooms(e.getServer());
         });
         // Mob de um cerco que já acabou (ex.: salvo no chunk) não volta ao mundo.
         NeoForge.EVENT_BUS.addListener((EntityJoinLevelEvent e) -> {

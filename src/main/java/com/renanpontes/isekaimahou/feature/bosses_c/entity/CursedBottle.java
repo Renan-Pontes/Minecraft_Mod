@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.core.CoreRegistries;
+import com.renanpontes.isekaimahou.core.boss.BossCurses;
 import com.renanpontes.isekaimahou.feature.bosses_c.BossesCRegistry;
 
 import net.minecraft.core.Holder;
@@ -13,6 +14,8 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
@@ -206,16 +209,32 @@ public class CursedBottle extends ThrowableItemProjectile {
             case HEX -> {
                 add(e, CoreRegistries.CORRUPTED, 120, 0, k, owner);
                 add(e, MobEffects.WEAKNESS, 160, 0, k, owner);
+                // ASSINATURA: Mente Invertida — frente vira trás, esquerda vira direita
+                add(e, BossCurses.INVERTED, 90, 0, k, owner);
+                tell(e, "message.isekai_mahou.corrupted_witch.inverted", 0xC77DFF);
             }
             case GLOOM -> {
                 add(e, MobEffects.BLINDNESS, 70, 0, k, owner);
                 add(e, MobEffects.MOVEMENT_SLOWDOWN, 100, 1, k, owner);
             }
             case TOAD -> {
-                add(e, MobEffects.LEVITATION, 30, 1, k, owner);
-                add(e, MobEffects.CONFUSION, 120, 0, k, owner);
+                // ASSINATURA: Maldição do Sapo — encolhe, quase não causa dano, pula alto e coaxa
+                add(e, BossCurses.FROG, 140, 0, k, owner);
+                add(e, MobEffects.CONFUSION, 80, 0, k, owner);
+                e.setDeltaMovement(e.getDeltaMovement().add(0, 0.45, 0));
+                e.hurtMarked = true;
+                if (e.level() instanceof ServerLevel sl) {
+                    sl.sendParticles(ParticleTypes.ITEM_SLIME, e.getX(), e.getY() + 0.5, e.getZ(), 20, 0.4, 0.5, 0.4, 0.1);
+                    sl.sendParticles(ParticleTypes.POOF, e.getX(), e.getY() + 0.5, e.getZ(), 12, 0.4, 0.5, 0.4, 0.05);
+                    sl.playSound(null, e.getX(), e.getY(), e.getZ(), SoundEvents.FROG_LONG_JUMP, SoundSource.HOSTILE, 1.5F, 0.8F);
+                }
+                tell(e, "message.isekai_mahou.corrupted_witch.frogged", 0x9BE05A);
             }
         }
+    }
+
+    private static void tell(LivingEntity e, String key, int rgb) {
+        if (e instanceof ServerPlayer sp) sp.displayClientMessage(Component.translatable(key).withColor(rgb), true);
     }
 
     private static void add(LivingEntity e, Holder<MobEffect> effect, int ticks, int amp, float k, @Nullable LivingEntity owner) {

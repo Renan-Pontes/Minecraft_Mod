@@ -29,6 +29,7 @@ import com.renanpontes.isekaimahou.glyph.SpellRecipe;
 import com.renanpontes.isekaimahou.glyph.SpellSlot;
 import com.renanpontes.isekaimahou.network.CorePayloads;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -81,7 +82,7 @@ public final class DuelEvents {
         ServerLevel level = ctx.level();
         if (DuelUtil.isBoss(t)) {
             e.setAmount(e.getAmount() * 1.15F);
-            if (flash(t, level, 10)) level.sendParticles(ParticleTypes.SCULK_SOUL, t.getX(), t.getY() + t.getBbHeight() * 0.6, t.getZ(),
+            if (flash(t, level, 10)) level.sendParticles(Vfx.sculkSoul(), t.getX(), t.getY() + t.getBbHeight() * 0.6, t.getZ(),
                     4, 0.3, 0.3, 0.3, 0.02);
             return;
         }
@@ -92,8 +93,8 @@ public final class DuelEvents {
             Vec3 c = DuelFx.center(t);
             DuelFx.spawn(level, com.renanpontes.isekaimahou.feature.arcane_duel.entity.DuelFxEntity.SHATTER, c,
                     Math.max(0.8F, t.getBbHeight() * 0.55F), 18, DuelFx.DEATH, 0F);
-            level.sendParticles(ParticleTypes.SCULK_SOUL, c.x, c.y, c.z, 10, 0.3, 0.4, 0.3, 0.04);
-            level.sendParticles(ParticleTypes.SOUL, c.x, c.y, c.z, 8, 0.3, 0.4, 0.3, 0.02);
+            level.sendParticles(Vfx.sculkSoul(), c.x, c.y, c.z, 10, 0.3, 0.4, 0.3, 0.04);
+            level.sendParticles(Vfx.soul(), c.x, c.y, c.z, 8, 0.3, 0.4, 0.3, 0.02);
             DuelFx.sound(level, c, SoundEvents.WITHER_SKELETON_AMBIENT, 0.9F, 0.6F);
             DuelFx.sound(level, c, SoundEvents.SCULK_SHRIEKER_SHRIEK, 0.25F, 1.8F);
         }
@@ -160,7 +161,7 @@ public final class DuelEvents {
             if (next == null) break;
             hit.add(next.getUUID());
             Vec3 a = DuelFx.center(from), b = DuelFx.center(next);
-            DuelFx.line(level, a, b, ParticleTypes.CRIT, 0.35);
+            DuelFx.line(level, a, b, Vfx.crit(), 0.35);
             DuelFx.line(level, a, b, DuelFx.dust(0xFF7A3A, 1.4F), 0.5);
             level.sendParticles(ParticleTypes.SWEEP_ATTACK, b.x, b.y, b.z, 1, 0, 0, 0, 0);
             DuelFx.sound(level, b, SoundEvents.RAVAGER_STEP, 1.0F, 0.8F + 0.15F * hop);
@@ -230,7 +231,7 @@ public final class DuelEvents {
         e.setNewDamage(Math.max(0F, max));
         if (t.level() instanceof ServerLevel level && flash(t, level, 6)) {
             Vec3 c = DuelFx.center(t);
-            level.sendParticles(ParticleTypes.WAX_ON, c.x, c.y, c.z, 14, 0.4, 0.6, 0.4, 0.2);
+            level.sendParticles(Vfx.waxOn(), c.x, c.y, c.z, 14, 0.4, 0.6, 0.4, 0.2);
             level.sendParticles(DuelFx.dust(DuelFx.GOLD, 1.4F), c.x, c.y, c.z, 12, 0.5, 0.7, 0.5, 0);
             DuelFx.sound(level, c, SoundEvents.ANVIL_LAND, 0.5F, 1.9F);
         }

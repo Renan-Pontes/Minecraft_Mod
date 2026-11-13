@@ -1,0 +1,21 @@
+[13nov.2026 16:45:12.098] [main/DEBUG] [io.netty.util.internal.logging.InternalLoggerFactory/]: Using SLF4J as the default logging framework
+[13nov.2026 16:45:12.106] [main/DEBUG] [io.netty.util.ResourceLeakDetector/]: -Dio.netty.leakDetection.level: simple
+[13nov.2026 16:45:12.107] [main/DEBUG] [io.netty.util.ResourceLeakDetector/]: -Dio.netty.leakDetection.targetRecords: 4
+[13nov.2026 16:45:12.234] [main/WARN] [net.minecraft.DetectedVersion/]: Missing version information!
+[13nov.2026 16:45:13.860] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: -Dio.netty.noUnsafe: false
+[13nov.2026 16:45:13.860] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: Java version: 21
+[13nov.2026 16:45:13.861] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: sun.misc.Unsafe.theUnsafe: available
+[13nov.2026 16:45:13.862] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: sun.misc.Unsafe.copyMemory: available
+[13nov.2026 16:45:13.862] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: sun.misc.Unsafe.storeFence: available
+[13nov.2026 16:45:13.863] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: java.nio.Buffer.address: available
+[13nov.2026 16:45:13.864] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: java.nio.Bits.unaligned: available, true
+[13nov.2026 16:45:13.865] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: java.nio.DirectByteBuffer.<init>(long, {int,long}): unavailable
+[13nov.2026 16:45:13.865] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: sun.misc.Unsafe: available
+[13nov.2026 16:45:13.866] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: maxDirectMemory: 17146314752 bytes (maybe)
+[13nov.2026 16:45:13.866] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: -Dio.netty.tmpdir: C:\Users\renan\AppData\Local\Temp (java.io.tmpdir)
+[13nov.2026 16:45:13.867] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: -Dio.netty.bitMode: 64 (sun.arch.data.model)
+[13nov.2026 16:45:13.867] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: Platform: Windows
+[13nov.2026 16:45:13.869] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: -Dio.netty.maxDirectMemory: -1 bytes
+[13nov.2026 16:45:13.870] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: -Dio.netty.uninitializedArrayAllocationThreshold: -1
+[13nov.2026 16:45:13.873] [main/DEBUG] [io.netty.util.internal.CleanerJava9/]: java.nio.ByteBuffer.cleaner(): available
+[13nov.2026 16:45:13.873] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: -Dio.netty.noPreferDirect: false

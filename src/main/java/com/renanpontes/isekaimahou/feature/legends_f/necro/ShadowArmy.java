@@ -350,6 +350,13 @@ public final class ShadowArmy {
     /** Efeito de saída da sombra (para quem chama manifest de fora). */
     public static void ariseFx(ServerLevel level, Vec3 at, float height) {
         LfUtil.fx(level, LfNet.ARISE, at, new Vec3(0, 1, 0), 0x6A3DD8, 34, Math.max(2.5F, height * 1.6F));
+        // v1.3: a sombra rasga o chão (portal), sobe um pilar escuro e estoura em fiapos — "ARISE!"
+        float r = Math.max(1.2F, height * 0.7F);
+        com.renanpontes.isekaimahou.core.ElementFx.portal(level, at.add(0, 0.06, 0), new Vec3(0, 1, 0),
+                com.renanpontes.isekaimahou.core.Element.SHADOW, 0x6A3DD8, r, 4, 30);
+        com.renanpontes.isekaimahou.core.ElementFx.pillar(level, at, 0x3A1A7A, r * 0.55F, Math.max(4F, height * 3F), 26);
+        com.renanpontes.isekaimahou.core.ElementFx.impactFx(level, at.add(0, 0.2, 0),
+                com.renanpontes.isekaimahou.core.Element.SHADOW, 0x8A4FF0, 3, null, Math.max(1F, height * 0.6F));
     }
 
     private ShadowArmy() {}

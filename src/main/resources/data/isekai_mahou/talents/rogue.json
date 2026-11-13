@@ -1,0 +1,879 @@
+{
+  "layout": 2,
+  "branches": [
+    {
+      "id": "shadows",
+      "color": "8E5BD6"
+    },
+    {
+      "id": "agility",
+      "color": "5FD0C0"
+    },
+    {
+      "id": "dirty",
+      "color": "7FB24A"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "soft_step",
+      "branch": 0,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:leather_boots",
+      "effects": [
+        {
+          "attribute": "minecraft:player.sneaking_speed",
+          "amount": 0.03,
+          "op": "add_multiplied_base"
+        }
+      ]
+    },
+    {
+      "id": "backstab",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:stone_sword",
+      "effects": [
+        {
+          "stat": "backstab",
+          "amount": 0.04
+        }
+      ]
+    },
+    {
+      "id": "keen_eye",
+      "branch": 0,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:spyglass",
+      "effects": [
+        {
+          "stat": "crit_chance",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "sucker_punch",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:crossbow",
+      "effects": [
+        {
+          "stat": "first_strike",
+          "amount": 0.08
+        },
+        {
+          "stat": "crit_mana",
+          "amount": 3.0
+        }
+      ]
+    },
+    {
+      "id": "ambush",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:crossbow",
+      "effects": [
+        {
+          "stat": "first_strike",
+          "amount": 0.04
+        }
+      ]
+    },
+    {
+      "id": "assassinate",
+      "branch": 0,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:diamond_sword",
+      "effects": [
+        {
+          "stat": "crit_damage",
+          "amount": 0.04
+        },
+        {
+          "stat": "backstab",
+          "amount": 0.02
+        }
+      ]
+    },
+    {
+      "id": "hidden_blade",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:target",
+      "effects": [
+        {
+          "stat": "aim_power",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "hit_and_run"
+      ]
+    },
+    {
+      "id": "hit_and_run",
+      "branch": 0,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:rabbit_hide",
+      "effects": [
+        {
+          "stat": "run_power",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "hidden_blade"
+      ]
+    },
+    {
+      "id": "vital_point",
+      "branch": 0,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:dragon_head",
+      "effects": [
+        {
+          "stat": "boss_damage",
+          "amount": 0.012
+        }
+      ]
+    },
+    {
+      "id": "killer_shadow",
+      "branch": 0,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:fire_charge",
+      "effects": [
+        {
+          "stat": "crit_fury",
+          "amount": 0.07
+        }
+      ]
+    },
+    {
+      "id": "death_sentence",
+      "branch": 0,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:netherite_axe",
+      "effects": [
+        {
+          "stat": "cull",
+          "amount": 0.1
+        },
+        {
+          "stat": "crit_cdr",
+          "amount": 1.0
+        }
+      ]
+    },
+    {
+      "id": "mastery_shadows",
+      "branch": 0,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "crit_damage",
+          "amount": 0.006
+        }
+      ]
+    },
+    {
+      "id": "light_feet",
+      "branch": 1,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:sugar",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.movement_speed",
+          "amount": 0.01,
+          "op": "add_multiplied_base"
+        }
+      ]
+    },
+    {
+      "id": "tumble",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:feather",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.safe_fall_distance",
+          "amount": 1.0,
+          "op": "add_value"
+        },
+        {
+          "stat": "fall_resist",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "slippery",
+      "branch": 1,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:phantom_membrane",
+      "effects": [
+        {
+          "stat": "dodge",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "riposte",
+      "branch": 1,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:wind_charge",
+      "effects": [
+        {
+          "stat": "dodge_power",
+          "amount": 0.12
+        },
+        {
+          "stat": "dodge",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "quick_hands",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:golden_sword",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.attack_speed",
+          "amount": 0.015,
+          "op": "add_multiplied_base"
+        }
+      ]
+    },
+    {
+      "id": "ghost",
+      "branch": 1,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:phantom_membrane",
+      "effects": [
+        {
+          "stat": "dodge",
+          "amount": 0.008
+        },
+        {
+          "stat": "kill_speed",
+          "amount": 0.6
+        }
+      ]
+    },
+    {
+      "id": "blade_dance",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:blaze_powder",
+      "effects": [
+        {
+          "stat": "combo",
+          "amount": 0.04
+        }
+      ],
+      "exclusive": [
+        "smoke"
+      ]
+    },
+    {
+      "id": "smoke",
+      "branch": 1,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:diamond_chestplate",
+      "effects": [
+        {
+          "stat": "full_health_resist",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "blade_dance"
+      ]
+    },
+    {
+      "id": "short_breath",
+      "branch": 1,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:prismarine_crystals",
+      "effects": [
+        {
+          "stat": "mana_on_hit",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "id": "reflexes",
+      "branch": 1,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:diamond_axe",
+      "effects": [
+        {
+          "stat": "parry_power",
+          "amount": 0.2
+        },
+        {
+          "stat": "parry_mana",
+          "amount": 6.0
+        }
+      ]
+    },
+    {
+      "id": "untouchable",
+      "branch": 1,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:phantom_membrane",
+      "effects": [
+        {
+          "stat": "dodge",
+          "amount": 0.05
+        },
+        {
+          "stat": "cheat_death",
+          "amount": 0.25
+        }
+      ]
+    },
+    {
+      "id": "mastery_agility",
+      "branch": 1,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.max_health",
+          "amount": 0.5,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "blade_venom",
+      "branch": 2,
+      "tier": 0,
+      "max": 5,
+      "level": 1,
+      "kind": "small",
+      "branch_points": 0,
+      "icon": "minecraft:spider_eye",
+      "effects": [
+        {
+          "stat": "on_hit.poison",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "light_fingers",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:rabbit_foot",
+      "effects": [
+        {
+          "attribute": "minecraft:generic.luck",
+          "amount": 0.2,
+          "op": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "cheap_shot",
+      "branch": 2,
+      "tier": 1,
+      "max": 5,
+      "level": 6,
+      "kind": "small",
+      "branch_points": 3,
+      "icon": "minecraft:cobweb",
+      "effects": [
+        {
+          "stat": "on_hit.slowness",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "open_wound",
+      "branch": 2,
+      "tier": 2,
+      "max": 2,
+      "level": 14,
+      "kind": "notable",
+      "branch_points": 6,
+      "icon": "minecraft:red_dye",
+      "effects": [
+        {
+          "stat": "on_hit.bleed",
+          "amount": 0.15
+        },
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "finisher",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:iron_axe",
+      "effects": [
+        {
+          "stat": "execute",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "cutthroat",
+      "branch": 2,
+      "tier": 3,
+      "max": 5,
+      "level": 26,
+      "kind": "small",
+      "branch_points": 9,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "mana_on_kill",
+          "amount": 2.0
+        },
+        {
+          "stat": "lifesteal",
+          "amount": 0.006
+        }
+      ]
+    },
+    {
+      "id": "strong_venom",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:poisonous_potato",
+      "effects": [
+        {
+          "stat": "afflicted_damage",
+          "amount": 0.12
+        }
+      ],
+      "exclusive": [
+        "sticky_fingers"
+      ]
+    },
+    {
+      "id": "sticky_fingers",
+      "branch": 2,
+      "tier": 4,
+      "max": 1,
+      "level": 36,
+      "kind": "choice",
+      "branch_points": 15,
+      "icon": "minecraft:end_crystal",
+      "effects": [
+        {
+          "stat": "charge_on_kill",
+          "amount": 2.0
+        }
+      ],
+      "exclusive": [
+        "strong_venom"
+      ]
+    },
+    {
+      "id": "sand_in_the_eyes",
+      "branch": 2,
+      "tier": 5,
+      "max": 5,
+      "level": 50,
+      "kind": "small",
+      "branch_points": 20,
+      "icon": "minecraft:fermented_spider_eye",
+      "effects": [
+        {
+          "stat": "on_hit.weakness",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "no_honor",
+      "branch": 2,
+      "tier": 5,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 20,
+      "icon": "minecraft:blaze_rod",
+      "effects": [
+        {
+          "stat": "kill_fury",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "underworld_king",
+      "branch": 2,
+      "tier": 6,
+      "max": 1,
+      "level": 70,
+      "kind": "capstone",
+      "branch_points": 28,
+      "icon": "minecraft:dragon_breath",
+      "effects": [
+        {
+          "stat": "plague",
+          "amount": 1.0
+        },
+        {
+          "stat": "kill_cdr",
+          "amount": 2.0
+        }
+      ]
+    },
+    {
+      "id": "mastery_dirty",
+      "branch": 2,
+      "tier": 7,
+      "max": 50,
+      "level": 20,
+      "kind": "mastery",
+      "branch_points": 5,
+      "curve": 0.95,
+      "icon": "minecraft:experience_bottle",
+      "effects": [
+        {
+          "stat": "all_damage",
+          "amount": 0.004
+        }
+      ]
+    },
+    {
+      "id": "shadow_step",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "rogue_assassin",
+      "icon": "minecraft:stone_sword",
+      "effects": [
+        {
+          "stat": "backstab",
+          "amount": 0.04
+        }
+      ]
+    },
+    {
+      "id": "poisoned_edge",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "rogue_assassin",
+      "icon": "minecraft:spyglass",
+      "effects": [
+        {
+          "stat": "crit_chance",
+          "amount": 0.015
+        }
+      ]
+    },
+    {
+      "id": "mark_for_death",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "rogue_assassin",
+      "icon": "minecraft:dragon_head",
+      "effects": [
+        {
+          "stat": "boss_damage",
+          "amount": 0.06
+        },
+        {
+          "stat": "kill_fury",
+          "amount": 0.04
+        }
+      ]
+    },
+    {
+      "id": "one_strike",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "rogue_assassin",
+      "icon": "minecraft:bell",
+      "effects": [
+        {
+          "stat": "fifth_hit",
+          "amount": 0.6
+        },
+        {
+          "stat": "aim_power",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "id": "dirty_trick",
+      "branch": 0,
+      "tier": 0,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 0,
+      "subclass": "rogue_trickster",
+      "icon": "minecraft:fermented_spider_eye",
+      "effects": [
+        {
+          "stat": "on_hit.weakness",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "id": "rabbits_foot",
+      "branch": 0,
+      "tier": 1,
+      "max": 3,
+      "level": 40,
+      "kind": "small",
+      "branch_points": 2,
+      "subclass": "rogue_trickster",
+      "icon": "minecraft:phantom_membrane",
+      "effects": [
+        {
+          "stat": "dodge",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "id": "torn_pocket",
+      "branch": 0,
+      "tier": 2,
+      "max": 2,
+      "level": 50,
+      "kind": "notable",
+      "branch_points": 4,
+      "subclass": "rogue_trickster",
+      "icon": "minecraft:end_crystal",
+      "effects": [
+        {
+          "stat": "charge_on_kill",
+          "amount": 1.5
+        },
+        {
+          "stat": "mana_on_kill",
+          "amount": 3.0
+        }
+      ]
+    },
+    {
+      "id": "the_big_con",
+      "branch": 0,
+      "tier": 3,
+      "max": 1,
+      "level": 60,
+      "kind": "capstone",
+      "branch_points": 7,
+      "subclass": "rogue_trickster",
+      "icon": "minecraft:gold_nugget",
+      "effects": [
+        {
+          "stat": "lucky",
+          "amount": 0.05
+        },
+        {
+          "stat": "revenge",
+          "amount": 0.12
+        }
+      ]
+    }
+  ],
+  "subclasses": [
+    {
+      "id": "rogue_assassin",
+      "color": "8E5BD6",
+      "icon": "minecraft:iron_sword",
+      "effects": [
+        {
+          "stat": "backstab",
+          "amount": 0.3
+        },
+        {
+          "stat": "first_strike",
+          "amount": 0.25
+        },
+        {
+          "stat": "crit_damage",
+          "amount": 0.25
+        },
+        {
+          "stat": "cull",
+          "amount": 0.06
+        },
+        {
+          "stat": "crit_cdr",
+          "amount": 1.0
+        }
+      ]
+    },
+    {
+      "id": "rogue_trickster",
+      "color": "7FB24A",
+      "icon": "minecraft:rabbit_foot",
+      "effects": [
+        {
+          "stat": "dodge",
+          "amount": 0.1
+        },
+        {
+          "attribute": "minecraft:generic.luck",
+          "amount": 2.0,
+          "op": "add_value"
+        },
+        {
+          "stat": "on_hit.poison",
+          "amount": 0.2
+        },
+        {
+          "stat": "kill_speed",
+          "amount": 4.0
+        },
+        {
+          "stat": "dodge_power",
+          "amount": 0.25
+        },
+        {
+          "stat": "wild",
+          "amount": 0.1
+        }
+      ]
+    }
+  ]
+}

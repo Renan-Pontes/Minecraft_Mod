@@ -8,7 +8,7 @@ import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -45,7 +45,7 @@ public class ConjuredWeaponEffect extends EffectGlyph {
         if (ConjuredBladeEntity.isCarrierHit() || ctx.spell().form() instanceof ArsenalGateForm) {
             ctx.damage(target, DAMAGE, stats, ConjuredBladeEntity.currentCarrier());
             Vec3 c = LegendFx.center(target);
-            sl.sendParticles(ParticleTypes.CRIT, c.x, c.y, c.z, 8, 0.25, 0.3, 0.25, 0.25);
+            sl.sendParticles(Vfx.crit(), c.x, c.y, c.z, 8, 0.25, 0.3, 0.25, 0.25);
             return;
         }
         Vec3 tc = LegendFx.center(target);
@@ -73,7 +73,7 @@ public class ConjuredWeaponEffect extends EffectGlyph {
                     LegendFx.conjuredWeapon(sl.random), color, 1.35F, pierce, 1.6F);
             sl.addFreshEntity(blade);
             sl.sendParticles(LegendFx.dust(color, 1.2F), from.x, from.y, from.z, 10, 0.3, 0.3, 0.3, 0);
-            sl.sendParticles(ParticleTypes.END_ROD, from.x, from.y, from.z, 2, 0.2, 0.2, 0.2, 0.02);
+            sl.sendParticles(Vfx.endRod(), from.x, from.y, from.z, 2, 0.2, 0.2, 0.2, 0.02);
         }
         LegendFx.sound(sl, tc, SoundEvents.ENCHANTMENT_TABLE_USE, 0.6F, 1.5F);
         if (target instanceof LivingEntity) {
@@ -112,6 +112,6 @@ public class ConjuredWeaponEffect extends EffectGlyph {
             Vec3 p = from.add(d.scale(i / (double) steps));
             sl.sendParticles(LegendFx.dust(color, 0.9F), p.x, p.y, p.z, 1, 0.02, 0.02, 0.02, 0);
         }
-        sl.sendParticles(ParticleTypes.CRIT, to.x, to.y, to.z, 8, 0.25, 0.3, 0.25, 0.25);
+        sl.sendParticles(Vfx.crit(), to.x, to.y, to.z, 8, 0.25, 0.3, 0.25, 0.25);
     }
 }

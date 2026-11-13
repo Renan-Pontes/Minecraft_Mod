@@ -42,7 +42,7 @@ final class HudPlace {
     }
 
     static void render(GuiGraphics g, Minecraft mc) {
-        if (HudCard.bottom <= 0 || mc.player == null) return;
+        if (mc.player == null) return;
         long now = Util.getMillis();
         Places.Place cur = ClientPlaces.current();
         String id = cur == null ? null : cur.id();
@@ -60,11 +60,16 @@ final class HudPlace {
         if ((place == null || alpha <= 0.03F) && !wanted) return;
 
         Font font = mc.font;
-        int y = HudCard.bottom + 2;
+        // Com o cartão escondido (opção do HUD) a linha do lugar sobe para o lugar dele
+        boolean card = HudCard.bottom > 0;
+        int y = card ? HudCard.bottom + 2 : HudCard.originY;
         int x = 4 - Math.round((1F - alpha) * 10F);
         // Tela estreita / GUI grande: não invade as barras de chefe, os ícones de efeito nem o rastreador de objetivos
         // Mede nas linhas que a faixa PODE ocupar (card sem e com as 2 linhas extras): meditar não muda a largura
-        int limit = Math.max(70, TopSpace.leftSideLimit(mc, g.guiWidth(), g.guiHeight(), HudCard.minBottom() + 2, HudCard.maxBottom() + 2 + 9));
+        // (o topo central trabalha em pixels reais: converte as linhas na ida e o limite na volta)
+        int rowTop = card ? HudCard.minBottom() + 2 : y, rowBottom = card ? HudCard.maxBottom() + 2 + 9 : y + 9;
+        int limit = Math.max(70, HudScale.limitV(TopSpace.leftSideLimit(mc, g.guiWidth(), g.guiHeight(),
+                HudScale.toReal(rowTop), HudScale.toReal(rowBottom))));
         // O selo de Procurado tem prioridade: o nome do lugar encolhe (reticências) para os dois caberem numa linha
         // (uma 2ª linha bateria no cristal da barra de mana)
         int badgeW = wanted ? wantedWidth(font, wantedTicks) + 3 : 0;

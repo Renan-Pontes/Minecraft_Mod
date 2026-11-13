@@ -17,6 +17,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -70,6 +71,9 @@ public class RenegadeArchmage extends ClassBossEntity {
     private int shieldCd = 120;
     private int blinkCd;
     private int illusionCd = 260;
+    /** Troca de Espelhos: recarga e o tempo do brilho de aviso (0 = nada em andamento). */
+    private int mirrorCd = 200;
+    private int mirrorTimer;
     private int novaCd = 100;
     private int barrageCd = 160;
     private int castTimer;
@@ -153,7 +157,7 @@ public class RenegadeArchmage extends ClassBossEntity {
 
     @Override
     protected boolean isBusy() {
-        return castTimer > 0 || novaTimer > 0 || barrageTimer > 0 || stagger > 0;
+        return castTimer > 0 || novaTimer > 0 || barrageTimer > 0 || stagger > 0 || mirrorTimer > 0;
     }
 
     @Override
@@ -163,6 +167,7 @@ public class RenegadeArchmage extends ClassBossEntity {
         if (shieldCd > 0) shieldCd--;
         if (blinkCd > 0) blinkCd--;
         if (illusionCd > 0) illusionCd--;
+        if (mirrorCd > 0) mirrorCd--;
         if (novaCd > 0) novaCd--;
         if (barrageCd > 0) barrageCd--;
         if (hitDecay > 0 && --hitDecay == 0) recentHits = 0;
@@ -180,6 +185,10 @@ public class RenegadeArchmage extends ClassBossEntity {
             return;
         }
         if (target == null) return;
+        if (mirrorTimer > 0) {
+            tickMirror(level);
+            return;
+        }
 
         // Ataques em preparação
         if (castTimer > 0) {
@@ -218,6 +227,10 @@ public class RenegadeArchmage extends ClassBossEntity {
         }
         if (illusionCd <= 0 && countIllusions(level) < 2) {
             summonIllusions(level, target, p2 ? 3 : 2);
+            return;
+        }
+        if (mirrorCd <= 0 && countIllusions(level) >= 1) {
+            startMirror(level);
             return;
         }
         if (p2 && novaCd <= 0 && dist < 5) {
@@ -487,6 +500,63 @@ public class RenegadeArchmage extends ClassBossEntity {
             swappedLast = false;
         }
         illusionCd = phase() >= 1 ? 360 : 500;
+    }
+
+    /**
+     * ASSINATURA — Troca de Espelhos: ele e as ilusões brilham juntos por quase 1 s (o aviso) e, num estalo de vidro,
+     * TODOS trocam de lugar entre si. Quem estava batendo no Arquimago de verdade agora pode estar diante de uma cópia:
+     * procure a sombra e os olhos brilhantes de novo.
+     */
+    private void startMirror(ServerLevel level) {
+        mirrorTimer = MIRROR_WARN;
+        mirrorCd = (phase() >= 1 ? 170 : 240) + random.nextInt(60);
+        getNavigation().stop();
+        action("cast");
+        playSound(SoundEvents.ILLUSIONER_PREPARE_MIRROR, 2.0F, 1.3F);
+        hintOnce(level, "mirror_swap");
+    }
+
+    private static final int MIRROR_WARN = 18;
+
+    private void tickMirror(ServerLevel level) {
+        mirrorTimer--;
+        getNavigation().stop();
+        List<ArchmageIllusion> copies = level.getEntitiesOfClass(ArchmageIllusion.class, getBoundingBox().inflate(40),
+                i -> getUUID().equals(i.ownerId()) && i.isAlive());
+        if (mirrorTimer > 0) {
+            // Antecipação: todos cintilam por igual (não dá para saber quem é quem só pelo brilho)
+            if (mirrorTimer % 3 == 0) {
+                shimmer(level, position());
+                for (ArchmageIllusion c : copies) shimmer(level, c.position());
+            }
+            return;
+        }
+        if (copies.isEmpty()) return;
+        List<LivingEntity> all = new java.util.ArrayList<>(copies);
+        all.add(this);
+        List<Vec3> spots = new java.util.ArrayList<>();
+        for (LivingEntity e : all) spots.add(e.position());
+        // Embaralha garantindo que o Arquimago saia do lugar
+        java.util.Collections.rotate(spots, 1 + random.nextInt(Math.max(1, spots.size() - 1)));
+        for (int i = 0; i < all.size(); i++) {
+            LivingEntity e = all.get(i);
+            Vec3 to = spots.get(i);
+            Vec3 from = e.position();
+            BossFx.line(level, from.add(0, 1.2, 0), to.add(0, 1.2, 0), BossFx.dust(COLOR, 0.9F), 1.2);
+            e.teleportTo(to.x, to.y, to.z);
+            e.setDeltaMovement(Vec3.ZERO);
+            level.sendParticles(ParticleTypes.FLASH, to.x, to.y + 1.2, to.z, 1, 0, 0, 0, 0);
+            level.sendParticles(new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK,
+                    net.minecraft.world.level.block.Blocks.GLASS.defaultBlockState()), to.x, to.y + 1.2, to.z, 24, 0.4, 0.8, 0.4, 0.2);
+        }
+        level.playSound(null, getX(), getY(), getZ(), SoundEvents.GLASS_BREAK, net.minecraft.sounds.SoundSource.HOSTILE, 2.0F, 0.7F);
+        playSound(SoundEvents.ILLUSIONER_MIRROR_MOVE, 2.0F, 0.9F);
+        for (ServerPlayer p : BossKit.partyAround(this, 32)) BossKit.flash(p, 0xD8C8FF, 0.35F, 8);
+    }
+
+    private void shimmer(ServerLevel level, Vec3 at) {
+        level.sendParticles(ParticleTypes.END_ROD, at.x, at.y + 1.2, at.z, 3, 0.35, 0.8, 0.35, 0.01);
+        level.sendParticles(BossFx.dust(0xE8E0FF, 1.0F), at.x, at.y + 1.2, at.z, 4, 0.4, 0.9, 0.4, 0);
     }
 
     private void startNova(ServerLevel level) {

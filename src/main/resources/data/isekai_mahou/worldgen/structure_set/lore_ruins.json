@@ -1,0 +1,36 @@
+{
+  "structures": [
+    {
+      "structure": "isekai_mahou:lore_ruin",
+      "weight": 3
+    },
+    {
+      "structure": "isekai_mahou:lore_ruin_sand",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "isekai_mahou:random_spread_multi",
+    "spacing": 24,
+    "separation": 10,
+    "salt": 583117204,
+    "exclusion_zones": [
+      {
+        "other_set": "isekai_mahou:guild_city",
+        "chunk_count": 10
+      },
+      {
+        "other_set": "isekai_mahou:capital_city",
+        "chunk_count": 13
+      },
+      {
+        "other_set": "isekai_mahou:capital_sahra",
+        "chunk_count": 13
+      },
+      {
+        "other_set": "isekai_mahou:capital_nordheim",
+        "chunk_count": 13
+      }
+    ]
+  }
+}

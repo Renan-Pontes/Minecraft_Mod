@@ -13,6 +13,7 @@ import com.renanpontes.isekaimahou.feature.fusions_c.FcUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -54,6 +55,8 @@ public class LavaGeyserEntity extends FcSpellEntity {
         g.setup(ctx, stats, Element.MAGMA, WARMUP + ACTIVE + stats.duration(20) - 20, radius);
         g.blastDamage = blastDamage;
         sl.addFreshEntity(g);
+        // v1.3: aviso de magma no chão durante a carga (o jato em si é do próprio gêiser)
+        com.renanpontes.isekaimahou.core.ElementFx.area(sl, ground, com.renanpontes.isekaimahou.core.Element.MAGMA, 0xFF5A10, radius, 2, WARMUP + 10);
         sl.sendParticles(new BlockParticleOption(ParticleTypes.DUST_PILLAR, Blocks.MAGMA_BLOCK.defaultBlockState()),
                 ground.x, ground.y + 0.1, ground.z, 16, radius * 0.6, 0.05, radius * 0.6, 0.15);
         FcFx.sound(sl, ground, SoundEvents.LAVA_AMBIENT, 1.4F, 0.6F);
@@ -76,7 +79,7 @@ public class LavaGeyserEntity extends FcSpellEntity {
         if (age < WARMUP) {
             if (age % 3 == 0) {
                 sl.sendParticles(ParticleTypes.LAVA, base.x, base.y + 0.1, base.z, 2, r * 0.5, 0.0, r * 0.5, 0.0);
-                sl.sendParticles(ParticleTypes.LARGE_SMOKE, base.x, base.y + 0.2, base.z, 2, r * 0.4, 0.05, r * 0.4, 0.01);
+                sl.sendParticles(Vfx.largeSmoke(), base.x, base.y + 0.2, base.z, 2, r * 0.4, 0.05, r * 0.4, 0.01);
             }
             if (age == WARMUP - 4) FcFx.sound(sl, base, SoundEvents.LAVA_POP, 1.5F, 0.5F);
             return;
@@ -98,8 +101,8 @@ public class LavaGeyserEntity extends FcSpellEntity {
         if (age % 2 == 0 && h > 1F) {
             Vec3 top = base.add(0, h, 0);
             sl.sendParticles(ParticleTypes.LAVA, top.x, top.y, top.z, 2, r * 0.4, 0.2, r * 0.4, 0.0);
-            sl.sendParticles(ParticleTypes.FALLING_LAVA, top.x, top.y, top.z, 3, r + 0.8, 0.3, r + 0.8, 0.0);
-            sl.sendParticles(ParticleTypes.LARGE_SMOKE, top.x, top.y + 0.3, top.z, 1, r * 0.4, 0.2, r * 0.4, 0.03);
+            sl.sendParticles(Vfx.lavaDrip(), top.x, top.y, top.z, 3, r + 0.8, 0.3, r + 0.8, 0.0);
+            sl.sendParticles(Vfx.largeSmoke(), top.x, top.y + 0.3, top.z, 1, r * 0.4, 0.2, r * 0.4, 0.03);
         }
         if (age % 12 == 0) FcFx.sound(sl, base, SoundEvents.LAVA_AMBIENT, 1.2F, 0.7F);
     }
@@ -113,7 +116,7 @@ public class LavaGeyserEntity extends FcSpellEntity {
         }
         Destruction.surface(sl, base, r + 1.0F, owner(), Destruction.Mode.SCORCH);
         sl.sendParticles(ParticleTypes.LAVA, base.x, base.y + 0.5, base.z, 30, r * 0.5, 0.4, r * 0.5, 0.2);
-        sl.sendParticles(ParticleTypes.FLAME, base.x, base.y + 1, base.z, 40, r * 0.4, 1.5, r * 0.4, 0.15);
+        sl.sendParticles(Vfx.flame(), base.x, base.y + 1, base.z, 40, r * 0.4, 1.5, r * 0.4, 0.15);
         sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, sl.getBlockState(BlockPos.containing(base).below())),
                 base.x, base.y + 0.2, base.z, 30, r, 0.2, r, 0.3);
         FcFx.shockwave(sl, base.add(0, 0.2, 0), FcFx.fade(FcFx.MAGMA_HOT, FcFx.MAGMA_DARK, 1.8F), 28, 0.35);
@@ -129,13 +132,13 @@ public class LavaGeyserEntity extends FcSpellEntity {
         if (age() < WARMUP) {
             if (random.nextInt(2) == 0) {
                 double a = random.nextDouble() * Math.PI * 2, d = random.nextDouble() * r;
-                level().addParticle(ParticleTypes.SMOKE, getX() + Math.cos(a) * d, getY() + 0.05, getZ() + Math.sin(a) * d, 0, 0.05, 0);
+                level().addParticle(Vfx.smoke(), getX() + Math.cos(a) * d, getY() + 0.05, getZ() + Math.sin(a) * d, 0, 0.05, 0);
             }
         } else {
             float h = columnHeight(0);
             for (int i = 0; i < 2; i++) {
                 double a = random.nextDouble() * Math.PI * 2;
-                level().addParticle(ParticleTypes.FLAME, getX() + Math.cos(a) * r, getY() + random.nextDouble() * h, getZ() + Math.sin(a) * r,
+                level().addParticle(Vfx.flame(), getX() + Math.cos(a) * r, getY() + random.nextDouble() * h, getZ() + Math.sin(a) * r,
                         Math.cos(a) * 0.05, 0.1, Math.sin(a) * 0.05);
             }
         }

@@ -5,6 +5,7 @@ import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueCombat;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueFx;
+import com.renanpontes.isekaimahou.feature.class_rogue.RogueFxNet;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
@@ -51,10 +52,7 @@ public class VitalMarkEffect extends EffectGlyph {
         RogueCombat.mark(le, caster, ticks, stats.power() * ctx.powerMult());
         Statuses.applyUpTo(le, Statuses.Kind.EXPOSED, 1, ticks, caster, stats.power() * ctx.powerMult(), 2);
         Vec3 c = le.position().add(0, le.getBbHeight() + 0.45, 0);
-        for (int i = 0; i < 12; i++) {
-            double a = i * Math.PI / 6;
-            level.sendParticles(RogueFx.dust(RogueFx.BLOOD, 1.0F), c.x + Math.cos(a) * 0.55, c.y, c.z + Math.sin(a) * 0.55, 1, 0, 0, 0, 0);
-        }
+        RogueFxNet.at(level, RogueFxNet.VITAL_MARK, c, Vec3.ZERO, 1F, RogueFx.BLOOD, le.getId());
         level.sendParticles(ParticleTypes.DAMAGE_INDICATOR, c.x, c.y - 0.3, c.z, 3, 0.15, 0.1, 0.15, 0.05);
         RogueFx.sound(level, le.position(), SoundEvents.NOTE_BLOCK_HAT.value(), 0.9F, 1.8F);
         RogueFx.actionbar(caster, Component.translatable("message.isekai_mahou.class_rogue.vital.marked", le.getDisplayName()), RogueFx.BLOOD);

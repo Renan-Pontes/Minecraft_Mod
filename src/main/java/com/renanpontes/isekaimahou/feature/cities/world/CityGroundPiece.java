@@ -1,6 +1,8 @@
 package com.renanpontes.isekaimahou.feature.cities.world;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import com.renanpontes.isekaimahou.feature.cities.world.CityGeometry.Zone;
 
@@ -38,34 +40,51 @@ import net.neoforged.neoforge.common.world.PieceBeardifierModifier;
  * chunk): aplaina o terreno (fundação até o chão firme por baixo, limpa morros/árvores/restos de vila por cima),
  * calça avenidas e ruas, ergue a muralha (com passeio, ameias, lanternas e contrafortes), põe os postes nas esquinas
  * e faz o talude que liga a cidade ao terreno em volta (com a estrada saindo de cada portão).
+ * v1.4: o piso é em terraços ({@link CityTerrace}) — ruas inclinadas com meias lajes, cada quarteirão num terraço
+ * plano com muro de arrimo de pedra onde fica mais alto que a rua, degraus na frente das entradas, muralha seguindo o
+ * meio-fio de dentro.
  * Só escreve dentro do BoundingBox do chunk recebido em {@link #postProcess}.
  */
 public class CityGroundPiece extends StructurePiece implements PieceBeardifierModifier {
     /** Profundidade máxima da fundação (abismos/cavernas abaixo disso ficam como estão). */
     private static final int FOUNDATION_MAX = 64;
+    /** Degraus no máximo por entrada de lote (a rua tem 5 de largura: dois de cada lado nunca se cruzam). */
+    private static final int MAX_STEPS = 2;
     private static final BlockState AIR = Blocks.AIR.defaultBlockState();
     private static final BlockState LANTERN = Blocks.LANTERN.defaultBlockState();
 
     private final CityGeometry geo;
     private final CityFrame frame;
+    private final CityTerrace terrace;
     private final CityPalette palette;
     private final int gates;
     private final int clearHeight;
     private final long seed;
     private final BoundingBox beardBox;
+    /** Degraus na rua em frente às entradas dos lotes (coluna canônica → degrau); vazio na cidade plana. */
+    private final Map<Long, Step> steps;
 
-    public CityGroundPiece(CityGeometry geo, CityFrame frame, CityPalette palette, int gates, int clearHeight, long seed) {
-        super(CityWorldgen.GROUND_PIECE.get(), 0, makeBox(geo, frame, clearHeight));
+    /** Um degrau (escada de pedra) numa coluna de rua: altura e para onde sobe (no plano canônico). */
+    private record Step(int y, Direction facing) {}
+
+    public CityGroundPiece(CityGeometry geo, CityFrame frame, CityTerrace terrace, CityPalette palette, int gates,
+                           int clearHeight, long seed) {
+        super(CityWorldgen.GROUND_PIECE.get(), 0, makeBox(geo, frame, terrace, clearHeight));
         this.geo = geo;
         this.frame = frame;
+        this.terrace = terrace;
         this.palette = palette;
         this.gates = gates;
         this.clearHeight = clearHeight;
         this.seed = seed;
-        this.beardBox = makeBeardBox(geo, frame);
+        this.beardBox = makeBeardBox(geo, frame, terrace);
+        this.steps = makeSteps();
     }
 
-    /** Recarregada do chunk de início salvo (cidade ainda não colocada por inteiro). */
+    /**
+     * Recarregada do chunk de início salvo (cidade ainda não colocada por inteiro). Peças salvas antes da v1.4 não têm
+     * "GX"/"GZ"/"Sea": gradiente zero = piso único em floorY, exatamente como eram geradas.
+     */
     public CityGroundPiece(CompoundTag tag) {
         super(CityWorldgen.GROUND_PIECE.get(), tag);
         this.geo = new CityGeometry(tag.getInt("Rings"), tag.getBoolean("Capital"));
@@ -74,19 +93,89 @@ public class CityGroundPiece extends StructurePiece implements PieceBeardifierMo
         this.gates = tag.getInt("Gates");
         this.clearHeight = tag.getInt("Clear");
         this.seed = tag.getLong("Seed");
-        this.beardBox = makeBeardBox(geo, frame);
+        int gx = tag.contains("GX", Tag.TAG_INT) ? tag.getInt("GX") : 0;
+        int gz = tag.contains("GZ", Tag.TAG_INT) ? tag.getInt("GZ") : 0;
+        int sea = tag.contains("Sea", Tag.TAG_INT) ? tag.getInt("Sea") : frame.floorY();
+        this.terrace = new CityTerrace(geo, frame, gates, gx, gz, sea);
+        this.beardBox = makeBeardBox(geo, frame, terrace);
+        this.steps = makeSteps();
     }
 
-    private static BoundingBox makeBox(CityGeometry geo, CityFrame frame, int clearHeight) {
+    /** Caixa da peça: do ponto mais baixo do piso −16 até o mais alto + a altura de limpeza (plano = como antes). */
+    private static BoundingBox makeBox(CityGeometry geo, CityFrame frame, CityTerrace terrace, int clearHeight) {
         int e = geo.extent;
-        return new BoundingBox(frame.centerX() - e, frame.floorY() - 16, frame.centerZ() - e,
-                frame.centerX() + e, frame.floorY() + clearHeight, frame.centerZ() + e);
+        return new BoundingBox(frame.centerX() - e, terrace.lowest(e) - 16, frame.centerZ() - e,
+                frame.centerX() + e, terrace.highest(e) + clearHeight, frame.centerZ() + e);
     }
 
-    private static BoundingBox makeBeardBox(CityGeometry geo, CityFrame frame) {
+    /**
+     * Caixa do aplainamento no ruído: começa no nível MAIS BAIXO do piso inclinado (senão o beardifier aterraria a
+     * parte de baixo até floorY e ela teria de ser cortada de novo) e vai até 12 acima do mais alto. Cada coluna
+     * termina o serviço no seu próprio nível (fundação por baixo, limpeza por cima).
+     */
+    private static BoundingBox makeBeardBox(CityGeometry geo, CityFrame frame, CityTerrace terrace) {
         int r = geo.towerOut;
-        return new BoundingBox(frame.centerX() - r, frame.floorY(), frame.centerZ() - r,
-                frame.centerX() + r, frame.floorY() + 12, frame.centerZ() + r);
+        return new BoundingBox(frame.centerX() - r, terrace.lowest(r), frame.centerZ() - r,
+                frame.centerX() + r, terrace.highest(r) + 12, frame.centerZ() + r);
+    }
+
+    /**
+     * Degraus em frente ao meio da fachada de cada lote (e do castelo) quando o terraço do quarteirão ficou mais alto
+     * ou mais baixo que a rua: subindo (escada na rua encostada no terraço, com enchimento por baixo) ou descendo
+     * (a escada é rebaixada na rua). Só depende do seed e do relevo salvos — sai igual em qualquer chunk.
+     */
+    private Map<Long, Step> makeSteps() {
+        if (terrace.isFlat()) return Map.of();
+        Map<Long, Step> out = new HashMap<>();
+        for (CityPlanner.Lot lot : CityPlanner.fronts(geo, seed)) {
+            Direction f = lot.facing();
+            int lotLevel = terrace.surface(lot.x0(), lot.z0());
+            boolean ns = f.getAxis() == Direction.Axis.Z;
+            int lo = ns ? lot.x0() : lot.z0();
+            int hi = ns ? lot.x1() : lot.z1();
+            int w = hi - lo + 1;
+            for (int mid = lo + (w - 1) / 2; mid <= lo + w / 2; mid++) {
+                for (int k = 1; k <= MAX_STEPS; k++) {
+                    int x = switch (f) {
+                        case EAST -> lot.x1() + k;
+                        case WEST -> lot.x0() - k;
+                        default -> mid;
+                    };
+                    int z = switch (f) {
+                        case SOUTH -> lot.z1() + k;
+                        case NORTH -> lot.z0() - k;
+                        default -> mid;
+                    };
+                    if (!isPaved(geo.zone(x, z, gates))) break;
+                    int street = terrace.level(x, z);
+                    int y;
+                    Direction up;
+                    if (lotLevel > street) {
+                        // Terraço mais alto: a escada fica em cima da rua e sobe em direção ao lote.
+                        y = lotLevel - k + 1;
+                        if (y <= street) break;
+                        up = f.getOpposite();
+                    } else if (lotLevel < street) {
+                        // Terraço mais baixo: a escada é rebaixada na rua e sobe saindo do lote.
+                        y = lotLevel + k;
+                        if (y > street) break;
+                        up = f;
+                    } else {
+                        break;
+                    }
+                    out.put(key(x, z), new Step(y, up));
+                }
+            }
+        }
+        return out;
+    }
+
+    private static long key(int x, int z) {
+        return ((long) x << 32) | (z & 0xFFFFFFFFL);
+    }
+
+    private static boolean isPaved(Zone zone) {
+        return zone == Zone.STREET || zone == Zone.AVENUE || zone == Zone.RING;
     }
 
     private static Rotation readRotation(String name) {
@@ -109,6 +198,10 @@ public class CityGroundPiece extends StructurePiece implements PieceBeardifierMo
         tag.putInt("Gates", gates);
         tag.putInt("Clear", clearHeight);
         tag.putLong("Seed", seed);
+        // v1.4: relevo do piso (gradientes em milésimos, eixos do mundo) e o nível mínimo (mar).
+        tag.putInt("GX", terrace.gxMilli());
+        tag.putInt("GZ", terrace.gzMilli());
+        tag.putInt("Sea", terrace.minLevel());
     }
 
     // O terreno é aplainado no ruído para o nível do piso dentro da cidade (como as vilas fazem), e a peça termina
@@ -155,15 +248,22 @@ public class CityGroundPiece extends StructurePiece implements PieceBeardifierMo
     // ------------------------------------------------------------------------------------------ miolo da cidade
     private void column(WorldGenLevel level, BoundingBox box, BlockPos.MutableBlockPos pos, int wx, int wz, int lx,
                         int lz, Zone zone) {
-        int floor = frame.floorY();
+        // Nível desta coluna no piso em terraços (rua: a própria coluna; lote/praça/castelo/torre: o do seu terraço).
+        int floor = terrace.surface(lx, lz, zone);
+        boolean paved = isPaved(zone);
+        boolean half = paved && terrace.half(lx, lz);
         boolean masonry = zone == Zone.WALL || zone == Zone.STRUCTURE || zone == Zone.BUTTRESS;
+        // Lado exposto (vizinho mais baixo): vira muro de arrimo de pedra em vez de terra.
+        int face = masonry ? floor : retainingFrom(lx, lz, floor);
         // Fundação: enche o que for ar/água/planta debaixo do piso até achar chão firme.
         int bottom = Math.max(level.getMinBuildHeight() + 1, floor - FOUNDATION_MAX);
         for (int y = floor - 1; y >= bottom; y--) {
             pos.set(wx, y, wz);
-            if (!isSoft(level.getBlockState(pos))) break;
+            boolean wallFace = y >= face;
+            if (!wallFace && !isSoft(level.getBlockState(pos))) break;
             int depth = floor - y;
-            put(level, box, pos, masonry ? palette.wall.pick(hash(lx, lz, y)) : depth <= 2 ? palette.subsoil : palette.core);
+            put(level, box, pos, masonry || wallFace ? palette.wall.pick(hash(lx, lz, y))
+                    : depth <= 2 ? palette.subsoil : palette.core);
         }
         // Limpa por cima: morros, árvores e o que outra estrutura tenha deixado no lugar da cidade — até a superfície
         // real da coluna (heightmap), para não sobrar topo de morro nem copa de árvore flutuando acima do volume
@@ -175,30 +275,63 @@ public class CityGroundPiece extends StructurePiece implements PieceBeardifierMo
         }
         long h = hash(lx, lz, 0);
         switch (zone) {
-            case WALL -> wall(level, box, pos, wx, wz, lx, lz);
-            case BUTTRESS -> buttress(level, box, pos, wx, wz, lx, lz);
-            case AVENUE -> {
-                int w = Math.abs(lx) <= CityGeometry.AVENUE ? Math.abs(lx) : Math.abs(lz);
-                set(level, box, pos, wx, floor, wz, w <= 1 ? palette.avenueMain : w == 2 ? palette.avenueAccent : palette.curb);
-                lamp(level, box, pos, wx, wz, lx, lz);
-            }
-            case STREET -> {
-                set(level, box, pos, wx, floor, wz, palette.street.pick(h));
-                lamp(level, box, pos, wx, wz, lx, lz);
-            }
-            case RING -> {
-                boolean kerb = Math.max(Math.abs(lx), Math.abs(lz)) == geo.ringEnd;
-                set(level, box, pos, wx, floor, wz, kerb ? palette.curb : palette.street.pick(h));
-                lamp(level, box, pos, wx, wz, lx, lz);
+            case WALL -> wall(level, box, pos, wx, wz, lx, lz, floor);
+            case BUTTRESS -> buttress(level, box, pos, wx, wz, lx, lz, floor);
+            case AVENUE, STREET, RING -> {
+                BlockState pave;
+                if (zone == Zone.AVENUE) {
+                    int w = Math.abs(lx) <= CityGeometry.AVENUE ? Math.abs(lx) : Math.abs(lz);
+                    pave = w <= 1 ? palette.avenueMain : w == 2 ? palette.avenueAccent : palette.curb;
+                } else if (zone == Zone.RING) {
+                    boolean kerb = Math.max(Math.abs(lx), Math.abs(lz)) == geo.ringEnd;
+                    pave = kerb ? palette.curb : palette.street.pick(h);
+                } else {
+                    pave = palette.street.pick(h);
+                }
+                set(level, box, pos, wx, floor, wz, pave);
+                // Rua inclinada: meia laje do mesmo material por cima quando o relevo pede meio bloco a mais (vizinhos
+                // diferem no máximo meio bloco → anda-se sem pular).
+                if (half) set(level, box, pos, wx, floor + 1, wz, palette.slabOf(pave));
+                lamp(level, box, pos, wx, wz, lx, lz, floor, half, pave);
+                Step step = steps.get(key(lx, lz));
+                if (step != null) step(level, box, pos, wx, wz, floor, pave, step);
             }
             // Praça, castelo, lotes, torres e portões: chão provisório, o template por cima define o piso de verdade.
             default -> set(level, box, pos, wx, floor, wz, masonry ? palette.wallTop : palette.topsoil);
         }
     }
 
-    /** Muralha: corpo variado, passeio no topo, ameias por fora (com lanternas) e parapeito baixo por dentro. */
-    private void wall(WorldGenLevel level, BoundingBox box, BlockPos.MutableBlockPos pos, int wx, int wz, int lx, int lz) {
-        int floor = frame.floorY();
+    /**
+     * Primeiro y (de baixo) da face exposta desta coluna: o vizinho (4 lados) de piso mais baixo deixa à mostra os
+     * blocos entre o piso dele e o desta coluna; ali vai pedra (muro de arrimo do terraço ou da rua elevada). Muralha,
+     * torres e talude não contam (já são de pedra / tratados à parte). Sem vizinho mais baixo = {@code floor} (nada).
+     */
+    private int retainingFrom(int lx, int lz, int floor) {
+        if (terrace.isFlat()) return floor;
+        int low = floor;
+        for (Direction d : Direction.Plane.HORIZONTAL) {
+            int nx = lx + d.getStepX();
+            int nz = lz + d.getStepZ();
+            Zone nz2 = geo.zone(nx, nz, gates);
+            if (!isPaved(nz2) && nz2 != Zone.LOT && nz2 != Zone.PLAZA && nz2 != Zone.CASTLE) continue;
+            low = Math.min(low, terrace.surface(nx, nz, nz2));
+        }
+        return low + 1;
+    }
+
+    /** Degrau em frente à entrada de um lote (ver {@link #makeSteps}): enche por baixo ou rebaixa a rua. */
+    private void step(WorldGenLevel level, BoundingBox box, BlockPos.MutableBlockPos pos, int wx, int wz, int floor,
+                      BlockState pave, Step step) {
+        for (int y = floor + 1; y < step.y(); y++) set(level, box, pos, wx, y, wz, pave);
+        for (int y = step.y() + 1; y <= floor + 1; y++) set(level, box, pos, wx, y, wz, AIR);
+        pos.set(wx, step.y(), wz);
+        put(level, box, pos, palette.buttressCap.setValue(StairBlock.FACING, step.facing()).rotate(level, pos, frame.rotation()));
+    }
+
+    /** Muralha: corpo variado, passeio no topo, ameias por fora (com lanternas) e parapeito baixo por dentro. O nível
+     *  é o do meio-fio de dentro na mesma posição (igual nas 3 colunas de espessura). */
+    private void wall(WorldGenLevel level, BoundingBox box, BlockPos.MutableBlockPos pos, int wx, int wz, int lx, int lz,
+                      int floor) {
         boolean ns = Math.abs(lz) >= geo.wallIn;
         int along = ns ? lx : lz;
         int depth = (ns ? Math.abs(lz) : Math.abs(lx)) - geo.wallIn;
@@ -222,12 +355,23 @@ public class CityGroundPiece extends StructurePiece implements PieceBeardifierMo
                     .setValue(WallBlock.UP, false);
             pos.set(wx, top, wz);
             put(level, box, pos, parapet.rotate(level, pos, frame.rotation()));
+        } else if (!terrace.isFlat()) {
+            // Meio do passeio: onde o trecho vizinho da muralha sobe um bloco, um degrau de escada.
+            for (int s = 1; s >= -1; s -= 2) {
+                int nx = ns ? lx + s : lx;
+                int nz = ns ? lz : lz + s;
+                if (geo.zone(nx, nz, gates) != Zone.WALL || terrace.wallLevel(nx, nz) <= floor) continue;
+                Direction up = ns ? (s > 0 ? Direction.EAST : Direction.WEST) : (s > 0 ? Direction.SOUTH : Direction.NORTH);
+                pos.set(wx, top, wz);
+                put(level, box, pos, palette.buttressCap.setValue(StairBlock.FACING, up).rotate(level, pos, frame.rotation()));
+                break;
+            }
         }
     }
 
     /** Contraforte encostado na face de fora da muralha, com escada de pedra de remate. */
-    private void buttress(WorldGenLevel level, BoundingBox box, BlockPos.MutableBlockPos pos, int wx, int wz, int lx, int lz) {
-        int floor = frame.floorY();
+    private void buttress(WorldGenLevel level, BoundingBox box, BlockPos.MutableBlockPos pos, int wx, int wz, int lx, int lz,
+                          int floor) {
         set(level, box, pos, wx, floor, wz, palette.wallTop);
         for (int y = 1; y <= 4; y++) set(level, box, pos, wx, floor + y, wz, palette.wall.pick(hash(lx, lz, y)));
         Direction towardWall = switch (CityGeometry.side(lx, lz)) {
@@ -240,12 +384,17 @@ public class CityGroundPiece extends StructurePiece implements PieceBeardifierMo
         put(level, box, pos, palette.buttressCap.setValue(StairBlock.FACING, towardWall).rotate(level, pos, frame.rotation()));
     }
 
-    /** Poste com lanterna nas esquinas dos quarteirões. */
-    private void lamp(WorldGenLevel level, BoundingBox box, BlockPos.MutableBlockPos pos, int wx, int wz, int lx, int lz) {
+    /** Poste com lanterna nas esquinas dos quarteirões (em cima da meia laje, ela vira bloco inteiro de base). */
+    private void lamp(WorldGenLevel level, BoundingBox box, BlockPos.MutableBlockPos pos, int wx, int wz, int lx, int lz,
+                      int floor, boolean half, BlockState pave) {
         if (!geo.isLampSpot(lx, lz)) return;
-        int floor = frame.floorY();
-        for (int y = 1; y <= 3; y++) set(level, box, pos, wx, floor + y, wz, palette.lampPost);
-        set(level, box, pos, wx, floor + 4, wz, LANTERN);
+        int base = floor;
+        if (half) {
+            base = floor + 1;
+            set(level, box, pos, wx, base, wz, pave);
+        }
+        for (int y = 1; y <= 3; y++) set(level, box, pos, wx, base + y, wz, palette.lampPost);
+        set(level, box, pos, wx, base + 4, wz, LANTERN);
     }
 
     // ------------------------------------------------------------------------------------------ talude em volta
@@ -255,7 +404,9 @@ public class CityGroundPiece extends StructurePiece implements PieceBeardifierMo
      * terra embaixo dela deixaria a casa flutuando, e encher o entorno enterraria o interior.
      */
     private void margin(WorldGenLevel level, BoundingBox box, BlockPos.MutableBlockPos pos, int wx, int wz, int lx, int lz) {
-        int floor = frame.floorY();
+        // Parte do nível do pé da muralha logo ali dentro (a estrada do portão, do nível do portão) e vai até o chão
+        // natural.
+        int floor = isGateRoad(lx, lz) ? terrace.gateLevel(CityGeometry.side(lx, lz)) : terrace.surface(lx, lz, Zone.MARGIN);
         int m = Math.max(Math.abs(lx), Math.abs(lz));
         float t = Mth.clamp((m - geo.wallOut) / (float) (geo.extent - geo.wallOut), 0F, 1F);
         float s = t * t * (3F - 2F * t);
@@ -315,7 +466,7 @@ public class CityGroundPiece extends StructurePiece implements PieceBeardifierMo
     private void removeStrayEntities(WorldGenLevel level, ChunkPos chunkPos) {
         ChunkAccess chunk = level.getChunk(chunkPos.x, chunkPos.z);
         if (!(chunk instanceof ProtoChunk proto) || chunk instanceof ImposterProtoChunk) return;
-        int floor = frame.floorY();
+        int floor = terrace.lowest(geo.towerOut);
         proto.getEntities().removeIf(tag -> {
             if (!tag.getString("id").startsWith("minecraft:")) return false;
             ListTag p = tag.getList("Pos", Tag.TAG_DOUBLE);

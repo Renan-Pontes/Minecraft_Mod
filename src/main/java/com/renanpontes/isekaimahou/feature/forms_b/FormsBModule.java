@@ -6,6 +6,10 @@ import com.renanpontes.isekaimahou.feature.forms_b.glyph.AuraForm;
 import com.renanpontes.isekaimahou.feature.forms_b.glyph.ConjureForm;
 import com.renanpontes.isekaimahou.feature.forms_b.glyph.IllusionForm;
 import com.renanpontes.isekaimahou.feature.forms_b.glyph.OrbitForm;
+import com.renanpontes.isekaimahou.feature.forms_b.glyph.OrderGlyphs;
+import com.renanpontes.isekaimahou.feature.forms_b.summon.SummonCommands;
+import com.renanpontes.isekaimahou.feature.forms_b.summon.SummonForge;
+import com.renanpontes.isekaimahou.feature.forms_b.summon.SummonNet;
 import com.renanpontes.isekaimahou.feature.forms_b.glyph.PortalForm;
 import com.renanpontes.isekaimahou.feature.forms_b.glyph.PulseForm;
 import com.renanpontes.isekaimahou.feature.forms_b.glyph.RuneForm;
@@ -24,6 +28,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 /**
  * Modulo "forms_b": formas neutras (Arcano) conjunto B — Zona, Muralha, Runa, Órbita, Aura, Pulso,
@@ -53,6 +58,19 @@ public class FormsBModule implements Module {
         GlyphRegistry.register(new SealForm());
         GlyphRegistry.register(new PortalForm());
 
+        // v1.0 (onda 4) — Forja de Invocações: glifos de ordem, pacotes, comandos e os eventos que fazem as criaturas
+        // obedecerem à receita (ver SummonForge)
+        OrderGlyphs.register();
+        modBus.addListener(RegisterPayloadHandlersEvent.class, SummonNet::register);
+        SummonCommands.register();
+        NeoForge.EVENT_BUS.addListener(SummonForge::onJoin);
+        NeoForge.EVENT_BUS.addListener(SummonForge::onLeave);
+        NeoForge.EVENT_BUS.addListener(SummonForge::onTrack);
+        NeoForge.EVENT_BUS.addListener(SummonForge::onInteract);
+        NeoForge.EVENT_BUS.addListener(SummonForge::onDamage);
+        NeoForge.EVENT_BUS.addListener(SummonForge::onServerTick);
+        NeoForge.EVENT_BUS.addListener(SummonForge::onCast);
+
         NeoForge.EVENT_BUS.addListener(AuraManager::onServerTick);
         NeoForge.EVENT_BUS.addListener(SealHandler::onAttack);
         NeoForge.EVENT_BUS.addListener(SealHandler::onDamage);
@@ -64,6 +82,7 @@ public class FormsBModule implements Module {
         AuraManager.clear();
         PersistentSpells.clear();
         SealHandler.clear();
+        SummonForge.clear();
     }
 
     private static void attributes(EntityAttributeCreationEvent event) {

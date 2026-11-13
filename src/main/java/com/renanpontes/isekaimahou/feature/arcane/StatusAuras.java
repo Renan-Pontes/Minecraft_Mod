@@ -7,9 +7,10 @@ import java.util.UUID;
 
 import com.renanpontes.isekaimahou.core.CoreRegistries;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -29,9 +30,9 @@ public final class StatusAuras {
     private record Entry(UUID id, ResourceKey<Level> dim, Kind kind, long until) {}
 
     private static final List<Entry> ENTRIES = new ArrayList<>();
-    private static final DustParticleOptions STAR = ArcaneUtil.dust(0xFFF27A, 0.9F);
-    private static final DustParticleOptions MUTE = ArcaneUtil.dust(0x9A9AB0, 1.0F);
-    private static final DustParticleOptions MARK = ArcaneUtil.dust(0xFF4040, 0.8F);
+    private static final ParticleOptions STAR = ArcaneUtil.dust(0xFFF27A, 0.9F);
+    private static final ParticleOptions MUTE = ArcaneUtil.dust(0x9A9AB0, 1.0F);
+    private static final ParticleOptions MARK = ArcaneUtil.dust(0xFF4040, 0.8F);
 
     public static void track(LivingEntity e, Kind kind, int ticks) {
         if (!(e.level() instanceof ServerLevel level)) return;
@@ -79,13 +80,13 @@ public final class StatusAuras {
                         level.sendParticles(STAR, e.getX() + Math.cos(ang) * r, top, e.getZ() + Math.sin(ang) * r, 1, 0, 0, 0, 0);
                     }
                     if (tick % 12 == 0) {
-                        level.sendParticles(ParticleTypes.CRIT, e.getX(), top, e.getZ(), 2, 0.2, 0.05, 0.2, 0.05);
+                        level.sendParticles(Vfx.crit(), e.getX(), top, e.getZ(), 2, 0.2, 0.05, 0.2, 0.05);
                     }
                 }
                 case SILENCE -> {
                     level.sendParticles(MUTE, e.getX(), top, e.getZ(), 2, 0.15, 0.05, 0.15, 0);
                     if (tick % 9 == 0) {
-                        level.sendParticles(ParticleTypes.SMOKE, e.getX(), e.getEyeY(), e.getZ(), 2, 0.1, 0.05, 0.1, 0.01);
+                        level.sendParticles(Vfx.smoke(), e.getX(), e.getEyeY(), e.getZ(), 2, 0.1, 0.05, 0.1, 0.01);
                     }
                 }
                 case MARK -> {

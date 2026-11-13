@@ -52,16 +52,18 @@ public final class ObjectiveTracker {
 
     /**
      * Registra (ou substitui) um provedor. {@code id} único (ex.: "trials", "journal").
-     * O provedor é chamado a cada tick do cliente e deve ser barato; devolva lista vazia quando não há nada.
+     * O provedor é chamado a cada 4 ticks do cliente (v1.3) e deve ser barato; devolva lista vazia quando não há nada.
      */
     public static synchronized void register(String id, int priority, Supplier<List<ObjectiveLine>> provider) {
         Provider old = PROVIDERS.get(id);
         PROVIDERS.put(id, new Provider(id, priority, old != null ? old.order() : registrations++, provider));
         FAILED.remove(id);
+        forceRefresh = true;
     }
 
     public static synchronized void unregister(String id) {
         PROVIDERS.remove(id);
+        forceRefresh = true;
     }
 
     /**
@@ -125,6 +127,7 @@ public final class ObjectiveTracker {
     public static void setVisible(boolean on) {
         if (isEnabled() != on) setEnabled(on);
         if (!on) current = List.of();
+        forceRefresh = true;
     }
 
     /** Páginas do rastreador: J cicla fechado → Objetivos → Missões da Guilda → fechado. */
@@ -156,7 +159,7 @@ public final class ObjectiveTracker {
             setEnabled(false);
             msg = Component.translatable("objectives.isekai_mahou.hidden", CoreKeys.TRACKER.getTranslatedKeyMessage());
         }
-        tick();
+        refresh();
         Minecraft.getInstance().gui.setOverlayMessage(msg.copy().withStyle(ChatFormatting.GOLD), false);
     }
 
@@ -165,8 +168,21 @@ public final class ObjectiveTracker {
         return GUILD_PROVIDERS.contains(p.id()) == (page == Page.GUILD);
     }
 
-    /** Recalcula as linhas (chamado a cada tick do cliente pelo núcleo). */
+    /** v1.3: recalcula a cada 4 ticks (0,2 s) — 15 provedores por tick pesavam à toa; J/registro forçam na hora. */
+    private static final int REFRESH_TICKS = 4;
+    private static int refreshTimer;
+    private static volatile boolean forceRefresh = true;
+
+    /** Chamado a cada tick do cliente pelo núcleo. */
     public static void tick() {
+        if (!forceRefresh && ++refreshTimer < REFRESH_TICKS) return;
+        refresh();
+    }
+
+    /** Recalcula as linhas agora. */
+    public static void refresh() {
+        refreshTimer = 0;
+        forceRefresh = false;
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || !isEnabled()) {
             current = List.of();
@@ -208,6 +224,7 @@ public final class ObjectiveTracker {
     /** Limpa o cache (saída do mundo). */
     public static void clear() {
         current = List.of();
+        forceRefresh = true;
     }
 
     private ObjectiveTracker() {}

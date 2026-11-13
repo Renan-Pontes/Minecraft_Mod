@@ -32,8 +32,14 @@ import net.neoforged.bus.api.IEventBus;
  *       {@link RelicDrops}): a única forma de aprender skills de OUTRA raça; nunca são esquecidas.</li>
  *   <li>Aparência racial (orelhas, chifres, caudas, auréola, olhos e patas, corpo espectral, geleia...) e os visuais das
  *       Transformações ({@code RaceFeatureLayer}).</li>
+ *   <li>release 1.0: os dois altares ({@link Reincarnation}) — Altar do Recomeço (talentos) e Altar da Reencarnação
+ *       (raça e classe, custo muito alto) — e as Transformações mais bonitas (entrada, aura, partícula e pose por raça).</li>
  * </ul>
- * Comandos de op: {@code /mahou character info|feat|form|reset|rebuild}.
+ * Comandos de op: {@code /mahou character info|feat|form|transform|reset|rebuild} e (release 1.0)
+ * {@code altars} (dá os dois altares), {@code renew <alvos>} (Recomeço grátis), {@code class <alvos> <classe>} (troca de
+ * classe grátis) e {@code race <alvos> <raça>} (troca a raça na hora, para testar as 11 Transformações).
+ * v1.7 (raças de anime): {@code predator <alvos> <habilidade|all|clear>} ensina/limpa as habilidades copiadas do
+ * Predador do Slime ({@link SlimePredator}).
  */
 public class CharacterModule implements Module {
     @Override
@@ -44,13 +50,21 @@ public class CharacterModule implements Module {
     @Override
     public void init(IEventBus modBus) {
         CharacterContent.register(modBus);
+        RaceSounds.register(modBus);
         CharacterNetwork.register(modBus);
         CharacterService.init();
         RacePassives.init();
         RaceGlyphs.register();
         RaceProgress.init();
         RaceForms.init();
+        // v1.7 — raças de anime: Predador do Slime (Rimuru), fios da Aracnídea (Kumoko), Dragon Slayer, Geld, Anos, Frieren
+        SlimePredator.init();
+        KumoThreads.init();
+        RaceKits.init();
         RelicDrops.init();
+        // release 1.0: os santuários dos dois altares viram ponto no minimapa quando o jogador os encontra
+        com.renanpontes.isekaimahou.feature.travel.guide.MapMarkers.registerStructure("renewal_shrine", "sanctum");
+        com.renanpontes.isekaimahou.feature.travel.guide.MapMarkers.registerStructure("reincarnation_shrine", "sanctum");
         registerCommands();
     }
 
@@ -73,6 +87,16 @@ public class CharacterModule implements Module {
                     c.getSource().sendSuccess(() -> Component.translatable("commands.isekai_mahou.character.form", ps.size()), true);
                     return ps.size();
                 })))
+                // v1.3.1 (testes): transforma já, sem nível de raça V nem recarga
+                .then(Commands.literal("transform").then(Commands.argument("targets", EntityArgument.players()).executes(c -> {
+                    int n = 0;
+                    for (ServerPlayer p : EntityArgument.getPlayers(c, "targets")) {
+                        if (RaceForms.forceTransform(p)) n++;
+                    }
+                    int done = n;
+                    c.getSource().sendSuccess(() -> Component.translatable("commands.isekai_mahou.character.transform", done), true);
+                    return done;
+                })))
                 .then(Commands.literal("reset").then(Commands.argument("targets", EntityArgument.players()).executes(c -> {
                     Collection<ServerPlayer> ps = EntityArgument.getPlayers(c, "targets");
                     for (ServerPlayer p : ps) {
@@ -83,6 +107,54 @@ public class CharacterModule implements Module {
                     c.getSource().sendSuccess(() -> Component.translatable("commands.isekai_mahou.character.reset", ps.size()), true);
                     return ps.size();
                 })))
+                // release 1.0 (testes dos altares e das Transformações)
+                .then(Commands.literal("altars").executes(c -> {
+                    ServerPlayer p = c.getSource().getPlayerOrException();
+                    com.renanpontes.isekaimahou.core.api.Rewards.give(p, new net.minecraft.world.item.ItemStack(CharacterContent.RENEWAL_ALTAR_ITEM.get()));
+                    com.renanpontes.isekaimahou.core.api.Rewards.give(p, new net.minecraft.world.item.ItemStack(CharacterContent.ALTAR_ITEM.get()));
+                    return 1;
+                }))
+                .then(Commands.literal("renew").then(Commands.argument("targets", EntityArgument.players()).executes(c -> {
+                    int n = 0;
+                    for (ServerPlayer p : EntityArgument.getPlayers(c, "targets")) if (Reincarnation.renew(p, true)) n++;
+                    int done = n;
+                    c.getSource().sendSuccess(() -> Component.translatable("commands.isekai_mahou.character.renew", done), true);
+                    return done;
+                })))
+                .then(Commands.literal("class").then(Commands.argument("targets", EntityArgument.players())
+                        .then(Commands.argument("class", StringArgumentType.word()).suggests((c, b) -> SharedSuggestionProvider.suggest(
+                                Arrays.stream(com.renanpontes.isekaimahou.core.MagicPath.PLAYABLE).map(p -> p.id), b)).executes(c -> {
+                            var path = com.renanpontes.isekaimahou.core.MagicPath.byId(StringArgumentType.getString(c, "class"));
+                            int n = 0;
+                            for (ServerPlayer p : EntityArgument.getPlayers(c, "targets")) if (Reincarnation.changeClass(p, path, true)) n++;
+                            int done = n;
+                            c.getSource().sendSuccess(() -> Component.translatable("commands.isekai_mahou.character.class", done), true);
+                            return done;
+                        }))))
+                .then(Commands.literal("race").then(Commands.argument("targets", EntityArgument.players())
+                        .then(Commands.argument("race", StringArgumentType.word()).suggests((c, b) -> SharedSuggestionProvider.suggest(
+                                Arrays.stream(Race.ALL).map(r -> r.id), b)).executes(c -> {
+                            String id = StringArgumentType.getString(c, "race");
+                            Race r = Race.byId(id);
+                            if (r == null) {
+                                c.getSource().sendFailure(Component.translatable("commands.isekai_mahou.character.unknown_race", id));
+                                return 0;
+                            }
+                            Collection<ServerPlayer> ps = EntityArgument.getPlayers(c, "targets");
+                            for (ServerPlayer p : ps) {
+                                CharacterContent.data(p).choose(r, null);
+                                RaceProgress.sync(p);
+                                CharacterService.flush(p);
+                                RaceGlyphs.reconcile(p, false);
+                            }
+                            c.getSource().sendSuccess(() -> Component.translatable("commands.isekai_mahou.character.race", ps.size(), r.displayName()), true);
+                            return ps.size();
+                        }))))
+                // v1.7: Predador do Slime — ensina uma habilidade copiada (ou "all"/"clear") para testar
+                .then(Commands.literal("predator").then(Commands.argument("targets", EntityArgument.players())
+                        .then(Commands.argument("mimic", StringArgumentType.word()).suggests((c, b) -> SharedSuggestionProvider.suggest(
+                                java.util.stream.Stream.concat(Arrays.stream(SlimePredator.Mimic.ALL).map(m -> m.id),
+                                        java.util.stream.Stream.of("all", "clear")), b)).executes(c -> predator(c)))))
                 .then(Commands.literal("rebuild").then(Commands.argument("targets", EntityArgument.players()).executes(c -> {
                     Collection<ServerPlayer> ps = EntityArgument.getPlayers(c, "targets");
                     ps.forEach(CharacterService::grantRebuild);
@@ -103,6 +175,29 @@ public class CharacterModule implements Module {
             c.getSource().sendSuccess(() -> Component.literal("  " + dbg).withColor(0xA89EC0), false);
         }
         return players.size();
+    }
+
+    private static int predator(CommandContext<CommandSourceStack> c) throws CommandSyntaxException {
+        String id = StringArgumentType.getString(c, "mimic");
+        SlimePredator.Mimic one = SlimePredator.Mimic.byId(id);
+        if (one == null && !id.equals("all") && !id.equals("clear")) {
+            c.getSource().sendFailure(Component.literal("? " + id));
+            return 0;
+        }
+        Collection<ServerPlayer> ps = EntityArgument.getPlayers(c, "targets");
+        for (ServerPlayer p : ps) {
+            CharacterData d = CharacterContent.data(p);
+            if (id.equals("clear")) {
+                d.clearMimics();
+            } else if (one != null) {
+                SlimePredator.learn(p, d, one);
+            } else {
+                for (SlimePredator.Mimic m : SlimePredator.Mimic.ALL) SlimePredator.learn(p, d, m);
+            }
+            CharacterService.flush(p);
+        }
+        c.getSource().sendSuccess(() -> Component.literal("predator " + id + " → " + ps.size()), true);
+        return ps.size();
     }
 
     private static int feat(CommandContext<CommandSourceStack> c, String id) throws CommandSyntaxException {

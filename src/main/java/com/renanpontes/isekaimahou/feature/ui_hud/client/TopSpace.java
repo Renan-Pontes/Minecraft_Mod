@@ -51,7 +51,8 @@ final class TopSpace {
 
     /** Base da faixa do card: card com as 2 linhas extras + a linha do lugar + folga. */
     static int cardLaneBottom() {
-        return HudCard.maxBottom() + 2 + HudPlace.RESERVED + 2;
+        // Em pixels reais: o cartão acompanha a opção de tamanho do HUD, o topo central não
+        return HudScale.toReal(HudCard.maxBottom() + 2 + HudPlace.RESERVED + 2);
     }
 
     /**
@@ -64,7 +65,7 @@ final class TopSpace {
 
     /** Borda direita da faixa do card (0 = card não desenhado neste quadro: espectador, F3). */
     private static int cardRight() {
-        return HudCard.bottom > 0 ? HudCard.laneRight : 0;
+        return HudCard.bottom > 0 ? HudScale.toReal(HudCard.laneRight) : 0;
     }
 
     /** O Olho Analítico está ligado? (a faixa dele fica reservada mesmo sem alvo: nada ao redor "pula") */

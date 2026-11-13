@@ -10,6 +10,7 @@ import com.renanpontes.isekaimahou.core.Progression;
 import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.feature.class_gambler.AnimeTricks;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbFx;
+import com.renanpontes.isekaimahou.feature.class_gambler.GbFxNet;
 import com.renanpontes.isekaimahou.feature.class_gambler.GbRegistries;
 import com.renanpontes.isekaimahou.feature.class_gambler.entity.GamblerDiceEntity;
 import com.renanpontes.isekaimahou.feature.class_gambler.luck.LuckService;
@@ -85,11 +86,7 @@ public class AllInEffect extends EffectGlyph {
         showDice(level, le, theirs, 0xC0504A);
         // o fio de ouro da aposta entre os dois
         Vec3 a = caster.position().add(0, caster.getBbHeight() + 0.6, 0), b = le.position().add(0, le.getBbHeight() + 0.6, 0);
-        int steps = (int) Math.min(48, a.distanceTo(b) * 3);
-        for (int i = 0; i <= steps; i++) {
-            Vec3 p = a.lerp(b, i / (double) Math.max(1, steps));
-            level.sendParticles(GbFx.dust(i % 2 == 0 ? GbFx.GOLD : GbFx.PINK, 0.9F), p.x, p.y, p.z, 1, 0, 0, 0, 0);
-        }
+        GbFxNet.at(level, GbFxNet.ALL_IN, a, b, 1F, GbFx.GOLD, caster.getId());
         if (!ctx.formStats().silent) {
             Announce.send(caster, Component.translatable("announce.isekai_mahou.gambler.all_in"), GbFx.GOLD, Announce.STYLE_SPELL);
         }

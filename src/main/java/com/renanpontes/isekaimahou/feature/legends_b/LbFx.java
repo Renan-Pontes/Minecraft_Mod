@@ -2,11 +2,11 @@ package com.renanpontes.isekaimahou.feature.legends_b;
 
 import org.joml.Vector3f;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -28,8 +28,9 @@ public final class LbFx {
         return new Vector3f(((rgb >> 16) & 255) / 255F, ((rgb >> 8) & 255) / 255F, (rgb & 255) / 255F);
     }
 
-    public static DustParticleOptions dust(int rgb, float size) {
-        return new DustParticleOptions(vec(rgb), Math.max(0.05F, Math.min(4.0F, size)));
+    public static ParticleOptions dust(int rgb, float size) {
+        // v1.3: brilho fx aditivo (mesmo tamanho do pó do vanilla; respeita o preset gráfico no cliente)
+        return com.renanpontes.isekaimahou.core.ElementFx.glow(rgb, size);
     }
 
     /** Pó que muda de cor enquanto some (desintegração: cor da magia → preto). */
@@ -120,8 +121,8 @@ public final class LbFx {
         double w = e.getBbWidth() * 0.45, h = e.getBbHeight() * 0.45;
         send(level, fade(rgb, 0x110018, 1.1F), c.x, c.y, c.z, count, w, h, w, 0.02);
         send(level, fade(0x000000, rgb, 0.7F), c.x, c.y, c.z, count / 2, w, h, w, 0.01);
-        send(level, ParticleTypes.REVERSE_PORTAL, c.x, c.y, c.z, count / 2, w, h, w, 0.04);
-        send(level, ParticleTypes.ASH, c.x, c.y + h, c.z, count / 2, w, 0.2, w, 0.02);
+        send(level, Vfx.reversePortal(), c.x, c.y, c.z, count / 2, w, h, w, 0.04);
+        send(level, Vfx.ash(), c.x, c.y + h, c.z, count / 2, w, 0.2, w, 0.02);
     }
 
     private LbFx() {}

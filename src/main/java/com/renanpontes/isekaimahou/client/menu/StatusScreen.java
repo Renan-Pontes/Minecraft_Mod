@@ -302,6 +302,25 @@ public class StatusScreen extends Screen {
         renderTitlePlate(g);
     }
 
+    // ---------------------------------------------------------------- v1.3: engrenagem → Desempenho (Modo do PC)
+    private static final int GEAR_W = 15;
+
+    private int gearX() { return left + panelW - GEAR_W - 8; }
+
+    private boolean gearHover(double mx, double my) {
+        int gx = gearX(), gy = top - 6;
+        if (true) return false; // v1.0: as configurações ficam só no menu do Minecraft (pedido do dono)
+        return mx >= gx && mx < gx + GEAR_W && my >= gy && my < gy + 11;
+    }
+
+    /** Plaquinha com a engrenagem na borda de cima, à direita (não disputa espaço com as categorias). */
+    private void renderGear(GuiGraphics g, boolean hover) {
+        int gx = gearX(), gy = top - 6;
+        MahouUi.roundRect(g, gx, gy, GEAR_W, 11, hover ? 0xFF4A3A60 : 0xFF2C2238, 0xFF14101C);
+        MahouUi.roundOutline(g, gx, gy, GEAR_W, 11, hover ? MahouUi.GOLD_PALE : MahouUi.GOLD);
+        g.drawString(font, "⚙", gx + (GEAR_W - font.width("⚙")) / 2, gy + 2, hover ? 0xFFFFFFFF : MahouUi.GOLD_PALE, false);
+    }
+
     private void renderCategory(GuiGraphics g, CatSlot s, boolean active, boolean hover) {
         int x = s.x(), y = top + BAR_Y, w = s.w(), h = BAR_H;
         if (active) {
@@ -385,6 +404,7 @@ public class StatusScreen extends Screen {
         if (hc != null && !hc.named()) g.renderTooltip(font, hc.cat().title(), mouseX, mouseY);
         SubSlot hs = subAt(mouseX, mouseY);
         if (hs != null && font.width(hs.entry().title()) > hs.w() - 21) g.renderTooltip(font, hs.entry().title(), mouseX, mouseY);
+        if (gearHover(mouseX, mouseY)) g.renderTooltip(font, Component.translatable("screen.isekai_mahou.perf.gear"), mouseX, mouseY);
     }
 
     @Override
@@ -395,6 +415,11 @@ public class StatusScreen extends Screen {
     // ---------------------------------------------------------------- Entrada
     @Override
     public boolean mouseClicked(double mx, double my, int button) {
+        if (button == 0 && gearHover(mx, my)) {
+            playClick();
+            com.renanpontes.isekaimahou.client.perf.PerfClient.open(this);
+            return true;
+        }
         CatSlot c = catAt(mx, my);
         if (c != null) {
             if (button == 0) openCategory(c.cat());

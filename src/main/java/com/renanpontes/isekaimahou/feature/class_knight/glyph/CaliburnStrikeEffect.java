@@ -4,6 +4,7 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightFx;
+import com.renanpontes.isekaimahou.feature.class_knight.KnightFxNet;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightPower;
 import com.renanpontes.isekaimahou.feature.class_knight.KnightSwords;
 import com.renanpontes.isekaimahou.feature.class_knight.LegendSword;
@@ -58,11 +59,8 @@ public class CaliburnStrikeEffect extends EffectGlyph {
         ctx.damage(le, DAMAGE * (chosen ? 1.4F : 1F) * KnightPower.mult(ctx), stats, null);
         Vec3 c = KnightFx.center(le);
         // a lâmina dourada desce do céu sobre o alvo
-        KnightFx.line(sl, c.add(0, 6, 0), c, GOLD, 0.25, 1.6F);
-        KnightFx.pillar(sl, le.position(), 4, 0.5, GOLD);
+        KnightFxNet.at(sl, KnightFxNet.CALIBURN, c, Vec3.ZERO, 1F, GOLD, le.getId());
         KnightFx.crescent(sl, c, KnightFx.flat(c.subtract(caster != null ? caster.position() : c), new Vec3(0, 0, 1)), 1.3, GOLD, 9, 1.4F);
-        sl.sendParticles(ParticleTypes.END_ROD, c.x, c.y + 0.5, c.z, 16, 0.3, 0.8, 0.3, 0.05);
-        sl.sendParticles(ParticleTypes.WAX_ON, c.x, c.y, c.z, 10, 0.4, 0.5, 0.4, 0.1);
         KnightFx.sound(sl, c, SoundEvents.BELL_BLOCK, 0.9F, 1.4F);
         KnightFx.sound(sl, c, SoundEvents.PLAYER_ATTACK_SWEEP, 1.0F, 1.1F);
         if (caster != null && caster.isAlive()) {

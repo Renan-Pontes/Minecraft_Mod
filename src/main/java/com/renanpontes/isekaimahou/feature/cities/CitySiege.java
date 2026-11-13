@@ -216,15 +216,29 @@ public final class CitySiege {
         int wallIn = be.radius() - 8;
         for (Direction d : Direction.Plane.HORIZONTAL) {
             boolean clear = true;
+            // v1.4: cidade em terraços — o corredor do portão pode subir/descer meio bloco por coluna; segue o vão
+            // andável (2 de altura, chão firme) a partir do nível mais perto do piso, sem pular mais de 1 bloco
+            int prevY = Integer.MIN_VALUE;
             for (int k = wallIn - 1; k <= be.radius() && clear; k++) {
-                BlockPos p = new BlockPos(h.getX() + d.getStepX() * k, floor + 1, h.getZ() + d.getStepZ() * k);
-                if (!sl.isLoaded(p)) {
+                int px = h.getX() + d.getStepX() * k, pz = h.getZ() + d.getStepZ() * k;
+                if (!sl.isLoaded(new BlockPos(px, floor + 1, pz))) {
                     clear = false;
                     break;
                 }
-                for (int y = 0; y < 2 && clear; y++) {
-                    if (!sl.getBlockState(p.above(y)).getCollisionShape(sl, p.above(y)).isEmpty()) clear = false;
+                int found = Integer.MIN_VALUE;
+                int from = prevY == Integer.MIN_VALUE ? floor + 1 : prevY;
+                int span = prevY == Integer.MIN_VALUE ? 6 : 1;
+                for (int i = 0; i <= 2 * span && found == Integer.MIN_VALUE; i++) {
+                    int dy = (i % 2 == 0 ? 1 : -1) * ((i + 1) / 2);
+                    BlockPos q = new BlockPos(px, from + dy, pz);
+                    if (sl.getBlockState(q).getCollisionShape(sl, q).isEmpty()
+                            && sl.getBlockState(q.above()).getCollisionShape(sl, q.above()).isEmpty()
+                            && !sl.getBlockState(q.below()).getCollisionShape(sl, q.below()).isEmpty()) {
+                        found = q.getY();
+                    }
                 }
+                if (found == Integer.MIN_VALUE) clear = false;
+                prevY = found;
             }
             if (clear) open.add(d);
         }

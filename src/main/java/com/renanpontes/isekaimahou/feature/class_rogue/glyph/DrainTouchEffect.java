@@ -6,6 +6,7 @@ import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_rogue.RogueFx;
+import com.renanpontes.isekaimahou.feature.class_rogue.RogueFxNet;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellScheduler;
@@ -75,18 +76,8 @@ public class DrainTouchEffect extends EffectGlyph {
         }
         // orbes viajando do alvo até você em 6 ticks
         Vec3 from = RogueFx.center(le);
-        for (int k = 0; k < 6; k++) {
-            final int step = k;
-            SpellScheduler.schedule(k, () -> {
-                if (!caster.isAlive() || caster.level() != sl) return;
-                Vec3 to = RogueFx.center(caster);
-                Vec3 p = from.add(to.subtract(from).scale((step + 1) / 6.0));
-                sl.sendParticles(RogueFx.dust(step % 2 == 0 ? COLOR : 0x1A3A22, 1.3F), p.x, p.y, p.z, 4, 0.1, 0.1, 0.1, 0);
-                if (step == 5) sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, to.x, to.y + 0.4, to.z, 5, 0.3, 0.3, 0.3, 0);
-            });
-        }
+        RogueFxNet.at(sl, RogueFxNet.DRAIN, from, Vec3.ZERO, 1F, COLOR, caster.getId(), 0);
         sl.sendParticles(ParticleTypes.SOUL, from.x, from.y, from.z, 6, 0.25, 0.3, 0.25, 0.02);
-        sl.sendParticles(RogueFx.dust(0x1A3A22, 1.6F), from.x, from.y, from.z, 12, 0.3, 0.4, 0.3, 0);
         RogueFx.sound(sl, from, SoundEvents.SOUL_ESCAPE.value(), 1.2F, 0.8F);
         RogueFx.sound(sl, from, SoundEvents.ZOMBIE_VILLAGER_CURE, 0.3F, 1.8F);
     }

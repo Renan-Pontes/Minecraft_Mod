@@ -9,6 +9,7 @@ import com.renanpontes.isekaimahou.feature.fusions_b.FbUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -59,7 +60,7 @@ public class InfernalChainEntity extends FbSpellEntity {
         sl.addFreshEntity(c);
         target.addEffect(new MobEffectInstance(CoreRegistries.ROOTED, ticks, 0), ctx.caster());
         FbFx.ring(sl, at.add(0, 0.1, 0), FbFx.dust(FbFx.HELLFIRE, 1.4F), 1.7, 28, 0);
-        FbFx.ring(sl, at.add(0, 0.15, 0), ParticleTypes.FLAME, 1.7, 14, 0.02);
+        FbFx.ring(sl, at.add(0, 0.15, 0), Vfx.flame(), 1.7, 14, 0.02);
         sl.sendParticles(ParticleTypes.LAVA, at.x, at.y + 0.2, at.z, 6, 0.8, 0.1, 0.8, 0);
         FbFx.sound(sl, at, SoundEvents.CHAIN_PLACE, 1.4F, 0.6F);
         FbFx.sound(sl, at, SoundEvents.BLAZE_SHOOT, 0.8F, 0.6F);
@@ -99,15 +100,15 @@ public class InfernalChainEntity extends FbSpellEntity {
         if (tickCount % 20 == 0) {
             hit(le, damage);
             le.igniteForSeconds(2F);
-            FbFx.around(sl, le, ParticleTypes.FLAME, 8, 0.03);
-            FbFx.around(sl, le, ParticleTypes.SOUL_FIRE_FLAME, 3, 0.02);
+            FbFx.around(sl, le, Vfx.flame(), 8, 0.03);
+            FbFx.around(sl, le, Vfx.soulFlame(), 3, 0.02);
         }
         if (tickCount % 6 == 0) {
             Vec3 body = le.position().add(0, le.getBbHeight() * 0.55, 0);
             for (int i = 0; i < CHAINS; i++) {
                 Vec3 a = anchor(i);
                 Vec3 p = a.add(body.subtract(a).scale(sl.random.nextDouble()));
-                sl.sendParticles(ParticleTypes.SMALL_FLAME, p.x, p.y, p.z, 1, 0.05, 0.05, 0.05, 0.01);
+                sl.sendParticles(Vfx.smallFlame(), p.x, p.y, p.z, 1, 0.05, 0.05, 0.05, 0.01);
             }
             sl.sendParticles(FbFx.dust(FbFx.HELLFIRE, 1.0F), getX(), getY() + 0.1, getZ(), 3, 1.0, 0.02, 1.0, 0);
         }
@@ -121,10 +122,10 @@ public class InfernalChainEntity extends FbSpellEntity {
             Vec3 body = le.position().add(0, le.getBbHeight() * 0.55, 0);
             for (int i = 0; i < CHAINS; i++) {
                 Vec3 a = anchor(i);
-                FbFx.line(sl, a, body, ParticleTypes.SMOKE, 2.0);
+                FbFx.line(sl, a, body, Vfx.smoke(), 2.0);
             }
         }
-        sl.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + 0.3, getZ(), 10, 0.8, 0.2, 0.8, 0.02);
+        sl.sendParticles(Vfx.largeSmoke(), getX(), getY() + 0.3, getZ(), 10, 0.8, 0.2, 0.8, 0.02);
         FbFx.sound(sl, position(), SoundEvents.CHAIN_BREAK, 1.3F, 0.7F);
     }
 
@@ -132,7 +133,7 @@ public class InfernalChainEntity extends FbSpellEntity {
     protected void clientTick() {
         if (random.nextInt(4) == 0) {
             double a = random.nextDouble() * Math.PI * 2, r = random.nextDouble() * 1.7;
-            level().addParticle(ParticleTypes.SMOKE, getX() + Math.cos(a) * r, getY() + 0.1, getZ() + Math.sin(a) * r, 0, 0.03, 0);
+            level().addParticle(Vfx.smoke(), getX() + Math.cos(a) * r, getY() + 0.1, getZ() + Math.sin(a) * r, 0, 0.03, 0);
         }
     }
 

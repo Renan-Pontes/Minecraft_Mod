@@ -687,20 +687,21 @@ def items():
     for e in ("settlement_builder", "settlement_resident", "settlement_guard", "settlement_merchant", "settlement_militia",
               "city_champion"):
         write_json(os.path.join(A, f"models/item/{e}_spawn_egg.json"), {"parent": "minecraft:item/template_spawn_egg"})
-    # Receita da Carta de Fundação: papel + esmeraldas + ouro + livro (caro, mas de meio de jogo)
+    # Receita da Carta de Fundação (onda 9, "fundar mais fácil"): 2 papéis + 2 lingotes de ouro + livro e pena — começo
+    # de jogo (antes eram blocos de esmeralda e de ouro). O Escriba da cidade inicial também vende.
     write_json(os.path.join(D, "recipe/founding_charter.json"), {
         "type": "minecraft:crafting_shaped", "category": "misc",
-        "pattern": ["PEP", "GBG", "PEP"],
-        "key": {"P": {"item": "minecraft:paper"}, "E": {"item": "minecraft:emerald_block"},
-                "G": {"item": "minecraft:gold_block"}, "B": {"item": "minecraft:writable_book"}},
+        "pattern": [" P ", "GBG", " P "],
+        "key": {"P": {"item": "minecraft:paper"}, "G": {"item": "minecraft:gold_ingot"},
+                "B": {"item": "minecraft:writable_book"}},
         "result": {"id": f"{NS}:founding_charter", "count": 1}})
     write_json(os.path.join(D, "advancement/recipes/misc/founding_charter.json"), {
         "parent": "minecraft:recipes/root",
-        "criteria": {"has_emerald_block": {"trigger": "minecraft:inventory_changed",
-                                           "conditions": {"items": [{"items": "minecraft:emerald_block"}]}},
+        "criteria": {"has_paper": {"trigger": "minecraft:inventory_changed",
+                                   "conditions": {"items": [{"items": "minecraft:paper"}]}},
                      "has_the_recipe": {"trigger": "minecraft:recipe_unlocked",
                                         "conditions": {"recipe": f"{NS}:founding_charter"}}},
-        "requirements": [["has_emerald_block", "has_the_recipe"]],
+        "requirements": [["has_paper", "has_the_recipe"]],
         "rewards": {"recipes": [f"{NS}:founding_charter"]}})
 
 

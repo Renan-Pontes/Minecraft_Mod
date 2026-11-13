@@ -15,6 +15,7 @@ import com.renanpontes.isekaimahou.feature.fusions_d.FdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -74,7 +75,7 @@ public class KrakenTentacleEntity extends FdSpellEntity {
         BlockState under = sl.getBlockState(BlockPos.containing(ground).below());
         if (under.isAir()) under = Blocks.DIRT.defaultBlockState();
         sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, under), ground.x, ground.y + 0.3, ground.z, 40, 0.8, 0.4, 0.8, 0.3);
-        sl.sendParticles(ParticleTypes.SPLASH, ground.x, ground.y + 0.5, ground.z, 30, 0.6, 0.6, 0.6, 0.2);
+        sl.sendParticles(Vfx.splash(), ground.x, ground.y + 0.5, ground.z, 30, 0.6, 0.6, 0.6, 0.2);
         FdFx.sound(sl, ground, SoundEvents.ELDER_GUARDIAN_CURSE, 0.5F, 0.6F);
         FdFx.sound(sl, ground, SoundEvents.ROOTED_DIRT_BREAK, 1.6F, 0.5F);
     }
@@ -176,7 +177,7 @@ public class KrakenTentacleEntity extends FdSpellEntity {
             Vec3 p = base.add(end.subtract(base).scale(i / 8.0));
             BlockState st = sl.getBlockState(BlockPos.containing(p).below());
             if (!st.isAir()) sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, st), p.x, p.y + 0.2, p.z, 14, 0.6, 0.1, 0.6, 0.2);
-            sl.sendParticles(ParticleTypes.SPLASH, p.x, p.y + 0.4, p.z, 12, 0.6, 0.2, 0.6, 0.2);
+            sl.sendParticles(Vfx.splash(), p.x, p.y + 0.4, p.z, 12, 0.6, 0.2, 0.6, 0.2);
         }
         FdFx.sound(sl, end, SoundEvents.MACE_SMASH_GROUND_HEAVY, 2F, 0.5F);
         FdFx.sound(sl, end, SoundEvents.GENERIC_SPLASH, 1.6F, 0.5F);
@@ -210,7 +211,7 @@ public class KrakenTentacleEntity extends FdSpellEntity {
         if (t instanceof Mob m) m.getNavigation().stop();
         if (stateAge % 10 == 5) {
             hit(t, damage * 0.4F, null);
-            sl.sendParticles(ParticleTypes.SQUID_INK, t.getX(), t.getY() + t.getBbHeight() * 0.5, t.getZ(), 8, 0.3, 0.3, 0.3, 0.02);
+            sl.sendParticles(Vfx.ink(), t.getX(), t.getY() + t.getBbHeight() * 0.5, t.getZ(), 8, 0.3, 0.3, 0.3, 0.02);
             FdFx.sound(sl, t.position(), SoundEvents.SLIME_SQUISH, 1.2F, 0.5F);
         }
         if (stateAge >= GRAB_TICKS) {
@@ -240,7 +241,7 @@ public class KrakenTentacleEntity extends FdSpellEntity {
     @Override
     protected void clientTick() {
         if (random.nextInt(4) == 0) {
-            level().addParticle(ParticleTypes.DRIPPING_WATER, getX() + (random.nextDouble() - 0.5) * 1.5, getY() + 1 + random.nextDouble() * 4 * scale(),
+            level().addParticle(Vfx.water(), getX() + (random.nextDouble() - 0.5) * 1.5, getY() + 1 + random.nextDouble() * 4 * scale(),
                     getZ() + (random.nextDouble() - 0.5) * 1.5, 0, 0, 0);
         }
     }

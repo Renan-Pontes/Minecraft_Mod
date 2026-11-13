@@ -7,8 +7,8 @@ import java.util.UUID;
 import com.renanpontes.isekaimahou.feature.forms_b.util.FormsBUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -121,7 +121,7 @@ public class SpellPortalEntity extends SpellFormEntity {
         Vec3 dest = partnerPos;
         if (!level.isLoaded(BlockPos.containing(dest))) return;
         Vec3 from = e.position();
-        level.sendParticles(ParticleTypes.REVERSE_PORTAL, from.x, from.y + e.getBbHeight() / 2, from.z, 20, 0.3, 0.5, 0.3, 0.05);
+        level.sendParticles(Vfx.reversePortal(), from.x, from.y + e.getBbHeight() / 2, from.z, 20, 0.3, 0.5, 0.3, 0.05);
         level.playSound(null, from.x, from.y, from.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.8F, 1.2F);
 
         // Recarga e "ignorar na chegada" valem também para quem está montado (se desmontar lá dentro)
@@ -137,7 +137,7 @@ public class SpellPortalEntity extends SpellFormEntity {
             rider.connection.send(new ClientboundMoveVehiclePacket(e));
         }
 
-        level.sendParticles(ParticleTypes.PORTAL, dest.x, dest.y + e.getBbHeight() / 2, dest.z, 30, 0.3, 0.6, 0.3, 0.3);
+        level.sendParticles(Vfx.portal(), dest.x, dest.y + e.getBbHeight() / 2, dest.z, 30, 0.3, 0.6, 0.3, 0.3);
         level.sendParticles(FormsBUtil.dust(color(), 1.2F), dest.x, dest.y + 1, dest.z, 12, 0.4, 0.6, 0.4, 0);
         level.playSound(null, dest.x, dest.y, dest.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.8F, 1.0F);
 
@@ -158,7 +158,7 @@ public class SpellPortalEntity extends SpellFormEntity {
 
     @Override
     protected void onExpire(ServerLevel level, SpellContext ctx) {
-        level.sendParticles(ParticleTypes.REVERSE_PORTAL, getX(), getY() + 1.1, getZ(), 40, 0.4, 0.8, 0.4, 0.05);
+        level.sendParticles(Vfx.reversePortal(), getX(), getY() + 1.1, getZ(), 40, 0.4, 0.8, 0.4, 0.05);
         level.playSound(null, getX(), getY() + 1, getZ(), SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 0.7F, 1.4F);
         // Ao Terminar: quando os anéis se fecham, o próximo estágio nasce na SAÍDA (só um dos dois portais avisa)
         if (isExit()) stageEnd(ctx, position().add(0, 1.1, 0));
@@ -175,7 +175,7 @@ public class SpellPortalEntity extends SpellFormEntity {
             double a = random.nextDouble() * Math.PI * 2;
             double lx = Math.cos(a) * 0.75, ly = Math.sin(a) * 1.1;
             double x = getX() + sx * lx, y = getY() + 1.15 + ly, z = getZ() + sz * lx;
-            level().addParticle(ParticleTypes.PORTAL, x, y, z, -sx * lx * 0.6, -ly * 0.6, -sz * lx * 0.6);
+            level().addParticle(Vfx.portal(), x, y, z, -sx * lx * 0.6, -ly * 0.6, -sz * lx * 0.6);
             if (random.nextInt(3) == 0) level().addParticle(FormsBUtil.dust(color(), 0.8F), x, y, z, 0, 0, 0);
         }
     }

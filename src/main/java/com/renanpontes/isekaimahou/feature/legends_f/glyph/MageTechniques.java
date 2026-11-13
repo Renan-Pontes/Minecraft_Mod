@@ -86,6 +86,10 @@ public final class MageTechniques {
             float radius = Mth.clamp(stats.radius(24F), 6F, 64F);
             int ticks = stats.duration(200);
             LfUtil.fx(level, LfNet.PULSE, c.add(0, 1, 0), new Vec3(0, 1, 0), COLOR, 26, radius);
+            // v1.3: o pulso de mana sai do chão como um selo e varre a área em dois anéis
+            com.renanpontes.isekaimahou.core.ElementFx.runeCircle(level, c.add(0, 0.05, 0), COLOR, 2.4F, 30, 3);
+            com.renanpontes.isekaimahou.core.ElementFx.shockwave(level, c.add(0, 0.2, 0), COLOR, radius, 26, null);
+            com.renanpontes.isekaimahou.core.ElementFx.shockwave(level, c.add(0, 1.2, 0), 0xFFFFFF, radius * 0.7F, 20, null);
             LfUtil.sound(level, c, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.4F, 0.8F);
             LfUtil.sound(level, c, SoundEvents.BEACON_AMBIENT, 1.2F, 1.8F);
             ServerPlayer sp = ctx.caster() instanceof ServerPlayer p ? p : null;

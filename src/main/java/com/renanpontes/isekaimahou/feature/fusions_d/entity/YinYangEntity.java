@@ -8,6 +8,7 @@ import com.renanpontes.isekaimahou.feature.fusions_d.FdUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -103,8 +104,8 @@ public class YinYangEntity extends FdSpellEntity {
     @Override
     protected void onExpire(ServerLevel sl) {
         Vec3 c = position();
-        sl.sendParticles(ParticleTypes.END_ROD, c.x, c.y, c.z, 20, 0.2, 0.2, 0.2, 0.2);
-        sl.sendParticles(ParticleTypes.SQUID_INK, c.x, c.y, c.z, 20, 0.2, 0.2, 0.2, 0.2);
+        sl.sendParticles(Vfx.endRod(), c.x, c.y, c.z, 20, 0.2, 0.2, 0.2, 0.2);
+        sl.sendParticles(Vfx.ink(), c.x, c.y, c.z, 20, 0.2, 0.2, 0.2, 0.2);
         FdFx.sound(sl, c, SoundEvents.BEACON_DEACTIVATE, 1.0F, 1.2F);
     }
 

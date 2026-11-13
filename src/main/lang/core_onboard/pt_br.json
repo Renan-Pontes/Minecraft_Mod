@@ -36,5 +36,6 @@
   "command.isekai_mahou.travel.cooldown_reset": "Recarga da viagem pelo menu zerada",
   "command.isekai_mahou.travel.header": "Destinos de viagem (%s) — recarga do menu: %s",
   "command.isekai_mahou.travel.line": "pedra %s · menu %s",
-  "command.isekai_mahou.travel.discovered": "%s destino(s) descoberto(s)"
+  "command.isekai_mahou.travel.discovered": "%s destino(s) descoberto(s)",
+  "command.isekai_mahou.onboarding.status": "%s — classe: %s · etapas pendentes: %s · protegido: %s"
 }

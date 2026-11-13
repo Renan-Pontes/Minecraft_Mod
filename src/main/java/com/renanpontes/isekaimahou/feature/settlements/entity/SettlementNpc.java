@@ -154,6 +154,11 @@ public abstract class SettlementNpc extends PathfinderMob implements GeoEntity, 
         return home;
     }
 
+    /** A cidade trocou de estilo (Reforma): o morador passa a vestir o estilo novo (o nome fica). */
+    public void restyle(SettlementStyle style) {
+        entityData.set(DATA_STYLE, style.id);
+    }
+
     /** Liga o NPC a uma cidade (chamado por quem o traz ao mundo). */
     public void bind(Settlement city, BlockPos homePos, String factionId) {
         cityId = city.id;

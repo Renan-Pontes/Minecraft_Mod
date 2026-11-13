@@ -9,6 +9,7 @@ import com.renanpontes.isekaimahou.feature.earth_wind.effect.SilentStepsEffect;
 import com.renanpontes.isekaimahou.feature.earth_wind.entity.SummonedStoneGolem;
 import com.renanpontes.isekaimahou.feature.earth_wind.entity.SummonedSylph;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -98,7 +99,7 @@ public final class EwEvents {
         ServerLevel level = sp.serverLevel();
         for (int i = 0; i < 12; i++) {
             double a = Math.PI * 2 * i / 12;
-            level.sendParticles(ParticleTypes.CLOUD, sp.getX() + Math.cos(a) * 0.6, sp.getY(), sp.getZ() + Math.sin(a) * 0.6,
+            level.sendParticles(Vfx.cloud(), sp.getX() + Math.cos(a) * 0.6, sp.getY(), sp.getZ() + Math.sin(a) * 0.6,
                     1, 0, 0, 0, 0.02);
         }
         level.sendParticles(ParticleTypes.GUST, sp.getX(), sp.getY(), sp.getZ(), 1, 0, 0, 0, 0);
@@ -161,7 +162,7 @@ public final class EwEvents {
         if (p.level() instanceof ServerLevel sl) {
             Vec3 at = hit.getLocation();
             sl.sendParticles(ParticleTypes.GUST, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-            sl.sendParticles(ParticleTypes.CLOUD, at.x, at.y, at.z, 6, 0.2, 0.2, 0.2, 0.05);
+            sl.sendParticles(Vfx.cloud(), at.x, at.y, at.z, 6, 0.2, 0.2, 0.2, 0.05);
             sl.playSound(null, at.x, at.y, at.z, SoundEvents.BREEZE_DEFLECT, SoundSource.PLAYERS, 1.0F, 1.1F);
         }
     }

@@ -156,6 +156,7 @@ public enum OutfitSet {
             case "gunslinger" -> HUNTER;
             case "gambler" -> BARD;
             case "steelball" -> ARTIFICER;
+            case "hollowfied" -> BARBARIAN;
             default -> null;
         };
         if (hint != null && hint.category() == path.category()) return hint;

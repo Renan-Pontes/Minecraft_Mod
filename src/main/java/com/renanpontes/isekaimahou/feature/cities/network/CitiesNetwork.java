@@ -34,6 +34,15 @@ public final class CitiesNetwork {
     public static final int BTN_CLOSE_NOW = 64;
     /** v1.0: cidade em guerra com o jogador — só a fala hostil e "Despedir-se". */
     public static final int BTN_ENEMY = 128;
+    /** Release 1.0: o morador tem um pedido (sidequest) para o jogador, ou faz parte do pedido ativo dele. */
+    public static final int BTN_QUEST = 256;
+    /**
+     * Release 1.0: escolha de um pedido (aceitar/recusar, os dois desfechos, desistir). Como na abordagem, as opções vêm
+     * em {@code services} e {@code note} é a linha de destaque; o clique volta como ação {@code quest} + id da opção.
+     */
+    public static final int BTN_CHOICE = 512;
+    /** Release 1.0: loja fechada de madrugada (o botão "Trocar" aparece, com o aviso de que fechou). */
+    public static final int BTN_TRADE_CLOSED = 1024;
 
     /** Abre/atualiza a tela de diálogo (o CitiesClient substitui). */
     public static Consumer<Dialogue> openDialogue = d -> {};
@@ -43,13 +52,16 @@ public final class CitiesNetwork {
     public static Consumer<Wanted> wanted = w -> {};
     /** Abordagem da guarda em andamento (o CitiesClient substitui). */
     public static Consumer<Confront> confront = c -> {};
+    /** Pedido (sidequest) ativo do jogador (o CitiesClient substitui). */
+    public static Consumer<QuestView> questView = q -> {};
 
     public static void register(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar r = event.registrar("cities-3");
+        PayloadRegistrar r = event.registrar("cities-4");
         r.playToClient(Dialogue.TYPE, Dialogue.STREAM_CODEC, (p, c) -> openDialogue.accept(p));
         r.playToClient(Rumor.TYPE, Rumor.STREAM_CODEC, (p, c) -> rumor.accept(p));
         r.playToClient(Wanted.TYPE, Wanted.STREAM_CODEC, (p, c) -> wanted.accept(p));
         r.playToClient(Confront.TYPE, Confront.STREAM_CODEC, (p, c) -> confront.accept(p));
+        r.playToClient(QuestView.TYPE, QuestView.STREAM_CODEC, (p, c) -> questView.accept(p));
         r.playToServer(Action.TYPE, Action.STREAM_CODEC, (p, c) -> {
             if (c.player() instanceof ServerPlayer sp) CityDialogue.handle(sp, p);
         });
@@ -113,7 +125,10 @@ public final class CitiesNetwork {
         }
     }
 
-    /** Botão clicado: talk, trade, rumor, service (arg = id do serviço), confront (arg = opção da abordagem), close. */
+    /**
+     * Botão clicado: talk, trade, rumor, service (arg = id do serviço), confront (arg = opção da abordagem), quest
+     * (arg = "" abre o pedido; senão a opção escolhida), close.
+     */
     public record Action(int entityId, String action, String arg) implements CustomPacketPayload {
         public static final Type<Action> TYPE = new Type<>(IsekaiMahou.id("cities_action"));
         public static final StreamCodec<RegistryFriendlyByteBuf, Action> STREAM_CODEC = StreamCodec.composite(
@@ -177,6 +192,39 @@ public final class CitiesNetwork {
 
         public static Confront none() {
             return new Confront(-1, Component.empty(), 0, false);
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+    /**
+     * Pedido (sidequest) ativo, para o rastreador de objetivos: título, o passo atual, progresso {@code cur/max}
+     * (0/0 = sem barra) e a seta ({@code arrow}) para {@code pos} em {@code dim}. {@code active=false} apaga.
+     */
+    public record QuestView(boolean active, Component title, Component detail, int cur, int max, boolean arrow, BlockPos pos,
+                            ResourceLocation dim) implements CustomPacketPayload {
+        public static final Type<QuestView> TYPE = new Type<>(IsekaiMahou.id("cities_quest"));
+        public static final StreamCodec<RegistryFriendlyByteBuf, QuestView> STREAM_CODEC = StreamCodec.of(
+                (buf, q) -> {
+                    buf.writeBoolean(q.active);
+                    ComponentSerialization.STREAM_CODEC.encode(buf, q.title);
+                    ComponentSerialization.STREAM_CODEC.encode(buf, q.detail);
+                    buf.writeVarInt(q.cur);
+                    buf.writeVarInt(q.max);
+                    buf.writeBoolean(q.arrow);
+                    buf.writeBlockPos(q.pos);
+                    buf.writeResourceLocation(q.dim);
+                },
+                buf -> new QuestView(buf.readBoolean(), ComponentSerialization.STREAM_CODEC.decode(buf),
+                        ComponentSerialization.STREAM_CODEC.decode(buf), buf.readVarInt(), buf.readVarInt(), buf.readBoolean(),
+                        buf.readBlockPos(), buf.readResourceLocation()));
+
+        public static QuestView none() {
+            return new QuestView(false, Component.empty(), Component.empty(), 0, 0, false, BlockPos.ZERO,
+                    ResourceLocation.withDefaultNamespace("overworld"));
         }
 
         @Override

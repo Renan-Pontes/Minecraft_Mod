@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "lit=false,rune=0": {
+      "model": "isekai_mahou:block/depths_rune_stone_0"
+    },
+    "lit=true,rune=0": {
+      "model": "isekai_mahou:block/depths_rune_stone_0_on"
+    },
+    "lit=false,rune=1": {
+      "model": "isekai_mahou:block/depths_rune_stone_1"
+    },
+    "lit=true,rune=1": {
+      "model": "isekai_mahou:block/depths_rune_stone_1_on"
+    },
+    "lit=false,rune=2": {
+      "model": "isekai_mahou:block/depths_rune_stone_2"
+    },
+    "lit=true,rune=2": {
+      "model": "isekai_mahou:block/depths_rune_stone_2_on"
+    },
+    "lit=false,rune=3": {
+      "model": "isekai_mahou:block/depths_rune_stone_3"
+    },
+    "lit=true,rune=3": {
+      "model": "isekai_mahou:block/depths_rune_stone_3_on"
+    }
+  }
+}

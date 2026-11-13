@@ -17,6 +17,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Invocar Golem: um Golem de Pedra aliado sai do chao (45 s; Estender aumenta). Amplificar deixa
  * o golem mais forte (vida e dano). Num inimigo, o golem nasce ao lado dele e ja ataca.
+ * v1.0: Dividir chama um segundo golem (no maximo {@link SummonedStoneGolem#MAX_PER_OWNER} por dono).
  */
 public class SummonGolemEffect extends EffectGlyph {
     public SummonGolemEffect() {
@@ -60,6 +61,16 @@ public class SummonGolemEffect extends EffectGlyph {
                 && ctx.caster() != null) {
             pos = ctx.caster().position();
         }
-        return SummonedStoneGolem.summon(level, ctx.caster(), pos, stats.duration(900), stats.power());
+        SummonedStoneGolem first = SummonedStoneGolem.summon(level, ctx.caster(), pos, stats.duration(900), stats.power());
+        // Dividir: os golens extras ficam ao lado do primeiro (ele não é desfeito: keep = quantos já nasceram agora)
+        int n = Math.min(SummonedStoneGolem.MAX_PER_OWNER, stats.count());
+        for (int i = 1; i < n; i++) {
+            Vec3 side = pos.add(EwUtil.horizontal(ctx.look()).normalize().yRot((float) Math.PI / 2).scale(2.2 * i));
+            BlockPos g2 = EwUtil.groundBelow(level, BlockPos.containing(side).above(2), 6);
+            Vec3 p2 = g2 != null ? new Vec3(side.x, g2.getY() + 1.0, side.z) : pos;
+            if (!level.noCollision(new net.minecraft.world.phys.AABB(p2.x - 0.7, p2.y, p2.z - 0.7, p2.x + 0.7, p2.y + 2.7, p2.z + 0.7))) p2 = pos;
+            SummonedStoneGolem.summon(level, ctx.caster(), p2, stats.duration(900), stats.power(), i);
+        }
+        return first;
     }
 }

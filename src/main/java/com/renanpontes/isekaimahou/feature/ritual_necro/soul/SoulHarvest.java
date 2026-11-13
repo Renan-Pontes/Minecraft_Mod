@@ -11,6 +11,7 @@ import com.renanpontes.isekaimahou.feature.ritual_necro.NecroRitual;
 import com.renanpontes.isekaimahou.feature.ritual_necro.item.BoneScytheItem;
 import com.renanpontes.isekaimahou.feature.ritual_necro.item.PhylacteryItem;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -58,7 +59,7 @@ public final class SoulHarvest {
             if (scythe) {
                 player.displayClientMessage(NecroRitual.msg("soul_lost").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), true);
                 Vec3 c = victim.position().add(0, victim.getBbHeight() * 0.6, 0);
-                level.sendParticles(ParticleTypes.SOUL, c.x, c.y, c.z, 3, 0.2, 0.2, 0.2, 0.02);
+                level.sendParticles(Vfx.soul(), c.x, c.y, c.z, 3, 0.2, 0.2, 0.2, 0.02);
             }
             return;
         }
@@ -84,7 +85,7 @@ public final class SoulHarvest {
         MagicApi.addCounter(player, NecroRitual.SOULS_HARVESTED, 1);
 
         Vec3 from = victim.position().add(0, victim.getBbHeight() * 0.6, 0);
-        level.sendParticles(ParticleTypes.SCULK_SOUL, from.x, from.y, from.z, boss ? 20 : 4, 0.25, 0.25, 0.25, 0.02);
+        level.sendParticles(Vfx.sculkSoul(), from.x, from.y, from.z, boss ? 20 : 4, 0.25, 0.25, 0.25, 0.02);
         level.playSound(null, from.x, from.y, from.z, SoundEvents.SOUL_ESCAPE, SoundSource.PLAYERS, 1.2F, 0.8F + level.random.nextFloat() * 0.3F);
         WISPS.add(new Wisp(level, from, player, boss));
     }
@@ -139,13 +140,13 @@ public final class SoulHarvest {
             double lift = Math.max(0, 0.12 - age * 0.012);
             double wobble = Math.sin(age * 0.7) * 0.06;
             pos = pos.add(step.x + step.z * wobble, step.y + lift, step.z - step.x * wobble);
-            level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, pos.x, pos.y, pos.z, big ? 4 : 2, 0.04, 0.04, 0.04, 0.0);
+            level.sendParticles(Vfx.soulFlame(), pos.x, pos.y, pos.z, big ? 4 : 2, 0.04, 0.04, 0.04, 0.0);
             if (age % 3 == 0) level.sendParticles(ParticleTypes.SOUL, pos.x, pos.y, pos.z, 1, 0.02, 0.02, 0.02, 0.0);
             return true;
         }
 
         private void arrive(Vec3 at) {
-            level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, at.x, at.y, at.z, big ? 30 : 10, 0.3, 0.45, 0.3, 0.02);
+            level.sendParticles(Vfx.soulFlame(), at.x, at.y, at.z, big ? 30 : 10, 0.3, 0.45, 0.3, 0.02);
             level.playSound(null, at.x, at.y, at.z, SoundEvents.ALLAY_ITEM_TAKEN, SoundSource.PLAYERS, 0.6F, 0.6F);
         }
     }

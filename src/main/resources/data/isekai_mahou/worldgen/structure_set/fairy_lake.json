@@ -7,8 +7,8 @@
   ],
   "placement": {
     "type": "isekai_mahou:random_spread_multi",
-    "spacing": 28,
-    "separation": 10,
+    "spacing": 35,
+    "separation": 12,
     "salt": 870412338,
     "exclusion_zones": [
       {

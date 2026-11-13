@@ -67,9 +67,7 @@ public class SpinBallForm extends FormGlyph {
             level.addFreshEntity(SteelBallEntity.spell(ctx, from, d, speed, golden, Math.max(0, held)));
         }
         if (!ctx.hasOrigin()) caster.swing(InteractionHand.MAIN_HAND, true);
-        SbFx.spinRing(level, from, golden ? SbFx.GOLD : SbFx.STEEL, 0.4, 8);
-        if (golden) SbFx.goldenSpiral(level, from.add(look.scale(0.6)), look, 0.8);
-        SbFx.sound(level, from, SoundEvents.TRIDENT_THROW.value(), 0.8F, 1.5F + ctx.random().nextFloat() * 0.2F);
+        // anéis na mão, Retângulo Dourado e o estalo: SteelBallEntity.spell manda o BALL_THROW para o cliente
         SbFx.sound(level, from, SoundEvents.CHAIN_STEP, 0.6F, 1.9F);
     }
 }

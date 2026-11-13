@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GsFx;
+import com.renanpontes.isekaimahou.feature.class_gunslinger.GsFxNet;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GsNetwork;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GunCombat;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GunKind;
@@ -115,14 +116,12 @@ public class HighNoonForm extends FormGlyph {
         if (caster.isRemoved()) return;
         GsFx.sound(level, caster.position(), SoundEvents.BELL_BLOCK, 1.6F, pitch);
         GsFx.sound(level, caster.position(), SoundEvents.BELL_RESONATE, 0.6F, pitch);
-        GsFx.ring(level, caster.position().add(0, 0.1, 0), 1.6, 20, GsFx.dust(0xFFD86B, 1.0F));
+        GsFxNet.on(caster, GsFxNet.HIGH_NOON_TOLL, Vec3.ZERO, 1F, 0xFFD86B, Math.round((0.9F - pitch) / 0.15F));
         for (LivingEntity e : targets) {
             if (!e.isAlive()) continue;
             e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, TOLL + 6, 3, false, false));
             e.addEffect(new MobEffectInstance(MobEffects.GLOWING, TOLL * TOLLS + 10, 0, false, false));
-            Vec3 c = e.position().add(0, e.getBbHeight() + 0.6, 0);
-            GsFx.ring(level, c, 0.45, 10, GsFx.dust(0xFFC23A, 0.8F));
-            level.sendParticles(GsFx.dust(0xFFC23A, 0.8F), c.x, c.y, c.z, 1, 0, 0, 0, 0);
+            GsFxNet.on(e, GsFxNet.HIGH_NOON_MARK, Vec3.ZERO, 1F, 0xFFC23A, 0);
         }
     }
 
@@ -137,7 +136,7 @@ public class HighNoonForm extends FormGlyph {
         ctx.impact(at, look, target);
         target.invulnerableTime = 0;
         ctx.resolveOnEntity(target, null);
-        level.sendParticles(ParticleTypes.CRIT, at.x, at.y, at.z, 14, 0.2, 0.2, 0.2, 0.5);
+        GsFxNet.at(level, GsFxNet.IMPACT, at, look, 2F, 0xFFC23A, target.getId(), 1);
         if (caster instanceof ServerPlayer sp) GunCombat.onBulletHit(sp, target, true);
     }
 

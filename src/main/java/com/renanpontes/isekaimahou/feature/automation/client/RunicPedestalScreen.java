@@ -6,11 +6,11 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.IsekaiMahou;
-import com.renanpontes.isekaimahou.client.GlyphArt;
 import com.renanpontes.isekaimahou.core.CoreRegistries;
 import com.renanpontes.isekaimahou.glyph.SpellParser;
 import com.renanpontes.isekaimahou.glyph.SpellRecipe;
 import com.renanpontes.isekaimahou.feature.automation.ManaNet;
+import com.renanpontes.isekaimahou.feature.automation.WirelessMana;
 import com.renanpontes.isekaimahou.feature.automation.block.PedestalStatus;
 import com.renanpontes.isekaimahou.feature.automation.block.RedstoneMode;
 import com.renanpontes.isekaimahou.feature.automation.block.RunicPedestalBlockEntity;
@@ -28,10 +28,12 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 /**
- * Tela do Pedestal Rúnico: pergaminho à esquerda (com custo, botão Testar e barra da próxima conjuração),
- * configuração à direita (intervalo, direção, alvo X/Y/Z, redstone), mana das baterias e o estado com uma dica.
+ * Tela do Pedestal Rúnico: pergaminho e FILTRO à esquerda (com custo, botões Liga/Desliga e Testar e a barra da próxima
+ * conjuração), configuração à direita (intervalo, direção, alvo X/Y/Z, redstone), mana (baterias + Núcleo ligado) e o
+ * estado com uma dica.
  */
 public class RunicPedestalScreen extends AbstractContainerScreen<RunicPedestalMenu> {
     private static final ResourceLocation BG = IsekaiMahou.id("textures/gui/automation_pedestal.png");
@@ -41,6 +43,9 @@ public class RunicPedestalScreen extends AbstractContainerScreen<RunicPedestalMe
     private static final int LABEL = 0xFFCFC3E8, VALUE = 0xFFFFFFFF, GOLD = 0xFFF2D06B, DIM = 0xFF8E84A6;
     private static final int ROW_X = 54, CTRL_X = 108, ROW_Y = 18, ROW_H = 14;
     private static final int MANA_Y = 104, BAR_Y = 114, STATUS_Y = 124;
+    /** v1.5: coluna da esquerda (pergaminho + filtro em cima, custo, Liga/Desliga, Testar, barra do tempo). */
+    private static final int SLOT_LABEL_Y = 39, COST_Y = 47, TOGGLE_Y = 58, TEST_Y = 74;
+    private static final int ON = 0xFF6BE38A, OFF = 0xFF9A93AC;
 
     public RunicPedestalScreen(RunicPedestalMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -75,8 +80,13 @@ public class RunicPedestalScreen extends AbstractContainerScreen<RunicPedestalMe
                 () -> Component.translatable(menu.redstone().key()),
                 b -> send(b == 1 ? RunicPedestalBlockEntity.B_REDSTONE_PREV : RunicPedestalBlockEntity.B_REDSTONE_NEXT)));
         red.setTooltip(Tooltip.create(Component.translatable(K + "redstone.tooltip")));
+        // v1.5: Liga/Desliga
+        RuneButton toggle = addRenderableWidget(new RuneButton(x + 8, y + TOGGLE_Y, 40, 12,
+                () -> menu.enabled() ? Component.translatable(K + "on").withColor(ON) : Component.translatable(K + "off").withColor(OFF),
+                b -> send(RunicPedestalBlockEntity.B_TOGGLE)));
+        toggle.setTooltip(Tooltip.create(Component.translatable(K + "toggle.tooltip")));
         // Testar
-        RuneButton test = addRenderableWidget(new RuneButton(x + 8, y + 76, 40, 12,
+        RuneButton test = addRenderableWidget(new RuneButton(x + 8, y + TEST_Y, 40, 12,
                 () -> Component.translatable(K + "test"), b -> send(RunicPedestalBlockEntity.B_TEST)));
         test.setTooltip(Tooltip.create(Component.translatable(K + "test.tooltip")));
     }
@@ -100,9 +110,18 @@ public class RunicPedestalScreen extends AbstractContainerScreen<RunicPedestalMe
         super.render(g, mouseX, mouseY, partialTick);
         renderTooltip(g, mouseX, mouseY);
         int mx = mouseX - leftPos, my = mouseY - topPos;
-        if (mx >= 8 && mx < 168 && my >= MANA_Y - 1 && my < BAR_Y + 7) {
+        int coreW = font.width(coreLabel());
+        if (mx >= 167 - coreW && mx < 168 && my >= MANA_Y - 1 && my < MANA_Y + 9) {
+            g.renderComponentTooltip(font, List.of(coreTooltip()), mouseX, mouseY);
+        } else if (mx >= 8 && mx < 168 && my >= MANA_Y - 1 && my < BAR_Y + 7) {
             g.renderComponentTooltip(font, List.of(Component.translatable(K + "mana.tooltip", ManaNet.BATTERY_RANGE)), mouseX, mouseY);
-        } else if (mx >= 8 && mx < 48 && my >= 54 && my < 72 && menu.hasScroll()) {
+        } else if (hoveredSlot != null && hoveredSlot.index == RunicPedestalBlockEntity.SLOT_FILTER && !hoveredSlot.hasItem()) {
+            g.renderComponentTooltip(font, List.of(Component.translatable(K + "filter").withColor(GOLD),
+                    Component.translatable(K + "filter.tooltip")), mouseX, mouseY);
+        } else if (hoveredSlot != null && hoveredSlot.index == RunicPedestalBlockEntity.SLOT_SCROLL && !hoveredSlot.hasItem()) {
+            g.renderComponentTooltip(font, List.of(Component.translatable(K + "scroll").withColor(GOLD),
+                    Component.translatable(K + "scroll.tooltip")), mouseX, mouseY);
+        } else if (mx >= 8 && mx < 48 && my >= COST_Y - 1 && my < COST_Y + 9 && menu.hasScroll()) {
             g.renderComponentTooltip(font, List.of(menu.element().displayName(),
                     Component.translatable(K + "cost.tooltip", menu.cost())), mouseX, mouseY);
         } else if (mx >= 8 && mx < 48 && my >= 90 && my < 98) {
@@ -116,6 +135,25 @@ public class RunicPedestalScreen extends AbstractContainerScreen<RunicPedestalMe
             if (error != null) lines.add(error.copy().withStyle(ChatFormatting.RED));
             g.renderComponentTooltip(font, lines, mouseX, mouseY);
         }
+    }
+
+    /** v1.5: indicador do Núcleo no fim da linha do mana. */
+    private Component coreLabel() {
+        return switch (menu.coreState()) {
+            case RunicPedestalBlockEntity.CORE_OK -> Component.translatable(K + "core.ok", menu.coreLoss()).withColor(ON);
+            case RunicPedestalBlockEntity.CORE_NONE -> Component.translatable(K + "core.none").withColor(DIM);
+            default -> Component.translatable(K + "core.bad").withColor(0xFFFF9F5A);
+        };
+    }
+
+    private Component coreTooltip() {
+        return switch (menu.coreState()) {
+            case RunicPedestalBlockEntity.CORE_OK -> Component.translatable(K + "core.tooltip.ok", menu.coreDistance(), menu.coreLoss());
+            case RunicPedestalBlockEntity.CORE_UNLOADED -> Component.translatable(K + "core.tooltip.unloaded");
+            case RunicPedestalBlockEntity.CORE_MISSING -> Component.translatable(K + "core.tooltip.missing");
+            case RunicPedestalBlockEntity.CORE_FAR -> Component.translatable(K + "core.tooltip.far", WirelessMana.RANGE);
+            default -> Component.translatable(K + "core.tooltip.none", WirelessMana.RANGE);
+        };
     }
 
     /** Erro da receita do pergaminho no espaço (o cliente tem o item, então dá para dizer O QUE está errado). */
@@ -155,18 +193,28 @@ public class RunicPedestalScreen extends AbstractContainerScreen<RunicPedestalMe
         float progress = st.running && menu.redstone() != RedstoneMode.PULSE ? 1F - Mth.clamp(menu.timer() / (float) total, 0F, 1F) : 0F;
         if (progress > 0) g.fill(x + 9, y + 92, x + 9 + Math.round(38 * progress), y + 95, rgb);
 
-        // Pergaminho: runa do elemento e brilho em volta do espaço quando ativo
-        if (menu.hasScroll()) {
-            GlyphArt.element(g, menu.element(), x + 22, y + 55, 9);
-            if (st.running) {
-                int a = (int) (90 + 60 * Math.sin((minecraft != null && minecraft.level != null ? minecraft.level.getGameTime() + partialTick : 0) / 6.0));
-                int glow = (a << 24) | (menu.element().color & 0xFFFFFF);
-                g.fill(x + 16, y + 32, x + 36, y + 33, glow);
-                g.fill(x + 16, y + 51, x + 36, y + 52, glow);
-                g.fill(x + 16, y + 33, x + 17, y + 51, glow);
-                g.fill(x + 35, y + 33, x + 36, y + 51, glow);
-            }
+        // Pergaminho: brilho em volta do espaço quando ativo
+        int sx = x + RunicPedestalMenu.SCROLL_X, sy = y + RunicPedestalMenu.SCROLL_Y;
+        if (menu.hasScroll() && st.running) {
+            int a = (int) (90 + 60 * Math.sin((minecraft != null && minecraft.level != null ? minecraft.level.getGameTime() + partialTick : 0) / 6.0));
+            int glow = (a << 24) | (menu.element().color & 0xFFFFFF);
+            g.fill(sx - 2, sy - 2, sx + 18, sy - 1, glow);
+            g.fill(sx - 2, sy + 17, sx + 18, sy + 18, glow);
+            g.fill(sx - 2, sy - 1, sx - 1, sy + 17, glow);
+            g.fill(sx + 17, sy - 1, sx + 18, sy + 17, glow);
         }
+        // v1.5: espaços vazios mostram um "fantasma" do que vai neles (pergaminho / semente)
+        if (!menu.hasScroll()) ghost(g, new ItemStack(CoreRegistries.SPELL_SCROLL.get()), sx, sy);
+        if (menu.filterItem().isEmpty()) ghost(g, new ItemStack(Items.WHEAT_SEEDS), x + RunicPedestalMenu.FILTER_X, y + RunicPedestalMenu.FILTER_Y);
+    }
+
+    /** Item apagado dentro de um espaço vazio (desenha o item e cobre com o fundo do espaço, translúcido). */
+    private static void ghost(GuiGraphics g, ItemStack stack, int x, int y) {
+        g.renderFakeItem(stack, x, y);
+        g.pose().pushPose();
+        g.pose().translate(0, 0, 250);
+        g.fill(x, y, x + 16, y + 16, 0xB8100C17);
+        g.pose().popPose();
     }
 
     @Override
@@ -176,11 +224,13 @@ public class RunicPedestalScreen extends AbstractContainerScreen<RunicPedestalMe
         g.drawString(font, casts, imageWidth - 8 - font.width(casts), titleLabelY, DIM, false);
         g.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, LABEL, false);
 
-        // Coluna da esquerda: custo por conjuração (ou a dica do espaço vazio)
+        // Coluna da esquerda: nomes dos espaços e custo por conjuração (ou a dica do espaço vazio)
+        tiny(g, Component.translatable(K + "scroll"), RunicPedestalMenu.SCROLL_X + 8, SLOT_LABEL_Y, DIM);
+        tiny(g, Component.translatable(K + "filter"), RunicPedestalMenu.FILTER_X + 8, SLOT_LABEL_Y, menu.filterItem().isEmpty() ? DIM : GOLD);
         if (menu.hasScroll()) {
-            g.drawCenteredString(font, Component.translatable(K + "cost", menu.cost()), 27, 66, VALUE);
+            drawFitted(g, centered(Component.translatable(K + "cost", menu.cost()), 40), 8, COST_Y, 40, VALUE);
         } else {
-            g.drawCenteredString(font, Component.translatable(K + "slot_hint"), 27, 60, DIM);
+            drawFitted(g, centered(Component.translatable(K + "slot_hint"), 40), 8, COST_Y, 40, DIM);
         }
 
         // Linhas da direita
@@ -194,8 +244,11 @@ public class RunicPedestalScreen extends AbstractContainerScreen<RunicPedestalMe
         int dot = menu.powered() ? 0xFFFF3B3B : 0xFF4A2A2A;
         g.fill(ROW_X + 46, ROW_Y + ROW_H * 5 + 2, ROW_X + 49, ROW_Y + ROW_H * 5 + 5, dot);
 
-        // Mana
-        g.drawString(font, Component.translatable(K + "mana", menu.mana(), menu.batteries()), 9, MANA_Y, LABEL, false);
+        // Mana (baterias + Núcleo) e, no fim da linha, o indicador do Núcleo ligado
+        Component core = coreLabel();
+        int coreW = font.width(core);
+        g.drawString(font, core, 167 - coreW, MANA_Y, 0xFFFFFFFF, false);
+        drawFitted(g, Component.translatable(K + "mana", menu.mana(), menu.batteries()), 9, MANA_Y, 154 - coreW, LABEL);
 
         // Estado + dica
         PedestalStatus st = menu.status();
@@ -218,6 +271,24 @@ public class RunicPedestalScreen extends AbstractContainerScreen<RunicPedestalMe
         g.pose().scale(s, s, 1F);
         g.drawString(font, lines.get(0), 0, 0, color, false);
         g.pose().popPose();
+    }
+
+    /** Texto pequeno (60%) centrado em cx. */
+    private void tiny(GuiGraphics g, Component text, int cx, int y, int color) {
+        float s = 0.6F;
+        g.pose().pushPose();
+        g.pose().translate(cx - font.width(text) * s / 2F, y, 0);
+        g.pose().scale(s, s, 1F);
+        g.drawString(font, text, 0, 0, color, false);
+        g.pose().popPose();
+    }
+
+    /** Põe espaços à esquerda para o texto ficar mais ou menos centrado numa largura (o drawFitted desenha da esquerda). */
+    private Component centered(Component text, int width) {
+        int w = font.width(text);
+        if (w >= width) return text;
+        int pad = (width - w) / 2 / Math.max(1, font.width(" "));
+        return Component.literal(" ".repeat(pad)).append(text);
     }
 
     private void row(GuiGraphics g, int i, Component label, Component value) {

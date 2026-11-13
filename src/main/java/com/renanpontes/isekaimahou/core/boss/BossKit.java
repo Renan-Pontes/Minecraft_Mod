@@ -439,6 +439,93 @@ public final class BossKit {
                 new BossPayloads.Shake(pos.x, pos.y, pos.z, (float) radius, Math.min(3.0F, intensity), Math.min(200, ticks)));
     }
 
+    // ------------------------------------------------------------------ v1.3: espetáculo
+
+    /** Clarão na TELA de um jogador ({@code alpha} 0..1 no início, some em {@code ticks}). */
+    public static void flash(ServerPlayer player, int rgb, float alpha, int ticks) {
+        PacketDistributor.sendToPlayer(player, new BossPayloads.Flash(rgb, Mth.clamp(alpha, 0F, 1F), Math.max(1, ticks), 0));
+    }
+
+    /** Clarão para todos a até {@code radius} blocos (impactos enormes: Supernova, Julgamento, meteoro). */
+    public static void flashNear(ServerLevel level, Vec3 pos, double radius, int rgb, float alpha, int ticks) {
+        PacketDistributor.sendToPlayersNear(level, null, pos.x, pos.y, pos.z, radius,
+                new BossPayloads.Flash(rgb, Mth.clamp(alpha, 0F, 1F), Math.max(1, ticks), 0));
+    }
+
+    /** Pulso só nas BORDAS da tela (vinheta colorida) — aviso "algo vai acontecer com você". */
+    public static void vignette(ServerPlayer player, int rgb, float alpha, int ticks) {
+        PacketDistributor.sendToPlayer(player, new BossPayloads.Flash(rgb, Mth.clamp(alpha, 0F, 1F), Math.max(1, ticks), 1));
+    }
+
+    private static int crackIds = 0x5A000000;
+
+    /**
+     * Rachaduras FALSAS no chão (o "progresso de quebra" do bloco — a arena nunca quebra de verdade): até 40 blocos do
+     * disco de raio {@code radius} em volta de {@code center} ganham trincas no estágio {@code stage} (0..9) por
+     * {@code holdTicks} ticks. Bom para golpes que "partem o chão".
+     */
+    public static void crackFloor(ServerLevel level, Vec3 center, double radius, int stage, int holdTicks) {
+        RandomSource rnd = level.random;
+        int n = Mth.clamp((int) (radius * radius * 1.2), 6, 40);
+        BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
+        List<int[]> placed = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) {
+            double a = rnd.nextDouble() * Math.PI * 2, r = Math.sqrt(rnd.nextDouble()) * radius;
+            int x = Mth.floor(center.x + Math.cos(a) * r), z = Mth.floor(center.z + Math.sin(a) * r);
+            int top = Mth.floor(center.y) + 1;
+            for (int y = top; y >= top - 4; y--) {
+                m.set(x, y, z);
+                if (!level.isLoaded(m)) break;
+                if (!level.getBlockState(m).isAir() && level.getBlockState(m).isSolidRender(level, m)) {
+                    int id = crackIds++;
+                    if (crackIds > 0x5AFFFFFF) crackIds = 0x5A000000;
+                    level.destroyBlockProgress(id, m.immutable(), Mth.clamp(stage + rnd.nextInt(3) - 1, 0, 9));
+                    placed.add(new int[] {id, x, y, z});
+                    break;
+                }
+            }
+        }
+        if (placed.isEmpty()) return;
+        schedule(level, Math.max(1, holdTicks), () -> {
+            for (int[] c : placed) level.destroyBlockProgress(c[0], new BlockPos(c[1], c[2], c[3]), -1);
+        });
+    }
+
+    /**
+     * Escombros voando do chão (partículas do bloco embaixo de {@code at}, jogadas para cima e para fora). Barato:
+     * no máx. 24 partículas por chamada; o cliente multiplica pelo preset gráfico quando usa os próprios efeitos.
+     */
+    public static void debris(ServerLevel level, Vec3 at, double spread, int count) {
+        BlockPos under = BlockPos.containing(at.x, at.y - 0.5, at.z);
+        var state = level.getBlockState(under);
+        if (state.isAir()) state = net.minecraft.world.level.block.Blocks.STONE.defaultBlockState();
+        var opt = new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK, state);
+        RandomSource rnd = level.random;
+        int n = Mth.clamp(count, 1, 24);
+        for (int i = 0; i < n; i++) {
+            double a = rnd.nextDouble() * Math.PI * 2, r = rnd.nextDouble() * spread;
+            double x = at.x + Math.cos(a) * r, z = at.z + Math.sin(a) * r;
+            // count 0: (dx,dy,dz) vira velocidade
+            level.sendParticles(opt, x, at.y + 0.2, z, 0, Math.cos(a) * 0.3, 0.6 + rnd.nextDouble() * 0.5, Math.sin(a) * 0.3, 1.0);
+        }
+        level.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, at.x, at.y + 0.3, at.z, 3, spread * 0.4, 0.1, spread * 0.4, 0.01);
+    }
+
+    /**
+     * Mantém a arena PROTEGIDA viva enquanto o chefe estiver lutando (chame a cada ~40 ticks): a luta "ociosa" do
+     * {@code BossArena} só conta alvos jogadores — contra invocações/pets ou em fases sem alvo (o Arauto descansando,
+     * rebobinando) a arena liberava no meio da luta. Sela se ainda não estiver selada.
+     */
+    public static void keepArena(LivingEntity boss, double radius) {
+        if (!(boss.level() instanceof ServerLevel) || !boss.isAlive()) return;
+        for (ServerPlayer p : partyAround(boss, radius)) {
+            if (!p.isCreative()) {
+                com.renanpontes.isekaimahou.core.api.BossArena.seal(boss);
+                return;
+            }
+        }
+    }
+
     /** Roda {@code action} daqui a {@code delayTicks} ticks (agendador do kit; descartado se o servidor parar). */
     public static void schedule(ServerLevel level, int delayTicks, Runnable action) {
         BossScheduler.schedule(level, delayTicks, action);

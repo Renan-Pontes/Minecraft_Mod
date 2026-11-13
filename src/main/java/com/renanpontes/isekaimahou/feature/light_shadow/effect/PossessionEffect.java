@@ -6,7 +6,7 @@ import com.renanpontes.isekaimahou.feature.light_shadow.LsFx;
 import com.renanpontes.isekaimahou.feature.light_shadow.LsUtil;
 import com.renanpontes.isekaimahou.feature.light_shadow.ai.LsAi;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -38,7 +38,7 @@ public class PossessionEffect extends MobEffect {
         // Olhos violeta e almas saindo da cabeça
         sl.sendParticles(LsFx.dust(LsFx.VIOLET, 1.0F), mob.getX(), mob.getEyeY() + 0.1, mob.getZ(), 2, 0.2, 0.05, 0.2, 0);
         if (mob.tickCount % 20 < 5) {
-            sl.sendParticles(ParticleTypes.SOUL, mob.getX(), mob.getY() + mob.getBbHeight() + 0.1, mob.getZ(), 1, 0.15, 0.05, 0.15, 0.01);
+            sl.sendParticles(Vfx.soul(), mob.getX(), mob.getY() + mob.getBbHeight() + 0.1, mob.getZ(), 1, 0.15, 0.05, 0.15, 0.01);
         }
         return true;
     }

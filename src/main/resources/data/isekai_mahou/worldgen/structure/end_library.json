@@ -1,0 +1,7 @@
+{
+  "type": "isekai_mahou:end_library",
+  "biomes": "#isekai_mahou:has_structure/end_library",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin",
+  "spawn_overrides": {}
+}

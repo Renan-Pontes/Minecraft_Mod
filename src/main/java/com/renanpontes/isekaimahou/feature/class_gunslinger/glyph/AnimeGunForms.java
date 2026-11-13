@@ -5,6 +5,7 @@ import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GgoState;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GsFx;
+import com.renanpontes.isekaimahou.feature.class_gunslinger.GsFxNet;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GsNetwork;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GsTechniques;
 import com.renanpontes.isekaimahou.feature.class_gunslinger.GunCombat;
@@ -77,9 +78,7 @@ public final class AnimeGunForms {
                 level.addFreshEntity(b);
             }
             // o clarão na ponta do dedo
-            level.sendParticles(ParticleTypes.FLASH, from.x, from.y, from.z, 1, 0, 0, 0, 0);
-            GsFx.ring(level, from, 0.6, 14, GsFx.dust(COLOR, 1.2F));
-            level.sendParticles(ParticleTypes.END_ROD, from.x, from.y, from.z, 10, 0.1, 0.1, 0.1, 0.12);
+            GsFxNet.at(level, GsFxNet.SPIRIT_GUN, from, look, 0.8F + frac, COLOR, caster.getId());
             GsFx.sound(level, from, SoundEvents.BEACON_ACTIVATE, 0.9F, 1.8F);
             GsFx.sound(level, from, SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 1.0F, 0.5F);
             if (!ctx.hasOrigin()) {
@@ -167,7 +166,7 @@ public final class AnimeGunForms {
             GsFx.flash(level, from, dir, COLOR, 0.8F);
             GsFx.sound(level, from, SoundEvents.FIREWORK_ROCKET_BLAST, 0.6F, 1.6F + level.random.nextFloat() * 0.3F);
             caster.swing(side > 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, true);
-            if (k % 3 == 0) GsFx.ring(level, caster.position().add(0, 0.1, 0), 1.2, 10, GsFx.dust(COLOR, 0.8F));
+            if (k % 3 == 0) GsFxNet.at(level, GsFxNet.CHARGED_SHOT, from, dir, 0.6F, COLOR, caster.getId());
         }
     }
 

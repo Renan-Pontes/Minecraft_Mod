@@ -19,6 +19,7 @@ import com.renanpontes.isekaimahou.feature.legends_c.LcUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -221,7 +222,7 @@ public class FugaArrowEntity extends LcEntity {
         if (tickCount % 2 == 0 && LcUtil.hasGround(l, to, 5)) {
             Destruction.surface(l, LcUtil.ground(l, to, 5), 1.8F, owner, Destruction.Mode.SCORCH);
         }
-        LcFx.far(l, ParticleTypes.FLAME, to.x, to.y, to.z, 6, 0.2, 0.2, 0.2, 0.02);
+        LcFx.far(l, Vfx.flame(), to.x, to.y, to.z, 6, 0.2, 0.2, 0.2, 0.02);
         if (tickCount % 3 == 0) LcFx.far(l, ParticleTypes.LARGE_SMOKE, to.x, to.y, to.z, 2, 0.1, 0.1, 0.1, 0.01);
         if (travelled >= stats.radius(64F)) impact(l, to);
     }
@@ -278,8 +279,8 @@ public class FugaArrowEntity extends LcEntity {
         }
         if (age % 20 == 0) LcFx.sound(l, base, SoundEvents.BLAZE_BURN, 2.0F, 0.5F);
         if (age % 2 == 0) {
-            LcFx.far(l, ParticleTypes.FLAME, base.x, base.y + COLUMN_HEIGHT * 0.5, base.z, 14, r * 0.5, COLUMN_HEIGHT * 0.4, r * 0.5, 0.06);
-            LcFx.far(l, ParticleTypes.LARGE_SMOKE, base.x, base.y + COLUMN_HEIGHT, base.z, 4, r * 0.6, 1.0, r * 0.6, 0.05);
+            LcFx.far(l, Vfx.flame(), base.x, base.y + COLUMN_HEIGHT * 0.5, base.z, 14, r * 0.5, COLUMN_HEIGHT * 0.4, r * 0.5, 0.06);
+            LcFx.far(l, Vfx.largeSmoke(), base.x, base.y + COLUMN_HEIGHT, base.z, 4, r * 0.6, 1.0, r * 0.6, 0.05);
         }
     }
 
@@ -288,11 +289,11 @@ public class FugaArrowEntity extends LcEntity {
             LivingEntity o = ownerEntity();
             if (o == null) return;
             Vec3 h = handPos(o, 1F);
-            level().addParticle(ParticleTypes.FLAME, h.x + (random.nextDouble() - 0.5) * 0.9, h.y + (random.nextDouble() - 0.5) * 0.9,
+            level().addParticle(Vfx.flame(), h.x + (random.nextDouble() - 0.5) * 0.9, h.y + (random.nextDouble() - 0.5) * 0.9,
                     h.z + (random.nextDouble() - 0.5) * 0.9, 0, 0.01, 0);
         } else if (phase() == FLY) {
             Vec3 p = position();
-            level().addParticle(ParticleTypes.SMALL_FLAME, p.x, p.y, p.z, 0, 0, 0);
+            level().addParticle(Vfx.smallFlame(), p.x, p.y, p.z, 0, 0, 0);
         }
     }
 

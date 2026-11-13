@@ -9,6 +9,7 @@ import com.renanpontes.isekaimahou.feature.fire_water.FwRegistries;
 import com.renanpontes.isekaimahou.feature.fire_water.FwUtil;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -302,7 +303,7 @@ public class ElementalFieldEntity extends Entity {
                 if (s.getBlock() instanceof BaseFireBlock) {
                     if (FwUtil.canPlace(c, at)) {
                         sl.removeBlock(at, false);
-                        sl.sendParticles(ParticleTypes.LARGE_SMOKE, x + 0.5, y + 0.3, z + 0.5, 4, 0.2, 0.1, 0.2, 0.01);
+                        sl.sendParticles(Vfx.largeSmoke(), x + 0.5, y + 0.3, z + 0.5, 4, 0.2, 0.1, 0.2, 0.01);
                     }
                     continue;
                 }
@@ -370,17 +371,17 @@ public class ElementalFieldEntity extends Entity {
         switch (kind()) {
             case SMOKE -> {
                 FwUtil.sound(sl, c, SoundEvents.FIRE_EXTINGUISH, 1.0F, 0.6F);
-                sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y + 0.5, c.z, 40, radius() * 0.4, 0.5, radius() * 0.4, 0.05);
+                sl.sendParticles(Vfx.largeSmoke(), c.x, c.y + 0.5, c.z, 40, radius() * 0.4, 0.5, radius() * 0.4, 0.05);
             }
             case MIST -> {
                 FwUtil.sound(sl, c, SoundEvents.AMBIENT_UNDERWATER_ENTER, 0.8F, 1.3F);
-                FwUtil.shockwave(sl, c.add(0, 0.3, 0), ParticleTypes.CLOUD, 24, 0.25);
+                FwUtil.shockwave(sl, c.add(0, 0.3, 0), Vfx.cloud(), 24, 0.25);
             }
             case RAIN -> FwUtil.sound(sl, c, SoundEvents.WEATHER_RAIN, 1.0F, 1.0F);
             case DELUGE -> {
                 FwUtil.sound(sl, c, SoundEvents.TRIDENT_RIPTIDE_3.value(), 1.5F, 0.7F);
                 FwUtil.sound(sl, c, SoundEvents.WEATHER_RAIN, 1.5F, 0.6F);
-                FwUtil.shockwave(sl, c.add(0, 0.3, 0), ParticleTypes.SPLASH, 60, 0.6);
+                FwUtil.shockwave(sl, c.add(0, 0.3, 0), Vfx.splash(), 60, 0.6);
             }
             case FIRE_WALL -> {
                 FwUtil.sound(sl, c, SoundEvents.BLAZE_SHOOT, 1.0F, 0.7F);
@@ -392,13 +393,13 @@ public class ElementalFieldEntity extends Entity {
     private void endFx(ServerLevel sl) {
         Vec3 c = position();
         switch (kind()) {
-            case SMOKE, MIST -> sl.sendParticles(ParticleTypes.POOF, c.x, c.y + 1, c.z, 12, radius() * 0.4, 0.4, radius() * 0.4, 0.02);
+            case SMOKE, MIST -> sl.sendParticles(Vfx.poof(), c.x, c.y + 1, c.z, 12, radius() * 0.4, 0.4, radius() * 0.4, 0.02);
             case FIRE_WALL -> {
                 Vec3 look = Vec3.directionFromRotation(0, wallYaw());
                 Vec3 side = new Vec3(-look.z, 0, look.x);
                 for (double t = -radius(); t <= radius(); t += 0.75) {
                     Vec3 p = c.add(side.scale(t));
-                    sl.sendParticles(ParticleTypes.LARGE_SMOKE, p.x, p.y + 0.6, p.z, 2, 0.15, 0.3, 0.15, 0.02);
+                    sl.sendParticles(Vfx.largeSmoke(), p.x, p.y + 0.6, p.z, 2, 0.15, 0.3, 0.15, 0.02);
                 }
                 FwUtil.sound(sl, c, SoundEvents.FIRE_EXTINGUISH, 0.8F, 1.0F);
             }
@@ -422,7 +423,7 @@ public class ElementalFieldEntity extends Entity {
                 int n = Math.round((2 + r * r * 0.6F) * fade * mult);
                 for (int i = 0; i < n; i++) {
                     Vec3 p = disk(rnd, r, rnd.nextDouble() * 2.4);
-                    lv.addParticle(ParticleTypes.LARGE_SMOKE, p.x, p.y, p.z, (rnd.nextDouble() - 0.5) * 0.03, 0.006, (rnd.nextDouble() - 0.5) * 0.03);
+                    lv.addParticle(Vfx.largeSmoke(), p.x, p.y, p.z, (rnd.nextDouble() - 0.5) * 0.03, 0.006, (rnd.nextDouble() - 0.5) * 0.03);
                     if (rnd.nextInt(3) == 0) lv.addParticle(ParticleTypes.SMOKE, p.x, p.y, p.z, 0, 0.01, 0);
                 }
                 if (tickCount % 4 == 0 && fade > 0.5F) {
@@ -450,7 +451,7 @@ public class ElementalFieldEntity extends Entity {
                 int nd = Math.round((2 + r * r * (deluge ? 0.55F : 0.45F)) * fade * mult);
                 for (int i = 0; i < nd; i++) {
                     Vec3 p = disk(rnd, r, 4.3);
-                    lv.addParticle(ParticleTypes.FALLING_WATER, p.x, p.y, p.z, 0, 0, 0);
+                    lv.addParticle(Vfx.water(), p.x, p.y, p.z, 0, 0, 0);
                     if (rnd.nextInt(3) == 0) {
                         Vec3 g = disk(rnd, r, 0.05);
                         lv.addParticle(ParticleTypes.RAIN, g.x, groundY(g), g.z, 0, 0, 0);

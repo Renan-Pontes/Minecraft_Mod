@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AMA",
+    "EBE",
+    "ODO"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:amethyst_block"
+    },
+    "M": {
+      "item": "isekai_mahou:mana_crystal"
+    },
+    "E": {
+      "item": "isekai_mahou:essence_arcane"
+    },
+    "B": {
+      "item": "isekai_mahou:mana_battery"
+    },
+    "O": {
+      "item": "minecraft:crying_obsidian"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "id": "isekai_mahou:mana_core",
+    "count": 1
+  }
+}

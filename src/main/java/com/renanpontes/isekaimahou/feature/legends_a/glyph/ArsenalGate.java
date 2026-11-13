@@ -11,7 +11,7 @@ import com.renanpontes.isekaimahou.feature.legends_a.entity.ArsenalPortalEntity;
 import com.renanpontes.isekaimahou.feature.legends_a.entity.ConjuredBladeEntity;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.renanpontes.isekaimahou.glyph.fx.Vfx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
@@ -146,7 +146,7 @@ public final class ArsenalGate {
         sl.addFreshEntity(blade);
         portal.setItem(LegendFx.treasureWeapon(sl.random));
         sl.sendParticles(LegendFx.dust(color, 1.3F), from.x, from.y, from.z, 10, 0.3, 0.3, 0.3, 0);
-        sl.sendParticles(ParticleTypes.END_ROD, from.x, from.y, from.z, 3, 0.2, 0.2, 0.2, 0.05);
+        sl.sendParticles(Vfx.endRod(), from.x, from.y, from.z, 3, 0.2, 0.2, 0.2, 0.05);
         LegendFx.sound(sl, from, SoundEvents.TRIDENT_THROW, 0.8F, 0.85F + sl.random.nextFloat() * 0.35F);
     }
 

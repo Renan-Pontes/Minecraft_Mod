@@ -89,6 +89,7 @@ public final class ClassKits {
             case RANGER -> Items.BOW;
             case GAMBLER -> Items.RABBIT_FOOT;
             case STEELBALL -> Items.HEAVY_CORE;
+            case HOLLOW -> Items.BONE_BLOCK;
             default -> Items.BOOK;
         });
     }
