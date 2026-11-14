@@ -34,6 +34,41 @@ public final class SpellParser {
     /** Custo extra por elemento além do primário (+10% cada). */
     public static final float EXTRA_ELEMENT_COST = 0.10F;
 
+    /**
+     * v1.1 — regras das TRANSFORMAÇÕES (instaladas pelo módulo {@code transform_laws}; sem ele, nada muda):
+     * <ul>
+     *   <li>{@link TransformHook#migrate}: magias salvas que começavam com uma ex-FORMA de transformação (O Todo-Poderoso,
+     *       Bankai, Vollständig...) — hoje um EFEITO-corpo — ganham a forma Transformação na frente, na hora de ler;</li>
+     *   <li>{@link TransformHook#implicitForm}: a forma Transformação logo antes de um corpo que o jogador conhece não
+     *       precisa ser conhecida (nem conta no limite de glifos) — as magias antigas continuam valendo;</li>
+     *   <li>{@link TransformHook#check}: erro do estágio (corpo fora da Transformação, corpo supremo na comum);</li>
+     *   <li>{@link TransformHook#cooldown}: recarga mínima pedida pelo corpo (corpos longos recarregam mais).</li>
+     * </ul>
+     */
+    public interface TransformHook {
+        SpellRecipe migrate(SpellRecipe recipe);
+
+        boolean implicitForm(List<Glyph> resolved, int formIndex, @Nullable MagicData data);
+
+        @Nullable
+        Component check(int stage, FormGlyph form, List<ParsedSpell.EffectEntry> effects);
+
+        int cooldown(FormGlyph form, List<ParsedSpell.EffectEntry> effects, int cooldown);
+    }
+
+    private static volatile TransformHook transformHook;
+
+    /** Chamado uma vez pelo módulo transform_laws (init comum: vale no cliente e no servidor). */
+    public static void installTransformHook(TransformHook hook) {
+        transformHook = hook;
+    }
+
+    /** A receita como ela é lida hoje (com a migração das ex-formas de transformação aplicada). */
+    public static SpellRecipe migrated(SpellRecipe recipe) {
+        TransformHook h = transformHook;
+        return h == null || recipe == null || recipe.isEmpty() ? recipe : h.migrate(recipe);
+    }
+
     /** Resultado do parse: ou a magia, ou uma mensagem de erro. */
     public record Result(ParsedSpell spell, Component error) {
         public boolean ok() { return spell != null; }
@@ -100,12 +135,24 @@ public final class SpellParser {
      */
     public static Result parse(SpellRecipe recipe, Element element, @Nullable MagicData data, @Nullable MagicData mastery) {
         if (recipe == null || recipe.isEmpty()) return Result.fail("empty");
+        // v1.1: ex-formas de transformação viraram efeitos-corpo — receitas antigas ganham a forma Transformação
+        TransformHook hook = transformHook;
+        if (hook != null) recipe = hook.migrate(recipe);
         // Resolve os glifos antes: o primário depende de TODOS eles
         List<Glyph> resolved = new ArrayList<>(recipe.glyphs().size());
         for (ResourceLocation id : recipe.glyphs()) {
             Glyph g = GlyphRegistry.get(id);
             if (g == null) return Result.fail("unknown", id.toString());
             resolved.add(g);
+        }
+        // v1.1: a forma Transformação logo antes de um corpo conhecido vale sem ser aprendida (índice; -1 = nenhuma)
+        int implicitForm = -1;
+        if (hook != null) {
+            for (int i = 0; i < resolved.size(); i++) {
+                if (resolved.get(i).kind() != GlyphKind.FORM) continue;
+                if (hook.implicitForm(resolved, i, data)) implicitForm = i;
+                break;
+            }
         }
         Element primary = SpellCost.primaryElement(resolved);
         if (element != null) {
@@ -132,7 +179,8 @@ public final class SpellParser {
         int costTarget = -1;
         // Maestria: desconto médio ponderado pelo custo de cada glifo (só glifos que custam mana)
         float masteryWeight = 0F, masteryOff = 0F;
-        for (Glyph g : resolved) {
+        for (int gi = 0; gi < resolved.size(); gi++) {
+            Glyph g = resolved.get(gi);
             ResourceLocation id = g.id();
             int mastered = GlyphMastery.level(mastery, id);
             if (g.cost() > 0) {
@@ -140,7 +188,7 @@ public final class SpellParser {
                 masteryOff += g.cost() * GlyphMastery.costDiscount(mastered);
             }
 
-            if (data != null) {
+            if (data != null && gi != implicitForm) {
                 if (!data.knowsGlyph(id)) return Result.fail("not_known", g.displayName());
                 if (data.circle() < g.minCircle()) return Result.fail("circle", g.displayName(), g.minCircle());
             }
@@ -264,11 +312,18 @@ public final class SpellParser {
         for (int i = 1; i < stages.size(); i++) {
             if (stages.get(i).effects.isEmpty()) return Result.fail("stage_no_effect", i + 1);
         }
+        if (hook != null) {
+            for (int i = 0; i < stages.size(); i++) {
+                Component err = hook.check(i, stages.get(i).form, stages.get(i).effects);
+                if (err != null) return new Result(null, err);
+            }
+        }
 
         int count = recipe.glyphs().size();
         if (data != null) {
             int max = Progression.maxGlyphs(data.level(), data.circle());
-            if (count > max) return Result.fail("too_many_glyphs", count, max);
+            int counted = implicitForm >= 0 ? count - 1 : count;
+            if (counted > max) return Result.fail("too_many_glyphs", counted, max);
         }
         if (data != null && first.form.isUltimate() && !Progression.ultimatesAllowed(data.circle())) {
             return Result.fail("ultimate_circle", 4);
@@ -350,6 +405,8 @@ public final class SpellParser {
         if (instant) castTicks = 0;
         // onda 5: a forma pode mexer na própria recarga pelos aumentos dela (padrão ×1)
         int cooldown = Math.max(0, Math.round((first.form.baseCooldown() + cost / 3) * first.form.cooldownMult(first.formStats)));
+        // v1.1: corpos de transformação longos (O Todo-Poderoso: 5 min) pedem recarga maior
+        if (hook != null) cooldown = Math.max(0, hook.cooldown(first.form, first.effects, cooldown));
 
         // Monta de trás para frente: cada estágio aponta para o seguinte
         ParsedSpell built = null;

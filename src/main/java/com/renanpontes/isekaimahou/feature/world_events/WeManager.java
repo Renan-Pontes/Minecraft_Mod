@@ -15,6 +15,7 @@ import com.renanpontes.isekaimahou.feature.world_events.event.BloodMoon;
 import com.renanpontes.isekaimahou.feature.world_events.event.Earthquake;
 import com.renanpontes.isekaimahou.feature.world_events.event.ManaStorm;
 import com.renanpontes.isekaimahou.feature.world_events.event.MeteorFall;
+import com.renanpontes.isekaimahou.feature.world_events.event.StarShower;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -57,7 +58,10 @@ public final class WeManager {
         bus.addListener(PlayerEvent.PlayerLoggedInEvent.class, e -> syncTo(e.getEntity()));
         bus.addListener(PlayerEvent.PlayerChangedDimensionEvent.class, e -> syncTo(e.getEntity()));
         bus.addListener(PlayerEvent.PlayerRespawnEvent.class, e -> syncTo(e.getEntity()));
-        bus.addListener(ServerStoppedEvent.class, e -> ManaStorm.reset());
+        bus.addListener(ServerStoppedEvent.class, e -> {
+            ManaStorm.reset();
+            StarShower.reset();
+        });
     }
 
     // =====================================================================================
@@ -107,6 +111,7 @@ public final class WeManager {
             case ARCANE_STORM -> ArcaneStorm.tick(level, s, age);
             case EARTHQUAKE -> Earthquake.tick(level, s, age);
             case MANA_STORM -> ManaStorm.tick(level, s, age);
+            case STAR_SHOWER -> StarShower.tick(level, s, age);
         };
         if (!keep) stop(level, true);
     }
@@ -120,7 +125,7 @@ public final class WeManager {
         float k = s.chancePct / 100F;
         RandomSource rnd = level.random;
 
-        // Anoitecer: Lua de Sangue (lua cheia chama mais) ou um meteoro riscando a noite
+        // Anoitecer: Lua de Sangue (lua cheia chama mais), um meteoro riscando a noite ou uma Chuva de Estrelas
         if (tod >= 13000 && tod < 14500 && s.rolledNight != day) {
             s.rolledNight = day;
             s.setDirty();
@@ -129,6 +134,10 @@ public final class WeManager {
             float blood = (level.getMoonPhase() == 0 ? 0.12F : 0.05F) * k;
             if (r < blood) start(level, WorldEventType.BLOOD_MOON, null, false);
             else if (r < blood + 0.03F * k) start(level, WorldEventType.METEOR, randomPlayer(level), false);
+            // Chuva de Estrelas (v1.1): noite calma; lua nova (céu mais escuro) chama mais
+            else if (r < blood + 0.03F * k + (level.getMoonPhase() == 4 ? 0.10F : 0.045F) * k) {
+                start(level, WorldEventType.STAR_SHOWER, null, false);
+            }
             return;
         }
         // De dia: numa hora diferente a cada dia
@@ -188,6 +197,7 @@ public final class WeManager {
             case ARCANE_STORM -> ArcaneStorm.start(overworld, s);
             case EARTHQUAKE -> Earthquake.start(overworld, s, around);
             case MANA_STORM -> ManaStorm.start(overworld, s);
+            case STAR_SHOWER -> StarShower.start(overworld, s);
         }
         s.setDirty();
         for (ServerPlayer p : audience(overworld, s)) {
@@ -210,6 +220,7 @@ public final class WeManager {
         switch (type) {
             case ARCANE_STORM -> ArcaneStorm.end(overworld, s);
             case MANA_STORM -> ManaStorm.reset();
+            case STAR_SHOWER -> StarShower.reset();
             default -> { }
         }
         s.clear();

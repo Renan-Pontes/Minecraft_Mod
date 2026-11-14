@@ -3,21 +3,27 @@ package com.renanpontes.isekaimahou.feature.class_quincy.glyph;
 import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.feature.class_quincy.QuincyFinalForms;
-import com.renanpontes.isekaimahou.glyph.FormGlyph;
+import com.renanpontes.isekaimahou.feature.transform_laws.BodyEffect;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
+import com.renanpontes.isekaimahou.glyph.SpellStats;
+
+import net.minecraft.world.entity.LivingEntity;
 
 /**
- * O Todo-Poderoso (homenagem a "The Almighty", Letra A) — forma G / ultimate. Por 20 s (Estender aumenta) você VÊ O
- * FUTURO: 45% de chance de esquivar de cada golpe (passo para o lado com imagem residual); quem vai atacar você brilha e
- * a linha do golpe/trajetória do projétil aparece antes; e a cada 5 s o primeiro golpe pesado (≥ 20% da vida, ou letal)
- * é REESCRITO — anulado e devolvido a quem atacou, com os efeitos da magia. Funciona sem efeitos.
- * Rank V + 8 Auswählen + 6 chefes.
+ * O Todo-Poderoso (homenagem a "The Almighty", Letra A) — v1.1: CORPO de transformação (era forma G). Vai dentro da
+ * Transformação Suprema (tecla G): {@code Transformação Suprema → O Todo-Poderoso → efeitos → leis}.
+ * <p>
+ * Palavra do dono: <i>"A transformação dura muito tempo, uns 5 minutos. Pra cada ataque que você tomar, ele desvia
+ * automaticamente, aparece atrás do alvo e acerta ele com um golpe, dizendo 'eu vi tudo...'; cada ataque reduz 30
+ * segundos da transformação. Após um ataque desses, fica 5 segundos sem teleportar, mas ainda desviando."</i>
+ * Regras em {@link QuincyFinalForms} (5 min, 10 contra-ataques no máximo). Rank V + 8 Auswählen + 6 chefes.
  */
-public class AlmightyForm extends FormGlyph {
-    public static final int DURATION = 400;
+public class AlmightyForm extends BodyEffect {
+    /** 5 minutos. Encurtar diminui; Estender não passa disto. */
+    public static final int DURATION = 6000;
 
     public AlmightyForm() {
-        super("quincy_almighty", 100);
+        super("quincy_almighty", 40);
         origin(MagicPath.QUINCY);
         element(Element.LIGHT);
         tier(5);
@@ -25,37 +31,38 @@ public class AlmightyForm extends FormGlyph {
     }
 
     @Override
-    public boolean isUltimate() {
+    public int bodyTicks(SpellStats stats) {
+        return Math.min(DURATION, stats.duration(DURATION));
+    }
+
+    /** 10 minutos de recarga (a transformação dura até 5). */
+    @Override
+    public int minCooldown() {
+        return 12000;
+    }
+
+    @Override
+    public boolean supreme() {
         return true;
     }
 
     @Override
-    public boolean requiresEffect() {
-        return false;
+    public String cutsceneStyle() {
+        return "dark";
     }
 
     @Override
-    public int baseCastTicks() {
-        return 30;
+    public int cutsceneRgb() {
+        return 0x6FA8FF;
     }
 
     @Override
-    public int baseCooldown() {
-        return 1800;
+    public void onTransformEnd(LivingEntity entity) {
+        QuincyFinalForms.stopAlmighty(entity, false);
     }
 
     @Override
-    public int hintDuration() {
-        return DURATION;
-    }
-
-    @Override
-    public float hintRadius() {
-        return 24F;
-    }
-
-    @Override
-    public void cast(SpellContext ctx) {
-        QuincyFinalForms.startAlmighty(ctx, ctx.formStats().duration(DURATION));
+    protected void start(SpellContext ctx, LivingEntity self, SpellStats stats, int ticks) {
+        QuincyFinalForms.startAlmighty(ctx, stats, ticks);
     }
 }

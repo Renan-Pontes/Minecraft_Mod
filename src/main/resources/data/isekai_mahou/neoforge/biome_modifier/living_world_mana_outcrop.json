@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#isekai_mahou:living_world_mana_outcrop",
+  "features": "isekai_mahou:living_world_mana_outcrop",
+  "step": "vegetal_decoration"
+}

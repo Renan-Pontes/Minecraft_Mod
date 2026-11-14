@@ -142,7 +142,7 @@ public final class Augments {
         Float p = OFA.remove(event.getContext());
         LivingEntity c = event.getCaster();
         if (p == null || c == null || !c.isAlive()) return;
-        float safe = FullCowl.safe(LhUtil.circle(c)) + (FullCowl.active(c) ? 0.1F : 0F);
+        float safe = FullCowl.safeFor(c) + (FullCowl.active(c) ? 0.1F : 0F);
         if (p <= safe + 1.0E-4F) {
             LhUtil.actionbar(c, Component.translatable("message.isekai_mahou.legends_h.ofa_ok", Math.round(p * 100))
                     .withStyle(ChatFormatting.GREEN));

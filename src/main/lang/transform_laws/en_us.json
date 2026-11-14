@@ -191,5 +191,12 @@
   "screen.isekai_mahou.tforge.btn_spell": "To spell",
   "screen.isekai_mahou.tforge.btn_spell_tip": "Takes these pieces to the Grimoire as a Transformation spell: save it on a key (Z/X/C/G) and cast it whenever you like.",
   "screen.isekai_mahou.tforge.btn_spell_locked": "To cast the Transformation as a key spell, learn the glyph (Arcane path, Circle %s). Shaping here doesn't need it.",
-  "screen.isekai_mahou.tforge.to_spell_done": "Sent to the Grimoire: save it on a key to cast it."
+  "screen.isekai_mahou.tforge.to_spell_done": "Sent to the Grimoire: save it on a key to cast it.",
+  "glyph.isekai_mahou.transformation_supreme": "Supreme Transformation",
+  "glyph.isekai_mahou.transformation_supreme.desc": "The ULTIMATE Transformation (G key only, spends the Ultimate Charge): same as the Transformation, but it is where the supreme bodies go — The Almighty, Bankai, Vollständig, Letzt Stil, Vasto Lorde, Shadow Monarch and Transcendence. E.g.: Supreme Transformation → The Almighty → Heal. Knowing one of those bodies teaches you this form.",
+  "screen.isekai_mahou.tforge.body_time": "%s sets the duration: %s",
+  "screen.isekai_mahou.tforge.supreme": "Supreme: G key only (spends the Ultimate Charge).",
+  "message.isekai_mahou.tforge.body_in_slot": "%s is a whole transformation: build it as a spell in the Grimoire (Transformation → it → effects), not in a slot.",
+  "spell_error.isekai_mahou.body_needs_transformation": "%s is a transformation: it only goes right after the Transformation form (e.g.: Transformation → it → effects).",
+  "spell_error.isekai_mahou.body_needs_supreme": "%s is a supreme transformation: use the Supreme Transformation form (G key)."
 }

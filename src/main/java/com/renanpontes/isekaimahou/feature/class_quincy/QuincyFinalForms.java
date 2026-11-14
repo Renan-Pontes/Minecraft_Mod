@@ -7,13 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import com.renanpontes.isekaimahou.IsekaiMahou;
 import com.renanpontes.isekaimahou.core.api.Announce;
 import com.renanpontes.isekaimahou.feature.class_quincy.entity.SpiritArrowEntity;
+import com.renanpontes.isekaimahou.feature.transform_laws.TransformForge;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
-import com.renanpontes.isekaimahou.glyph.SpellCost;
+import com.renanpontes.isekaimahou.glyph.SpellStats;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +25,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -31,6 +37,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
@@ -41,17 +48,29 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
  *   Força II, Velocidade II, Resistência I, Regeneração I, plana, engole todo projétil a 8 blocos e a cada 0,75 s um
  *   leque de 6 flechas teleguiadas gigantes cai sobre os inimigos (os efeitos da magia). O PREÇO: ao acabar, a vida cai
  *   para 50%, Fraqueza II e 10 minutos SEM PODER QUINCY;</li>
- *   <li><b>O Todo-Poderoso</b> (homenagem a "The Almighty", Letra A): por 20 s você VÊ O FUTURO — 45% de chance de
- *   esquivar de cada golpe (passo para o lado com imagem residual), os inimigos que vão atacar você brilham e mostram a
- *   trajetória antes, e a cada 5 s o primeiro golpe pesado (≥ 20% da vida ou letal) é REESCRITO: anulado e devolvido a
- *   quem atacou (com os efeitos da magia).</li>
+ *   <li><b>O Todo-Poderoso</b> (homenagem a "The Almighty", Letra A) — v1.1, corpo da Transformação Suprema: por
+ *   5 minutos você VÊ O FUTURO — todo ataque de uma criatura é desviado; com o contra-ataque pronto você aparece atrás
+ *   de quem atacou, golpeia e diz "Eu vi tudo..." (cada contra-ataque custa 30 s da transformação; depois, 5 s só
+ *   desviando). 10 contra-ataques ou o tempo acabar = fim. Quem vai atacar você brilha e mostra a trajetória antes.</li>
  * </ul>
+ * v1.1: as duas são CORPOS de transformação ({@code feature/transform_laws/TransformBody}): começam dentro da forma
+ * Transformação Suprema e acabam junto com ela ({@link #stopLetzt}, {@link #stopAlmighty}).
  */
 public final class QuincyFinalForms {
     public static final ResourceLocation GRAVITY = IsekaiMahou.id("quincy_letzt_stil_gravity");
     public static final float LETZT_POWER = 2.0F;
-    public static final float DODGE_CHANCE = 0.45F;
-    public static final int REWRITE_COOLDOWN = 100;
+    /** O Todo-Poderoso: alcance do contra-ataque (blocos até quem atacou). */
+    public static final double COUNTER_RANGE = 24.0;
+    /** Dano base do golpe do contra-ataque (× poder do corpo, como um efeito de dano). */
+    public static final float COUNTER_DAMAGE = 14F;
+    /** Cada contra-ataque tira 30 s da transformação. */
+    public static final int COUNTER_COST = 30 * 20;
+    /** Depois de um contra-ataque: 5 s só desviando (sem teleportar). */
+    public static final int COUNTER_GAP = 5 * 20;
+    /** 10 contra-ataques = fim (5 min / 30 s). */
+    public static final int MAX_COUNTERS = 10;
+    /** Fala do contra-ataque (balão sobre a cabeça). */
+    public static final String SAW_KEY = "message.isekai_mahou.quincy.almighty_saw";
     private static final DustParticleOptions GOLD = QuincyFx.dust(0xFFE89A, 1.2F);
     private static final DustParticleOptions EYE = QuincyFx.dust(0x101018, 1.0F);
     private static final DustParticleOptions WARN = QuincyFx.dust(0xFF3A3A, 0.8F);
@@ -59,10 +78,15 @@ public final class QuincyFinalForms {
     private static final class State {
         final SpellContext ctx;
         final ServerLevel level;
-        final long end;
+        /** Fim (tick do mundo). O Todo-Poderoso encurta a cada contra-ataque. */
+        long end;
         final float radius;
         int age;
-        long nextRewrite;
+        /** Aumentos do corpo (poder do golpe do contra-ataque). */
+        SpellStats stats = new SpellStats();
+        /** O Todo-Poderoso: próximo contra-ataque permitido / próxima esquiva com efeito visual. */
+        long nextCounter, nextDodge;
+        int counters;
 
         State(SpellContext ctx, ServerLevel level, long end, float radius) {
             this.ctx = ctx;
@@ -124,7 +148,7 @@ public final class QuincyFinalForms {
         QuincyFx.sound(level, at, SoundEvents.BEACON_POWER_SELECT, 1.4F, 0.6F);
         QuincyFx.sound(level, at, SoundEvents.TOTEM_USE, 0.8F, 1.3F);
         QuincyFx.sound(level, at, SoundEvents.ELYTRA_FLYING, 0.6F, 1.2F);
-        if (caster instanceof ServerPlayer sp && !ctx.formStats().silent) {
+        if (caster instanceof ServerPlayer sp && !ctx.formStats().silent && !com.renanpontes.isekaimahou.feature.transform_laws.TransformForge.inForge(ctx)) {
             Announce.send(sp, Quincy.msg("letzt_shout", sp.getDisplayName()), 0xFFF2C0, Announce.STYLE_ULTIMATE);
         }
     }
@@ -204,14 +228,31 @@ public final class QuincyFinalForms {
         }
     }
 
+    /**
+     * v1.1: a Transformação que tinha a Letzt Stil como corpo acabou (tempo, reconjurou, comando) — as asas se desfazem
+     * já, e o PREÇO é cobrado (não dá para fugir dele encerrando a transformação antes).
+     */
+    public static void stopLetzt(LivingEntity e) {
+        State s = LETZT.remove(e.getUUID());
+        if (s == null) return;
+        QuincyFxNet.form(e, QuincyFxNet.FORM_NONE, 0);
+        finishLetzt(s, e, e.isAlive());
+    }
+
     // =====================================================================================
-    //  O Todo-Poderoso
+    //  O Todo-Poderoso (v1.1: corpo de transformação — 5 min, contra-ataques "Eu vi tudo...")
     // =====================================================================================
-    public static void startAlmighty(SpellContext ctx, int ticks) {
+    /**
+     * Começa O Todo-Poderoso em quem conjura. Dentro da Transformação Suprema, a sessão dura o mesmo tempo e o ícone do
+     * efeito "Transformação" mostra quanto falta.
+     */
+    public static void startAlmighty(SpellContext ctx, SpellStats stats, int ticks) {
         LivingEntity caster = ctx.caster();
         if (caster == null) return;
         ServerLevel level = ctx.level();
-        ALMIGHTY.put(caster.getUUID(), new State(ctx, level, level.getGameTime() + ticks, 24F));
+        State s = new State(ctx, level, level.getGameTime() + ticks, 24F);
+        s.stats = stats;
+        ALMIGHTY.put(caster.getUUID(), s);
         QuincyFxNet.form(caster, QuincyFxNet.FORM_ALMIGHTY, ticks);
         QuincyFxNet.burst(caster, QuincyFxNet.EYES, caster.getEyePosition(), Vec3.ZERO, 3F, 0x6FA8FF);
         Vec3 eye = caster.getEyePosition();
@@ -222,8 +263,27 @@ public final class QuincyFinalForms {
         QuincyFx.sound(level, eye, SoundEvents.ENDER_EYE_DEATH, 1.0F, 0.5F);
         QuincyFx.sound(level, eye, SoundEvents.BELL_RESONATE, 1.2F, 0.7F);
         QuincyFx.sound(level, eye, SoundEvents.BEACON_POWER_SELECT, 1.0F, 0.4F);
-        if (caster instanceof ServerPlayer sp && !ctx.formStats().silent) {
+        if (caster instanceof ServerPlayer sp && !ctx.formStats().silent && !com.renanpontes.isekaimahou.feature.transform_laws.TransformForge.inForge(ctx)) {
             Announce.send(sp, Quincy.msg("almighty_shout", sp.getDisplayName()), 0x1A1A2A, Announce.STYLE_ULTIMATE);
+        }
+    }
+
+    /**
+     * Acaba O Todo-Poderoso. {@code endTransformation}: foi o próprio corpo que acabou (tempo ou 10 contra-ataques) —
+     * a Transformação inteira acaba junto. false = a Transformação acabou por fora (não chama de volta).
+     */
+    public static void stopAlmighty(LivingEntity e, boolean endTransformation) {
+        State s = ALMIGHTY.remove(e.getUUID());
+        if (s != null) almightyGone(s, e, endTransformation);
+    }
+
+    /** Os olhos se fecham (estado já tirado do mapa). */
+    private static void almightyGone(State s, LivingEntity e, boolean endTransformation) {
+        QuincyFxNet.form(e, QuincyFxNet.FORM_NONE, 0);
+        QuincyFx.sound(s.level, e.position(), SoundEvents.ENDER_EYE_DEATH, 0.6F, 1.2F);
+        if (e instanceof ServerPlayer sp) {
+            if (e.isAlive()) sp.displayClientMessage(Quincy.msg("almighty_end").withStyle(ChatFormatting.GRAY), true);
+            if (endTransformation) TransformForge.endCast(sp);
         }
     }
 
@@ -252,47 +312,132 @@ public final class QuincyFinalForms {
     }
 
     /**
-     * Dano chegando em quem está no Todo-Poderoso: o golpe pesado é reescrito (anulado e devolvido) a cada 5 s; os
-     * outros têm 45% de chance de esquiva. Cancela o evento quando age.
+     * Ataque chegando em quem está no Todo-Poderoso. TODO ataque vindo de uma criatura (corpo a corpo, projétil, magia)
+     * é anulado — vazio, /kill e o ambiente (lava, queda, fogo, afogar) continuam valendo. Com o contra-ataque pronto:
+     * aparece ATRÁS de quem atacou (até {@value #COUNTER_RANGE} blocos, num lugar seguro), golpeia uma vez
+     * ({@value #COUNTER_DAMAGE} × poder, também em chefes, sem quebrar blocos), diz "Eu vi tudo..." e a transformação
+     * perde {@value #COUNTER_COST} ticks; depois, {@value #COUNTER_GAP} ticks só desviando (de graça).
+     * {@value #MAX_COUNTERS} contra-ataques = fim da transformação.
      */
     static void onIncoming(LivingIncomingDamageEvent e) {
         LivingEntity holder = e.getEntity();
         State s = ALMIGHTY.get(holder.getUUID());
-        if (s == null || !(e.getSource().getEntity() instanceof LivingEntity attacker) || attacker == holder) return;
-        float amount = e.getAmount();
+        if (s == null) return;
+        DamageSource src = e.getSource();
+        if (src.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return;
+        Entity by = src.getEntity() != null ? src.getEntity() : src.getDirectEntity();
+        if (by == null || by == holder) return;
+        e.setCanceled(true);
         long now = s.level.getGameTime();
-        boolean heavy = amount >= holder.getMaxHealth() * 0.2F || amount >= holder.getHealth();
-        if (heavy && now >= s.nextRewrite) {
-            e.setCanceled(true);
-            s.nextRewrite = now + REWRITE_COOLDOWN;
-            rewrite(s, holder, attacker, amount);
-            return;
+        LivingEntity attacker = src.getEntity() instanceof LivingEntity le && le != holder ? le : null;
+        if (attacker != null && attacker.isAlive() && now >= s.nextCounter && holder.level() == attacker.level()
+                && holder.distanceToSqr(attacker) <= COUNTER_RANGE * COUNTER_RANGE && !s.ctx.isAlly(attacker)) {
+            Vec3 spot = behind(s.level, holder, attacker);
+            if (spot != null) {
+                counter(s, holder, attacker, spot, now);
+                return;
+            }
         }
-        if (holder.getRandom().nextFloat() < DODGE_CHANCE) {
-            e.setCanceled(true);
-            dodge(s.level, holder, attacker);
+        // sem contra-ataque (recarga de 5 s, longe demais, sem lugar seguro): só desvia, sem custo
+        if (now >= s.nextDodge) {
+            s.nextDodge = now + 8;
+            dodge(s.level, holder, by);
         }
     }
 
-    /** O futuro é reescrito: o golpe volta para quem atacou. */
-    private static void rewrite(State s, LivingEntity holder, LivingEntity attacker, float amount) {
+    /** O contra-ataque: some, aparece atrás de quem atacou olhando para ele e golpeia. */
+    private static void counter(State s, LivingEntity holder, LivingEntity attacker, Vec3 spot, long now) {
         ServerLevel l = s.level;
-        Vec3 h = holder.position().add(0, holder.getBbHeight() * 0.6, 0);
-        Vec3 a = attacker.position().add(0, attacker.getBbHeight() * 0.6, 0);
-        QuincyFx.line(l, h, a, EYE, 0.3);
-        QuincyFx.line(l, h, a, QuincyFx.WHITE, 0.5);
-        l.sendParticles(ParticleTypes.REVERSE_PORTAL, a.x, a.y, a.z, 30, 0.4, 0.5, 0.4, 0.1);
-        QuincyFx.sound(l, h, SoundEvents.ENDER_EYE_DEATH, 1.0F, 1.6F);
-        QuincyFx.sound(l, a, SoundEvents.AMETHYST_BLOCK_BREAK, 1.0F, 0.6F);
-        if (attacker.isAlive() && !s.ctx.isAlly(attacker)) {
-            s.ctx.damage(attacker, Math.min(amount, 60F) / Math.max(1F, SpellCost.damageScale()), s.ctx.formStats(), holder);
-            if (attacker.isAlive()) s.ctx.resolveOnEntity(attacker, holder);
+        // o preço: 30 s a menos; 5 s sem teleportar (só desvia). Marcado ANTES do golpe: se quem atacou também estiver
+        // no Todo-Poderoso, o contra-ataque dele cai no "só desvia" daqui (sem ping-pong infinito)
+        s.counters++;
+        s.nextCounter = now + COUNTER_GAP;
+        s.end -= COUNTER_COST;
+        Vec3 from = holder.position();
+        // a imagem que fica para trás
+        for (int i = 0; i < 14; i++) {
+            l.sendParticles(QuincyFx.WHITE, from.x, from.y + l.random.nextDouble() * holder.getBbHeight(), from.z, 1, 0.15, 0.05, 0.15, 0);
         }
-        if (holder instanceof ServerPlayer sp) sp.displayClientMessage(Quincy.msg("almighty_rewrite").withStyle(ChatFormatting.AQUA), true);
+        l.sendParticles(ParticleTypes.SQUID_INK, from.x, from.y + 1, from.z, 10, 0.25, 0.4, 0.25, 0.02);
+        Vec3 look = attacker.getEyePosition().subtract(spot.add(0, holder.getEyeHeight(), 0));
+        float yaw = (float) (Mth.atan2(look.z, look.x) * Mth.RAD_TO_DEG) - 90F;
+        float pitch = (float) -(Mth.atan2(look.y, Math.sqrt(look.x * look.x + look.z * look.z)) * Mth.RAD_TO_DEG);
+        if (holder instanceof ServerPlayer sp) {
+            sp.teleportTo(l, spot.x, spot.y, spot.z, yaw, pitch);
+        } else {
+            holder.teleportTo(spot.x, spot.y, spot.z);
+            holder.setYRot(yaw);
+            holder.setYHeadRot(yaw);
+            holder.setXRot(pitch);
+        }
+        holder.fallDistance = 0;
+        holder.setDeltaMovement(Vec3.ZERO);
+        holder.hurtMarked = true;
+        holder.swing(net.minecraft.world.InteractionHand.MAIN_HAND, true);
+        // o golpe (dano de magia: vale em chefes; nada de blocos)
+        attacker.invulnerableTime = 0;
+        s.ctx.damage(attacker, COUNTER_DAMAGE, s.stats, holder);
+        Vec3 a = attacker.position().add(0, attacker.getBbHeight() * 0.6, 0);
+        QuincyFx.line(l, spot.add(0, holder.getBbHeight() * 0.6, 0), a, EYE, 0.3);
+        l.sendParticles(ParticleTypes.SWEEP_ATTACK, a.x, a.y, a.z, 1, 0, 0, 0, 0);
+        l.sendParticles(ParticleTypes.CRIT, a.x, a.y, a.z, 16, 0.3, 0.3, 0.3, 0.4);
+        QuincyFxNet.burst(holder, QuincyFxNet.EYES, a, Vec3.ZERO, 1.6F, 0x6FA8FF);
+        QuincyFx.sound(l, spot, SoundEvents.ENDERMAN_TELEPORT, 0.7F, 0.6F);
+        QuincyFx.sound(l, a, SoundEvents.PLAYER_ATTACK_STRONG, 1.0F, 0.7F);
+        QuincyFx.sound(l, a, SoundEvents.ENDER_EYE_DEATH, 0.8F, 1.6F);
+        // "Eu vi tudo..." — balão de fala, como o cântico (sem chat)
+        Announce.chant(holder, net.minecraft.locale.Language.getInstance().getOrDefault(SAW_KEY, "Eu vi tudo..."), 40);
+        if (ALMIGHTY.get(holder.getUUID()) != s) return; // o golpe encerrou o estado (morte do outro lado, comando...)
+        int left = (int) Math.max(0, s.end - now);
+        if (s.counters >= MAX_COUNTERS || left <= 0) {
+            stopAlmighty(holder, true);
+            return;
+        }
+        QuincyFxNet.form(holder, QuincyFxNet.FORM_ALMIGHTY, left);
+        if (holder instanceof ServerPlayer sp) {
+            TransformForge.setCastRemaining(sp, left);
+            sp.displayClientMessage(Quincy.msg("almighty_counter", MAX_COUNTERS - s.counters, left / 20 / 60,
+                    String.format(java.util.Locale.ROOT, "%02d", left / 20 % 60)).withColor(0x9FC4FF), true);
+        }
+    }
+
+    /**
+     * Um lugar seguro bem ATRÁS de quem atacou (as costas dele), sem atravessar blocos e com chão a até 4 blocos.
+     * null = não há (aí só desvia).
+     */
+    @Nullable
+    private static Vec3 behind(ServerLevel l, LivingEntity holder, LivingEntity att) {
+        Vec3 fwd = att.getLookAngle().multiply(1, 0, 1);
+        if (fwd.lengthSqr() < 1.0E-4) fwd = att.position().subtract(holder.position()).multiply(1, 0, 1).scale(-1);
+        if (fwd.lengthSqr() < 1.0E-4) fwd = new Vec3(0, 0, 1);
+        fwd = fwd.normalize();
+        Vec3 side = new Vec3(-fwd.z, 0, fwd.x);
+        double back = att.getBbWidth() * 0.5 + holder.getBbWidth() * 0.5 + 0.8;
+        Vec3[] offs = {fwd.scale(-back), fwd.scale(-back).add(side.scale(0.9)), fwd.scale(-back).add(side.scale(-0.9)),
+                fwd.scale(-back - 1.2), side.scale(back), side.scale(-back)};
+        for (Vec3 o : offs) {
+            for (double dy : new double[] {0, 1, -1}) {
+                Vec3 p = att.position().add(o).add(0, dy, 0);
+                AABB box = holder.getBoundingBox().move(p.subtract(holder.position()));
+                if (!l.noCollision(holder, box) || !l.getWorldBorder().isWithinBounds(BlockPos.containing(p))) continue;
+                if (!grounded(l, p)) continue;
+                return p;
+            }
+        }
+        return null;
+    }
+
+    private static boolean grounded(ServerLevel l, Vec3 p) {
+        BlockPos at = BlockPos.containing(p.x, p.y + 0.01, p.z);
+        for (int k = 1; k <= 4; k++) {
+            BlockPos b = at.below(k);
+            if (!l.getBlockState(b).getCollisionShape(l, b).isEmpty()) return true;
+        }
+        return false;
     }
 
     /** Esquiva: um passo para o lado (se houver espaço), deixando uma imagem residual. */
-    private static void dodge(ServerLevel l, LivingEntity holder, LivingEntity attacker) {
+    private static void dodge(ServerLevel l, LivingEntity holder, Entity attacker) {
         Vec3 from = holder.position();
         Vec3 away = from.subtract(attacker.position());
         Vec3 side = new Vec3(-away.z, 0, away.x);
@@ -332,7 +477,8 @@ public final class QuincyFinalForms {
                 if (ent instanceof LivingEntity le) {
                     QuincyFxNet.form(le, QuincyFxNet.FORM_NONE, 0);
                     if (letzt) after.add(() -> finishLetzt(s, le, le.isAlive()));
-                    else after.add(() -> QuincyFx.sound(s.level, le.position(), SoundEvents.ENDER_EYE_DEATH, 0.6F, 1.2F));
+                    // v1.1: o tempo do Todo-Poderoso É o da transformação — acabou um, acaba o outro
+                    else after.add(() -> almightyGone(s, le, true));
                 }
                 continue;
             }

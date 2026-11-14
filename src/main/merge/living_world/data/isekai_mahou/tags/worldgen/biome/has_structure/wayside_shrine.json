@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:meadow",
+    "minecraft:forest",
+    "minecraft:birch_forest",
+    "minecraft:flower_forest",
+    "minecraft:taiga",
+    "minecraft:cherry_grove",
+    "isekai_mahou:flat_lands_kingdom_meadows",
+    "isekai_mahou:sakura_fields"
+  ]
+}

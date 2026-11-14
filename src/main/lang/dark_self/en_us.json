@@ -1,0 +1,28 @@
+{
+  "entity.isekai_mahou.dark_self": "Shadow",
+  "entity.isekai_mahou.dark_self.of": "Shadow of %s",
+
+  "hint.isekai_mahou.dark_self.cap": "Level 100: something follows you... With full mana, far from cities, watch your shadow.",
+  "hint.isekai_mahou.dark_self.vanish": "Something follows you... your shadow looks strange.",
+  "hint.isekai_mahou.dark_self.rise": "Defeat your Shadow to go past level 100.",
+
+  "message.isekai_mahou.dark_self.rise": "Your shadow rises from the ground...",
+  "message.isekai_mahou.dark_self.not_yours": "This is not your fight.",
+  "message.isekai_mahou.dark_self.mirror": "The Shadow throws your last spell back at you!",
+  "message.isekai_mahou.dark_self.fade": "Your shadow dissolves... it will return.",
+  "message.isekai_mahou.dark_self.fade_died": "Your shadow returns to your feet, satisfied. It will return.",
+  "message.isekai_mahou.dark_self.fade_peace": "Your shadow recoils from the peace... it will return.",
+  "message.isekai_mahou.dark_self.reset": "Your shadow is back to normal.",
+  "message.isekai_mahou.dark_self.victory_title": "You accepted your shadow",
+  "message.isekai_mahou.dark_self.victory_sub": "The level 100 limit is broken",
+  "message.isekai_mahou.dark_self.victory": "You accepted your shadow. Your power grows again.",
+
+  "title.isekai_mahou.dark_self": "Master of One's Shadow",
+  "title.isekai_mahou.dark_self.desc": "Defeated their own Shadow at level 100.",
+
+  "command.isekai_mahou.dark_self.status": "Shadow of %1$s — level %2$s/%3$s · passed: %4$s · phase: %5$s · checks %6$s/%7$s · cooldown %8$s s · banked XP %9$s\nConditions: full mana %10$s · far from cities %11$s · no Peace Mode %12$s · outside arenas %13$s · survival %14$s",
+  "command.isekai_mahou.dark_self.spawn": "%s's shadow vanished; the Shadow rises in ~5 s.",
+  "command.isekai_mahou.dark_self.reset": "%s's Shadow reset (level 100 locked again).",
+  "command.isekai_mahou.dark_self.pass": "%s passed the Shadow (level unlocked).",
+  "command.isekai_mahou.dark_self.busy": "%s is already fighting their Shadow."
+}

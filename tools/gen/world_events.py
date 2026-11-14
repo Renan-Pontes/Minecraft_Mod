@@ -653,8 +653,8 @@ def lang():
 
     c = f"command.{NS}.world_events."
     t(c + "none", "Nenhum evento do mundo ativo.", "No world event is active.")
-    t(c + "unknown", "Evento desconhecido. Use: meteor, blood_moon, arcane_storm, earthquake, mana_storm.",
-      "Unknown event. Use: meteor, blood_moon, arcane_storm, earthquake, mana_storm.")
+    t(c + "unknown", "Evento desconhecido. Use: meteor, blood_moon, arcane_storm, earthquake, mana_storm, star_shower.",
+      "Unknown event. Use: meteor, blood_moon, arcane_storm, earthquake, mana_storm, star_shower.")
     t(c + "no_site", "Não deu para começar: nenhum lugar livre por perto (longe de cidades, estruturas e construções) "
       "ou você não está no mundo normal.",
       "Could not start: no free spot nearby (away from cities, structures and builds) or you are not in the overworld.")

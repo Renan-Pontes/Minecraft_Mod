@@ -60,6 +60,7 @@ public final class SbGlyphs {
         GlyphRegistry.register(new SbTechniqueGlyphs.GoldenGallopForm());
         GlyphRegistry.register(new SbTechniqueGlyphs.SpinMendEffect());
         GlyphRegistry.register(new SbTechniqueGlyphs.BallBreakerEffect());
+        GlyphRegistry.register(new SbTechniqueGlyphs.SevenPageBeatdownEffect());
         // LOVE TRAIN (forma G): despertada pelo Coração do Cadáver Santo (ver SbLoveTrain)
         GlyphRegistry.register(new LoveTrainForm());
 

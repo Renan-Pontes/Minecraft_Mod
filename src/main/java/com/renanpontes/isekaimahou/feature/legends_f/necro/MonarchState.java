@@ -67,7 +67,9 @@ public final class MonarchState {
     public static void start(ServerPlayer sp, SpellContext ctx, int ticks) {
         ServerLevel level = sp.serverLevel();
         ACTIVE.put(sp.getUUID(), new St(ctx, level.getGameTime() + ticks));
-        LfUtil.banner(sp, "announce.isekai_mahou.legends_f.monarch", COLOR, true);
+        if (!com.renanpontes.isekaimahou.feature.transform_laws.TransformForge.inForge(ctx)) {
+            LfUtil.banner(sp, "announce.isekai_mahou.legends_f.monarch", COLOR, true);
+        }
         sp.addEffect(new MobEffectInstance(LfRegistry.SHADOW_MONARCH, ticks, 0, false, false, true));
         LfStates.set(sp, LfNet.S_MONARCH, ticks, 0);
         ShadowArmy.clearCooldowns(sp);
@@ -134,6 +136,11 @@ public final class MonarchState {
             aura(level, sp, now);
             if ((st.end - now) % 40 == 0 && st.ctx.level() == level) pulse(level, sp, st.ctx);
         }
+    }
+
+    /** v1.1: a Transformação que tinha o Monarca como corpo acabou. */
+    public static void stop(ServerPlayer sp) {
+        if (ACTIVE.remove(sp.getUUID()) != null) end(sp);
     }
 
     private static void end(ServerPlayer sp) {

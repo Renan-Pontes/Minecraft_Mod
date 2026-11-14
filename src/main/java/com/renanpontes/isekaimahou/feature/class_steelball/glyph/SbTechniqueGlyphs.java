@@ -328,5 +328,76 @@ public final class SbTechniqueGlyphs {
         }
     }
 
+    // =====================================================================================
+    //  Surra de 7 Páginas (Tusk ACT4 × Valentine)
+    // =====================================================================================
+
+    /**
+     * Surra de 7 Páginas (efeito, tier 5, Círculo 8, Lição V + 6 Partes — o mesmo ponto do Ato 4): o Tusk ACT4 desce
+     * uma rajada de socos que dura "sete páginas" (28 golpes em 2,8 s, ×Estender = mais páginas, máx. 60). O alvo fica
+     * preso no lugar enquanto apanha; cada soco carrega um pouco da Rotação Infinita e o último joga longe, Girado por
+     * 10 s. Para o Steel Ball aparece o stand Tusk ACT4 em rajada.
+     */
+    public static class SevenPageBeatdownEffect extends EffectGlyph {
+        public static final int HITS = 28;
+        public static final int GAP = 2;
+        public static final float HIT = 1.4F;
+        public static final float FINAL = 12F;
+
+        public SevenPageBeatdownEffect() {
+            super("seven_page_beatdown", 32);
+            origin(MagicPath.STEELBALL);
+            element(Element.EARTH);
+            tier(5);
+            minCircle(8);
+        }
+
+        @Override public float baseDamage() { return HIT * HITS + FINAL; }
+        @Override public int hintDuration() { return HITS * GAP; }
+
+        @Override
+        public void onEntity(SpellContext ctx, Entity target, SpellStats stats) {
+            if (!(target instanceof LivingEntity le) || !le.isAlive()) return;
+            LivingEntity caster = ctx.caster();
+            if (caster instanceof ServerPlayer sp && !ctx.hasOrigin()) {
+                SbTechniques.callout(sp, Component.translatable("callout.isekai_mahou.steelball.seven_page"),
+                        Component.translatable("callout.isekai_mahou.steelball.seven_page.sub"), SbFx.NAIL);
+            }
+            int hits = Math.max(8, Math.min(60, Math.round(HITS * stats.duration(HITS * GAP) / (float) (HITS * GAP))));
+            net.minecraft.world.phys.Vec3 pin = le.position();
+            for (int i = 0; i < hits; i++) {
+                final int n = i;
+                com.renanpontes.isekaimahou.glyph.SpellScheduler.schedule(i * GAP, () -> {
+                    if (!le.isAlive() || le.isRemoved() || !(le.level() instanceof net.minecraft.server.level.ServerLevel sl)) return;
+                    // preso na rajada: não foge nem é empurrado pelos próprios socos
+                    le.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+                    if (le.position().distanceToSqr(pin) > 1.0) le.teleportTo(pin.x, pin.y, pin.z);
+                    le.invulnerableTime = 0;
+                    ctx.damage(le, HIT, stats, null);
+                    net.minecraft.world.phys.Vec3 at = le.position().add((sl.random.nextDouble() - 0.5) * le.getBbWidth(),
+                            le.getBbHeight() * (0.3 + sl.random.nextDouble() * 0.6), (sl.random.nextDouble() - 0.5) * le.getBbWidth());
+                    sl.sendParticles(SbFx.dust(n % 3 == 0 ? SbFx.GOLD : SbFx.NAIL, 1.1F), at.x, at.y, at.z, 3, 0.15, 0.15, 0.15, 0);
+                    if (n % 3 == 0) SbFx.sound(sl, at, net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG, 0.6F,
+                            1.1F + sl.random.nextFloat() * 0.5F);
+                });
+            }
+            com.renanpontes.isekaimahou.glyph.SpellScheduler.schedule(hits * GAP + 4, () -> {
+                if (!le.isAlive() || le.isRemoved() || !(le.level() instanceof net.minecraft.server.level.ServerLevel sl)) return;
+                le.invulnerableTime = 0;
+                ctx.damage(le, FINAL, stats, null);
+                if (!le.isAlive()) return;
+                com.renanpontes.isekaimahou.feature.class_steelball.SbSpin.apply(le, caster, 1, stats.duration(200));
+                net.minecraft.world.phys.Vec3 from = caster != null ? caster.position() : ctx.eyePos();
+                net.minecraft.world.phys.Vec3 dir = le.position().subtract(from).multiply(1, 0, 1);
+                if (dir.lengthSqr() < 1.0E-4) dir = ctx.look();
+                dir = dir.normalize().scale(1.4 * stats.power());
+                le.push(dir.x, 0.5, dir.z);
+                le.hurtMarked = true;
+                SbFx.impact(sl, le.position().add(0, le.getBbHeight() * 0.5, 0), true);
+                SbFx.sound(sl, le.position(), net.minecraft.sounds.SoundEvents.GENERIC_EXPLODE.value(), 0.7F, 1.3F);
+            });
+        }
+    }
+
     private SbTechniqueGlyphs() {}
 }

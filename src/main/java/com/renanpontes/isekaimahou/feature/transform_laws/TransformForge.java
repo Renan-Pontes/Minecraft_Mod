@@ -19,6 +19,7 @@ import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphKind;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.ParsedSpell;
+import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellCost;
 import com.renanpontes.isekaimahou.glyph.SpellParser;
 import com.renanpontes.isekaimahou.glyph.SpellRecipe;
@@ -35,6 +36,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -90,6 +93,9 @@ public final class TransformForge {
     /** Id (path) do glifo da forma. */
     public static final String FORM = "transformation";
     public static final ResourceLocation FORM_ID = IsekaiMahou.id(FORM);
+    /** v1.1: a Transformação Suprema (ultimate, tecla G) — mesma sessão/fonte que a comum ({@link #FORM_ID}). */
+    public static final String SUPREME = "transformation_supreme";
+    public static final ResourceLocation SUPREME_ID = IsekaiMahou.id(SUPREME);
     /** MobEffect que marca a transformação conjurada (ícone com o tempo; a sessão acaba quando ele some). */
     public static final ResourceLocation PROBE_ID = IsekaiMahou.id("forged_form");
 
@@ -128,7 +134,8 @@ public final class TransformForge {
     public enum Role { BODY, STRIKE, AURA }
 
     public static Role role(ParsedSpell.EffectEntry entry) {
-        if (TransformTargets.isEffect(entry.effect().id())) return Role.BODY;
+        // v1.1: todo corpo (TransformBody) é CORPO, mesmo sem registro em TransformTargets (ex.: Modo Titã do legends_k)
+        if (entry.effect() instanceof TransformBody || TransformTargets.isEffect(entry.effect().id())) return Role.BODY;
         return entry.effect().isBeneficial() != entry.stats().inverted ? Role.AURA : Role.STRIKE;
     }
 
@@ -141,7 +148,12 @@ public final class TransformForge {
 
     /** A magia é uma transformação montada? */
     public static boolean isForge(@Nullable ParsedSpell spell) {
-        return spell != null && spell.form().id().equals(FORM_ID);
+        return spell != null && isForm(spell.form().id());
+    }
+
+    /** O id é de uma das formas Transformação (comum ou Suprema)? */
+    public static boolean isForm(@Nullable ResourceLocation id) {
+        return FORM_ID.equals(id) || SUPREME_ID.equals(id);
     }
 
     /** A receita começa (depois dos gatilhos) com a forma Transformação? Não valida o resto. */
@@ -149,7 +161,7 @@ public final class TransformForge {
         if (recipe == null || recipe.isEmpty()) return false;
         for (ResourceLocation id : recipe.glyphs()) {
             Glyph g = GlyphRegistry.get(id);
-            if (g != null && g.kind() == GlyphKind.FORM) return id.equals(FORM_ID);
+            if (g != null && g.kind() == GlyphKind.FORM) return isForm(id);
         }
         return false;
     }
@@ -157,6 +169,98 @@ public final class TransformForge {
     /** Duração da transformação conjurada (aumentos da forma), em ticks. */
     public static int duration(SpellStats formStats) {
         return Math.min(MAX_DURATION, formStats.duration(BASE_DURATION));
+    }
+
+    // =====================================================================================
+    //  v1.1 — corpos de transformação (ex-formas: O Todo-Poderoso, Bankai...)
+    // =====================================================================================
+
+    /** Os corpos ({@link TransformBody}) da magia, na ordem da receita. */
+    public static List<ParsedSpell.EffectEntry> bodies(@Nullable ParsedSpell spell) {
+        List<ParsedSpell.EffectEntry> out = new ArrayList<>();
+        if (spell == null) return out;
+        for (ParsedSpell.EffectEntry e : spell.effects()) if (e.effect() instanceof TransformBody) out.add(e);
+        return out;
+    }
+
+    /**
+     * Quanto a transformação CONJURADA dura: o corpo mais longo que declara tempo ({@link TransformBody#bodyTicks}) —
+     * O Todo-Poderoso, 5 min — ou, sem corpo assim, os 30–60 s da forma.
+     */
+    public static int castDuration(ParsedSpell spell) {
+        ParsedSpell.EffectEntry tb = timeBody(spell);
+        return tb != null ? ((TransformBody) tb.effect()).bodyTicks(tb.stats()) : duration(spell.formStats());
+    }
+
+    /** O corpo que dita o tempo (null = a forma). */
+    @Nullable
+    static ParsedSpell.EffectEntry timeBody(ParsedSpell spell) {
+        ParsedSpell.EffectEntry out = null;
+        int best = 0;
+        for (ParsedSpell.EffectEntry e : bodies(spell)) {
+            int t = ((TransformBody) e.effect()).bodyTicks(e.stats());
+            if (t > best) {
+                best = t;
+                out = e;
+            }
+        }
+        return out;
+    }
+
+    /** Esta magia está sendo uma transformação montada (o efeito roda como corpo)? */
+    public static boolean inForge(@Nullable SpellContext ctx) {
+        return ctx != null && isForge(ctx.spell());
+    }
+
+    /**
+     * Para efeitos de transformação FIXA (Kaioken, Instinto Superior, Portões, Marchas): aplicados como corpo de uma
+     * Transformação em quem conjura, quanto devem durar — a transformação inteira. -1 = uso solto (regra do efeito).
+     */
+    public static int bodyTicks(@Nullable SpellContext ctx, @Nullable Entity target) {
+        if (ctx == null || target == null || target != ctx.caster() || !isForge(ctx.spell())) return -1;
+        return castDuration(ctx.spell());
+    }
+
+    /** Ticks que faltam da transformação conjurada do jogador (0 = nenhuma). */
+    public static int castRemaining(@Nullable LivingEntity e) {
+        if (e == null || !ForgeSessions.active(e, FORM_ID)) return 0;
+        MobEffectInstance inst = e.getEffect(TlawContent.FORGED);
+        return inst == null ? 0 : inst.getDuration();
+    }
+
+    /**
+     * Um corpo mexe no tempo que falta da transformação conjurada (O Todo-Poderoso: −30 s por contra-ataque). O ícone
+     * do efeito mostra o tempo novo; {@code ticks} ≤ 0 encerra.
+     */
+    public static void setCastRemaining(ServerPlayer sp, int ticks) {
+        if (!ForgeSessions.active(sp, FORM_ID)) return;
+        if (ticks <= 0) {
+            endCast(sp);
+            return;
+        }
+        MobEffectInstance inst = sp.getEffect(TlawContent.FORGED);
+        if (inst == null) return;
+        // o vanilla só aceita AUMENTAR a duração: tira e põe de novo no mesmo tick (a sessão olha a cada 5 ticks)
+        sp.removeEffect(TlawContent.FORGED);
+        sp.addEffect(new MobEffectInstance(TlawContent.FORGED, ticks, inst.getAmplifier(), inst.isAmbient(), inst.isVisible(), inst.showIcon()));
+    }
+
+    /** Encerra a transformação conjurada agora (fim normal: as leis cobram o preço de fim). */
+    public static void endCast(ServerPlayer sp) {
+        if (ForgeSessions.active(sp, FORM_ID)) TlawSessions.INSTANCE.end(sp, FORM_ID);
+        sp.removeEffect(TlawContent.FORGED);
+    }
+
+    private static final Map<ResourceLocation, String> STYLES = new java.util.concurrent.ConcurrentHashMap<>();
+
+    /** Estilo de cutscene de um efeito de transformação fixa usado como corpo (Kaioken → "fire"...). */
+    public static void registerBodyStyle(String glyphPath, String style) {
+        STYLES.put(IsekaiMahou.id(glyphPath), style);
+    }
+
+    @Nullable
+    static String bodyStyle(ResourceLocation glyph) {
+        return STYLES.get(glyph);
     }
 
     /** Alcance da aura em blocos: 0 sem Expandir (só em você); 4/6/8... com Expandir (Concentrar ×0,6). */
@@ -233,6 +337,8 @@ public final class TransformForge {
             if (g.kind() == GlyphKind.FORM || g.kind() == GlyphKind.TRIGGER) {
                 return fail("message.isekai_mahou.tforge.only_parts", g.displayName());
             }
+            // v1.1: um corpo (O Todo-Poderoso, Bankai...) é uma transformação inteira — só conjurado, nunca por cima de outra
+            if (g instanceof TransformBody) return fail("message.isekai_mahou.tforge.body_in_slot", g.displayName());
             if (!data.knowsGlyph(id)) return fail("spell_error.isekai_mahou.not_known", g.displayName());
             if (data.circle() < g.minCircle()) return fail("spell_error.isekai_mahou.circle", g.displayName(), g.minCircle());
             if (!SpellParser.canUse(spell.primary(), g, data)) {
@@ -310,6 +416,11 @@ public final class TransformForge {
         float radius = auraRadius(spell.formStats());
         int every = PULSE_TICKS / 20;
         if (!body.isEmpty()) out.add(tr("body", names(body)).withColor(0xE8D8F0));
+        if (castTimes) {
+            ParsedSpell.EffectEntry tb = timeBody(spell);
+            if (tb != null) out.add(tr("body_time", tb.effect().displayName(), clock(castDuration(spell))).withColor(0xC9B8FF));
+            if (spell.isUltimate()) out.add(tr("supreme").withColor(0xFFD86B));
+        }
         if (!strike.isEmpty()) out.add(tr("strike", names(strike), pct(STRIKE_POWER)).withColor(0xFF9A8A));
         if (!aura.isEmpty()) {
             out.add((radius > 0F ? tr("aura_allies", names(aura), every, num(radius), pct(AURA_POWER))
@@ -324,7 +435,7 @@ public final class TransformForge {
             out.add(Component.literal("  − ").append(law.price()).withColor(0xE07070));
         }
         if (castTimes) {
-            out.add(tr("times", seconds(duration(spell.formStats())), seconds(spell.cooldown()), spell.manaCost())
+            out.add(tr("times", seconds(castDuration(spell)), seconds(spell.cooldown()), spell.manaCost())
                     .withColor(0x7FB8FF));
         } else {
             // Num espaço: a receita mexe no tempo da transformação base (aumentos no corpo) e cobra por isso
@@ -363,6 +474,12 @@ public final class TransformForge {
 
     private static String seconds(int ticks) {
         return String.valueOf(Math.round(ticks / 20F));
+    }
+
+    /** "5:00" (m:ss). */
+    private static String clock(int ticks) {
+        int s = Math.round(ticks / 20F);
+        return (s / 60) + ":" + String.format(java.util.Locale.ROOT, "%02d", s % 60);
     }
 
     // =====================================================================================

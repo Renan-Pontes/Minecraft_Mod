@@ -35,6 +35,7 @@ public class TransformLawsModule implements Module {
         TlawNetwork.register(modBus);
         ForgeNetwork.register(modBus);
         ForgeSessions.init();
+        ForgeBodies.init();
         TlawGlyphs.register();
         TlawTargets.register();
         TransformLaws.install(TlawSessions.INSTANCE);

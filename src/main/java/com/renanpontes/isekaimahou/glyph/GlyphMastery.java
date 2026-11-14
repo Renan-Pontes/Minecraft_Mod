@@ -72,7 +72,7 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
  *
  * <h3>Maestria INFINITA (depois do X)</h3>
  * O X não é mais o fim: a maestria continua (XI, XII... e depois de {@link #ROMAN_UNTIL} vira "★ 57"). Cada nível
- * depois do X custa {@link #GROWTH}× o anterior (o passo IX→X era 10 000 XP; X→XI = 10 800, XX→XXI ≈ 23 300...), então
+ * depois do X custa {@link #GROWTH}× o anterior (v1.1: X→XI = 2 650 XP, XX→XXI ≈ 4 750...), então
  * quem já usou um feitiço 10 000 vezes fica MUITO à frente de quem acabou de aprender — e ninguém chega ao fim
  * ({@link #LEVEL_CAP} ≈ 135 é só o teto do número salvo, mais de um bilhão de usos).
  * O poder depois do X cresce em LOG (sem teto, mas cada vez mais devagar; ~×2 no {@link #LEVEL_CAP}); o desconto de
@@ -84,22 +84,31 @@ public final class GlyphMastery {
     public static final int MAX_LEVEL = 10;
     /** Até este nível o número aparece em romano (XX); acima, "★ 21". */
     public static final int ROMAN_UNTIL = 20;
-    /** Cada passo depois do X custa este fator × o anterior. */
-    public static final double GROWTH = 1.08;
-    /** Passo IX→X (o último da escada clássica); os passos infinitos partem dele. */
-    private static final int LAST_CLASSIC_STEP = 10000;
+    /**
+     * Cada passo depois do X custa este fator × o anterior. v1.1 (mutações mais cedo): 1,08 → 1,06 e a base caiu de
+     * 10 000 para {@link #INFINITE_BASE} — todo nível ficou MAIS BARATO que antes, então o XP salvo de ninguém desce
+     * de nível (só sobe).
+     */
+    public static final double GROWTH = 1.06;
+    /** Base dos passos infinitos (o passo X→XI = base × {@link #GROWTH}). */
+    private static final int INFINITE_BASE = 2500;
+    /**
+     * XP total para ESTAR em cada nível I..X (v1.1). Cada valor é ≤ ao da tabela antiga
+     * {0, 100, 300, 700, 1500, 3000, 5500, 9500, 16000, 26000}: quem já tinha XP só pode subir de nível.
+     */
+    private static final int[] CLASSIC = {0, 100, 300, 600, 1000, 1600, 2500, 3800, 5600, 8000};
     /** XP total para ESTAR em cada nível (índice 0 = nível I). I..X fixos; depois, gerado até caber num int. */
     private static final int[] XP_TABLE;
     /** Maior nível que cabe no XP salvo (int). Na prática inalcançável. */
     public static final int LEVEL_CAP;
 
     static {
-        int[] classic = {0, 100, 300, 700, 1500, 3000, 5500, 9500, 16000, 26000};
+        int[] classic = CLASSIC;
         List<Integer> t = new ArrayList<>();
         for (int v : classic) t.add(v);
         long total = classic[classic.length - 1];
         for (int lv = MAX_LEVEL; ; lv++) {
-            long step = Math.round(LAST_CLASSIC_STEP * Math.pow(GROWTH, lv - (MAX_LEVEL - 1)));
+            long step = Math.round(INFINITE_BASE * Math.pow(GROWTH, lv - (MAX_LEVEL - 1)));
             if (total + step > Integer.MAX_VALUE) break;
             total += step;
             t.add((int) total);
@@ -165,7 +174,7 @@ public final class GlyphMastery {
         return XP_TABLE[Math.max(1, Math.min(LEVEL_CAP, level)) - 1];
     }
 
-    /** Teto do XP salvo (o número é um int). Saves antigos (≤ 26 000) continuam valendo igual. */
+    /** Teto do XP salvo (o número é um int). Saves antigos continuam valendo (o mesmo XP agora dá nível igual ou maior). */
     public static int maxXp() {
         return Integer.MAX_VALUE;
     }
@@ -420,6 +429,24 @@ public final class GlyphMastery {
                         .append(Component.literal(" — ").withStyle(ChatFormatting.DARK_GRAY))
                         .append(m.description().withStyle(ChatFormatting.GRAY)));
             }
+            // v1.1 — EVOLUÇÃO própria do glifo (como os Atos do Tusk): nome novo, comportamento novo
+            List<MasteryMutations.Stage> stages = MasteryMutations.stages(up.glyph().id());
+            for (MasteryMutations.Stage s : stages) {
+                if (s.level() <= up.from() || s.level() > up.to()) continue;
+                mutated = true;
+                sp.sendSystemMessage(Component.translatable("message.isekai_mahou.mastery.evolved",
+                                up.glyph().displayName(), s.displayName().withStyle(ChatFormatting.BOLD), roman(s.level()))
+                        .withColor(s.color())
+                        .append(Component.literal(" — ").withStyle(ChatFormatting.DARK_GRAY))
+                        .append(s.description().withStyle(ChatFormatting.GRAY)));
+                sp.displayClientMessage(Component.translatable("message.isekai_mahou.mastery.evolved_bar", s.displayName())
+                        .withColor(s.color()), true);
+                sp.playNotifySound(SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 0.5F, 1.4F);
+                if (s.index() == stages.size()) {
+                    sp.server.getPlayerList().broadcastSystemMessage(Component.translatable("message.isekai_mahou.mastery.evolved_legend",
+                            sp.getDisplayName(), up.glyph().displayName(), s.displayName()).withColor(s.color()), false);
+                }
+            }
             for (int legend : LEGEND_LEVELS) {
                 if (legend <= up.from() || legend > up.to()) continue;
                 sp.server.getPlayerList().broadcastSystemMessage(Component.translatable(
@@ -491,13 +518,20 @@ public final class GlyphMastery {
     private static int cmdCurve(CommandContext<CommandSourceStack> c) {
         c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.mastery.curve_header", LEVEL_CAP)
                 .withStyle(ChatFormatting.GOLD), false);
-        for (int lv : new int[] {5, 10, 11, 12, 15, 20, 25, 30, 40, 50, 75, 100, LEVEL_CAP}) {
+        for (int lv : new int[] {4, 5, 7, 10, 12, 15, 20, 25, 30, 40, 50, 75, 100, 150, LEVEL_CAP}) {
             int xp = xpForLevel(lv);
             String power = String.format(java.util.Locale.ROOT, "%.1f", (powerMult(lv) - 1F) * 100F);
             String cost = String.format(java.util.Locale.ROOT, "%.1f", costDiscount(lv) * 100F);
             c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.mastery.curve_line",
                     roman(lv), compact(xp), compact(xp / XP_ENEMY), power, cost), false);
         }
+        // v1.1: quando as mutações e as evoluções chegam
+        int first = MasteryMutations.FIRST_MUTATION;
+        c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.mastery.curve_muts", roman(first),
+                compact(xpForLevel(first) / XP_ENEMY), roman(MasteryMutations.ABERRATION_START), MasteryMutations.ABERRATION_EVERY)
+                .withStyle(ChatFormatting.LIGHT_PURPLE), false);
+        c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.mastery.curve_evo", MasteryMutations.evolvingGlyphs())
+                .withStyle(ChatFormatting.GOLD), false);
         return LEVEL_CAP;
     }
 
@@ -514,12 +548,33 @@ public final class GlyphMastery {
         Component family = MasteryMutations.familyName(MasteryMutations.family(g));
         c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.mastery.family", family)
                 .withStyle(ChatFormatting.GRAY), false);
-        for (MasteryMutations.Mut m : MasteryMutations.mutations(g)) {
-            boolean on = lv >= m.level();
-            MutableComponent line = Component.literal((on ? "✦ " : "· ") + roman(m.level()) + " ")
-                    .append(on ? m.displayName() : Component.literal("???"));
-            if (on) line.append(Component.literal(" — ").append(m.description()));
-            c.getSource().sendSuccess(() -> line.withStyle(on ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.DARK_GRAY), false);
+        // v1.1: evoluções próprias (Atos) — todas, a próxima como mistério
+        for (MasteryMutations.Stage s : MasteryMutations.stages(g.id())) {
+            boolean on = lv >= s.level();
+            MutableComponent line = Component.literal((on ? "⟡ " : "· ") + roman(s.level()) + " ")
+                    .append(on ? s.displayName() : Component.literal("???"));
+            line.append(Component.literal(" — ").append(on ? s.description() : s.hint()));
+            c.getSource().sendSuccess(() -> on ? line.withColor(s.color()) : line.withStyle(ChatFormatting.DARK_GRAY), false);
+        }
+        // mutações: as despertas (no máx. as 8 últimas) e as 2 próximas
+        List<MasteryMutations.Mut> all = MasteryMutations.mutations(g);
+        List<MasteryMutations.Mut> on = MasteryMutations.active(g, lv);
+        int skip = Math.max(0, on.size() - 8);
+        if (skip > 0) {
+            c.getSource().sendSuccess(() -> Component.translatable("command.isekai_mahou.mastery.more", skip)
+                    .withStyle(ChatFormatting.DARK_PURPLE), false);
+        }
+        for (int i = skip; i < on.size(); i++) {
+            MasteryMutations.Mut m = on.get(i);
+            MutableComponent line = Component.literal("✦ " + roman(m.level()) + " ").append(m.displayName())
+                    .append(Component.literal(" — ").append(m.description()));
+            c.getSource().sendSuccess(() -> line.withStyle(ChatFormatting.LIGHT_PURPLE), false);
+        }
+        int shown = 0;
+        for (MasteryMutations.Mut m : all) {
+            if (m.level() <= lv || shown >= 2) continue;
+            shown++;
+            c.getSource().sendSuccess(() -> Component.literal("· " + roman(m.level()) + " ???").withStyle(ChatFormatting.DARK_GRAY), false);
         }
         return lv;
     }

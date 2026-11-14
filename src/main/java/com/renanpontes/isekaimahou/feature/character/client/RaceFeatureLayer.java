@@ -32,7 +32,8 @@ import net.minecraft.util.Mth;
  * v1.0.1: olhos extras e patinhas nas costas (Aracnídeo), corpo espectral translúcido (Fantasma), auréola dourada e
  * asinhas de penas (Anjo), corpo de geleia translúcido (Slime).
  * <p>
- * <b>Transformações</b> ({@link ClientCharacter#form}): asas de luz enormes + auréola maior (Anjo), asas de sombra
+ * <b>Transformações</b> ({@link ClientCharacter#form}): v1.11 Jibril, a Flügel (Anjo: asas de penas de luz branco → rosa →
+ * violeta e a auréola geométrica girando, desenhadas com quads), asas de sombra
  * (Demônio), asas dracônicas na cor da ancestralidade (Dracônico), corpo fantasma translúcido mesmo invisível
  * (Fantasma), 8 patas de aranha andando (Aracnídeo), geleia densa (Slime), aura na cor da raça (Elfo com
  * coroa de folhas, Anão de pedra, Meio-Orc rubra, Bestial, Humano dourada). O tamanho vem do atributo de escala.
@@ -41,8 +42,8 @@ import net.minecraft.util.Mth;
  * <p>
  * <b>v1.3 — formas "grandes e temíveis"</b> (peças de {@link #model3()}, desenhadas com a textura branca tingida):
  * olhos brilhando em todas; Demônio com chifres enormes em brasa e asas maiores; Dracônico com escamas brilhando
- * (pulsando na cor da ancestralidade) e chifres maiores; Anjo com SEIS asas de luz, auréola maior e uma segunda
- * auréola atrás da cabeça; Elfo espírito da lua (aura prateada, runas orbitando, flutuando — {@link FormFx}); Anão
+ * (pulsando na cor da ancestralidade) e chifres maiores; Anjo (v1.11: Jibril) com asas de penas de luz e a auréola
+ * geométrica; Elfo espírito da lua (aura prateada, runas orbitando, flutuando — {@link FormFx}); Anão
  * golem de pedra (pele de rocha, rachaduras de magma pulsando, ombreiras de pedra); Meio-Orc berserker (pele rubra,
  * presas maiores); Bestial lobisomem (pelagem, garras, orelhas maiores); Aracnídeo com abdômen de aranha e patas
  * maiores; Fantasma com correntes espectrais; v1.7: Lorde Demônio (Rimuru) humanoide de olhos dourados; Humano "Herói Desperto"
@@ -312,29 +313,20 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
             case ARACHNID -> m2.getChild("spider_eyes").render(ps, buffers.getBuffer(form != null
                     ? RenderType.entityTranslucentEmissive(TEXTURE2) : RenderType.entityCutoutNoCull(TEXTURE2)), LightTexture.FULL_BRIGHT, overlay);
             case ANGEL -> {
-                // Auréola dourada flutuando (brilha no escuro); na Forma Seráfica fica maior e gira
                 float bob = Mth.sin(age * 0.08F) * 0.35F;
-                float big = form != null ? 1.0F + 0.6F * formOpen : 1.0F;
-                ps.pushPose();
-                ps.translate(0, (-10.2F + bob - (big - 1F) * 2F) / 16F, 0);
-                ps.scale(big, 1F, big);
-                ModelPart halo = m2.getChild("halo");
-                halo.yRot = form != null ? age * 0.06F : 0F;
-                // A auréola fica mais viva com o nível de raça
-                int haloA = lv <= 0 ? 0xF0 : 0xA0 + 0x14 * lv;
-                halo.render(ps, buffers.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE2)), LightTexture.FULL_BRIGHT, overlay,
-                        (Math.min(0xFF, haloA) << 24) | 0xFFFFFF);
-                ps.popPose();
-                if (form != null && FxQuality.atLeast(Graphics.MEDIUM)) {
-                    // Segunda auréola, grande e em pé atrás da cabeça
+                if (form != null) {
+                    // v1.11 Jibril, a Flügel: a auréola geométrica grande (anéis, raios, hexagrama) girando sobre a cabeça
+                    jibrilHalo(ps, buffers, overlay, age, formOpen, bob);
+                } else {
+                    // Auréola dourada flutuando (brilha no escuro)
                     ps.pushPose();
-                    ps.translate(0, -4F / 16F, 5.5F / 16F);
-                    ps.mulPose(Axis.XP.rotationDegrees(90));
-                    float s2 = 1.9F * formOpen;
-                    ps.scale(s2, s2, s2);
-                    halo.yRot = -age * 0.04F;
+                    ps.translate(0, (-10.2F + bob) / 16F, 0);
+                    ModelPart halo = m2.getChild("halo");
+                    halo.yRot = 0F;
+                    // A auréola fica mais viva com o nível de raça
+                    int haloA = lv <= 0 ? 0xF0 : 0xA0 + 0x14 * lv;
                     halo.render(ps, buffers.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE2)), LightTexture.FULL_BRIGHT, overlay,
-                            ((int) (0xC0 * formOpen) << 24) | 0xFFF2C0);
+                            (Math.min(0xFF, haloA) << 24) | 0xFFFFFF);
                     ps.popPose();
                 }
             }
@@ -415,7 +407,7 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
             default -> { }
         }
         ps.popPose();
-        // Asinhas de penas do Anjo (na Forma Seráfica as grandes já foram desenhadas)
+        // Asinhas de penas do Anjo (como Jibril, as grandes de penas já foram desenhadas)
         if (race == Race.ANGEL && form == null) {
             drawWings(ps, buffers, light, overlay, p, ANGEL_WINGS, 0.18F, 0.55F, 0xF0FFFFFF, age, false);
         }
@@ -450,12 +442,12 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
         boolean rich = FxQuality.atLeast(Graphics.HIGH);
         switch (race) {
             case ANGEL -> {
-                // Seis asas de luz: o par de cima erguido, o do meio aberto, o de baixo caído
-                drawWings(ps, buffers, LightTexture.FULL_BRIGHT, overlay, p, ANGEL_WINGS, open, 1.55F, 0xF8FFFFFF, age, true, 0.55F, -1.5F);
-                drawWings(ps, buffers, LightTexture.FULL_BRIGHT, overlay, p, ANGEL_WINGS, open, 1.45F, 0xF0FFFFFF, age + 3F, true, 0F, 0F);
-                drawWings(ps, buffers, LightTexture.FULL_BRIGHT, overlay, p, ANGEL_WINGS, open, 1.15F, 0xE0FFF4D0, age + 6F, true, -0.55F, 2.5F);
-                auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, (a << 24) | 0xFFE08A, 1.07F);
-                glowEyes(ps, buffers, overlay, 0xFFF6D0, open);
+                // v1.11 Jibril, a Flügel: um par grande de asas de PENAS de luz (fileiras de penas, branco → rosa → violeta);
+                // no ALTO/ULTRA, um segundo par menor por baixo e o brilho em volta das penas compridas
+                drawWings(ps, buffers, LightTexture.FULL_BRIGHT, overlay, p, null, open, 1.6F, 0xF0FFFFFF, age, true, 0.3F, -1.0F);
+                if (rich) drawWings(ps, buffers, LightTexture.FULL_BRIGHT, overlay, p, null, open, 1.05F, 0xB8FFFFFF, age + 4F, true, -0.5F, 2.5F);
+                auraShell(ps, buffers, LightTexture.FULL_BRIGHT, overlay, (a << 24) | 0xFFE6F4, 1.07F);
+                glowEyes(ps, buffers, overlay, 0xFFD860, open);
             }
             case DEMON -> {
                 drawWings(ps, buffers, light, overlay, p, WINGS_TEXTURE, open, 1.75F, 0xF8FFFFFF, age, true, 0.1F, 0F);
@@ -586,7 +578,11 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
         float stroke = beat < 0F ? 0F : -(beat < 0.5F ? 0.75F : 0.95F) * Mth.sin(beat * (float) (Math.PI * 2));
         float flutter = Mth.sin(t * 1.3F) * 0.025F;
         ModelPart m = wingModel();
-        VertexConsumer vc = buffers.getBuffer(RenderType.entityTranslucent(tex));
+        // tex == null: asas de PENAS de luz da Jibril (quads emissivos desenhados na hora, mesmo esqueleto e animação)
+        boolean feathers = tex == null;
+        VertexConsumer vc = buffers.getBuffer(feathers ? RenderType.entityTranslucentEmissive(AURA) : RenderType.entityTranslucent(tex));
+        int q = !feathers ? 0 : FxQuality.atLeast(Graphics.HIGH) ? 2 : FxQuality.atLeast(Graphics.MEDIUM) ? 1 : 0;
+        float featherAlpha = ((color >>> 24) / 255F) * Mth.clamp(open * 1.6F, 0F, 1F);
         ps.pushPose();
         getParentModel().body.translateAndRotate(ps);
         ps.translate(0, (2.5F + yOff) / 16F, 2.2F / 16F);
@@ -609,9 +605,186 @@ public class RaceFeatureLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
             // A ponta dobra para trás na subida da batida (menos arrasto) e abre na descida
             float tipGlide = -s * (0.06F + Math.max(0F, -stroke) * 0.6F);
             tip.yRot = Mth.lerp(glide, -s * Mth.lerp(open, 1.2F, 0.30F + f * 0.6F), tipGlide);
-            w.render(ps, vc, light, overlay, color);
+            if (feathers) {
+                if (featherAlpha <= 0.02F) continue;
+                ps.pushPose();
+                w.translateAndRotate(ps);
+                featherWing(ps, vc, overlay, s, false, t, featherAlpha, q);
+                tip.translateAndRotate(ps);
+                featherWing(ps, vc, overlay, s, true, t, featherAlpha, q);
+                ps.popPose();
+            } else {
+                w.render(ps, vc, light, overlay, color);
+            }
         }
         ps.popPose();
+    }
+
+    // =====================================================================================
+    //  v1.11: Jibril, a Flügel (Anjo) — asas de penas de luz e a auréola geométrica (quads na hora, sem textura nova)
+    // =====================================================================================
+    private static final int JB_GOLD = 0xFFD860, JB_CYAN = 0x7FF4FF, JB_PALE = 0xFFF4C0;
+
+    /**
+     * Penas de uma metade da asa (no espaço do osso, em pixels: o osso corre para fora em +x·{@code s}, as penas pendem
+     * em +y). {@code tip} = a ponta (primárias compridas abrindo em leque); senão a parte de dentro (coberteiras,
+     * secundárias e as compridas). {@code q}: 0 = gráfico baixo (menos penas), 1 = médio, 2 = alto/ultra (+ brilho).
+     */
+    private static void featherWing(PoseStack ps, VertexConsumer vc, int overlay, float s, boolean tip, float t, float alpha, int q) {
+        ps.pushPose();
+        ps.scale(1F / 16F, 1F / 16F, 1F / 16F);
+        PoseStack.Pose pose = ps.last();
+        if (!tip) {
+            if (q >= 1) featherRow(vc, pose, overlay, s, 6, 0F, 12F, 4.0F, 3.5F, 2.6F, 0.05F, 0.20F, 0xFFFFFF, 0xFFE8F6, 0.75F, alpha, t, 0, false);
+            featherRow(vc, pose, overlay, s, q >= 1 ? 7 : 5, 1.0F, 12F, 7.0F, 7.5F, 2.3F, 0.08F, 0.28F, 0xFFF6FB, 0xF4A6D8, 0.6F, alpha, t, 1, false);
+            featherRow(vc, pose, overlay, s, q >= 1 ? 7 : 5, 2.0F, 12F, 9.0F, 10.0F, 2.0F, 0.10F, 0.35F, 0xFBD8F0, 0xB98AF2, 0.45F, alpha, t, 2, q >= 2);
+        } else {
+            if (q >= 1) featherRow(vc, pose, overlay, s, 4, 0F, 8F, 3.5F, 3.0F, 2.4F, 0.25F, 0.45F, 0xFFFFFF, 0xFFE8F6, 0.75F, alpha, t, 3, false);
+            featherRow(vc, pose, overlay, s, q >= 1 ? 6 : 4, 0.6F, 8F, 11.0F, 8.0F, 2.0F, 0.35F, 0.95F, 0xFFF0FA, 0xA070F0, 0.45F, alpha, t, 4, q >= 2);
+        }
+        ps.popPose();
+    }
+
+    /** Uma fileira de {@code n} penas ao longo do osso (comprimento e ângulo indo de {@code 0} a {@code 1} para fora). */
+    private static void featherRow(VertexConsumer vc, PoseStack.Pose pose, int overlay, float s, int n, float y, float span,
+                                   float len0, float len1, float w, float th0, float th1, int c0, int c1, float z, float alpha,
+                                   float t, int seed, boolean glow) {
+        for (int k = 0; k < n; k++) {
+            float f = n <= 1 ? 0F : k / (float) (n - 1);
+            float rx = 0.6F + f * (span - 1.2F);
+            float th = th0 + (th1 - th0) * f + Mth.sin(t * 0.15F + k * 0.9F + seed * 1.7F) * 0.035F;
+            float len = len0 + (len1 - len0) * f;
+            if (glow) feather(vc, pose, overlay, s, rx, y, z - 0.12F, th, len * 1.08F, w * 1.7F, 0xFFFFFF, c1, alpha * 0.22F);
+            feather(vc, pose, overlay, s, rx, y, z, th, len, w, c0, c1, alpha);
+        }
+    }
+
+    /** Uma pena de luz: raiz estreita → meio largo → ponta fina, com degradê {@code c0} → {@code c1}. */
+    private static void feather(VertexConsumer vc, PoseStack.Pose pose, int overlay, float s, float rx, float ry, float z,
+                                float theta, float len, float w, int c0, int c1, float alpha) {
+        float dx = Mth.sin(theta), dy = Mth.cos(theta);
+        float nx = dy, ny = -dx;
+        float mx = rx + dx * len * 0.45F, my = ry + dy * len * 0.45F;
+        float tx = rx + dx * len, ty = ry + dy * len;
+        float w0 = w * 0.3F, w1 = w * 0.5F, w2 = w * 0.06F;
+        int k0 = argb(c0, alpha), km = argb(mix(c0, c1, 0.45F), alpha), k1 = argb(c1, alpha * 0.85F);
+        fv(vc, pose, overlay, s * (rx - nx * w0), ry - ny * w0, z, k0);
+        fv(vc, pose, overlay, s * (rx + nx * w0), ry + ny * w0, z, k0);
+        fv(vc, pose, overlay, s * (mx + nx * w1), my + ny * w1, z, km);
+        fv(vc, pose, overlay, s * (mx - nx * w1), my - ny * w1, z, km);
+        fv(vc, pose, overlay, s * (mx - nx * w1), my - ny * w1, z, km);
+        fv(vc, pose, overlay, s * (mx + nx * w1), my + ny * w1, z, km);
+        fv(vc, pose, overlay, s * (tx + nx * w2), ty + ny * w2, z, k1);
+        fv(vc, pose, overlay, s * (tx - nx * w2), ty - ny * w2, z, k1);
+    }
+
+    /**
+     * A auréola da Jibril: anel de ouro grande e anel ciano de dentro girando em sentidos opostos, raios ligando os dois,
+     * um hexagrama (2 triângulos) no meio e um anelzinho branco no centro; no ALTO/ULTRA, brilho, anel tracejado de fora,
+     * losangos e pontas triangulares. Inclinada sobre a cabeça, um pouco para trás; cresce com a forma abrindo.
+     */
+    private static void jibrilHalo(PoseStack ps, MultiBufferSource buffers, int overlay, float age, float open, float bob) {
+        if (open <= 0.01F) return;
+        int q = FxQuality.atLeast(Graphics.HIGH) ? 2 : FxQuality.atLeast(Graphics.MEDIUM) ? 1 : 0;
+        VertexConsumer vc = buffers.getBuffer(RenderType.entityTranslucentEmissive(AURA));
+        ps.pushPose();
+        ps.translate(0, (-12.5F + bob) / 16F, 2.5F / 16F);
+        ps.mulPose(Axis.XP.rotationDegrees(62));
+        float sc = (0.35F + 0.65F * open) / 16F;
+        ps.scale(sc, sc, sc);
+        PoseStack.Pose pose = ps.last();
+        float spin = age * 0.045F;
+        float a = open;
+        int segs = q == 2 ? 56 : q == 1 ? 40 : 28;
+        float rOut = 7.2F, rIn = 4.4F;
+        if (q == 2) ringQ(vc, pose, overlay, rOut, 2.6F, segs, 0F, false, -0.05F, argb(JB_GOLD, 0.16F * a));
+        ringQ(vc, pose, overlay, rOut, 0.7F, segs, spin, false, 0F, argb(JB_GOLD, 0.95F * a));
+        ringQ(vc, pose, overlay, rIn, 0.45F, segs, -spin, false, 0F, argb(JB_CYAN, 0.9F * a));
+        if (q >= 1) {
+            // Raios entre os dois anéis
+            for (int i = 0; i < 8; i++) {
+                float an = spin + (float) (Math.PI * 2 * i / 8);
+                float c = Mth.cos(an), sn = Mth.sin(an);
+                lineQ(vc, pose, overlay, c * rIn, sn * rIn, c * rOut, sn * rOut, 0.02F, i % 2 == 0 ? 0.35F : 0.22F,
+                        argb(i % 2 == 0 ? JB_PALE : JB_GOLD, 0.85F * a));
+            }
+            // Hexagrama inscrito no anel de dentro
+            float hs = -spin * 1.6F;
+            for (int tri = 0; tri < 2; tri++) {
+                for (int i = 0; i < 3; i++) {
+                    float a0 = hs + tri * (float) Math.PI / 3F + (float) (Math.PI * 2 * i / 3);
+                    float a1 = hs + tri * (float) Math.PI / 3F + (float) (Math.PI * 2 * (i + 1) / 3);
+                    float r = rIn - 0.2F;
+                    lineQ(vc, pose, overlay, Mth.cos(a0) * r, Mth.sin(a0) * r, Mth.cos(a1) * r, Mth.sin(a1) * r, 0.04F, 0.28F,
+                            argb(tri == 0 ? JB_GOLD : JB_CYAN, 0.8F * a));
+                }
+            }
+            ringQ(vc, pose, overlay, 1.3F, 0.3F, 20, spin * 2F, false, 0.03F, argb(0xFFFFFF, 0.9F * a));
+        }
+        if (q == 2) {
+            ringQ(vc, pose, overlay, 8.6F, 0.25F, 48, -spin * 0.7F, true, 0.01F, argb(JB_CYAN, 0.7F * a));
+            // Losangos nos 4 cantos do anel de fora
+            for (int i = 0; i < 4; i++) {
+                float an = spin + (float) (Math.PI / 4 + Math.PI / 2 * i);
+                float cx = Mth.cos(an) * rOut, cy = Mth.sin(an) * rOut, d = 1.1F;
+                int col = argb(JB_CYAN, 0.95F * a);
+                fv(vc, pose, overlay, cx + Mth.cos(an) * d, cy + Mth.sin(an) * d, 0.06F, col);
+                fv(vc, pose, overlay, cx - Mth.sin(an) * d * 0.6F, cy + Mth.cos(an) * d * 0.6F, 0.06F, col);
+                fv(vc, pose, overlay, cx - Mth.cos(an) * d, cy - Mth.sin(an) * d, 0.06F, col);
+                fv(vc, pose, overlay, cx + Mth.sin(an) * d * 0.6F, cy - Mth.cos(an) * d * 0.6F, 0.06F, col);
+            }
+            // Pontas triangulares para fora, entre os raios
+            for (int i = 0; i < 8; i++) {
+                float an = spin + (float) (Math.PI * 2 * (i + 0.5) / 8);
+                float c = Mth.cos(an), sn = Mth.sin(an), half = 0.18F;
+                float cl = Mth.cos(an - half), sl = Mth.sin(an - half), cr = Mth.cos(an + half), sr = Mth.sin(an + half);
+                int col = argb(JB_GOLD, 0.85F * a);
+                fv(vc, pose, overlay, cl * (rOut + 0.4F), sl * (rOut + 0.4F), 0.02F, col);
+                fv(vc, pose, overlay, cr * (rOut + 0.4F), sr * (rOut + 0.4F), 0.02F, col);
+                fv(vc, pose, overlay, c * (rOut + 2.0F), sn * (rOut + 2.0F), 0.02F, col);
+                fv(vc, pose, overlay, c * (rOut + 2.0F), sn * (rOut + 2.0F), 0.02F, col);
+            }
+        }
+        ps.popPose();
+    }
+
+    /** Anel no plano XY (raio {@code r}, espessura {@code w}); {@code dashed} = só gomos alternados. */
+    private static void ringQ(VertexConsumer vc, PoseStack.Pose pose, int overlay, float r, float w, int segs, float rot,
+                              boolean dashed, float z, int argb) {
+        if ((argb >>> 24) < 4) return;
+        float ri = Math.max(0F, r - w * 0.5F), ro = r + w * 0.5F;
+        for (int i = 0; i < segs; i++) {
+            if (dashed && i % 2 == 1) continue;
+            float a0 = rot + (float) (Math.PI * 2 * i / segs), a1 = rot + (float) (Math.PI * 2 * (i + 1) / segs);
+            float c0 = Mth.cos(a0), s0 = Mth.sin(a0), c1 = Mth.cos(a1), s1 = Mth.sin(a1);
+            fv(vc, pose, overlay, c0 * ri, s0 * ri, z, argb);
+            fv(vc, pose, overlay, c0 * ro, s0 * ro, z, argb);
+            fv(vc, pose, overlay, c1 * ro, s1 * ro, z, argb);
+            fv(vc, pose, overlay, c1 * ri, s1 * ri, z, argb);
+        }
+    }
+
+    /** Traço reto no plano XY (largura {@code w}). */
+    private static void lineQ(VertexConsumer vc, PoseStack.Pose pose, int overlay, float x1, float y1, float x2, float y2, float z,
+                              float w, int argb) {
+        float dx = x2 - x1, dy = y2 - y1;
+        float len = Mth.sqrt(dx * dx + dy * dy);
+        if (len < 1e-4F || (argb >>> 24) < 4) return;
+        float nx = -dy / len * w * 0.5F, ny = dx / len * w * 0.5F;
+        fv(vc, pose, overlay, x1 + nx, y1 + ny, z, argb);
+        fv(vc, pose, overlay, x2 + nx, y2 + ny, z, argb);
+        fv(vc, pose, overlay, x2 - nx, y2 - ny, z, argb);
+        fv(vc, pose, overlay, x1 - nx, y1 - ny, z, argb);
+    }
+
+    /** Vértice emissivo da textura branca (o centro dela: cor lisa). */
+    private static void fv(VertexConsumer vc, PoseStack.Pose pose, int overlay, float x, float y, float z, int argb) {
+        vc.addVertex(pose, x, y, z).setColor(argb).setUv(0.5F, 0.5F).setOverlay(overlay).setLight(LightTexture.FULL_BRIGHT)
+                .setNormal(pose, 0F, 0F, 1F);
+    }
+
+    private static int argb(int rgb, float a) {
+        return ((int) (Mth.clamp(a, 0F, 1F) * 255) << 24) | (rgb & 0xFFFFFF);
     }
 
     // =====================================================================================

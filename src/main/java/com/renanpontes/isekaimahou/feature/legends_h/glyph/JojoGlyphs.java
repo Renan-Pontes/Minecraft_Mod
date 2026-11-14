@@ -12,6 +12,7 @@ import com.renanpontes.isekaimahou.feature.legends_h.jojo.Rewind;
 import com.renanpontes.isekaimahou.feature.legends_h.jojo.TimeSkip;
 import com.renanpontes.isekaimahou.glyph.AugmentGlyph;
 import com.renanpontes.isekaimahou.glyph.EffectGlyph;
+import com.renanpontes.isekaimahou.glyph.MasteryMutations;
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
@@ -43,10 +44,13 @@ public final class JojoGlyphs {
     //  King Crimson
     // =====================================================================================
     /**
-     * EFEITO (Arcano, tier 4, C5). Em você (Si Mesmo): o tempo é apagado e você anda nele — 2,5 s (Estender +, até 7 s)
-     * invisível, sem ser mirado, com tudo atravessando você (e você também não fere ninguém). Ao voltar, o primeiro
-     * golpe sai ×1,5 e você vê o Epitáfio por 3 s. Num inimigo: o tempo dele some por 2 s (chefes 1/3, jogadores até
-     * 2,5 s) — ele anda no automático, não mira e os ataques dele não acontecem.
+     * EFEITO (Arcano, tier 4, C5). Em você (Si Mesmo, v1.1): apaga o tempo em volta por 4 s (Estender +, até 10 s;
+     * contados depois de uma cutscene curta só sua). O mundo continua andando, mas você fica invisível, sem ser mirado,
+     * com tudo atravessando você (e você também não fere ninguém). Todo mundo a até 16 blocos (Expandir +, até 24;
+     * chefes nunca) ganha um X vermelho no chão — um ponto seguro a 2–6 blocos — que SÓ VOCÊ vê. Quando o tempo volta,
+     * todos aparecem no X deles com a mão trocada (barra/loadout; criaturas trocam as mãos), e você ganha o 1º golpe
+     * ×1,5 e o Epitáfio por 3 s. Num inimigo: o tempo dele some por 2 s (chefes 1/3, jogadores até 2,5 s) — ele anda no
+     * automático, não mira e os ataques dele não acontecem. Ver {@link TimeSkip}.
      */
     public static class KingCrimson extends EffectGlyph {
         public KingCrimson() {
@@ -57,18 +61,26 @@ public final class JojoGlyphs {
         }
 
         @Override
-        public int hintDuration() { return 50; }
+        public int hintDuration() { return 80; }
+
+        @Override
+        public float hintRadius() { return 16F; }
 
         @Override
         public void onEntity(SpellContext ctx, Entity target, SpellStats stats) {
             if (!(target instanceof LivingEntity le)) return;
+            // v1.1 — evolução própria: 1 Epitáfio Desperto (+4 de raio; tempo do alvo ×1,5), 2 Reino Apagado (+2 s; 1º golpe ×2)
+            int stage = MasteryMutations.stageOf(ctx.caster(), LhIds.KING_CRIMSON);
             if (LhUtil.self(ctx, target)) {
                 if (!LhUtil.once(ctx, "king_crimson_self")) return;
-                TimeSkip.phase(le, Mth.clamp(stats.duration(50), 30, 140));
+                int t = Mth.clamp(stats.duration(80), 40, 200) + (stage >= 2 ? 40 : 0);
+                float r = Mth.clamp(stats.radius(16F) + (stage >= 1 ? 4F : 0F), 8F, 32F);
+                TimeSkip.setFirstStrike(le, stage >= 2 ? 2.0F : TimeSkip.FIRST_STRIKE);
+                TimeSkip.crimson(ctx, le, t, r);
                 LhUtil.banner(le, stats, "king_crimson", TimeSkip.CRIMSON, false);
                 return;
             }
-            int ticks = Mth.clamp(stats.duration(40), 20, 120);
+            int ticks = Mth.clamp(stats.duration(40) * (stage >= 1 ? 3 : 2) / 2, 20, 160);
             if (LhUtil.boss(le)) ticks = Math.max(10, ticks / 3);
             else if (le instanceof Player) ticks = Math.min(ticks, 50);
             TimeSkip.erase(le, ticks);
@@ -92,10 +104,12 @@ public final class JojoGlyphs {
     //  Bites the Dust
     // =====================================================================================
     /**
-     * EFEITO (Arcano, tier 4, C5). Planta uma bomba no TEMPO do alvo: 8 s depois (Estender +, até 30 s), ele volta para
-     * onde estava. Você/aliado: recupera a vida perdida nesse meio-tempo (até 40% da máxima × poder; teto 60%), fome
-     * e um pouco de mana — e se ia MORRER marcado, o tempo volta na hora (1 vez a cada 2 min). Inimigo: é puxado de
-     * volta e fica atordoado 1 s (a vida dele não volta). Ver {@link Rewind}.
+     * EFEITO (Arcano, tier 4, C5; v1.1). Planta uma bomba de pavio T = 8 s (Estender +, até 20 s) no alvo — criatura,
+     * bloco atingido ou você (Si Mesmo) — e fotografa todo mundo a até 16 blocos da bomba (Expandir +, até 24) e você.
+     * Quando explode: cutscene e todos voltam para onde estavam; você volta para a vida que tinha (e fome/um pouco de
+     * mana), aliados recuperam a vida até a da foto, inimigos só voltam de lugar. T segundos depois, o alvo explode:
+     * 10 × poder nele e 3 × poder nos inimigos a até 3 blocos (bomba em você: o inimigo da foto mais perto). Se você ia
+     * MORRER com o pavio aceso, o tempo volta na hora (1 vez a cada 2 min). Ver {@link Rewind}.
      */
     public static class BitesTheDust extends EffectGlyph {
         public BitesTheDust() {
@@ -106,20 +120,42 @@ public final class JojoGlyphs {
         }
 
         @Override
+        public boolean wantsBlocks() { return true; }
+
+        @Override
+        public float baseDamage() { return Rewind.BLAST; }
+
+        @Override
         public int hintDuration() { return 160; }
 
         @Override
+        public float hintRadius() { return 16F; }
+
+        private static int fuse(SpellStats stats) {
+            return Mth.clamp(stats.duration(160), 60, 400);
+        }
+
+        private static void plant(SpellContext ctx, SpellStats stats, LivingEntity anchor, Vec3 at, boolean self) {
+            int fuse = fuse(stats);
+            double radius = Mth.clamp(stats.radius(16F), 8F, 32F);
+            float blast = Mth.clamp(stats.radius(3F), 2F, 8F);
+            Rewind.plant(ctx, stats, anchor, at, self, fuse, radius, blast);
+            LhUtil.banner(ctx.caster(), stats, "bites_the_dust", Rewind.PINK, false);
+            LhUtil.actionbar(ctx.caster(), Component.translatable("message.isekai_mahou.legends_h.btd_marked",
+                    String.format("%.0f", fuse / 20F)).withStyle(ChatFormatting.LIGHT_PURPLE));
+        }
+
+        @Override
         public void onEntity(SpellContext ctx, Entity target, SpellStats stats) {
-            if (!(target instanceof LivingEntity le) || !LhUtil.once(ctx, "btd:" + le.getId())) return;
-            boolean self = LhUtil.self(ctx, target);
-            boolean friendly = self || ctx.isAlly(target);
-            int ticks = Mth.clamp(stats.duration(160), 60, 600);
-            Rewind.mark(le, ctx.caster(), friendly, self, LhUtil.power(ctx, stats), ticks);
-            if (ctx.caster() != null && LhUtil.once(ctx, "btd_banner")) {
-                LhUtil.banner(ctx.caster(), stats, "bites_the_dust", Rewind.PINK, false);
-                LhUtil.actionbar(ctx.caster(), Component.translatable("message.isekai_mahou.legends_h.btd_marked",
-                        String.format("%.0f", ticks / 20F)).withStyle(ChatFormatting.LIGHT_PURPLE));
-            }
+            if (!(target instanceof LivingEntity le) || ctx.caster() == null || !LhUtil.once(ctx, "btd")) return;
+            plant(ctx, stats, le, le.position(), LhUtil.self(ctx, target));
+        }
+
+        @Override
+        public void onBlock(SpellContext ctx, BlockHitResult hit, SpellStats stats) {
+            if (ctx.caster() == null || hit.getLocation().distanceToSqr(ctx.caster().position()) < 2.25) return;
+            if (!LhUtil.once(ctx, "btd")) return;
+            plant(ctx, stats, null, hit.getLocation(), false);
         }
     }
 
@@ -216,16 +252,21 @@ public final class JojoGlyphs {
 
         private static void rush(SpellContext ctx, SpellStats stats, LivingEntity c, LivingEntity t) {
             ServerLevel l = ctx.level();
+            // v1.1 — evolução própria: 1 rajada longa (+4 socos), 2 Star Finger (+1 inimigo, pelo módulo stands),
+            // 3 The World (o último soco para o tempo do alvo por 1,5 s)
+            int stage = MasteryMutations.stageOf(c, LhIds.ORA_RUSH);
+            final int hits = HITS + (stage >= 1 ? 4 : 0);
+            final boolean world = stage >= 3;
             if (c != null) {
-                ElementFx.aura(l, c, Element.ARCANE, COLOR, 1.1F, 3, HITS * 2 + 6);
+                ElementFx.aura(l, c, Element.ARCANE, COLOR, 1.1F, 3, hits * 2 + 6);
                 LhUtil.banner(c, stats, "ora_rush", COLOR, false);
             }
-            for (int i = 0; i <= HITS; i++) {
+            for (int i = 0; i <= hits; i++) {
                 final int n = i;
                 BossKit.schedule(l, i * 2, () -> {
                     if (!t.isAlive() || t.level() != l) return;
                     if (c != null && (!c.isAlive() || c.distanceToSqr(t) > 64)) return;
-                    boolean last = n == HITS;
+                    boolean last = n == hits;
                     t.invulnerableTime = 0;
                     ctx.damage(t, last ? 3F : 1F, stats, null);
                     Vec3 tc = LhUtil.center(t);
@@ -241,6 +282,7 @@ public final class JojoGlyphs {
                             t.hurtMarked = true;
                         }
                         ElementFx.shockwave(l, face, COLOR, 2.2F, 8, dir);
+                        if (world && t.isAlive()) TimeSkip.erase(t, LhUtil.boss(t) ? 10 : 30);
                         LhUtil.sound(l, tc, SoundEvents.PLAYER_ATTACK_STRONG, 1.3F, 0.7F);
                         LhUtil.sound(l, tc, SoundEvents.ANVIL_LAND, 0.5F, 1.6F);
                     } else {

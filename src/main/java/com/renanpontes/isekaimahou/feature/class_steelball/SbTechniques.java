@@ -69,7 +69,9 @@ public final class SbTechniques {
             new Technique("tusk_act2", 2, 3, null, SbLegends.GOLDEN_CHASE, SbFx.GOLD),
             new Technique("spin_mend", 3, 4, null, null, SbFx.HEAL),
             new Technique("tusk_act3", 3, 5, null, SbLegends.WORMHOLE, 0xB45CFF),
-            new Technique("ball_breaker", 5, 7, null, SbLegends.BALL_BREAKER, 0xFFB43A));
+            new Technique("ball_breaker", 5, 7, null, SbLegends.BALL_BREAKER, 0xFFB43A),
+            // "7 páginas" (o dono): a Surra de 7 Páginas do Tusk ACT4 no Valentine — junto do Ato 4 (Lição V + 6 Partes)
+            new Technique("seven_page_beatdown", 5, 6, null, null, SbFx.NAIL));
 
     /** Escudo do buraco de minhoca: jogador → tick do mundo até quando nada o acerta. */
     private static final Map<UUID, Long> SHIELD = new HashMap<>();

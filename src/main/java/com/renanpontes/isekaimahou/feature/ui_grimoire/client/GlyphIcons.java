@@ -438,17 +438,23 @@ public final class GlyphIcons {
         if (MasteryMutations.mutations(glyph).isEmpty()) return lines;
         List<MasteryMutations.Mut> on = MasteryMutations.active(glyph, level);
         if (!on.isEmpty()) {
+            // v1.1: com as aberrações sem fim a lista cresce muito — mostra só as últimas (as mais novas)
+            int keep = full ? 6 : 4;
+            int skip = Math.max(0, on.size() - keep);
             if (full) {
                 lines.add(Component.translatable("screen.isekai_mahou.glyph.mutations", on.size()).withColor(0xC58CFF));
-                for (MasteryMutations.Mut m : on) {
+                if (skip > 0) lines.add(Component.translatable("screen.isekai_mahou.glyph.mutations_more", skip).withStyle(ChatFormatting.DARK_PURPLE));
+                for (int i = skip; i < on.size(); i++) {
+                    MasteryMutations.Mut m = on.get(i);
                     lines.add(Component.literal("✦ ").append(m.displayName()).withColor(0xE0C8FF)
                             .append(Component.literal(" — ").withStyle(ChatFormatting.DARK_GRAY))
                             .append(m.description().withStyle(ChatFormatting.GRAY)));
                 }
             } else {
                 MutableComponent names = Component.empty();
-                for (int i = 0; i < on.size(); i++) {
-                    if (i > 0) names.append(", ");
+                if (skip > 0) names.append("+" + skip + ", ");
+                for (int i = skip; i < on.size(); i++) {
+                    if (i > skip) names.append(", ");
                     names.append(on.get(i).displayName());
                 }
                 lines.add(Component.literal("✦ ").append(names).withColor(0xC58CFF));
@@ -459,6 +465,34 @@ public final class GlyphIcons {
             lines.add(Component.translatable("screen.isekai_mahou.glyph.mutation_next", GlyphMastery.roman(next.level()))
                     .withStyle(ChatFormatting.DARK_PURPLE)
                     .append(Component.literal(" ").append(next.hint().withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_GRAY))));
+        }
+        return lines;
+    }
+
+    /**
+     * v1.1 — EVOLUÇÃO PRÓPRIA (como os Atos do Tusk): "⟡ Raikiri (estágio 1/2)" na cor do estágio e "Próxima evolução no
+     * nível XV: ??? — dica vaga". {@code full} = também o que o estágio atual faz. Vazio para glifos sem evolução.
+     */
+    public static List<Component> evolutionLines(Glyph glyph, int level, boolean full) {
+        List<Component> lines = new ArrayList<>();
+        List<MasteryMutations.Stage> stages = MasteryMutations.stages(glyph.id());
+        if (stages.isEmpty()) return lines;
+        MasteryMutations.Stage cur = MasteryMutations.currentStage(glyph.id(), level);
+        if (cur != null) {
+            lines.add(Component.literal("⟡ ").append(cur.displayName().withStyle(ChatFormatting.BOLD))
+                    .append(Component.literal(" (" + cur.index() + "/" + stages.size() + ")").withStyle(ChatFormatting.DARK_GRAY))
+                    .withColor(cur.color()));
+            if (full) lines.add(cur.description().withStyle(ChatFormatting.GRAY));
+        } else {
+            lines.add(Component.translatable("screen.isekai_mahou.glyph.evo_base", stages.size()).withColor(0xB89A60));
+        }
+        MasteryMutations.Stage next = MasteryMutations.nextStage(glyph.id(), level);
+        if (next != null) {
+            lines.add(Component.translatable("screen.isekai_mahou.glyph.evo_next", GlyphMastery.roman(next.level()))
+                    .withColor(0xD9A441)
+                    .append(Component.literal(" ").append(next.hint().withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_GRAY))));
+        } else if (cur != null) {
+            lines.add(Component.translatable("screen.isekai_mahou.glyph.evo_final").withStyle(ChatFormatting.GOLD));
         }
         return lines;
     }
@@ -480,8 +514,10 @@ public final class GlyphIcons {
         lines.add(head);
         MutableComponent bonus = masteryBonus(glyph, level);
         if (bonus != null) lines.add(bonus.withColor(Gfx.GOOD & 0xFFFFFF));
-        // Mutações: na dica curta só a partir do X (antes disso é cedo demais para falar delas)
-        if (extended || level >= GlyphMastery.MAX_LEVEL) lines.addAll(mutationLines(glyph, level, false));
+        // v1.1: evolução própria do glifo (estágio atual + o próximo como mistério)
+        lines.addAll(evolutionLines(glyph, level, extended));
+        // Mutações: na dica curta a partir da primeira mutação (v1.1: nível IV)
+        if (extended || level >= MasteryMutations.FIRST_MUTATION - 1) lines.addAll(mutationLines(glyph, level, false));
         if (extended && level < GlyphMastery.MAX_LEVEL) {
             lines.add(Component.translatable("screen.isekai_mahou.glyph.mastery.how").withStyle(ChatFormatting.DARK_GRAY));
         }

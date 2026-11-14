@@ -41,7 +41,7 @@
   "glyph.isekai_mahou.quincy_light_rain": "Rain of Light",
   "glyph.isekai_mahou.quincy_light_rain.desc": "Quincy FORM (Circle 3): a star opens in the sky above the aimed point and 6 arrows fall from it (+2 per Split/Expand, max 16), each carrying the effects.",
   "glyph.isekai_mahou.quincy_vollstandig": "Vollständig",
-  "glyph.isekai_mahou.quincy_vollstandig.desc": "G FORM (ultimate, Circle 6): wings of light and a halo for 12 s. You glide, resist, swallow projectiles, and every second the halo fires at up to 4 enemies (+Split) with the effects.",
+  "glyph.isekai_mahou.quincy_vollstandig.desc": "TRANSFORMATION BODY (Quincy, Circle 6). Goes inside the Supreme Transformation (G key): Supreme Transformation → Vollständig → effects. Wings of light and a halo for 12 s (Extend on the body increases it): you glide, resist, swallow projectiles, and every second the halo fires at up to 4 enemies (+Split) with the spell's effects.",
   "glyph.isekai_mahou.quincy_drain_reishi": "Drain Reishi",
   "glyph.isekai_mahou.quincy_drain_reishi.desc": "Quincy EFFECT: light damage that steals the target's energy — you recover Focus and store 1 Reishi; enemy players lose mana.",
   "glyph.isekai_mahou.quincy_release": "Reishi Return",
@@ -219,9 +219,9 @@
   "glyph.isekai_mahou.quincy_antithesis": "The Antithesis",
   "glyph.isekai_mahou.quincy_antithesis.desc": "Quincy EFFECT (rank IV + 350 absorptions). INVERTS what happened between you and the target in the last 10 s: you heal the damage you took and the target receives it (up to 60%% of its health, bosses 20%%); the target heals HALF the damage it took and that half moves to you (never lethal). Use it when you are more wounded than the enemy! No wounds: 2 damage.",
   "glyph.isekai_mahou.quincy_letzt_stil": "Quincy: Letzt Stil",
-  "glyph.isekai_mahou.quincy_letzt_stil.desc": "G FORM (Quincy, ultimate; rank V + Sanrei Glove training). For 30 s the Quincy unleashes ALL their Reishi: Quincy techniques ×2, Strength II, Speed II, Resistance I, Regeneration I, glides on huge wings of golden light, swallows every projectile within 8 blocks and every 0.75 s a fan of 6 giant homing arrows falls on enemies within 24 blocks (the effects). THE PRICE: when it ends, health at 50%%, Weakness II and 10 minutes WITHOUT QUINCY POWER.",
+  "glyph.isekai_mahou.quincy_letzt_stil.desc": "TRANSFORMATION BODY (Quincy; rank V + Sanrei Glove training). Goes inside the Supreme Transformation (G key). For 30 s (Extend on the body increases it) the Quincy unleashes ALL their Reishi: Quincy techniques ×2, Strength II, Speed II, Resistance I, Regeneration I, glides on huge wings of golden light, swallows every projectile within 8 blocks and every 0.75 s a fan of 6 giant homing arrows falls on enemies within 24 blocks (the effects). THE PRICE: when the transformation ends, health at 50%%, Weakness II and 10 minutes WITHOUT QUINCY POWER.",
   "glyph.isekai_mahou.quincy_almighty": "The Almighty",
-  "glyph.isekai_mahou.quincy_almighty.desc": "G FORM (Quincy, ultimate; rank V + 8 Auswählen + 6 bosses). For 20 s you SEE THE FUTURE: 45%% chance to dodge each hit (a sidestep with an afterimage); whoever is about to attack you glows and the line of the blow/trajectory shows up beforehand; and every 5 s the first heavy blow (≥ 20%% of your health, or lethal) is REWRITTEN — cancelled and sent back to the attacker, with the effects. Works without effects.",
+  "glyph.isekai_mahou.quincy_almighty.desc": "TRANSFORMATION BODY (Quincy; rank V + 8 Auswählen + 6 bosses). Goes inside the Supreme Transformation (G key): Supreme Transformation → The Almighty → effects. For 5 MINUTES you SEE THE FUTURE: every attack from a creature is dodged. Whoever attacks you sees you vanish and appear BEHIND them, with a strike and an \"I saw it all...\" — each counter costs 30 s of the transformation, then 5 s of dodging only (no teleport). 10 counters or the time running out = the transformation ends. Whoever is about to attack you glows and shows its trajectory beforehand. 10 min cooldown.",
   "legend.isekai_mahou.quincy_heilig_bogen_legend": "Heilig Bogen",
   "legend.isekai_mahou.quincy_sankt_zwinger_legend": "Sankt Zwinger",
   "legend.isekai_mahou.quincy_letzt_stil_legend": "Quincy: Letzt Stil",
@@ -267,6 +267,9 @@
   "screen.isekai_mahou.quincy.tech_tip.heilig_bogen": "Heilig Bogen: assemble it with a damage effect; Split widens the fan.",
   "screen.isekai_mahou.quincy.tech_tip.sankt_zwinger": "Sankt Zwinger: aim at the ground in the middle of the enemies — nobody leaves the cage.",
   "screen.isekai_mahou.quincy.tech_tip.antithesis": "The Antithesis: put it on a projectile and use it when you are more wounded than the target.",
-  "screen.isekai_mahou.quincy.tech_tip.letzt_stil": "Letzt Stil: put it in your G spell. The price is high — 10 minutes without Quincy power.",
-  "screen.isekai_mahou.quincy.tech_tip.almighty": "The Almighty: put it in your G spell and see the future for 20 s."
+  "screen.isekai_mahou.quincy.tech_tip.letzt_stil": "Letzt Stil: put it in the Supreme Transformation (G key): Supreme Transformation → Letzt Stil. The price is high — 10 minutes without Quincy power.",
+  "screen.isekai_mahou.quincy.tech_tip.almighty": "The Almighty: put it in the Supreme Transformation (G key) and see the future for 5 minutes (or 10 counters).",
+  "message.isekai_mahou.quincy.almighty_saw": "I saw it all...",
+  "message.isekai_mahou.quincy.almighty_counter": "I saw it all — %s counters left · %s:%s remaining",
+  "message.isekai_mahou.quincy.almighty_end": "The eyes of the future close."
 }

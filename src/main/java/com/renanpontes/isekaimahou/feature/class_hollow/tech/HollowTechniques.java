@@ -417,7 +417,13 @@ public final class HollowTechniques {
             HollowNetwork.fxNear(sl, HollowNetwork.SHAKE, sp.getId(), at, Vec3.ZERO, 0.4F, rgb, 32);
             if (r != null) {
                 Announce.send(sp, Hollow.msg("release_shout", r.command()), r.rgb, Announce.STYLE_ULTIMATE);
-                Cutscenes.playNear(sp, 32, "ascension", r.command(), r.displayName(), r.rgb, ticks + 24, sp);
+                // v1.1: a Resurrección é uma transformação — cutscene coreografada de transformação (agente C)
+                String style = switch (r) {
+                    case PANTERA -> "beast";
+                    case MURCIELAGO -> "storm"; // asas negras e a Lança do Relâmpago
+                    case SERPIENTE -> "dark";
+                };
+                Cutscenes.transform(sp, r.command(), r.displayName(), r.rgb, style, ticks + 24);
             }
             HollowFx.sound(sl, at, SoundEvents.BEACON_AMBIENT, 1.5F, 0.5F);
             HollowFx.sound(sl, at, SoundEvents.WARDEN_HEARTBEAT, 1.5F, 0.8F);

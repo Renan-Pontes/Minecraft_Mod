@@ -165,6 +165,12 @@ public final class QuincyVollstandig {
         QuincyFx.sound(level, caster.position(), SoundEvents.BEACON_DEACTIVATE, 1.0F, 1.2F);
     }
 
+    /** v1.1: a Transformação que tinha o Vollständig como corpo acabou — as asas se desfazem já. */
+    public static void stop(LivingEntity e) {
+        Active a = ACTIVE.remove(e.getUUID());
+        if (a != null) finish(a.level, e);
+    }
+
     /** Sair/morrer: tira o modificador e esquece. */
     static void forget(LivingEntity e) {
         if (ACTIVE.remove(e.getUUID()) != null) {

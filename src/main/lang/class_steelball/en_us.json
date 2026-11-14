@@ -298,5 +298,9 @@
   "tooltip.isekai_mahou.steelball.relic.use": "Right-click: opens it, revealing a Holy Corpse Part you don't have yet (the Heart is never in a reliquary).",
   "tooltip.isekai_mahou.steelball.whistle": "A Steel Ball never walks.",
   "tooltip.isekai_mahou.steelball.whistle.bound": "Right-click: calls YOUR steed to your side.",
-  "tooltip.isekai_mahou.steelball.whistle.unbound": "Right-click: calls a tamed, saddled racing steed."
+  "tooltip.isekai_mahou.steelball.whistle.unbound": "Right-click: calls a tamed, saddled racing steed.",
+  "glyph.isekai_mahou.seven_page_beatdown": "Seven-Page Beatdown",
+  "glyph.isekai_mahou.seven_page_beatdown.desc": "Origin effect (Tusk ACT4 × Valentine): a punch rush that lasts \"seven pages\" — 28 hits in 2.8 s (Extend = more pages, up to 60). The target is pinned while it's beaten, every punch carries the Infinite Rotation and the last one sends it flying, Spun for 10 s. For Steel Ball, Tusk ACT4 appears punching. Unlocks: Lesson V + 6 Parts.",
+  "callout.isekai_mahou.steelball.seven_page": "ORA ORA ORA ORA!",
+  "callout.isekai_mahou.steelball.seven_page.sub": "Tusk ACT4 — seven pages of punches"
 }

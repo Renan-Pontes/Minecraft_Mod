@@ -16,7 +16,7 @@
   "command.isekai_mahou.world_events.started": "Event started: %s",
   "command.isekai_mahou.world_events.status": "Event: %s (%ss left) · site: %s · auto: %s · chance: %s%% · day %s, next allowed on day %s · chunks with player blocks: %s",
   "command.isekai_mahou.world_events.stopped": "Event stopped.",
-  "command.isekai_mahou.world_events.unknown": "Unknown event. Use: meteor, blood_moon, arcane_storm, earthquake, mana_storm.",
+  "command.isekai_mahou.world_events.unknown": "Unknown event. Use: meteor, blood_moon, arcane_storm, earthquake, mana_storm, star_shower.",
   "entity.isekai_mahou.world_events_alien_grunt": "Star Scout",
   "entity.isekai_mahou.world_events_alien_larva": "Star Larva",
   "entity.isekai_mahou.world_events_alien_overseer": "Star Herald",

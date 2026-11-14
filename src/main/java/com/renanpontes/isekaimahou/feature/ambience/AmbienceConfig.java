@@ -29,6 +29,12 @@ public final class AmbienceConfig {
             .comment("Cristais, runas e essências brilham no escuro (vale depois de recarregar os recursos: F3+T)",
                     "Crystals, runes and essences glow in the dark (applies after a resource reload: F3+T)")
             .define("glowInDark", true);
+    public static final ModConfigSpec.BooleanValue WORLD_LIFE = CLIENT
+            .comment("Mundo vivo: vaga-lumes, folhas caindo, pólen, motas de mana e estrelas cadentes perto de você",
+                    "(leve; nada no preset gráfico BAIXO)",
+                    "Living world: fireflies, falling leaves, pollen, mana motes and shooting stars around you",
+                    "(light; nothing on the LOW graphics preset)")
+            .define("worldLife", true);
     public static final ModConfigSpec CLIENT_SPEC = CLIENT.build();
 
     /** Chamado no construtor do mod (init do módulo). */

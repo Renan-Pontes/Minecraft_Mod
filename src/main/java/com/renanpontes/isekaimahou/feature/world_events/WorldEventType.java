@@ -21,7 +21,9 @@ public enum WorldEventType {
     /** Terremoto: tremor, fendas pequenas no ermo com minérios expostos. */
     EARTHQUAKE("earthquake", 0xC09A62, 20 * 45, true),
     /** Tempestade de Mana: toda magia mais forte, cristais de mana caem do céu. */
-    MANA_STORM("mana_storm", 0xB98CFF, 20 * 60 * 4, false);
+    MANA_STORM("mana_storm", 0xB98CFF, 20 * 60 * 4, false),
+    /** Chuva de Estrelas (v1.1): noite calma de estrelas cadentes; fragmentos caem perto de quem está ao ar livre. */
+    STAR_SHOWER("star_shower", 0x9FC8FF, 20 * 60 * 10, false);
 
     public final String id;
     public final int color;

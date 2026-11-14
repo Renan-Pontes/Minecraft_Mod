@@ -282,7 +282,7 @@ public final class SpellCaster {
             Announce.spell(player, recipe, element, spell.isUltimate());
         }
         if (spell.isUltimate() && !spell.formStats().silent) {
-            Cutscenes.ultimate(player, recipe, element);
+            Cutscenes.ultimate(player, recipe, element, spell.form().id().getPath());
         }
         ElementFx.castSound(level, player, element);
 

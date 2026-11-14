@@ -32,6 +32,11 @@ public final class WeClientState {
 
     private WeClientState() {}
 
+    /** Evento do mundo ativo agora (null = nenhum). Lido pelo "mundo vivo" (estrelas cadentes da Chuva de Estrelas). */
+    public static WorldEventType active() {
+        return active;
+    }
+
     public static void apply(int ordinal) {
         WorldEventType[] all = WorldEventType.values();
         active = ordinal >= 0 && ordinal < all.length ? all[ordinal] : null;

@@ -71,7 +71,7 @@ public final class BankaiState {
             Release.beginBankai(sp, duration);
             // Senbonzakura Kageyoshi: as lâminas afundam no chão e viram o oceano de pétalas
             if (a == Archetype.PETALS && Shinigami.isShinigami(sp)) PetalSwarm.bankai(sp);
-            if (Shinigami.isShinigami(sp)) {
+            if (Shinigami.isShinigami(sp) && !com.renanpontes.isekaimahou.feature.transform_laws.TransformForge.inForge(ctx)) {
                 Announce.send(sp, Shinigami.msg("bankai_shout", sp.getDisplayName(), a.bankaiName()), a.rgb, Announce.STYLE_ULTIMATE);
             }
         }
@@ -181,6 +181,12 @@ public final class BankaiState {
 
     static void forget(UUID id) {
         ACTIVE.remove(id);
+    }
+
+    /** v1.1: a Transformação que tinha a Bankai como corpo acabou — a espada sela (com o preço da Bankai). */
+    public static void stop(LivingEntity e) {
+        if (ACTIVE.remove(e.getUUID()) == null) return;
+        if (e instanceof ServerPlayer sp) Release.seal(sp, false);
     }
 
     static void clear() {

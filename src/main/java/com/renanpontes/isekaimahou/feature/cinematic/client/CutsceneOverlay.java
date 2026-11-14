@@ -24,6 +24,7 @@ final class CutsceneOverlay {
         CutsceneDirector.Scene s = CutsceneDirector.current();
         if (s == null) return;
         float time = s.time(partial(delta));
+        StyleOverlay.renderUnder(g, s, time);   // v1.1: escuridão, relógio, linhas de velocidade... (por baixo das faixas)
         float open = CutsceneDirector.barsOpen(s, time);
         if (open <= 0.001F) return;
         int w = g.guiWidth(), h = g.guiHeight();
@@ -61,6 +62,7 @@ final class CutsceneOverlay {
         }
 
         renderTitle(g, font, s, time, w, h);
+        StyleOverlay.renderOver(g, s, time);    // v1.1: clarão das batidas e quadro de impacto
 
         // Aviso "[Enter] Pular" dentro da faixa de baixo
         float open = CutsceneDirector.barsOpen(s, time);
@@ -76,9 +78,10 @@ final class CutsceneOverlay {
     private static void renderTitle(GuiGraphics g, Font font, CutsceneDirector.Scene s, float time, int w, int h) {
         String title = s.title.getString();
         if (title.isEmpty()) return;
-        float start = Math.min(6F, s.total * 0.15F);
+        boolean slam = s.choreo != null && s.choreo.slam;
+        float start = s.choreo != null ? s.choreo.titleAt * s.total : Math.min(6F, s.total * 0.15F);
         float out = Mth.clamp((s.end - time - 1F) / 8F, 0F, 1F);
-        float alpha = Mth.clamp((time - start) / 6F, 0F, 1F) * out;
+        float alpha = Mth.clamp((time - start) / (slam ? 2F : 6F), 0F, 1F) * out;
         if (alpha <= 0.02F) return;
 
         int[] cps = title.codePoints().toArray();
@@ -88,7 +91,7 @@ final class CutsceneOverlay {
             widths[i] = font.width(FormattedCharSequence.forward(new String(Character.toChars(cps[i])), CinematicDraw.BOLD));
             raw += widths[i];
         }
-        float intro = CinematicDraw.easeOut((time - start) / 14F);
+        float intro = slam ? 1F : CinematicDraw.easeOut((time - start) / 14F);
         float spacing = Mth.lerp(intro, 7F, 0.6F);
         float total = raw + spacing * (cps.length - 1);
         // Marco da campanha: título menor (é uma crônica, não um grito de ultimate)
@@ -99,8 +102,28 @@ final class CutsceneOverlay {
 
         CinematicDraw.glow(g, cx, cy, (raw * scale) * 1.6F + 60, 9 * scale * 3.6F, s.rgb, 0.5F * alpha);
 
+        // v1.1 — título que "bate" na tela (transformações, ultimates, JoJo): vem grande, encolhe num estalo, treme
+        // um instante e tem uma pincelada de cor atrás
+        float slamMul = 1F, jx = 0F, jy = 0F;
+        if (slam) {
+            float d = time - start;
+            slamMul = 1F + 1.3F * (1F - CinematicDraw.easeOut(d / 3.5F));
+            if (d < 5F) {
+                float j = 3F * (1F - d / 5F);
+                int seed = (int) (time * 2F);
+                jx = (ScreenFx.hash(seed, 1) - 0.5F) * j;
+                jy = (ScreenFx.hash(seed, 2) - 0.5F) * j;
+            }
+            float bw = (raw * scale + 90F) * CinematicDraw.easeOut(d / 4F) / 2F;
+            int brush = CinematicDraw.argb(CinematicDraw.darken(s.rgb, 0.35F), 0.55F * alpha);
+            int clearBrush = CinematicDraw.argb(CinematicDraw.darken(s.rgb, 0.35F), 0F);
+            float by0 = cy - halfH * 1.15F, by1 = cy + halfH * 1.15F;
+            CinematicDraw.fillGradientH(g, cx - bw, by0, cx, by1, clearBrush, brush);
+            CinematicDraw.fillGradientH(g, cx, by0, cx + bw, by1, brush, clearBrush);
+        }
+
         // Etiqueta do tipo de cena ("ULTIMATE", "CHEFE"...) com linhas e losangos
-        Component kind = Component.translatableWithFallback("cinematic.isekai_mahou.kind." + s.kind, s.kind.toUpperCase(Locale.ROOT));
+        Component kind = Component.translatableWithFallback("cinematic.isekai_mahou.kind." + s.base, s.base.toUpperCase(Locale.ROOT));
         FormattedCharSequence kindSeq = kind.getVisualOrderText();
         float kw = font.width(kindSeq);
         float ky = cy - halfH - 16;
@@ -117,8 +140,8 @@ final class CutsceneOverlay {
         int outlineRgb = CinematicDraw.darken(s.rgb, 0.82F);
         PoseStack ps = g.pose();
         ps.pushPose();
-        ps.translate(cx, cy, 0F);
-        ps.scale(scale, scale, 1F);
+        ps.translate(cx + jx, cy + jy, 0F);
+        ps.scale(scale * slamMul, scale * slamMul, 1F);
         float x = -total / 2F;
         float stagger = Math.min(0.6F, 12F / cps.length);   // nomes longos: cascata mais rápida
         for (int i = 0; i < cps.length; i++) {
@@ -126,7 +149,7 @@ final class CutsceneOverlay {
             float shine = Math.max(0F, 1F - Math.abs(f - band) / 0.13F);
             int rgb = CinematicDraw.mix(CinematicDraw.mix(s.rgb, 0xFFFFFF, 0.2F), 0xFFFFFF, shine * 0.85F);
             // cada letra cai de leve no lugar, em cascata, surgindo enquanto cai
-            float land = (time - start - i * stagger) / 6F;
+            float land = slam ? 1F : (time - start - i * stagger) / 6F;
             float drop = (1F - CinematicDraw.easeOut(land)) * -6F;
             float letterAlpha = alpha * Mth.clamp(land * 1.5F + 0.15F, 0F, 1F);
             FormattedCharSequence ch = FormattedCharSequence.forward(new String(Character.toChars(cps[i])), CinematicDraw.BOLD);

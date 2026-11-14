@@ -232,8 +232,10 @@ public final class CharacterContent {
                 e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.12, base);
             }
             case ANGEL -> {
-                e.addAttributeModifier(CoreRegistries.SPELL_POWER, IsekaiMahou.id(p + "power"), 0.20, add);
-                e.addAttributeModifier(Attributes.MAX_HEALTH, IsekaiMahou.id(p + "health"), 8.0, add);
+                // v1.11 Jibril, a Flügel (No Game No Life): mais poder mágico, mais vida e firme no chão
+                e.addAttributeModifier(CoreRegistries.SPELL_POWER, IsekaiMahou.id(p + "power"), 0.30, add);
+                e.addAttributeModifier(Attributes.MAX_HEALTH, IsekaiMahou.id(p + "health"), 12.0, add);
+                e.addAttributeModifier(Attributes.KNOCKBACK_RESISTANCE, IsekaiMahou.id(p + "steady"), 0.5, add);
                 e.addAttributeModifier(Attributes.SCALE, IsekaiMahou.id(p + "scale"), 0.15, base);
             }
             case SLIME -> {

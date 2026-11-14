@@ -169,11 +169,14 @@ public final class Transformations {
         pay(self, price);
         MobEffectInstance old = self.getEffect(EnchRegistries.GATES);
         int ticks = next >= 8 ? DEATH_GATE_TICKS : Math.max(Enchants.duration(self, stats, 400), old == null ? 0 : old.getDuration());
+        // v1.1: como corpo de uma Transformação, os portões ficam abertos a transformação inteira (o 8º continua curto)
+        int body = com.renanpontes.isekaimahou.feature.transform_laws.TransformForge.bodyTicks(ctx, self);
+        if (body > 0 && next < 8) ticks = body;
         self.addEffect(new MobEffectInstance(EnchRegistries.GATES, ticks, next - 1, false, false, true), self);
         Component name = gateName(next);
         tell(self, Component.translatable("message.isekai_mahou.enchanter.gate_open", roman(next), name, Math.round(price * 100))
                 .withStyle(next >= 8 ? ChatFormatting.RED : ChatFormatting.GREEN));
-        if (!ctx.formStats().silent) {
+        if (!ctx.formStats().silent && body <= 0) {
             Announce.send(self, Component.translatable("announce.isekai_mahou.enchanter.gate", roman(next), name), GATE_COLOR[next - 1],
                     next >= 7 ? Announce.STYLE_ULTIMATE : Announce.STYLE_SPELL);
         }
@@ -227,11 +230,14 @@ public final class Transformations {
         }
         pay(self, KAIOKEN_PRICE[step]);
         int ticks = step >= 2 ? stats.duration(100) : stats.duration(300);
+        // v1.1: como corpo de uma Transformação, o Kaioken ×2 dura a transformação inteira (×3/×10 continuam curtos)
+        int body = com.renanpontes.isekaimahou.feature.transform_laws.TransformForge.bodyTicks(ctx, self);
+        if (body > 0 && step < 2) ticks = body;
         self.addEffect(new MobEffectInstance(EnchRegistries.KAIOKEN, Math.max(20, ticks), step, false, false, true), self);
         int mult = TransformEffect.KAIOKEN_MULT[step];
         tell(self, Component.translatable("message.isekai_mahou.enchanter.kaioken_on", mult, mult, fmt(KAIOKEN_SPELL[step]),
                 Math.round(KAIOKEN_DRAIN[step] * 100)).withStyle(ChatFormatting.RED));
-        if (!ctx.formStats().silent) {
+        if (!ctx.formStats().silent && body <= 0) {
             Announce.send(self, Component.translatable("announce.isekai_mahou.enchanter.kaioken", mult), 0xFF3B30,
                     step >= 2 ? Announce.STYLE_ULTIMATE : Announce.STYLE_SPELL);
         }
@@ -257,9 +263,12 @@ public final class Transformations {
         pay(self, had ? 0F : 0.04F);
         float bonus = Enchants.isEnchanter(self) ? 1.0F + 0.08F * Math.max(0, Enchants.rank(self)) : 1F;
         int ticks = Math.round(stats.duration(400) * bonus);
+        // v1.1: como corpo de uma Transformação, dura a transformação inteira
+        int body = com.renanpontes.isekaimahou.feature.transform_laws.TransformForge.bodyTicks(ctx, self);
+        if (body > 0) ticks = body;
         self.addEffect(new MobEffectInstance(EnchRegistries.GEAR_SECOND, ticks, Math.min(2, Math.max(0, stats.amplify)), false, false, true), self);
         tell(self, Component.translatable("message.isekai_mahou.enchanter.gear_second_on", ticks / 20).withStyle(ChatFormatting.LIGHT_PURPLE));
-        if (!had && !ctx.formStats().silent) {
+        if (!had && !ctx.formStats().silent && body <= 0) {
             Announce.send(self, Component.translatable("announce.isekai_mahou.enchanter.gear_second"), 0xFF8FA0, Announce.STYLE_SPELL);
         }
         Vec3 c = EnchFx.center(self);
@@ -287,10 +296,13 @@ public final class Transformations {
         }
         boolean had = self.hasEffect(EnchRegistries.GEAR_FOURTH);
         int ticks = Math.max(60, stats.duration(400));
+        // v1.1: como corpo de uma Transformação, dura a transformação inteira
+        int body = com.renanpontes.isekaimahou.feature.transform_laws.TransformForge.bodyTicks(ctx, self);
+        if (body > 0) ticks = body;
         self.addEffect(new MobEffectInstance(EnchRegistries.GEAR_FOURTH, ticks, Math.min(2, Math.max(0, stats.amplify)), false, false, true), self);
         if (!had) self.heal(20F);
         tell(self, Component.translatable("message.isekai_mahou.enchanter.gear_fourth_on", ticks / 20).withStyle(ChatFormatting.DARK_RED));
-        if (!had && !ctx.formStats().silent) {
+        if (!had && !ctx.formStats().silent && body <= 0) {
             Announce.send(self, Component.translatable("announce.isekai_mahou.enchanter.gear_fourth"), 0xC8303C, Announce.STYLE_ULTIMATE);
         }
         Vec3 c = EnchFx.center(self);
@@ -316,12 +328,19 @@ public final class Transformations {
         boolean had = target.hasEffect(EnchRegistries.ULTRA_INSTINCT);
         float bonus = rank >= 0 ? 1.0F + 0.1F * rank : 1F;
         int ticks = Math.round(stats.duration(160) * bonus);
+        // v1.1 ("ultra instinto... vão tudo pra transformação"): como corpo de uma Transformação em quem conjura, o
+        // Instinto Superior dura a transformação inteira e começa com o máximo de esquivas
+        int body = com.renanpontes.isekaimahou.feature.transform_laws.TransformForge.bodyTicks(ctx, target);
+        if (body > 0) {
+            ticks = body;
+            dodges = 12;
+        }
         MobEffectInstance old = target.getEffect(EnchRegistries.ULTRA_INSTINCT);
         if (old != null) ticks = Math.max(ticks, old.getDuration());
         DODGES.put(target.getUUID(), dodges);
         target.addEffect(new MobEffectInstance(EnchRegistries.ULTRA_INSTINCT, ticks, 0, false, false, true), caster);
         tell(target, Component.translatable("message.isekai_mahou.enchanter.ultra_on", dodges, ticks / 20).withStyle(ChatFormatting.WHITE));
-        if (!had && !ctx.formStats().silent) {
+        if (!had && !ctx.formStats().silent && body <= 0) {
             Announce.send(target, Component.translatable("announce.isekai_mahou.enchanter.ultra"), 0xD8E4FF, Announce.STYLE_ULTIMATE);
         }
         Vec3 c = EnchFx.center(target);

@@ -8,6 +8,8 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.IsekaiMahou;
+import com.renanpontes.isekaimahou.feature.legends_h.LhIds;
+import com.renanpontes.isekaimahou.glyph.MasteryMutations;
 import com.renanpontes.isekaimahou.feature.legends_h.LhRegistry;
 import com.renanpontes.isekaimahou.feature.legends_h.LhUtil;
 
@@ -67,6 +69,28 @@ public final class FullCowl {
         if (circle == 6) return 0.20F;
         if (circle == 7) return 0.30F;
         return 0.45F;
+    }
+
+    /** Degraus extras de teto seguro pelo estágio de evolução do Full Cowl (v1.1): Shoot Style +1, Corpo Forjado +2, Full Bullet +4. */
+    public static int stageSteps(int stage) {
+        return stage >= 3 ? 4 : Math.max(0, stage);
+    }
+
+    /**
+     * Porcentagem segura de QUEM USA (v1.1): a do Círculo, subindo degraus pela evolução própria do Full Cowl
+     * (maestria do glifo). Mobs e quem não treinou: só o Círculo.
+     */
+    public static float safeFor(LivingEntity e) {
+        int stage = MasteryMutations.stageOf(e, LhIds.FULL_COWL);
+        if (stage <= 0) return safe(LhUtil.circle(e));
+        return LADDER[Math.min(LADDER.length - 1, safeStep(LhUtil.circle(e)) + stageSteps(stage))];
+    }
+
+    /** Degrau seguro de quem usa (Círculo + evolução). */
+    public static int safeStepFor(LivingEntity e) {
+        float s = safeFor(e);
+        for (int i = LADDER.length - 1; i >= 0; i--) if (LADDER[i] <= s + 1.0E-4F) return i;
+        return 0;
     }
 
     /** Índice do degrau seguro na {@link #LADDER}. */
@@ -156,7 +180,7 @@ public final class FullCowl {
                 if (c.p >= 0.45F && tick % 8 == 0) level.sendParticles(ParticleTypes.ELECTRIC_SPARK, p.x, e.getY() + 0.1, p.z, 3, 0.4, 0, 0.4, 0.2);
             }
             // Acima do seguro, o corpo cobra o preço
-            float safe = safe(LhUtil.circle(e));
+            float safe = safeFor(e);
             if (c.p > safe + 1.0E-4F && tick % 40 == 0) {
                 LhUtil.strain(e, (c.p - safe) * 0.12F * e.getMaxHealth());
                 if (e.getHealth() <= e.getMaxHealth() * 0.25F) {

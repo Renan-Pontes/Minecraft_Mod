@@ -41,7 +41,7 @@
   "glyph.isekai_mahou.quincy_light_rain": "Chuva de Luz",
   "glyph.isekai_mahou.quincy_light_rain.desc": "FORMA Quincy (Círculo 3): uma estrela se abre no céu sobre o ponto mirado e dela caem 6 flechas (+2 por Dividir/Expandir, máx. 16), cada uma com os efeitos.",
   "glyph.isekai_mahou.quincy_vollstandig": "Vollständig",
-  "glyph.isekai_mahou.quincy_vollstandig.desc": "FORMA G (ultimate, Círculo 6): asas de luz e auréola por 12 s. Você plana, resiste, engole projéteis e a cada segundo a auréola dispara em até 4 inimigos (+Dividir) com os efeitos.",
+  "glyph.isekai_mahou.quincy_vollstandig.desc": "CORPO DE TRANSFORMAÇÃO (Quincy, Círculo 6). Vai dentro da Transformação Suprema (tecla G): Transformação Suprema → Vollständig → efeitos. Asas de luz e auréola por 12 s (Estender no corpo aumenta): você plana, resiste, engole projéteis e a cada segundo a auréola dispara em até 4 inimigos (+Dividir) com os efeitos da magia.",
   "glyph.isekai_mahou.quincy_drain_reishi": "Drenar Reishi",
   "glyph.isekai_mahou.quincy_drain_reishi.desc": "EFEITO Quincy: dano de luz e rouba a energia do alvo — você recupera Foco e guarda 1 de Reishi; jogadores inimigos perdem mana.",
   "glyph.isekai_mahou.quincy_release": "Devolução",
@@ -219,9 +219,9 @@
   "glyph.isekai_mahou.quincy_antithesis": "A Antítese",
   "glyph.isekai_mahou.quincy_antithesis.desc": "EFEITO Quincy (rank IV + 350 absorções). INVERTE o que aconteceu entre você e o alvo nos últimos 10 s: você se cura do dano que sofreu e o alvo o recebe (até 60%% da vida dele, chefes 20%%); o alvo se cura de METADE do dano que sofreu e essa metade passa para você (nunca mata). Use quando estiver mais ferido que o inimigo! Sem feridas: 2 de dano.",
   "glyph.isekai_mahou.quincy_letzt_stil": "Quincy: Letzt Stil",
-  "glyph.isekai_mahou.quincy_letzt_stil.desc": "FORMA G (Quincy, ultimate; rank V + treino com a Luva Sanrei). Por 30 s o Quincy libera TODO o Reishi: técnicas Quincy ×2, Força II, Velocidade II, Resistência I, Regeneração I, plana com asas enormes de luz dourada, engole todo projétil a 8 blocos e a cada 0,75 s um leque de 6 flechas teleguiadas gigantes cai nos inimigos a 24 blocos (os efeitos). O PREÇO: ao acabar, vida em 50%%, Fraqueza II e 10 minutos SEM PODER QUINCY.",
+  "glyph.isekai_mahou.quincy_letzt_stil.desc": "CORPO DE TRANSFORMAÇÃO (Quincy; rank V + treino com a Luva Sanrei). Vai dentro da Transformação Suprema (tecla G). Por 30 s (Estender no corpo aumenta) o Quincy libera TODO o Reishi: técnicas Quincy ×2, Força II, Velocidade II, Resistência I, Regeneração I, plana com asas enormes de luz dourada, engole todo projétil a 8 blocos e a cada 0,75 s um leque de 6 flechas teleguiadas gigantes cai nos inimigos a 24 blocos (os efeitos). O PREÇO: quando a transformação acaba, vida em 50%%, Fraqueza II e 10 minutos SEM PODER QUINCY.",
   "glyph.isekai_mahou.quincy_almighty": "O Todo-Poderoso",
-  "glyph.isekai_mahou.quincy_almighty.desc": "FORMA G (Quincy, ultimate; rank V + 8 Auswählen + 6 chefes). Por 20 s você VÊ O FUTURO: 45%% de chance de esquivar de cada golpe (passo para o lado com imagem residual); quem vai atacar você brilha e a linha do golpe/trajetória aparece antes; e a cada 5 s o primeiro golpe pesado (≥ 20%% da vida, ou letal) é REESCRITO — anulado e devolvido a quem atacou, com os efeitos. Funciona sem efeitos.",
+  "glyph.isekai_mahou.quincy_almighty.desc": "CORPO DE TRANSFORMAÇÃO (Quincy; rank V + 8 Auswählen + 6 chefes). Vai dentro da Transformação Suprema (tecla G): Transformação Suprema → O Todo-Poderoso → efeitos. Por 5 MINUTOS você VÊ O FUTURO: todo ataque de uma criatura é desviado. Quem te ataca vê você sumir e aparecer ATRÁS dele, com um golpe e um \"Eu vi tudo...\" — cada contra-ataque tira 30 s da transformação, e depois são 5 s só desviando (sem teleportar). 10 contra-ataques ou o fim do tempo = fim da transformação. Quem vai atacar você brilha e mostra a trajetória antes. Recarga de 10 min.",
   "legend.isekai_mahou.quincy_heilig_bogen_legend": "Heilig Bogen",
   "legend.isekai_mahou.quincy_sankt_zwinger_legend": "Sankt Zwinger",
   "legend.isekai_mahou.quincy_letzt_stil_legend": "Quincy: Letzt Stil",
@@ -267,6 +267,9 @@
   "screen.isekai_mahou.quincy.tech_tip.heilig_bogen": "Heilig Bogen: monte com um efeito de dano; Dividir abre o leque.",
   "screen.isekai_mahou.quincy.tech_tip.sankt_zwinger": "Sankt Zwinger: mire no chão, no meio dos inimigos — ninguém sai da gaiola.",
   "screen.isekai_mahou.quincy.tech_tip.antithesis": "A Antítese: coloque num projétil e use quando estiver mais ferido que o alvo.",
-  "screen.isekai_mahou.quincy.tech_tip.letzt_stil": "Letzt Stil: monte na magia G. O preço é alto — 10 minutos sem poder Quincy.",
-  "screen.isekai_mahou.quincy.tech_tip.almighty": "O Todo-Poderoso: monte na magia G e veja o futuro por 20 s."
+  "screen.isekai_mahou.quincy.tech_tip.letzt_stil": "Letzt Stil: monte na Transformação Suprema (tecla G): Transformação Suprema → Letzt Stil. O preço é alto — 10 minutos sem poder Quincy.",
+  "screen.isekai_mahou.quincy.tech_tip.almighty": "O Todo-Poderoso: monte na Transformação Suprema (tecla G) e veja o futuro por 5 minutos (ou 10 contra-ataques).",
+  "message.isekai_mahou.quincy.almighty_saw": "Eu vi tudo...",
+  "message.isekai_mahou.quincy.almighty_counter": "Eu vi tudo — mais %s contra-ataques · resta %s:%s",
+  "message.isekai_mahou.quincy.almighty_end": "Os olhos do futuro se fecham."
 }

@@ -12,9 +12,13 @@ Você precisa de: Minecraft 1.21.1 com NeoForge @NEO@ e pelo menos 6 GB de RAM p
    Se o seu TLauncher não usa pasta por versão, use a pasta "mods" que fica direto na pasta do jogo.
 
 3) Apague da pasta "mods" qualquer versão antiga do Isekai Mahou (isekai_mahou-....jar).
+   Se você já tinha uma versão anterior, apague também os antigos  sodium-....jar  e  iris-....jar
+   (esta versão traz o Sodium e o Iris certos; dois iguais na pasta fazem o jogo não abrir).
 
 4) Copie TUDO o que está dentro da pasta "mods" deste zip para a pasta "mods" do jogo.
    São o mod, as 4 bibliotecas que ele precisa e os mods de ajuda (mapa, receitas, desempenho).
+   (Opcional) Copie também a pasta "shaderpacks" deste zip para dentro de  Neo Forge - 1.21.1
+   (do lado da pasta mods). É o shader leve; ele vem DESLIGADO (veja "Shaders" lá embaixo).
 
 5) No TLauncher, em Configurações -> memória (RAM), coloque 6 GB ou mais (6144 MB).
 
@@ -32,5 +36,12 @@ Teclas principais
 
 PC fraco? Em Mods -> Isekai Mahou -> Config escolha um Modo do PC mais leve.
 Se o jogo não abrir, confira se não ficou outro mod de desempenho repetido na pasta (Embeddium, Sodium antigo).
+
+Shaders (opcional, vêm DESLIGADOS)
+----------------------------------
+  Para ligar: Opções -> Configurações de vídeo -> Pacotes de Shaders (Shader Packs), escolha
+  "MakeUp-UltraFast-9.6.zip" e clique em Aplicar/Concluído. Depois, a tecla K liga/desliga na hora.
+  Shaders deixam o jogo bonito (reflexo na água, luz suave), mas SEMPRE custam FPS.
+  Se travar, aperte K para desligar. Não use junto com Oculus/Embeddium.
 
 Bom jogo!

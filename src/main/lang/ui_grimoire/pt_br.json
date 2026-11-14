@@ -499,5 +499,9 @@
   "screen.isekai_mahou.grimoire.transform.search": "transformação votos moldar",
   "screen.isekai_mahou.glyph.mastery.how_infinite": "Depois do X a maestria não tem fim: cada nível pede mais que o anterior, o poder segue subindo (cada vez mais devagar) e a magia muta.",
   "screen.isekai_mahou.glyph.mutations": "Mutações (%s):",
-  "screen.isekai_mahou.glyph.mutation_next": "Próxima mutação no nível %s: ???"
+  "screen.isekai_mahou.glyph.mutation_next": "Próxima mutação no nível %s: ???",
+  "screen.isekai_mahou.glyph.mutations_more": "… +%s mais antigas",
+  "screen.isekai_mahou.glyph.evo_base": "⟡ Forma base (%s evoluções próprias pela frente)",
+  "screen.isekai_mahou.glyph.evo_next": "Próxima evolução no nível %s: ???",
+  "screen.isekai_mahou.glyph.evo_final": "⟡ Forma final."
 }

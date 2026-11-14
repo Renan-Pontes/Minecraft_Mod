@@ -88,22 +88,24 @@ public final class TechniqueGestures {
         effect("ball_breaker", THROW_OVERHAND);
         // ---- Shinigami
         form("shinigami_cero", CERO_FIRE);
-        form("shinigami_visored", HOLLOW_MASK_TEAR);
-        form("shinigami_vasto_lorde", TRANSFORM_ROAR);
-        form("zanpakuto_bankai", TRANSFORM_BURST);
+        effect("shinigami_visored", HOLLOW_MASK_TEAR);
+        effect("shinigami_vasto_lorde", TRANSFORM_ROAR);
+        effect("zanpakuto_bankai", TRANSFORM_BURST);
         form("zanpakuto_moon_fang", SPIN_SLASH);
         form("shinigami_shunpo", SONIDO_STEP);
         // ---- Quincy
         form("quincy_heilig_bogen", BOW_CHARGE_BIG);
         form("quincy_hirenkyaku", SONIDO_STEP);
-        form("quincy_vollstandig", TRANSFORM_RISE);
-        form("quincy_letzt_stil", TRANSFORM_BURST);
+        effect("quincy_vollstandig", TRANSFORM_RISE);
+        effect("quincy_letzt_stil", TRANSFORM_BURST);
         // ---- Magias de origem e lendas (formas dos caminhos mágicos)
         form("lich_form", TRANSFORM_RISE);
         form("demon_wings", TRANSFORM_RISE);
         form("druid_sage_mode", KNEEL_CHANNEL);
         form("druid_forest_god", TRANSFORM_RISE);
-        form("necro_monarch", TRANSFORM_RISE);
+        effect("necro_monarch", TRANSFORM_RISE);
+        effect("quincy_almighty", TRANSFORM_RISE); // v1.1: transformações viraram efeitos da forma Transformação
+        effect("transcend", TRANSFORM_BURST);
         form("crater", GROUND_SLAM);
         form("slash_storm", SPIN_SLASH);
         form("cleave", HOLY_CLEAVE);

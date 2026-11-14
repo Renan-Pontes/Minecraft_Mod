@@ -46,6 +46,8 @@ public class CitiesModule implements Module {
         modBus.addListener(CitiesNetwork::register);
         CityCommands.register();
         CityStart.register();
+        // v1.1 "mundo vivo": sinos ao amanhecer e no fim da tarde
+        CityBells.register();
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.server.ServerStartedEvent e) -> CityRoutine.load(e.getServer()));
         NeoForge.EVENT_BUS.addListener(CityQuests::onDeath);
 

@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#isekai_mahou:living_world_mossy_boulder",
+  "features": "isekai_mahou:living_world_mossy_boulder",
+  "step": "vegetal_decoration"
+}

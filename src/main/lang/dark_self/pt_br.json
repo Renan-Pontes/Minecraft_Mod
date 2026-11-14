@@ -1,0 +1,28 @@
+{
+  "entity.isekai_mahou.dark_self": "Sombra",
+  "entity.isekai_mahou.dark_self.of": "Sombra de %s",
+
+  "hint.isekai_mahou.dark_self.cap": "Nível 100: algo te segue... Com a mana cheia, longe das cidades, olhe para a sua sombra.",
+  "hint.isekai_mahou.dark_self.vanish": "Algo te segue... sua sombra parece estranha.",
+  "hint.isekai_mahou.dark_self.rise": "Vença a sua Sombra para passar do nível 100.",
+
+  "message.isekai_mahou.dark_self.rise": "Sua sombra se ergue do chão...",
+  "message.isekai_mahou.dark_self.not_yours": "Esta luta não é sua.",
+  "message.isekai_mahou.dark_self.mirror": "A Sombra devolve a sua última magia!",
+  "message.isekai_mahou.dark_self.fade": "Sua sombra se desfaz... ela voltará.",
+  "message.isekai_mahou.dark_self.fade_died": "Sua sombra volta para os seus pés, satisfeita. Ela voltará.",
+  "message.isekai_mahou.dark_self.fade_peace": "Sua sombra recua diante da paz... ela voltará.",
+  "message.isekai_mahou.dark_self.reset": "Sua sombra voltou ao normal.",
+  "message.isekai_mahou.dark_self.victory_title": "Você aceitou sua sombra",
+  "message.isekai_mahou.dark_self.victory_sub": "O limite do nível 100 foi rompido",
+  "message.isekai_mahou.dark_self.victory": "Você aceitou sua sombra. Seu poder volta a crescer.",
+
+  "title.isekai_mahou.dark_self": "Senhor da Própria Sombra",
+  "title.isekai_mahou.dark_self.desc": "Venceu a própria Sombra no nível 100.",
+
+  "command.isekai_mahou.dark_self.status": "Sombra de %1$s — nível %2$s/%3$s · venceu: %4$s · fase: %5$s · checagens %6$s/%7$s · espera %8$s s · XP guardado %9$s\nCondições: mana cheia %10$s · longe de cidades %11$s · sem Modo Paz %12$s · fora de arena %13$s · sobrevivência %14$s",
+  "command.isekai_mahou.dark_self.spawn": "A sombra de %s sumiu; a Sombra surge em ~5 s.",
+  "command.isekai_mahou.dark_self.reset": "Sombra de %s reiniciada (nível 100 travado de novo).",
+  "command.isekai_mahou.dark_self.pass": "%s passou pela Sombra (nível liberado).",
+  "command.isekai_mahou.dark_self.busy": "%s já está lutando contra a Sombra."
+}

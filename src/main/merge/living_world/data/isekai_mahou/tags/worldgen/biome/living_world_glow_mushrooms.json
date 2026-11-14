@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:dark_forest",
+    "minecraft:swamp",
+    "isekai_mahou:twilight_grove",
+    "isekai_mahou:haunted_swamp"
+  ]
+}

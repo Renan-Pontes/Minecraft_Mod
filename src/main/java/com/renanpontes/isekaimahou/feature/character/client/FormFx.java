@@ -192,13 +192,13 @@ public final class FormFx {
         if (dist > FxQuality.range()) return;
         burstParticles(mc.level, e, race, rgb);
         FormAura.burst(mc.level, e, race, rgb);
-        // Tremor forte, clarão e o título (só para quem está perto)
+        // Tremor forte e clarão (só para quem está perto). v1.11: o título vanilla saiu — a cutscene de transformação
+        // (Cutscenes.transform, mandada pelo servidor) já mostra o nome da forma e a raça
         SHAKES.add(new Shake(e.position(), 28F, 2.6F, 26, now));
         if (dist < 28) {
             flashStart = now;
             flashRgb = mix(rgb, 0xFFFFFF, 0.55F);
             flashPower = (float) Mth.clamp(1.0 - dist / 28.0, 0.25, 1.0);
-            title(mc, e, race, rgb);
         }
     }
 
@@ -333,15 +333,6 @@ public final class FormFx {
             mc.level.addParticle(ParticleTypes.POOF, e.getX(), e.getY() + rnd.nextDouble() * e.getBbHeight(), e.getZ(),
                     (rnd.nextDouble() - 0.5) * 0.1, 0.03, (rnd.nextDouble() - 0.5) * 0.1);
         }
-    }
-
-    private static void title(Minecraft mc, Entity e, Race race, int rgb) {
-        Component sub = e == mc.player
-                ? Component.translatable("message.isekai_mahou.character.form_title_self").withColor(0xE8E0F0)
-                : Component.translatable("message.isekai_mahou.character.form_title_other", e.getDisplayName()).withColor(0xE8E0F0);
-        mc.gui.setTimes(4, 46, 18);
-        mc.gui.setSubtitle(sub);
-        mc.gui.setTitle(race.formName().withColor(rgb).withStyle(s -> s.withBold(true)));
     }
 
     // =====================================================================================
@@ -834,6 +825,9 @@ public final class FormFx {
                 wingTip(level, p, ParticleTypes.END_ROD, -0.02);
                 level.addParticle(ParticleTypes.END_ROD, x + (rnd.nextDouble() - 0.5) * 2.5, y + h * (0.4 + rnd.nextDouble() * 0.7), z + (rnd.nextDouble() - 0.5) * 2.5, 0, -0.01, 0);
                 if (rnd.nextInt(2) == 0) level.addParticle(ParticleTypes.WHITE_ASH, x + (rnd.nextDouble() - 0.5) * 3, y + h, z + (rnd.nextDouble() - 0.5) * 3, 0, -0.02, 0);
+                // v1.11 Jibril: plumas de luz rosa/violeta caindo das asas
+                if (rnd.nextInt(3) == 0) level.addParticle(glow(rnd.nextBoolean() ? 0xF4A6D8 : 0xB98AF2, 0.9F),
+                        x + (rnd.nextDouble() - 0.5) * 3.2, y + h * (0.5 + rnd.nextDouble() * 0.6), z + (rnd.nextDouble() - 0.5) * 3.2, 0, -0.015, 0);
                 if (now % 10 == 0) level.addParticle(glow(0xFFF2B0, 1.4F), x, y + h + 0.4, z, 0, 0, 0);
             }
             case ELF -> {

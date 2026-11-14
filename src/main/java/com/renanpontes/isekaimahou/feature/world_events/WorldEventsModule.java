@@ -18,6 +18,8 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
  *   <li><b>Tempestade Arcana</b>: magias de água e vento mais fortes;</li>
  *   <li><b>Terremoto</b>: tremor e fendas pequenas com minérios expostos;</li>
  *   <li><b>Tempestade de Mana</b>: toda magia mais forte e cristais de mana caindo do céu.</li>
+ *   <li><b>Chuva de Estrelas</b> (v1.1): noite calma de estrelas cadentes; fragmentos caem perto de quem está fora.</li>
+ *   <li><b>Encontros</b> (v1.1, {@link WeEncounters}): viajantes na estrada, aventureiro ferido, círculo de fadas.</li>
  * </ul>
  * "Só não vai destruir as cidades": toda mudança de terreno passa pelas regras de {@link WeSites} (longe de lugares
  * do {@code Places}, de estruturas e de qualquer bloco de jogador) e nenhum invasor quebra blocos.
@@ -36,6 +38,8 @@ public class WorldEventsModule implements Module {
         modBus.addListener(this::onCreativeTab);
         WeManager.register();
         WeCommands.register();
+        // v1.1 "mundo vivo": encontros pequenos no ermo (viajantes, ferido, círculo de fadas)
+        WeEncounters.register();
         registerResistances();
     }
 

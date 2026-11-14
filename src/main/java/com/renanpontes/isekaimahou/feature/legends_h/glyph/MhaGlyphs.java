@@ -73,8 +73,9 @@ public final class MhaGlyphs {
         @Override
         public void onEntity(SpellContext ctx, Entity target, SpellStats stats) {
             if (!(target instanceof LivingEntity le) || !LhUtil.once(ctx, "cowl:" + le.getId())) return;
-            int circle = LhUtil.circle(ctx.caster() != null ? ctx.caster() : le);
-            int step = Mth.clamp(FullCowl.safeStep(circle) + Math.max(0, stats.amplify), 0, FullCowl.LADDER.length - 1);
+            // v1.1: o degrau seguro sobe com a evolução própria do Full Cowl (Shoot Style, Corpo Forjado, Full Bullet)
+            int step = Mth.clamp(FullCowl.safeStepFor(ctx.caster() != null ? ctx.caster() : le) + Math.max(0, stats.amplify), 0,
+                    FullCowl.LADDER.length - 1);
             float p = FullCowl.LADDER[step];
             int ticks = Mth.clamp(stats.duration(600), 200, 2400);
             FullCowl.activate(le, p, ticks);
@@ -84,7 +85,7 @@ public final class MhaGlyphs {
             l.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, 20 + Math.round(30 * p), 0.4, 0.8, 0.4, 0.3);
             LhUtil.sound(l, c, SoundEvents.TRIDENT_THUNDER.value(), 0.4F + 0.4F * p, 1.9F);
             LhUtil.sound(l, c, SoundEvents.BEACON_POWER_SELECT, 0.8F, 1.6F);
-            float safe = FullCowl.safe(LhUtil.circle(le));
+            float safe = FullCowl.safeFor(le);
             boolean over = p > safe + 1.0E-4F;
             LhUtil.actionbar(le, Component.translatable(over ? "message.isekai_mahou.legends_h.cowl_over" : "message.isekai_mahou.legends_h.cowl_on",
                     Math.round(p * 100), Math.round(safe * 100)).withStyle(over ? ChatFormatting.RED : ChatFormatting.GREEN));

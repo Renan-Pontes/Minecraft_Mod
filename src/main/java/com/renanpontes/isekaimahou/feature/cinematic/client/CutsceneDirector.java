@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -70,6 +71,10 @@ public final class CutsceneDirector {
     /** Estado de uma cena em andamento (lido também pelo {@link CutsceneOverlay}). */
     static final class Scene {
         final String kind;
+        /** Tipo sem o estilo ("transform:holy" → "transform"). */
+        final String base;
+        /** v1.1 — Coreografia em vários planos (null = órbita única antiga de {@link #shot}). */
+        final Choreo choreo;
         final CutsceneShot shot;
         final Component title;
         final Component subtitle;
@@ -106,8 +111,23 @@ public final class CutsceneDirector {
         Vec3 framePos = Vec3.ZERO;
         float frameYaw, framePitch, frameRoll, frameFov = 1F, framePunch;
 
-        Scene(CorePayloads.Cutscene p, CutsceneShot shot, Entity focus, boolean ownFocus, LocalPlayer player, ClientLevel level) {
+        // v1.1 — coreografia: rosto do foco, plano atual, batidas já disparadas e efeitos de tela em andamento
+        /** Para onde o foco olha (graus, convenção do Minecraft): base dos planos "de rosto". */
+        float faceYaw;
+        int shotIndex = -1;
+        int beatCursor;
+        float flashAt = -1F, flashPow, flashMix;
+        float impactAt = -1F, impactLen;
+        boolean impactRed;
+        float punchAt = -1F, punchAmt;
+        /** Momento do "pular" (a coreografia congela a pose ali enquanto volta para a câmera do jogo). */
+        float skipFrom = -1F;
+
+        Scene(CorePayloads.Cutscene p, CutsceneShot shot, Choreo choreo, Entity focus, boolean ownFocus, LocalPlayer player,
+              ClientLevel level) {
             this.kind = p.kind();
+            this.base = Choreo.base(p.kind());
+            this.choreo = choreo;
             this.shot = shot;
             this.title = p.title();
             this.subtitle = p.subtitle();
@@ -143,6 +163,13 @@ public final class CutsceneDirector {
             }
             cameraEnabled = CameraAccess.available() && Minecraft.getInstance().getCameraEntity() == player;
             cameraSince = at;
+            refreshFace();
+        }
+
+        /** Relê para onde o foco olha (no começo e a cada corte seco). */
+        void refreshFace() {
+            if (focus instanceof net.minecraft.world.entity.LivingEntity le) faceYaw = le.getYHeadRot();
+            else if (focus != null) faceYaw = focus.getYRot();
         }
 
         /** Tempo da cena (ticks, com fração do frame). */
@@ -173,7 +200,9 @@ public final class CutsceneDirector {
         if (player == null || level == null || p.ticks() <= 0) return;
         Entity focus = level.getEntity(p.focusId());
         boolean ownFocus = p.focusId() == player.getId();
-        CutsceneShot shot = CutsceneShot.of(p.kind());
+        String base = Choreo.base(p.kind());
+        Choreo choreo = Choreo.of(p.kind());
+        CutsceneShot shot = choreo != null ? CutsceneShot.quiet(base.startsWith("boss")) : CutsceneShot.of(base);
 
         // Cena "de outro": focada em OUTRO jogador (ou em alguém fora do alcance), não é de chefe e não nos trava
         boolean foreign = !ownFocus && !p.lockControls() && !shot.boss() && (focus == null || focus instanceof Player);
@@ -196,18 +225,61 @@ public final class CutsceneDirector {
             boolean curImportant = cur.locked || cur.ownFocus || cur.shot.boss();
             boolean newImportant = p.lockControls() || ownFocus || shot.boss();
             if (curImportant && !newImportant) return;
+            // v1.1: um G que É uma transformação manda a cena de transformação (de dentro da forma) e logo depois a
+            // de ultimate genérica — a de transformação, mais específica, fica.
+            if ("ultimate".equals(base) && "transform".equals(cur.base) && cur.focusId == p.focusId() && cur.age <= 10) {
+                AnnounceOverlay.absorbCutsceneTitle(p.title());
+                return;
+            }
         }
 
-        Scene next = new Scene(p, shot, focus, ownFocus, player, level);
+        Scene next = new Scene(p, shot, choreo, focus, ownFocus, player, level);
         if (cur != null && cur.locked && !next.locked) {
             KeyMapping.setAll();   // a cena nova não trava: devolve as teclas físicas
         }
         scene = next;
 
         AnnounceOverlay.absorbCutsceneTitle(p.title());
-        CutsceneShot.playStartSounds(p.kind(), mc.getSoundManager());
-        CameraShake.add(shot.shake(), shot.shakeTicks());
+        if (choreo != null) {
+            fireBeats(next);       // batidas do instante 0 (sons de abertura, clarão inicial...)
+        } else {
+            CutsceneShot.playStartSounds(base, mc.getSoundManager());
+            CameraShake.add(shot.shake(), shot.shakeTicks());
+        }
         mc.levelRenderer.needsUpdate();
+    }
+
+    /** Dispara as batidas da coreografia cujo momento já chegou. */
+    private static void fireBeats(Scene s) {
+        Choreo c = s.choreo;
+        if (c == null) return;
+        Minecraft mc = Minecraft.getInstance();
+        while (s.beatCursor < c.beats.length && c.beats[s.beatCursor].at() * s.total <= s.age + 1.0E-3F) {
+            Choreo.Beat b = c.beats[s.beatCursor++];
+            switch (b.type()) {
+                case Choreo.SOUND -> {
+                    if (b.sound() != null) mc.getSoundManager().play(SimpleSoundInstance.forUI(b.sound(), b.a(), b.b()));
+                }
+                case Choreo.FLASH -> {
+                    s.flashAt = s.age;
+                    s.flashPow = b.a();
+                    s.flashMix = b.b();
+                }
+                case Choreo.SHAKE -> CameraShake.add(b.a(), Math.max(1, (int) b.b()));
+                case Choreo.IMPACT -> {
+                    s.impactAt = s.age;
+                    s.impactLen = b.a();
+                    s.impactRed = b.b() > 0F;
+                }
+                case Choreo.PUNCH -> {
+                    s.punchAt = s.age;
+                    s.punchAmt = b.a();
+                }
+                case Choreo.BURST -> SceneFx.burst(s, b.a());
+                case Choreo.BOLT -> SceneFx.bolt(s, b.a());
+                default -> { }
+            }
+        }
     }
 
     /** Cena de marco da campanha? (nunca trava, nunca treme e cede a vez às cenas de chefe) */
@@ -227,7 +299,8 @@ public final class CutsceneDirector {
         Scene s = scene;
         if (s == null || s.skipping) return;
         s.skipping = true;
-        s.end = Math.min(s.end, s.age + Math.max(blendTime(s), BARS_TIME));
+        s.skipFrom = s.age;
+        s.end = Math.min(s.end, s.age + Math.max(exitBlend(s), BARS_TIME));
         if (s.locked) {
             s.locked = false;
             KeyMapping.setAll();
@@ -308,6 +381,10 @@ public final class CutsceneDirector {
             stop();
             return;
         }
+        if (s.choreo != null && !s.skipping) {
+            fireBeats(s);
+            SceneFx.tick(s);
+        }
         // Trava: solta todas as teclas antes do vanilla/núcleo lerem (movimento, inventário, magias Z X C G, menu...)
         if (s.locked) KeyMapping.releaseAll();
     }
@@ -320,10 +397,21 @@ public final class CutsceneDirector {
         return Mth.clamp(s.total * 0.2F, 4F, MAX_BLEND);
     }
 
+    /** Transição de entrada (0 = corte seco) — coreografias escolhem a sua. */
+    private static float entryBlend(Scene s) {
+        return s.choreo != null ? s.choreo.entryBlend : blendTime(s);
+    }
+
+    /** Transição de saída (volta à câmera do jogo). */
+    private static float exitBlend(Scene s) {
+        return s.choreo != null ? Math.max(2F, s.choreo.exitBlend) : blendTime(s);
+    }
+
     /** Peso da câmera de cinema (0 = câmera normal, 1 = câmera da cena). */
     private static float weight(Scene s, float time) {
-        float blend = blendTime(s);
-        return Math.min(CinematicDraw.smooth((time - s.cameraSince) / blend), CinematicDraw.smooth((s.end - time) / blend));
+        float in = entryBlend(s);
+        float wIn = in <= 0F ? (time >= s.cameraSince ? 1F : 0F) : CinematicDraw.smooth((time - s.cameraSince) / in);
+        return Math.min(wIn, CinematicDraw.smooth((s.end - time) / exitBlend(s)));
     }
 
     /** Abertura das faixas de cinema (0..1). */
@@ -361,6 +449,10 @@ public final class CutsceneDirector {
     }
 
     private static void computeFrame(Scene s, float pt, float realDelta) {
+        if (s.choreo != null) {
+            choreoFrame(s, pt, realDelta);
+            return;
+        }
         CutsceneShot shot = s.shot;
         float time = s.time(pt);
         float p = Mth.clamp(time / s.total, 0F, 1F);
@@ -400,6 +492,171 @@ public final class CutsceneDirector {
         s.framePos = cam;
         s.frameYaw = (float) (Mth.atan2(-look.x, look.z) * Mth.RAD_TO_DEG);
         s.framePitch = Mth.clamp((float) (-Mth.atan2(look.y, horizontal) * Mth.RAD_TO_DEG), -89F, 89F);
+    }
+
+    // -------------------------------------------------------------------------------------
+    // v1.1 — Coreografia em vários planos
+    // -------------------------------------------------------------------------------------
+
+    /** Pose de um plano (reaproveitada a cada quadro: nada de alocação). */
+    private static final class Pose {
+        double ax, ay, az;      // ponto do corpo de onde a câmera "sai" (teste de parede)
+        double tx, ty, tz;      // ponto mirado
+        double cx, cy, cz;      // câmera desejada
+        float fov, roll;
+    }
+
+    private static final Pose POSE = new Pose();
+    private static final Pose PREV = new Pose();
+
+    static float ease(int type, float u) {
+        u = Mth.clamp(u, 0F, 1F);
+        return switch (type) {
+            case Choreo.LINEAR -> u;
+            case Choreo.OUT -> CinematicDraw.easeOut(u);
+            case Choreo.IN -> u * u * u;
+            case Choreo.SNAP -> {
+                float k = 1F - u;
+                yield 1F - k * k * k * k * k;
+            }
+            default -> CinematicDraw.smooth(u);
+        };
+    }
+
+    /** Índice do plano ativo na fração {@code p}. */
+    private static int shotAt(Choreo c, float p) {
+        int idx = 0;
+        for (int i = 0; i < c.cams.length; i++) {
+            if (c.cams[i].from <= p) idx = i;
+        }
+        return idx;
+    }
+
+    private static void pose(Scene s, Choreo.Cam c, float u, double bx, double by, double bz, Pose out) {
+        if (c.stutter > 0) {
+            // quadros "congelados": a câmera anda em saltos de N ticks
+            int steps = Math.max(1, Math.round((c.to - c.from) * s.total / c.stutter));
+            u = Mth.floor(u * steps) / (float) steps;
+        }
+        float e = ease(c.ease, u);
+        float yaw = Mth.lerp(e, c.yaw0, c.yaw1);
+        float dist = Mth.lerp(e, c.dist0, c.dist1);
+        float hh = Mth.lerp(e, c.h0, c.h1);
+        float look = Mth.lerp(e, c.look0, c.look1);
+        float side = Mth.lerp(e, c.side0, c.side1);
+        out.fov = Mth.lerp(e, c.fov0, c.fov1);
+        out.roll = Mth.lerp(e, c.roll0, c.roll1);
+
+        float phiDeg;
+        double r, height, lateral;
+        if (c.orbit) {
+            phiDeg = s.baseAngle + yaw;
+            r = s.baseRadius * dist;
+            height = hh * Math.max(s.focusHeight, 1.6F);
+            lateral = side * s.baseRadius * 0.3;
+        } else {
+            float k = Mth.clamp(s.focusHeight / 1.8F, 1F, 6F);
+            phiDeg = s.faceYaw + yaw;
+            // "Efeitos de FOV" reduzidos: aproxima/afasta a câmera para o enquadramento continuar parecido
+            float fovScale = Minecraft.getInstance().options.fovEffectScale().get().floatValue();
+            float eff = 1F + (out.fov - 1F) * fovScale;
+            float comp = eff > 0.05F ? Mth.clamp(out.fov / eff, 0.4F, 1.6F) : 1F;
+            r = Math.max(0.95 * k, dist * k * comp);
+            height = hh * k;
+            lateral = side * k;
+        }
+        float phi = phiDeg * Mth.DEG_TO_RAD;
+        double dx = -Mth.sin(phi), dz = Mth.cos(phi);
+        out.ax = bx;
+        out.ay = by + s.focusHeight * look;
+        out.az = bz;
+        out.cx = out.ax + dx * r - dz * lateral;
+        out.cy = out.ay + height;
+        out.cz = out.az + dz * r + dx * lateral;
+        // mira: o corpo, ou adiante/acima dele ("para onde a magia vai")
+        float fy = s.faceYaw * Mth.DEG_TO_RAD;
+        out.tx = out.ax - Mth.sin(fy) * c.aimFwd;
+        out.ty = out.ay + c.aimUp;
+        out.tz = out.az + Mth.cos(fy) * c.aimFwd;
+    }
+
+    private static void choreoFrame(Scene s, float pt, float realDelta) {
+        Choreo c = s.choreo;
+        float time = s.time(pt);
+        s.frameW = weight(s, time);
+        // pulou: segura a pose do momento do pulo (sem cortes no meio da volta)
+        float camTime = s.skipFrom >= 0F ? Math.min(time, s.skipFrom) : time;
+        float p = Mth.clamp(camTime / s.total, 0F, 1F);
+        int idx = shotAt(c, p);
+        Choreo.Cam cam = c.cams[idx];
+        boolean newShot = idx != s.shotIndex;
+        if (newShot) {
+            if (cam.blendIn <= 0F) {
+                s.camDist = -1;            // corte seco: sem suavização da distância herdada do plano anterior
+                s.refreshFace();
+            }
+            s.shotIndex = idx;
+        }
+        // soco de FOV das batidas
+        float punch = 0F;
+        if (s.punchAt >= 0F) {
+            float d = time - s.punchAt;
+            if (d >= 0F && d < 6F) {
+                float f = 1F - d / 6F;
+                punch = s.punchAmt * f * f;
+            }
+        }
+        s.framePunch = punch;
+
+        Vec3 base = s.focus != null ? s.focus.getPosition(pt) : s.focusPos;
+        float span = Math.max(1.0E-3F, cam.to - cam.from);
+        float u = (p - cam.from) / span;
+        pose(s, cam, u, base.x, base.y, base.z, POSE);
+        Pose P = POSE;
+        float localTicks = (p - cam.from) * s.total;
+        if (cam.blendIn > 0F && idx > 0 && localTicks < cam.blendIn) {
+            // chicote: sai do fim do plano anterior para este, rápido
+            pose(s, c.cams[idx - 1], 1F, base.x, base.y, base.z, PREV);
+            float k = CinematicDraw.smooth(localTicks / cam.blendIn);
+            P.ax = Mth.lerp(k, PREV.ax, P.ax);
+            P.ay = Mth.lerp(k, PREV.ay, P.ay);
+            P.az = Mth.lerp(k, PREV.az, P.az);
+            P.tx = Mth.lerp(k, PREV.tx, P.tx);
+            P.ty = Mth.lerp(k, PREV.ty, P.ty);
+            P.tz = Mth.lerp(k, PREV.tz, P.tz);
+            P.cx = Mth.lerp(k, PREV.cx, P.cx);
+            P.cy = Mth.lerp(k, PREV.cy, P.cy);
+            P.cz = Mth.lerp(k, PREV.cz, P.cz);
+            P.fov = Mth.lerp(k, PREV.fov, P.fov);
+            P.roll = Mth.lerp(k, PREV.roll, P.roll);
+        }
+        s.frameFov = P.fov;
+        s.frameRoll = P.roll;
+        s.frameValid = true;
+        if (!s.cameraEnabled) return;
+
+        // Não atravessa paredes nem o chão: encurta até o bloco (do corpo até a câmera)
+        Vec3 anchor = new Vec3(P.ax, P.ay, P.az);
+        Vec3 desired = new Vec3(P.cx, P.cy, P.cz);
+        Vec3 dir = desired.subtract(anchor);
+        double len = dir.length();
+        if (len < 1.0E-3) {
+            dir = new Vec3(0, 0, 1);
+            len = 1.0E-3;
+        }
+        Vec3 unit = dir.scale(1.0 / len);
+        double allowed = len;
+        BlockHitResult hit = s.level.clip(new ClipContext(anchor, desired, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, s.player));
+        if (hit.getType() != HitResult.Type.MISS) allowed = Math.max(0.5, hit.getLocation().distanceTo(anchor) - 0.3);
+        if (s.camDist < 0 || allowed < s.camDist) s.camDist = allowed;
+        else s.camDist += (allowed - s.camDist) * (1.0 - Math.exp(-Math.max(0F, realDelta) * 0.6));
+        Vec3 camPos = anchor.add(unit.scale(Math.min(s.camDist, len)));
+
+        double lx = P.tx - camPos.x, ly = P.ty - camPos.y, lz = P.tz - camPos.z;
+        double horizontal = Math.sqrt(lx * lx + lz * lz);
+        s.framePos = camPos;
+        s.frameYaw = (float) (Mth.atan2(-lx, lz) * Mth.RAD_TO_DEG);
+        s.framePitch = Mth.clamp((float) (-Mth.atan2(ly, horizontal) * Mth.RAD_TO_DEG), -89F, 89F);
     }
 
     /** ComputeCameraAngles: tremor de tela (sempre, com ou sem cena). */

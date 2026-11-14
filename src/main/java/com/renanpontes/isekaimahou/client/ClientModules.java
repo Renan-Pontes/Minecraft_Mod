@@ -86,6 +86,8 @@ public final class ClientModules {
             new com.renanpontes.isekaimahou.feature.legends_h.client.LegendsHClient(),
             new com.renanpontes.isekaimahou.feature.legends_i.client.LegendsIClient(),
             new com.renanpontes.isekaimahou.feature.legends_j.client.LegendsJClient(),
+            new com.renanpontes.isekaimahou.feature.legends_k.client.LegendsKClient(),
+            new com.renanpontes.isekaimahou.feature.stands.client.StandsClient(),
             new com.renanpontes.isekaimahou.feature.afterlife.client.AfterlifeClient(),
             new com.renanpontes.isekaimahou.feature.las_noches.client.LasNochesClient(),
             new com.renanpontes.isekaimahou.feature.espada.client.EspadaClient(),
@@ -120,7 +122,8 @@ public final class ClientModules {
             new com.renanpontes.isekaimahou.feature.combat_feel.client.CombatFeelClient(),
             new com.renanpontes.isekaimahou.feature.magic_biomes.client.MagicBiomesClient(),
             new com.renanpontes.isekaimahou.feature.lore.client.LoreClient(),
-            new com.renanpontes.isekaimahou.feature.ambience.client.AmbienceClient());
+            new com.renanpontes.isekaimahou.feature.ambience.client.AmbienceClient(),
+            new com.renanpontes.isekaimahou.feature.dark_self.client.DarkSelfClient());
 
     public static void initAll(IEventBus modBus) {
         for (ClientModule m : ALL) m.initClient(modBus);

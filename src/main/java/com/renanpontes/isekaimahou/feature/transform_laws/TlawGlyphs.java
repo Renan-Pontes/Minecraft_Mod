@@ -43,6 +43,8 @@ public final class TlawGlyphs {
     static void register() {
         // Release 1.0: a forma Transformação (montada no Grimório como o Domínio) — regras em TransformForge
         GlyphRegistry.register(new TransformationForm());
+        // v1.1: a versão ultimate (tecla G) — para os corpos que eram formas G (O Todo-Poderoso, Bankai...)
+        GlyphRegistry.register(new TransformationForm.Supreme());
         //  id               mana  Círculo  tier  cor
         law(GLASS_BODY,         8, 1, 2, 0x9FE8FF);
         law(PREDATOR_EYES,      8, 1, 2, 0xFFB347);

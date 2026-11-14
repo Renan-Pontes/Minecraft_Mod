@@ -1,8 +1,11 @@
 package com.renanpontes.isekaimahou.feature.legends_h.jojo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -10,7 +13,10 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.api.Destruction;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
+import com.renanpontes.isekaimahou.feature.legends_h.LhIds;
 import com.renanpontes.isekaimahou.feature.legends_h.LhUtil;
+import com.renanpontes.isekaimahou.feature.legends_h.entity.SheerHeartAttackEntity;
+import com.renanpontes.isekaimahou.glyph.MasteryMutations;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
 import com.renanpontes.isekaimahou.glyph.SpellStats;
 
@@ -64,6 +70,9 @@ public final class Bombs {
     }
 
     private static final List<Bomb> BOMBS = new ArrayList<>();
+    /** v1.1: próximo tick em que a explosão pode soltar um Sheer Heart Attack (por dono). */
+    private static final Map<UUID, Long> SHA_NEXT = new HashMap<>();
+    public static final int SHA_GAP = 200;
 
     public static void plantEntity(SpellContext ctx, SpellStats stats, LivingEntity target, int ticks) {
         for (Bomb b : BOMBS) {
@@ -165,10 +174,47 @@ public final class Bombs {
         level.sendParticles(LhUtil.dust(PINK, 2F), p.x, p.y, p.z, 20, r * 0.3, r * 0.3, r * 0.3, 0);
         LhUtil.sound(level, p, SoundEvents.STONE_BUTTON_CLICK_OFF, 1.2F, 1.4F);
         LhUtil.sound(level, p, SoundEvents.GENERIC_EXPLODE.value(), 1.4F, 1.1F);
+        evolve(b, level, p, r);
+    }
+
+    /**
+     * v1.1 — evolução própria da Killer Queen (maestria do glifo):
+     * <ol>
+     *   <li><b>Sheer Heart Attack</b>: da explosão sai um tanquinho que caça o inimigo mais quente (1 explosão; no máx.
+     *       1 a cada {@link #SHA_GAP} ticks por dono e nunca se você já tem um Sheer Heart Attack andando).</li>
+     *   <li><b>Bites the Dust</b>: 1,5 s depois "o tempo volta" e a MESMA explosão acontece de novo no mesmo ponto, com
+     *       metade do dano (só inimigos; nunca em zona segura).</li>
+     * </ol>
+     */
+    private static void evolve(Bomb b, ServerLevel level, Vec3 p, float r) {
+        LivingEntity caster = b.ctx.caster();
+        int stage = MasteryMutations.stageOf(caster, LhIds.KILLER_QUEEN);
+        if (stage <= 0 || caster == null || LhUtil.safeAt(level, p)) return;
+        long now = level.getGameTime();
+        Long next = SHA_NEXT.get(caster.getUUID());
+        if (next == null || now >= next || next - now > SHA_GAP) {
+            if (!SheerHeartAttackEntity.hasActive(caster.getUUID())) {
+                SHA_NEXT.put(caster.getUUID(), now + SHA_GAP);
+                SheerHeartAttackEntity.spawn(b.ctx, b.stats, p.add(0, -0.3, 0), 120, 1, 0.32F);
+            }
+        }
+        if (stage < 2) return;
+        BossKit.schedule(level, 30, () -> {
+            if (!caster.isAlive() || caster.level() != level) return;
+            ElementFx.flash(level, p, Rewind.PINK, r);
+            level.sendParticles(LhUtil.dust(PINK, 1.6F), p.x, p.y, p.z, 14, r * 0.3, r * 0.3, r * 0.3, 0);
+            LhUtil.sound(level, p, SoundEvents.BELL_RESONATE, 0.5F, 1.6F);
+            LhUtil.sound(level, p, SoundEvents.GENERIC_EXPLODE.value(), 1.0F, 0.8F);
+            for (LivingEntity e : LhUtil.foesAround(b.ctx, p, r, 12)) {
+                e.invulnerableTime = 0;
+                b.ctx.damage(e, DAMAGE * 0.5F, b.stats, null, Element.FIRE);
+            }
+        });
     }
 
     public static void clear() {
         BOMBS.clear();
+        SHA_NEXT.clear();
     }
 
     private Bombs() {}

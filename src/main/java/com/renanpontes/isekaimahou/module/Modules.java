@@ -86,6 +86,8 @@ public final class Modules {
             new com.renanpontes.isekaimahou.feature.legends_h.LegendsHModule(),
             new com.renanpontes.isekaimahou.feature.legends_i.LegendsIModule(),
             new com.renanpontes.isekaimahou.feature.legends_j.LegendsJModule(),
+            new com.renanpontes.isekaimahou.feature.legends_k.LegendsKModule(),
+            new com.renanpontes.isekaimahou.feature.stands.StandsModule(),
             new com.renanpontes.isekaimahou.feature.afterlife.AfterlifeModule(),
             new com.renanpontes.isekaimahou.feature.las_noches.LasNochesModule(),
             new com.renanpontes.isekaimahou.feature.espada.EspadaModule(),
@@ -120,7 +122,8 @@ public final class Modules {
             new com.renanpontes.isekaimahou.feature.combat_feel.CombatFeelModule(),
             new com.renanpontes.isekaimahou.feature.magic_biomes.MagicBiomesModule(),
             new com.renanpontes.isekaimahou.feature.lore.LoreModule(),
-            new com.renanpontes.isekaimahou.feature.ambience.AmbienceModule());
+            new com.renanpontes.isekaimahou.feature.ambience.AmbienceModule(),
+            new com.renanpontes.isekaimahou.feature.dark_self.DarkSelfModule());
 
     public static void initAll(IEventBus modBus) {
         for (Module m : ALL) {

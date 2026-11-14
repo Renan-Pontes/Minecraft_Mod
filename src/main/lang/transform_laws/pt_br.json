@@ -191,5 +191,12 @@
   "screen.isekai_mahou.tforge.btn_spell": "Virar magia",
   "screen.isekai_mahou.tforge.btn_spell_tip": "Leva estas peças para o Grimório como uma magia de Transformação: salve numa tecla (Z/X/C/G) e conjure quando quiser.",
   "screen.isekai_mahou.tforge.btn_spell_locked": "Para conjurar a Transformação como magia de tecla, aprenda o glifo (caminho Arcano, Círculo %s). Moldar aqui não precisa dele.",
-  "screen.isekai_mahou.tforge.to_spell_done": "Levada ao Grimório: salve numa tecla para conjurar."
+  "screen.isekai_mahou.tforge.to_spell_done": "Levada ao Grimório: salve numa tecla para conjurar.",
+  "glyph.isekai_mahou.transformation_supreme": "Transformação Suprema",
+  "glyph.isekai_mahou.transformation_supreme.desc": "A Transformação ULTIMATE (só na tecla G, gasta a Carga de Ultimate): igual à Transformação, mas é nela que entram os corpos supremos — O Todo-Poderoso, Bankai, Vollständig, Letzt Stil, Vasto Lorde, Monarca das Sombras e Transcendência. Ex.: Transformação Suprema → O Todo-Poderoso → Curar. Quem conhece um desses corpos já sabe esta forma.",
+  "screen.isekai_mahou.tforge.body_time": "%s dita o tempo: %s",
+  "screen.isekai_mahou.tforge.supreme": "Suprema: só na tecla G (gasta a Carga de Ultimate).",
+  "message.isekai_mahou.tforge.body_in_slot": "%s é uma transformação inteira: monte como magia no Grimório (Transformação → ele → efeitos), não num espaço.",
+  "spell_error.isekai_mahou.body_needs_transformation": "%s é uma transformação: só entra logo depois da forma Transformação (ex.: Transformação → ele → efeitos).",
+  "spell_error.isekai_mahou.body_needs_supreme": "%s é uma transformação suprema: use a forma Transformação Suprema (tecla G)."
 }

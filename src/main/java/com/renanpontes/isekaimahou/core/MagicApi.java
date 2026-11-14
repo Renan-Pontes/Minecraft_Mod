@@ -81,6 +81,11 @@ public final class MagicApi {
         if (up) applyBank(player, d);
     }
 
+    /** v1.1 — o limite de nível subiu sem mudar de Círculo (Sombra vencida, módulo dark_self): aplica o XP guardado. */
+    public static void releaseXpBank(ServerPlayer player) {
+        applyBank(player, get(player));
+    }
+
     /** Converte o banco de XP em níveis (o que passar do novo limite volta para o banco). */
     private static void applyBank(ServerPlayer player, MagicData d) {
         int bank = d.takeBankRaw();

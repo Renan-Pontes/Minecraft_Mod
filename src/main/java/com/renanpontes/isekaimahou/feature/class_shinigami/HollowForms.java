@@ -138,7 +138,7 @@ public final class HollowForms {
         ShinigamiFx.sound(level, face, SoundEvents.SCULK_SHRIEKER_SHRIEK, 0.5F, 1.4F);
         ShinigamiFx.sound(level, face, SoundEvents.BONE_BLOCK_PLACE, 1.0F, 0.6F);
         if (caster instanceof ServerPlayer sp) {
-            if (!ctx.formStats().silent) {
+            if (!ctx.formStats().silent && !com.renanpontes.isekaimahou.feature.transform_laws.TransformForge.inForge(ctx)) {
                 Announce.send(sp, Shinigami.msg("visored_shout", sp.getDisplayName()), CERO_RGB, Announce.STYLE_SPELL);
             }
             if (Shinigami.isShinigami(sp)) MagicApi.addCounter(sp, Shinigami.VISORED_USES, 1);
@@ -187,7 +187,7 @@ public final class HollowForms {
             e.setDeltaMovement(e.getDeltaMovement().add(push.x * 1.4, 0.6, push.z * 1.4));
             e.hurtMarked = true;
         }
-        if (caster instanceof ServerPlayer sp && !ctx.formStats().silent) {
+        if (caster instanceof ServerPlayer sp && !ctx.formStats().silent && !com.renanpontes.isekaimahou.feature.transform_laws.TransformForge.inForge(ctx)) {
             Announce.send(sp, Shinigami.msg("vasto_shout", sp.getDisplayName()), MASK_RGB, Announce.STYLE_ULTIMATE);
         }
     }
@@ -351,6 +351,12 @@ public final class HollowForms {
     static void forget(Entity e) {
         State s = ACTIVE.remove(e.getUUID());
         if (s != null && e instanceof LivingEntity le) finish(s, le, le.isAlive());
+    }
+
+    /** v1.1: a Transformação que tinha a Máscara/o Vasto Lorde como corpo acabou — fim com o preço de sempre. */
+    public static void stopForm(LivingEntity e) {
+        State s = ACTIVE.remove(e.getUUID());
+        if (s != null) finish(s, e, e.isAlive());
     }
 
     /** Fim forçado sem preço (o Mugetsu consome a máscara). */

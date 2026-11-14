@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:dark_forest",
+    "minecraft:birch_forest",
+    "minecraft:old_growth_birch_forest",
+    "minecraft:taiga",
+    "minecraft:old_growth_spruce_taiga",
+    "minecraft:swamp",
+    "isekai_mahou:twilight_grove",
+    "isekai_mahou:haunted_swamp",
+    "isekai_mahou:crystal_forest"
+  ]
+}

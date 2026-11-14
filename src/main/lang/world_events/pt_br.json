@@ -16,7 +16,7 @@
   "command.isekai_mahou.world_events.started": "Evento iniciado: %s",
   "command.isekai_mahou.world_events.status": "Evento: %s (%ss restantes) · lugar: %s · automático: %s · chance: %s%% · dia %s, próximo permitido no dia %s · chunks com blocos de jogador: %s",
   "command.isekai_mahou.world_events.stopped": "Evento encerrado.",
-  "command.isekai_mahou.world_events.unknown": "Evento desconhecido. Use: meteor, blood_moon, arcane_storm, earthquake, mana_storm.",
+  "command.isekai_mahou.world_events.unknown": "Evento desconhecido. Use: meteor, blood_moon, arcane_storm, earthquake, mana_storm, star_shower.",
   "entity.isekai_mahou.world_events_alien_grunt": "Batedor Estelar",
   "entity.isekai_mahou.world_events_alien_larva": "Larva Estelar",
   "entity.isekai_mahou.world_events_alien_overseer": "Arauto Estelar",

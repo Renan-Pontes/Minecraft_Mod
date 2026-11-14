@@ -1,0 +1,10 @@
+SHADERS DO ISEKAI MAHOU (opcional)
+==================================
+
+Shaderpack: MakeUp - Ultra Fast 9.6, por Javier Garduño (javiergcim)
+  Licença: GNU LGPL v3.0 (ver LICENSE-MakeUp-UltraFast-LGPL-3.0.txt e LICENSE-GPL-3.0.txt)
+  O pacote vai sem nenhuma modificação.
+  Página oficial:  https://modrinth.com/shader/makeup-ultra-fast-shaders
+  Código-fonte:    https://github.com/javiergcim/MakeUpUltraFast
+
+Mod de shaders: Iris (coderbot, IMS212), licença LGPL v3.0 — https://modrinth.com/mod/iris

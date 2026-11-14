@@ -16,6 +16,7 @@ import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.glyph.Glyph;
 import com.renanpontes.isekaimahou.glyph.GlyphKind;
 import com.renanpontes.isekaimahou.glyph.GlyphMastery;
+import com.renanpontes.isekaimahou.glyph.MasteryMutations;
 import com.renanpontes.isekaimahou.glyph.GlyphRegistry;
 import com.renanpontes.isekaimahou.glyph.TriggerGlyph;
 import com.renanpontes.isekaimahou.network.ClientMagic;
@@ -483,7 +484,12 @@ public class GlyphsTab implements MenuTab {
             int mlv = GlyphMastery.level(mxp);
             int mcol = GlyphIcons.masteryColor(mlv);
             masteryBarY = Math.max(ty + 2, py + 42);
-            g.drawString(font, Component.translatable("screen.isekai_mahou.glyph.mastery", GlyphMastery.roman(mlv)), px + 5, masteryBarY, mcol, false);
+            MutableComponent mhead = Component.translatable("screen.isekai_mahou.glyph.mastery", GlyphMastery.roman(mlv));
+            // v1.1: o nome do estágio de evolução atual ao lado do nível (cortado se não couber)
+            MasteryMutations.Stage stg = MasteryMutations.currentStage(gl.id(), mlv);
+            if (stg != null) mhead.append(Component.literal(" · ⟡ ").append(stg.displayName()).withColor(stg.color()));
+            List<FormattedCharSequence> mh = font.split(mhead, pw - 10);
+            g.drawString(font, mh.isEmpty() ? FormattedCharSequence.EMPTY : mh.get(0), px + 5, masteryBarY, mcol, false);
             int bw = pw - 10;
             MahouUi.bar(g, px + 5, masteryBarY + 10, bw, 4, GlyphMastery.progress(mxp), mcol);
         }
@@ -518,6 +524,12 @@ public class GlyphsTab implements MenuTab {
                 lines.add(Component.translatable("screen.isekai_mahou.glyph.mastery.how").withStyle(ChatFormatting.DARK_GRAY));
             } else {
                 lines.add(Component.translatable("screen.isekai_mahou.glyph.mastery.how_infinite").withStyle(ChatFormatting.DARK_GRAY));
+            }
+            // v1.1: evolução própria (estágio atual com o que faz + a próxima como mistério)
+            List<Component> evo = GlyphIcons.evolutionLines(gl, mlv, true);
+            if (!evo.isEmpty()) {
+                lines.add(Component.empty());
+                lines.addAll(evo);
             }
             // mutações despertas (com descrição) + a próxima como mistério
             List<Component> muts = GlyphIcons.mutationLines(gl, mlv, true);

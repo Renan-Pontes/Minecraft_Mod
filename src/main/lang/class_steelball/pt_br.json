@@ -298,5 +298,9 @@
   "tooltip.isekai_mahou.steelball.relic.use": "Botão direito: abre e revela uma Parte do Cadáver Santo que você ainda não tem (o Coração nunca está num relicário).",
   "tooltip.isekai_mahou.steelball.whistle": "Um Steel Ball nunca anda a pé.",
   "tooltip.isekai_mahou.steelball.whistle.bound": "Botão direito: chama o SEU corcel para o seu lado.",
-  "tooltip.isekai_mahou.steelball.whistle.unbound": "Botão direito: chama um corcel de corrida domado e selado."
+  "tooltip.isekai_mahou.steelball.whistle.unbound": "Botão direito: chama um corcel de corrida domado e selado.",
+  "glyph.isekai_mahou.seven_page_beatdown": "Surra de 7 Páginas",
+  "glyph.isekai_mahou.seven_page_beatdown.desc": "Efeito de origem (Tusk ACT4 × Valentine): uma rajada de socos que dura \"sete páginas\" — 28 golpes em 2,8 s (Estender = mais páginas, até 60). O alvo fica preso apanhando, cada soco carrega a Rotação Infinita e o último joga longe, Girado por 10 s. No Steel Ball, o Tusk ACT4 aparece socando. Libera: Lição V + 6 Partes.",
+  "callout.isekai_mahou.steelball.seven_page": "ORA ORA ORA ORA!",
+  "callout.isekai_mahou.steelball.seven_page.sub": "Tusk ACT4 — sete páginas de socos"
 }

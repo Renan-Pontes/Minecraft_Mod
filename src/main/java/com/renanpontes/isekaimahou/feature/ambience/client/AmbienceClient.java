@@ -15,12 +15,17 @@ public class AmbienceClient implements ClientModule {
     @Override
     public void initClient(IEventBus modBus) {
         NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post e) -> AmbientPlayer.tick());
+        // mundo vivo (v1.1): partículas de bioma e estrelas cadentes
+        NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post e) -> AmbientLife.tick());
         NeoForge.EVENT_BUS.addListener((PlaySoundEvent e) -> AmbientPlayer.onSound(e));
         // enquanto a faixa ambiente toca (e um pouco depois), nada de música do vanilla por cima
         NeoForge.EVENT_BUS.addListener((SelectMusicEvent e) -> {
             if (AmbientPlayer.suppressVanilla()) e.setMusic(null);
         });
-        NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) -> AmbientPlayer.reset());
+        NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) -> {
+            AmbientPlayer.reset();
+            AmbientLife.reset();
+        });
         modBus.addListener((ModelEvent.ModifyBakingResult e) -> EmissiveModels.onBake(e));
     }
 }

@@ -499,5 +499,9 @@
   "screen.isekai_mahou.grimoire.transform.search": "transformation vows shape",
   "screen.isekai_mahou.glyph.mastery.how_infinite": "Past X, mastery never ends: each level asks more than the last, power keeps rising (ever more slowly) and the spell mutates.",
   "screen.isekai_mahou.glyph.mutations": "Mutations (%s):",
-  "screen.isekai_mahou.glyph.mutation_next": "Next mutation at level %s: ???"
+  "screen.isekai_mahou.glyph.mutation_next": "Next mutation at level %s: ???",
+  "screen.isekai_mahou.glyph.mutations_more": "… +%s older ones",
+  "screen.isekai_mahou.glyph.evo_base": "⟡ Base form (%s evolutions of its own ahead)",
+  "screen.isekai_mahou.glyph.evo_next": "Next evolution at level %s: ???",
+  "screen.isekai_mahou.glyph.evo_final": "⟡ Final form."
 }

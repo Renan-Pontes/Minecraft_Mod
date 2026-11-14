@@ -83,6 +83,10 @@ final class ForgeCommands {
             MagicApi.learnGlyphSilently(p, TransformForge.FORM_ID);
             n++;
         }
+        if (!d.knowsGlyph(TransformForge.SUPREME_ID)) {
+            MagicApi.learnGlyphSilently(p, TransformForge.SUPREME_ID);
+            n++;
+        }
         for (TransformLawGlyph l : TlawGlyphs.all()) {
             if (d.knowsGlyph(l.id())) continue;
             MagicApi.learnGlyphSilently(p, l.id());

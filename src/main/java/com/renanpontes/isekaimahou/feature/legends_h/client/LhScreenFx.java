@@ -104,6 +104,11 @@ public final class LhScreenFx {
             float f = Mth.clamp((rewindEnd - now) / rewindLen, 0F, 1F);
             g.fill(0, 0, w, h, argb(0x7A4A20, 0.32F * f));
             vignette(g, w, h, 0xFF7AC8, 0.4F * f);
+            // "Fita voltando": faixas claras correndo de baixo para cima
+            for (int i = 0; i < 3; i++) {
+                int yy = h - (int) ((now * 9F + i * (h / 3F)) % (h + 20F)) + 10;
+                g.fill(0, yy, w, yy + 2, argb(0xFFE0F0, 0.16F * f));
+            }
             if (!mc.options.hideGui) clock(g, w / 2, 44, now, f);
         }
     }

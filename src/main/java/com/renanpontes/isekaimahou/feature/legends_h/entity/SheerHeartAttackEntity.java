@@ -166,6 +166,12 @@ public class SheerHeartAttackEntity extends LfSpellEntity {
         discard();
     }
 
+    /** v1.1: o dono já tem um Sheer Heart Attack andando? (a evolução da Killer Queen não substitui o seu.) */
+    public static boolean hasActive(java.util.UUID owner) {
+        SheerHeartAttackEntity e = BY_OWNER.get(owner);
+        return e != null && !e.isRemoved();
+    }
+
     public static void clearAll() {
         BY_OWNER.clear();
     }

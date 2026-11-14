@@ -53,17 +53,26 @@ ext.qolMods = [
         "maven.modrinth:xaeros-world-map:SnQ4SoDe", // Xaero's World Map 1.47.0
         "maven.modrinth:mouse-tweaks:9I21YYxf",     // Mouse Tweaks 2.26.1
         // v1.3 — desempenho (mais FPS e mais chunks sem lag). Todos sem dependências extras no Modrinth.
-        "maven.modrinth:sodium:uMOpc5uV",           // Sodium 0.8.13 (NeoForge oficial): renderizador de chunks muito mais rápido
+        "maven.modrinth:sodium:Pb3OXVqC",           // Sodium 0.6.13 (NeoForge oficial): renderizador de chunks muito mais rápido (0.8.13 até 13/11: o único Iris p/ 0.8 recusa MC 1.21.1)
         "maven.modrinth:ferrite-core:x7kQWVju",     // FerriteCore 7.0.3: bem menos RAM usada
         "maven.modrinth:modernfix:ZDZENbHH",        // ModernFix 5.27.27: carrega mais rápido, menos RAM, corrige travadas
         "maven.modrinth:immediatelyfast:EJzmEPZV",  // ImmediatelyFast 1.6.15: HUD, textos e mapas desenhados mais rápido
         "maven.modrinth:entityculling:eieYbWYb",    // Entity Culling 1.11.3: não desenha mobs/baús escondidos atrás de paredes
         "maven.modrinth:distanthorizons:9w34y8ai",  // Distant Horizons 3.3.3: terreno distante em LOD (enxergar longe sem lag)
+        // v1.1 — shaders OPCIONAIS (desligados por padrão; liga na tecla K). Par estável: Iris 1.8.12 + Sodium 0.6.13.
+        "maven.modrinth:iris:t3ruzodq",             // Iris 1.8.12 (1.21.1 NeoForge): carrega shaderpacks (LGPL-3.0)
 ]
+
+// v1.1 — shaderpack leve que vai junto (pasta shaderpacks do jogo). LGPL-3.0: pode redistribuir sem modificar.
+// Ver docs/v11/sh_shaders.md. Os textos (licença, créditos, perfil leve) ficam em tools/pack/shaders.
+ext.shaderPackDep = "maven.modrinth:makeup-ultra-fast-shaders:t4YRxQug@zip" // MakeUp - Ultra Fast 9.6
+ext.shaderPackFile = "MakeUp-UltraFast-9.6.zip"
 
 configurations {
     // Jars das bibliotecas que vão junto pra pasta mods do TLauncher
     deployLibs { transitive = false }
+    // Shaderpack (zip) que vai pra pasta shaderpacks
+    shaderPacks { transitive = false }
 }
 
 base {
@@ -168,6 +177,7 @@ dependencies {
         deployLibs m
         if (project.hasProperty('withQol')) localRuntime m
     }
+    shaderPacks shaderPackDep
 
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
@@ -270,9 +280,71 @@ var deployToTLauncher = tasks.register('deployToTLauncher', Sync) {
         // Embeddium sai porque é incompatível com o Sodium)
         exclude "sodium-*.jar", "ferrite-core-*.jar", "ferritecore-*.jar", "modernfix-*.jar", "immediatelyfast-*.jar",
                 "ImmediatelyFast-*.jar", "entityculling-*.jar", "distanthorizons-*.jar", "DistantHorizons-*.jar", "embeddium-*.jar"
+        // v1.1: shaders (Iris antigo sai; Oculus só funciona com Embeddium, então também sai)
+        exclude "iris-*.jar", "oculus-*.jar"
     }
 }
 tasks.named('build') { finalizedBy deployToTLauncher }
+
+// v1.1 — shaders: copia o shaderpack leve pra pasta "shaderpacks" do TLauncher (vizinha da pasta mods) e,
+// SÓ NA PRIMEIRA VEZ, já deixa ele escolhido no config/iris.properties (perfil leve, sem sombras).
+// Depois disso a escolha é sua: se desligar os shaders na tecla K, o deploy não liga de novo.
+// (Pros amigos os shaders vêm DESLIGADOS: o zip não leva iris.properties.)
+def shaderPackName = shaderPackFile
+def shaderPackFiles = configurations.shaderPacks
+def shaderTexts = file('tools/pack/shaders')
+var deployShadersToTLauncher = tasks.register('deployShadersToTLauncher') {
+    group = 'isekai'
+    description = 'Copia o shaderpack leve pro TLauncher e o deixa selecionado no Iris (só na primeira vez).'
+    def gameDir = tlauncherModsDir.isBlank() ? null : new File(tlauncherModsDir).parentFile
+    onlyIf { gameDir != null && new File(tlauncherModsDir).isDirectory() }
+    inputs.files(shaderPackFiles)
+    inputs.dir(shaderTexts)
+    doLast {
+        def REPLACE = java.nio.file.StandardCopyOption.REPLACE_EXISTING
+        def packDir = new File(gameDir, 'shaderpacks')
+        packDir.mkdirs()
+        // versões antigas do NOSSO shaderpack saem (outros shaderpacks da pasta não são tocados)
+        packDir.listFiles().findAll { it.name ==~ /MakeUp-UltraFast-.*\.zip/ && it.name != shaderPackName }.each { it.delete() }
+        java.nio.file.Files.copy(shaderPackFiles.singleFile.toPath(), new File(packDir, shaderPackName).toPath(), REPLACE)
+        shaderTexts.listFiles().findAll { it.name.startsWith('LICENSE-') || it.name.startsWith('CREDITOS-') }.each { f ->
+            java.nio.file.Files.copy(f.toPath(), new File(packDir, f.name).toPath(), REPLACE)
+        }
+        // perfil leve: só se ainda não existir (o Iris regrava esse arquivo quando você muda opções do pack)
+        def opts = new File(packDir, shaderPackName + '.txt')
+        if (!opts.exists()) java.nio.file.Files.copy(new File(shaderTexts, 'MakeUp-UltraFast.options.txt').toPath(), opts.toPath())
+
+        def cfg = new File(gameDir, 'config/iris.properties')
+        def marker = new File(gameDir, 'config/isekai_mahou_shaders.txt')
+        def props = new Properties()
+        if (cfg.isFile()) cfg.withInputStream { props.load(it) }
+        def cur = props.getProperty('shaderPack', '').trim()
+        boolean changed = false
+        if (cur ==~ /MakeUp-UltraFast-.*\.zip/ && cur != shaderPackName) {
+            props.setProperty('shaderPack', shaderPackName) // versão nova do mesmo pack
+            changed = true
+        }
+        if (!marker.exists()) {
+            if (cur.isEmpty()) {
+                props.setProperty('shaderPack', shaderPackName)
+                props.setProperty('enableShaders', 'true')
+                changed = true
+            }
+            if (!props.containsKey('disableUpdateMessage')) {
+                props.setProperty('disableUpdateMessage', 'true')
+                changed = true
+            }
+            marker.parentFile.mkdirs()
+            marker.setText("O deploy do Isekai Mahou ja escolheu o shaderpack uma vez (${shaderPackName}).\n" +
+                    "Apague este arquivo se quiser que o proximo deploy escolha de novo.\n", 'UTF-8')
+        }
+        if (changed) {
+            cfg.parentFile.mkdirs()
+            cfg.withOutputStream { props.store(it, 'This file stores configuration options for Iris, such as the currently active shaderpack') }
+        }
+    }
+}
+deployToTLauncher.configure { finalizedBy deployShadersToTLauncher }
 
 
 // ---------------------------------------------------------------------------------------------
@@ -378,7 +450,7 @@ tasks.named('processResources') { dependsOn mergeData }
 // ---------------------------------------------------------------------------------------------
 def packTokens = [VERSION: mod_version, NEO: neo_version]
 // Mods só de cliente (render/entrada): não vão para o servidor dedicado
-def clientOnlyMods = ['sodium', 'immediatelyfast', 'entityculling', 'mouse-tweaks', 'distanthorizons']
+def clientOnlyMods = ['sodium', 'immediatelyfast', 'entityculling', 'mouse-tweaks', 'distanthorizons', 'iris']
 tasks.register('packFriends', Zip) {
     group = 'isekai'
     description = 'Zip para os amigos: mod + bibliotecas + mods de ajuda + passo a passo.'
@@ -389,6 +461,17 @@ tasks.register('packFriends', Zip) {
     into('mods') {
         from tasks.named('jar')
         from configurations.deployLibs
+    }
+    // v1.1: shaderpack leve (sem iris.properties = shaders DESLIGADOS até o amigo escolher na tecla K)
+    into('shaderpacks') {
+        from(configurations.shaderPacks) { rename { shaderPackFile } }
+        from('tools/pack/shaders') {
+            include 'LICENSE-*.txt', 'CREDITOS-*.txt'
+        }
+        from('tools/pack/shaders') {
+            include 'MakeUp-UltraFast.options.txt'
+            rename { shaderPackFile + '.txt' }
+        }
     }
 }
 tasks.register('packServer', Zip) {

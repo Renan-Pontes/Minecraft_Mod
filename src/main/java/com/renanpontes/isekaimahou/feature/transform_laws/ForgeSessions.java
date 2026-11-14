@@ -18,6 +18,7 @@ import com.renanpontes.isekaimahou.core.MagicData;
 import com.renanpontes.isekaimahou.core.MagicPath;
 import com.renanpontes.isekaimahou.core.api.Places;
 import com.renanpontes.isekaimahou.core.event.MagicProgressEvent;
+import com.renanpontes.isekaimahou.core.event.SpellCastEvent;
 import com.renanpontes.isekaimahou.feature.ui_hud.Hints;
 import com.renanpontes.isekaimahou.glyph.ParsedSpell;
 import com.renanpontes.isekaimahou.glyph.SpellContext;
@@ -103,6 +104,8 @@ final class ForgeSessions {
         long cutAt;
         /** Onda 5: sessão recolocada no login (a mana, o tempo e a recarga já foram acertados antes de sair). */
         boolean resumed;
+        /** v1.1: a cutscene de começo ainda não foi tocada (forma conjurada). */
+        boolean cutscene;
 
         Session(ResourceLocation source, SpellContext ctx, long start, long endAt, @Nullable Holder<MobEffect> probe, boolean ownsProbe) {
             this.source = source;
@@ -144,6 +147,10 @@ final class ForgeSessions {
                 d -> d.path() == MagicPath.QUINCY && d.hasFlag(TransformForge.SEEN_FLAG + TransformForge.VOLLSTANDIG_SLOT));
 
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, false, LivingDamageEvent.Post.class, ForgeSessions::onDamage);
+        // v1.1: a cutscene da transformação sai DEPOIS da conjuração (por cima da cena genérica de ultimate da Suprema)
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, (SpellCastEvent.Post e) -> {
+            if (e.getCaster() instanceof ServerPlayer sp && TransformForge.isForge(e.getContext().spell())) playCutscene(sp);
+        });
         NeoForge.EVENT_BUS.addListener((MagicProgressEvent.GlyphLearned e) -> {
             if (TransformForge.FORM_ID.equals(e.glyph)) Hints.show(e.getPlayer(), "tforge_learned");
         });
@@ -339,15 +346,42 @@ final class ForgeSessions {
             ElementFx.aura(ctx.level(), caster, ctx.element(), ctx.color() & 0xFFFFFF, 1.0F, 2, 100);
             return;
         }
-        int ticks = TransformForge.duration(ctx.formStats());
+        // v1.1: um corpo (O Todo-Poderoso: 5 min) dita o tempo da transformação inteira
+        int ticks = TransformForge.castDuration(spell);
         Holder<MobEffect> probe = TlawContent.FORGED;
         // Reconjurar troca a transformação: a anterior acaba de verdade (as leis dela cobram o preço de fim — não dá
         // para fugir do custo reconjurando) e o tempo novo vale mesmo que seja menor que o que restava
         if (active(sp, TransformForge.FORM_ID)) TlawSessions.INSTANCE.end(sp, TransformForge.FORM_ID);
         sp.removeEffect(probe);
         sp.addEffect(new MobEffectInstance(probe, ticks, 0, false, false, true));
-        start(sp, TransformForge.FORM_ID, ctx, Long.MAX_VALUE, probe, true, true);
+        Session s = start(sp, TransformForge.FORM_ID, ctx, Long.MAX_VALUE, probe, true, true);
+        // a cutscene sai no SpellCastEvent.Post (mesmo tick); com Atraso a forma chega depois — aí sai no tick seguinte
+        s.cutscene = true;
+        SpellScheduler.schedule(1, () -> playCutscene(sp));
         Hints.show(sp, "tforge_cast");
+    }
+
+    /** Toca a cutscene pendente da forma conjurada (uma vez por ativação). */
+    private static void playCutscene(ServerPlayer sp) {
+        List<Session> list = ACTIVE.get(sp.getUUID());
+        if (list == null || !sp.isAlive()) return;
+        for (Session s : list) {
+            if (!s.cutscene || !s.source.equals(TransformForge.FORM_ID)) continue;
+            s.cutscene = false;
+            ForgeBodies.cutscene(sp, s.spell, s.recipe);
+        }
+    }
+
+    /** v1.1: a transformação conjurada acabou — os corpos dela se desfazem (O Todo-Poderoso, Bankai...). */
+    private static void bodiesEnd(ServerPlayer sp, Session s) {
+        if (!s.source.equals(TransformForge.FORM_ID)) return;
+        for (ParsedSpell.EffectEntry en : TransformForge.bodies(s.spell)) {
+            try {
+                ((TransformBody) en.effect()).onTransformEnd(sp);
+            } catch (RuntimeException ex) {
+                IsekaiMahou.LOGGER.warn("Corpo {} falhou ao encerrar: {}", en.effect().id(), ex.toString());
+            }
+        }
     }
 
     private static Session start(ServerPlayer sp, ResourceLocation source, SpellContext ctx, long endAt,
@@ -414,6 +448,7 @@ final class ForgeSessions {
         for (Session s : list) {
             if (s.ownsProbe && s.probe != null) sp.removeEffect(s.probe);
             if (fx && sp.isAlive()) endFx(sp, s);
+            bodiesEnd(sp, s);
         }
     }
 
@@ -435,6 +470,8 @@ final class ForgeSessions {
             SpellParser.Result res = cast ? SpellParser.parse(r.recipe(), Element.ARCANE, d, d) : TransformForge.validate(r.recipe(), d);
             if (!res.ok() || !TransformForge.isForge(res.spell())) continue;
             ParsedSpell spell = res.spell();
+            // v1.1: corpos (O Todo-Poderoso, Bankai...) vivem só na memória da classe — a transformação deles não volta
+            if (cast && !TransformForge.bodies(spell).isEmpty()) continue;
             SpellContext ctx = new SpellContext(sp.serverLevel(), sp, spell.primary() == null ? Element.ARCANE : spell.primary(),
                     r.recipe(), spell);
             ctx.markPlayerCast();
@@ -467,6 +504,7 @@ final class ForgeSessions {
         if (list.isEmpty()) ACTIVE.remove(sp.getUUID());
         if (removeProbe && s.ownsProbe && s.probe != null) sp.removeEffect(s.probe);
         if (s.seen && sp.isAlive()) endFx(sp, s);
+        bodiesEnd(sp, s);
     }
 
     private static void endFx(ServerPlayer sp, Session s) {

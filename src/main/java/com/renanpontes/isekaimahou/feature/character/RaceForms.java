@@ -2,8 +2,10 @@ package com.renanpontes.isekaimahou.feature.character;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,11 +17,13 @@ import com.renanpontes.isekaimahou.core.Element;
 import com.renanpontes.isekaimahou.core.ElementFx;
 import com.renanpontes.isekaimahou.core.MagicHover;
 import com.renanpontes.isekaimahou.core.Progression;
+import com.renanpontes.isekaimahou.core.api.Cutscenes;
 import com.renanpontes.isekaimahou.core.api.Party;
-import com.renanpontes.isekaimahou.core.api.Rewards;
+import com.renanpontes.isekaimahou.core.api.Places;
 import com.renanpontes.isekaimahou.core.api.Statuses;
 import com.renanpontes.isekaimahou.core.anim.MahouAnims;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -82,6 +86,10 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
  * corpo carregam o elemento; o golpe vira o Rugido do Dragão), Meio-Orc = <b>Desastre Orc</b> (Geld; golpe = Fome
  * Insaciável, drena vida em volta e enche a Fome Voraz) e Demônio = <b>Rei Demônio da Tirania</b> (Anos; golpe =
  * Jio Graze, um sol negro no ponto mirado).
+ * <p>
+ * v1.11: Anjo = <b>Jibril, a Flügel</b> (No Game No Life; golpe = Golpe Celestial (Tengeki), carga curta e um feixe que
+ * explode numa esfera de 12 blocos — nunca em cidades, nunca em blocos). Toda Transformação abre com a cutscene de
+ * transformação ({@link Cutscenes#transform}).
  */
 public final class RaceForms {
     public static final int DURATION = 45 * 20;
@@ -115,6 +123,19 @@ public final class RaceForms {
     private static final Map<UUID, Charge> CHARGING = new ConcurrentHashMap<>();
     private static final Map<UUID, Fear> FEAR = new ConcurrentHashMap<>();
 
+    /**
+     * v1.11 — <b>Golpe Celestial (Tengeki)</b> da Jibril (Anjo): {@value #TENGEKI_CHARGE} ticks de carga (a luz se junta
+     * nas mãos) e então um feixe enorme até o ponto mirado, que explode numa esfera de {@value #TENGEKI_RADIUS} blocos.
+     * Nunca quebra blocos e nunca dispara/fere dentro de zonas seguras ({@link Places#isSafe}).
+     */
+    static final int TENGEKI_CHARGE = 24;
+    static final int TENGEKI_COOLDOWN = 12 * 20;
+    static final double TENGEKI_RADIUS = 12.0, TENGEKI_RANGE = 32.0, TENGEKI_BEAM_WIDTH = 2.0;
+    static final float TENGEKI_CORE = 20F, TENGEKI_EDGE = 10F, TENGEKI_BEAM = 12F;
+    /** Tengeki carregando: quando dispara. */
+    private static final Map<UUID, Long> TENGEKI = new ConcurrentHashMap<>();
+    private static final int JIBRIL_GOLD = 0xFFD860, JIBRIL_CYAN = 0x7FF4FF, JIBRIL_PINK = 0xF4A6D8, JIBRIL_VIOLET = 0xB98AF2;
+
     static void init() {
         NeoForge.EVENT_BUS.addListener(RaceForms::onIncomingDamage);
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedOutEvent e) -> {
@@ -123,6 +144,7 @@ public final class RaceForms {
             POWER_READY.remove(id);
             MITOSIS_READY.remove(id);
             FEAR.remove(id);
+            TENGEKI.remove(id);
             RaceFlight.forget(id);
             // Saiu no meio da carga: a forma não saiu, a recarga volta como estava
             Charge c = CHARGING.remove(id);
@@ -136,6 +158,7 @@ public final class RaceForms {
         MITOSIS_READY.clear();
         CHARGING.clear();
         FEAR.clear();
+        TENGEKI.clear();
         RaceFlight.clearAll();
     }
 
@@ -333,7 +356,11 @@ public final class RaceForms {
                 sp.heal(sp.getMaxHealth() * 0.3F);
             }
             case SLIME -> sp.heal(sp.getMaxHealth() * 0.25F);
-            case ANGEL -> sp.clearFire();
+            case ANGEL -> {
+                // Jibril desperta: o fogo apaga e a luz recompõe o corpo
+                sp.clearFire();
+                sp.heal(sp.getMaxHealth() * 0.2F);
+            }
             default -> { }
         }
         sp.setHealth(Math.min(sp.getHealth(), sp.getMaxHealth()));
@@ -345,7 +372,9 @@ public final class RaceForms {
         level.sendParticles(signature(sp, r), c.x, c.y, c.z, 16, 0.8, 1.2, 0.8, 0.08);
         RaceFx.sound(level, c, RaceSounds.FORM_BURST.get(), 2.4F, 1.0F);
         RaceFx.sound(level, c, formSound(r), 1.0F, 0.8F);
-        Rewards.banner(sp, Component.translatable("message.isekai_mahou.character.form_start", r.formName()), r.rgb);
+        // v1.11: a cutscene de transformação (título = nome da forma, subtítulo = a raça) substitui o banner e o título
+        // antigos (FormFx) — uma vez por ativação; a volta com a forma ainda ativa (relog) não passa por aqui
+        Cutscenes.transform(sp, r.formName().withColor(r.rgb), r.displayName(), r.rgb, cutsceneStyle(r), 60);
         sp.displayClientMessage(Component.translatable("message.isekai_mahou.character.form_power_hint", r.formPower(),
                 Component.keybind("key.isekai_mahou.racial_ability")).withColor(r.rgb), true);
         if (RaceFlight.winged(r)) {
@@ -383,6 +412,7 @@ public final class RaceForms {
     private static void end(ServerPlayer sp, Race r) {
         ACTIVE.remove(sp.getUUID());
         POWER_READY.remove(sp.getUUID());
+        if (TENGEKI.remove(sp.getUUID()) != null) removeHidden(sp, MobEffects.MOVEMENT_SLOWDOWN);
         RaceFx.entityFx(sp, CharacterNetwork.FX_FORM, 0);
         if (r == Race.PHANTOM) removeHidden(sp, MobEffects.INVISIBILITY);
         if (r == Race.DEMON) removeHidden(sp, MobEffects.FIRE_RESISTANCE);
@@ -406,6 +436,7 @@ public final class RaceForms {
         if (charge != null) tickCharge(sp, d, charge);
         if (sp.tickCount % 5 == 0 && !FEAR.isEmpty()) tickFear(sp);
         Race form = formOf(sp);
+        if (!TENGEKI.isEmpty()) tickTengeki(sp, form);
         handleFlight(sp, form);
         RaceFlight.tick(sp, form);
         Race was = ACTIVE.get(sp.getUUID());
@@ -535,6 +566,12 @@ public final class RaceForms {
         POWER_READY.put(sp.getUUID(), now + POWER_COOLDOWN);
         // v1.3.1: planando, a tecla racial vira mergulho (olhando para baixo) ou o Sopro Rasante do Dracônico
         if (RaceFlight.glidePower(sp, d, r)) return;
+        if (r == Race.ANGEL) {
+            // v1.11 Golpe Celestial (Tengeki): carga curta, depois o feixe (tickTengeki); recarga própria, mais longa
+            if (beginTengeki(sp)) POWER_READY.put(sp.getUUID(), now + TENGEKI_CHARGE + TENGEKI_COOLDOWN);
+            else POWER_READY.remove(sp.getUUID());
+            return;
+        }
         MahouAnims.play(sp, powerAnim(r));
         ServerLevel level = sp.serverLevel();
         Vec3 eye = sp.getEyePosition();
@@ -699,20 +736,7 @@ public final class RaceForms {
                 RaceFx.sound(level, end, SoundEvents.PHANTOM_SWOOP, 1.0F, 1.2F);
                 RaceFx.sound(level, end, SoundEvents.SOUL_ESCAPE.value(), 1.0F, 0.8F);
             }
-            case ANGEL -> {
-                // Julgamento: luz em área — fere inimigos (dobro em mortos-vivos), cura aliados
-                for (LivingEntity le : foesAround(sp, 10.0)) smite(sp, le, 14F);
-                for (Player p : level.getEntitiesOfClass(Player.class, sp.getBoundingBox().inflate(10.0), p -> p.isAlive() && !foe(sp, p))) {
-                    p.heal(8F * Progression.HEAL_SCALE);
-                    p.clearFire();
-                    level.sendParticles(ParticleTypes.HEART, p.getX(), p.getY() + p.getBbHeight() + 0.3, p.getZ(), 3, 0.3, 0.1, 0.3, 0);
-                }
-                RaceFx.ring(level, sp.position().add(0, 0.2, 0), 5.0, 40, RaceFx.dust(0xFFF2B0, 1.6F));
-                RaceFx.ring(level, sp.position().add(0, 0.2, 0), 10.0, 60, ParticleTypes.END_ROD);
-                level.sendParticles(ParticleTypes.FLASH, sp.getX(), sp.getY() + 2.0, sp.getZ(), 1, 0, 0, 0, 0);
-                RaceFx.sound(level, eye, SoundEvents.BEACON_ACTIVATE, 1.0F, 1.5F);
-                RaceFx.sound(level, eye, SoundEvents.TRIDENT_THUNDER.value(), 0.5F, 1.6F);
-            }
+            case ANGEL -> { } // Golpe Celestial (Tengeki): beginTengeki / tickTengeki
             case SLIME -> {
                 // Absorção: engole os inimigos menores (e cura com eles); os grandes só levam ácido
                 float healed = 0F;
@@ -737,6 +761,193 @@ public final class RaceForms {
                 RaceFx.sound(level, eye, SoundEvents.GENERIC_EAT, 1.0F, 0.6F);
             }
         }
+    }
+
+    // =====================================================================================
+    //  v1.11 Golpe Celestial (Tengeki) — Jibril, a Flügel (Anjo)
+    // =====================================================================================
+    /** Zona segura (cidade, {@link Places#isSafe}): o Tengeki nunca dispara nem fere lá dentro. */
+    private static boolean safe(ServerLevel level, Vec3 at) {
+        return Places.isSafe(level, BlockPos.containing(at));
+    }
+
+    /** Começa a carga do Tengeki; false = recusado (cidade). */
+    private static boolean beginTengeki(ServerPlayer sp) {
+        if (TENGEKI.containsKey(sp.getUUID())) return true;
+        ServerLevel level = sp.serverLevel();
+        if (safe(level, sp.position()) || safe(level, jioTarget(sp, TENGEKI_RANGE))) {
+            sp.displayClientMessage(Component.translatable("message.isekai_mahou.character.tengeki_safe").withColor(0xA89EC0), true);
+            return false;
+        }
+        TENGEKI.put(sp.getUUID(), level.getGameTime() + TENGEKI_CHARGE);
+        sp.addEffect(hidden(MobEffects.MOVEMENT_SLOWDOWN, TENGEKI_CHARGE + 2, 1));
+        MagicHover.allow(sp, TENGEKI_CHARGE + 60);
+        MahouAnims.play(sp, MahouAnims.CAST_ULT_CHARGE);
+        RaceFx.sound(level, sp.position(), SoundEvents.BEACON_POWER_SELECT, 1.4F, 0.6F);
+        RaceFx.sound(level, sp.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 1.2F, 0.5F);
+        return true;
+    }
+
+    /** Um tick do Tengeki carregando: a luz se junta à frente das mãos e, no fim, dispara. */
+    private static void tickTengeki(ServerPlayer sp, @Nullable Race form) {
+        Long at = TENGEKI.get(sp.getUUID());
+        if (at == null) return;
+        if (form != Race.ANGEL || !sp.isAlive()) {
+            TENGEKI.remove(sp.getUUID());
+            removeHidden(sp, MobEffects.MOVEMENT_SLOWDOWN);
+            return;
+        }
+        ServerLevel level = sp.serverLevel();
+        long now = level.getGameTime();
+        long left = at - now;
+        if (left > TENGEKI_CHARGE + 20) { // relógio pulou (troca de mundo): cancela
+            TENGEKI.remove(sp.getUUID());
+            removeHidden(sp, MobEffects.MOVEMENT_SLOWDOWN);
+            return;
+        }
+        if (left > 0) {
+            tengekiChargeFx(sp, level, 1F - left / (float) TENGEKI_CHARGE, now);
+            return;
+        }
+        TENGEKI.remove(sp.getUUID());
+        removeHidden(sp, MobEffects.MOVEMENT_SLOWDOWN);
+        fireTengeki(sp, level);
+    }
+
+    private static Vec3 tengekiOrb(ServerPlayer sp) {
+        return sp.getEyePosition().add(sp.getLookAngle().scale(1.3)).add(0, -0.25, 0);
+    }
+
+    /** Carga: faíscas de luz caindo para dentro de uma esfera que cresce (orçamento baixo, a cada 2 ticks). */
+    private static void tengekiChargeFx(ServerPlayer sp, ServerLevel level, float p, long now) {
+        if (now % 2 != 0) return;
+        Vec3 orb = tengekiOrb(sp);
+        var rnd = sp.getRandom();
+        int n = 3 + (int) (p * 5);
+        for (int i = 0; i < n; i++) {
+            Vec3 dir = new Vec3(rnd.nextGaussian(), rnd.nextGaussian(), rnd.nextGaussian());
+            if (dir.lengthSqr() < 1e-4) continue;
+            dir = dir.normalize();
+            Vec3 from = orb.add(dir.scale(2.4 - p * 0.9));
+            level.sendParticles(ParticleTypes.END_ROD, from.x, from.y, from.z, 0, -dir.x, -dir.y, -dir.z, 0.12);
+        }
+        level.sendParticles(RaceFx.dust(now % 4 == 0 ? JIBRIL_GOLD : JIBRIL_CYAN, 0.8F + 1.4F * p), orb.x, orb.y, orb.z, 2, 0.06, 0.06, 0.06, 0);
+        if (now % 6 == 0) {
+            RaceFx.ring(level, sp.position().add(0, 0.1, 0), 1.2 + p * 1.6, 18, RaceFx.dust(now % 12 == 0 ? JIBRIL_PINK : JIBRIL_GOLD, 1.0F));
+            RaceFx.sound(level, orb, SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 0.6F + p * 1.2F);
+        }
+    }
+
+    /** O disparo: feixe até o ponto mirado + esfera de luz de {@value #TENGEKI_RADIUS} blocos (só inimigos, sem blocos). */
+    private static void fireTengeki(ServerPlayer sp, ServerLevel level) {
+        Vec3 from = tengekiOrb(sp);
+        Vec3 at = jioTarget(sp, TENGEKI_RANGE);
+        if (safe(level, sp.position()) || safe(level, at)) {
+            // Entrou numa cidade durante a carga: a luz se desfaz
+            sp.displayClientMessage(Component.translatable("message.isekai_mahou.character.tengeki_safe").withColor(0xA89EC0), true);
+            level.sendParticles(ParticleTypes.END_ROD, from.x, from.y, from.z, 10, 0.3, 0.3, 0.3, 0.04);
+            RaceFx.sound(level, from, SoundEvents.BEACON_DEACTIVATE, 1.0F, 1.4F);
+            return;
+        }
+        MahouAnims.play(sp, MahouAnims.CAST_ULT_RELEASE);
+        Set<LivingEntity> struck = new HashSet<>();
+        // 1) A esfera: dano cheio no centro, metade na borda (cada alvo leva UM golpe só)
+        double r = TENGEKI_RADIUS;
+        for (LivingEntity le : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(r), e -> foe(sp, e))) {
+            if (struck.size() >= 40) break; // orçamento
+            double dist = RaceFx.center(le).distanceTo(at);
+            if (dist > r || Places.isSafe(level, le.blockPosition())) continue;
+            float t = (float) (dist / r);
+            struck.add(le);
+            holyHit(sp, le, TENGEKI_CORE + (TENGEKI_EDGE - TENGEKI_CORE) * t, at);
+        }
+        // 2) O feixe: quem estiver no caminho (fora da esfera) também é atingido
+        for (LivingEntity le : level.getEntitiesOfClass(LivingEntity.class, new AABB(from, at).inflate(TENGEKI_BEAM_WIDTH), e -> foe(sp, e))) {
+            if (struck.size() >= 48) break;
+            if (struck.contains(le) || Places.isSafe(level, le.blockPosition())) continue;
+            if (distToSegment(RaceFx.center(le), from, at) > TENGEKI_BEAM_WIDTH + le.getBbWidth() * 0.5) continue;
+            struck.add(le);
+            holyHit(sp, le, TENGEKI_BEAM, from);
+        }
+
+        // ---------- espetáculo (partículas do servidor, orçamento fixo; nenhum bloco é tocado) ----------
+        Vec3 path = at.subtract(from);
+        double len = path.length();
+        if (len > 1e-3) {
+            Vec3 dir = path.scale(1 / len);
+            Vec3 side = dir.cross(new Vec3(0, 1, 0));
+            if (side.lengthSqr() < 1e-4) side = new Vec3(1, 0, 0);
+            side = side.normalize();
+            Vec3 up = side.cross(dir).normalize();
+            RaceFx.line(level, from, at, ParticleTypes.END_ROD);
+            int steps = (int) Math.min(36, len / 0.9);
+            for (int i = 0; i <= steps; i++) {
+                double d = len * i / Math.max(1, steps);
+                Vec3 c = from.add(dir.scale(d));
+                level.sendParticles(RaceFx.dust(JIBRIL_GOLD, 2.0F), c.x, c.y, c.z, 2, 0.25, 0.25, 0.25, 0);
+                // Espiral ciano/rosa em volta do feixe
+                double a = d * 1.6;
+                Vec3 sp1 = c.add(side.scale(Math.cos(a) * 0.9)).add(up.scale(Math.sin(a) * 0.9));
+                level.sendParticles(RaceFx.dust(i % 2 == 0 ? JIBRIL_CYAN : JIBRIL_PINK, 1.3F), sp1.x, sp1.y, sp1.z, 1, 0, 0, 0, 0);
+            }
+            level.sendParticles(ParticleTypes.SONIC_BOOM, from.x, from.y, from.z, 1, 0, 0, 0, 0);
+        }
+        // A esfera de luz: faíscas voando para fora (desenham uma bolha que cresce até ~12 blocos) + anéis
+        int shell = 64;
+        double golden = Math.PI * (3 - Math.sqrt(5));
+        for (int i = 0; i < shell; i++) {
+            double y = 1 - (i / (double) (shell - 1)) * 2;
+            double rad = Math.sqrt(Math.max(0, 1 - y * y));
+            double th = golden * i;
+            Vec3 d = new Vec3(Math.cos(th) * rad, y, Math.sin(th) * rad);
+            level.sendParticles(ParticleTypes.END_ROD, at.x + d.x, at.y + d.y, at.z + d.z, 0, d.x, d.y, d.z, 0.45);
+        }
+        level.sendParticles(ParticleTypes.FLASH, at.x, at.y, at.z, 2, 0.5, 0.5, 0.5, 0);
+        level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+        level.sendParticles(RaceFx.dust(0xFFFFFF, 3.0F), at.x, at.y, at.z, 24, 1.2, 1.2, 1.2, 0);
+        RaceFx.ring(level, at, 4.0, 24, RaceFx.dust(JIBRIL_CYAN, 2.0F));
+        RaceFx.ring(level, at, 8.0, 32, RaceFx.dust(JIBRIL_PINK, 2.0F));
+        RaceFx.ring(level, at, r, 48, RaceFx.dust(JIBRIL_GOLD, 2.4F));
+        RaceFx.ring(level, at.add(0, 0.5, 0), r * 0.75, 28, RaceFx.dust(JIBRIL_VIOLET, 1.8F));
+        RaceFx.sound(level, from, SoundEvents.BEACON_ACTIVATE, 1.4F, 0.6F);
+        RaceFx.sound(level, from, SoundEvents.TRIDENT_THUNDER.value(), 1.0F, 1.3F);
+        RaceFx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), 2.0F, 0.6F);
+        RaceFx.sound(level, at, SoundEvents.TRIDENT_THUNDER.value(), 1.6F, 0.7F);
+        RaceFx.sound(level, at, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.6F, 0.5F);
+    }
+
+    /** Golpe de luz da Jibril: dano mágico (×1,5 em mortos-vivos), Brilho, Exposto e um empurrão para longe do centro. */
+    private static void holyHit(ServerPlayer sp, LivingEntity le, float base, Vec3 center) {
+        hit(sp, le, le.getType().is(EntityTypeTags.UNDEAD) ? base * 1.5F : base);
+        le.addEffect(new MobEffectInstance(MobEffects.GLOWING, 60, 0, false, false, true), sp);
+        Statuses.apply(le, Statuses.Kind.EXPOSED, 1, 100, sp, 1F);
+        Vec3 away = le.position().subtract(center);
+        away = new Vec3(away.x, 0, away.z);
+        if (away.lengthSqr() > 1e-4) {
+            away = away.normalize();
+            le.push(away.x * 0.6, 0.3, away.z * 0.6);
+            le.hurtMarked = true;
+        }
+    }
+
+    private static double distToSegment(Vec3 p, Vec3 a, Vec3 b) {
+        Vec3 ab = b.subtract(a);
+        double l2 = ab.lengthSqr();
+        if (l2 < 1e-6) return p.distanceTo(a);
+        double t = Math.max(0, Math.min(1, p.subtract(a).dot(ab) / l2));
+        return p.distanceTo(a.add(ab.scale(t)));
+    }
+
+    /** Coreografia da cutscene de transformação de cada raça ({@link Cutscenes#transform}). */
+    private static String cutsceneStyle(Race r) {
+        return switch (r) {
+            case ANGEL -> "holy";
+            case DEMON, PHANTOM, SLIME -> "dark";       // Anos, o fantasma (morto-vivo), o Lorde Demônio Rimuru
+            case BEASTFOLK, DRAGONBORN, ARACHNID -> "beast";
+            case HALF_ORC -> "blood";                    // Geld, o Desastre Orc
+            case ELF -> "spirit";                        // espírito da lua
+            case HUMAN, DWARF -> "default";
+        };
     }
 
     // =====================================================================================
@@ -815,6 +1026,7 @@ public final class RaceForms {
             case HUMAN -> e.setAmount(e.getAmount() * 0.8F);
             case DWARF -> e.setAmount(e.getAmount() * 0.7F);
             case DRAGONBORN -> e.setAmount(e.getAmount() * 0.75F);
+            case ANGEL -> e.setAmount(e.getAmount() * 0.85F); // v1.11 Jibril: a Flügel quase não sente os golpes
             case HALF_ORC -> e.setAmount(e.getAmount() * 1.1F);
             case PHANTOM -> {
                 // Intangível: golpes e projéteis passam pela metade

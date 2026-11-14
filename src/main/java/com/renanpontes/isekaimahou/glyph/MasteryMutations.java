@@ -12,6 +12,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.renanpontes.isekaimahou.core.ElementFx;
+import com.renanpontes.isekaimahou.core.MagicApi;
 import com.renanpontes.isekaimahou.core.boss.BossKit;
 import com.renanpontes.isekaimahou.core.event.SpellCastEvent;
 import com.renanpontes.isekaimahou.core.event.SpellDamageEvent;
@@ -19,6 +20,7 @@ import com.renanpontes.isekaimahou.core.ux.PeaceMode;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -37,7 +39,8 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
 /**
- * Maestria INFINITA — as MUTAÇÕES. Depois do X ({@link GlyphMastery#MAX_LEVEL}) a magia não só fica mais forte: em
+ * Maestria INFINITA — as MUTAÇÕES. v1.1: a primeira já chega no nível IV ({@link #FIRST_MUTATION}, ~300 acertos de
+ * verdade) e depois a cada poucos níveis; do ★45 em diante uma ABERRAÇÃO a cada 5 níveis, sem fim. Em
  * níveis marcados ela muda de comportamento e de visual, cada vez mais BIZARRA. Tudo é determinístico (glifo + nível;
  * nada de sorte) e só vale para conjurações de JOGADOR pela tecla ({@link SpellContext#isPlayerCast()}).
  *
@@ -73,24 +76,132 @@ public final class MasteryMutations {
      * Uma mutação: chave de texto, nível em que desperta e se é da MAGIA INTEIRA ({@code shared}: conta a média).
      * Textos: {@code mastery.isekai_mahou.mut.<key>}, {@code .desc} (o que faz) e {@code .hint} (dica vaga).
      */
-    public record Mut(String key, int level, boolean shared) {
-        public MutableComponent displayName() { return Component.translatable("mastery.isekai_mahou.mut." + key); }
+    public record Mut(String key, int level, boolean shared, int rank) {
+        public Mut(String key, int level, boolean shared) {
+            this(key, level, shared, 0);
+        }
+
+        /** Aberração (sem fim): o nome leva o grau ("Gravidade Torta III"). */
+        public boolean aberration() { return rank > 0; }
+
+        public MutableComponent displayName() {
+            MutableComponent c = Component.translatable("mastery.isekai_mahou.mut." + key);
+            return rank > 1 ? c.append(" " + GlyphMastery.roman(Math.min(rank, GlyphMastery.ROMAN_UNTIL))) : c;
+        }
         public MutableComponent description() { return Component.translatable("mastery.isekai_mahou.mut." + key + ".desc"); }
         public MutableComponent hint() { return Component.translatable("mastery.isekai_mahou.mut." + key + ".hint"); }
     }
 
+    // =====================================================================================
+    //  v1.1 — EVOLUÇÕES PRÓPRIAS ("como os Atos do Tusk")
+    // =====================================================================================
+
+    /**
+     * Um ESTÁGIO de evolução de um glifo: a partir do nível {@code level} o glifo passa a se chamar outra coisa e a
+     * agir diferente (quem implementa o comportamento é o módulo do glifo / o módulo "stands", consultando
+     * {@link #stage}). {@code index} 1..n (0 = forma base). Textos: {@code mastery.isekai_mahou.evo.<glifo>.<key>},
+     * {@code .desc} (o que muda) e {@code .hint} (dica vaga antes de chegar).
+     */
+    public record Stage(ResourceLocation glyph, int index, String key, int level, int color) {
+        private String base() { return "mastery.isekai_mahou.evo." + glyph.getPath() + "." + key; }
+        public MutableComponent displayName() { return Component.translatable(base()); }
+        public MutableComponent description() { return Component.translatable(base() + ".desc"); }
+        public MutableComponent hint() { return Component.translatable(base() + ".hint"); }
+    }
+
+    /** Montador de evoluções: {@code MasteryMutations.evolve(id).stage("raikiri", 5, 0x9FE8FF).stage(...).done()}. */
+    public static final class EvolutionBuilder {
+        private final ResourceLocation glyph;
+        private final List<Stage> stages = new ArrayList<>();
+
+        private EvolutionBuilder(ResourceLocation glyph) {
+            this.glyph = glyph;
+        }
+
+        /** Próximo estágio (níveis precisam crescer). */
+        public EvolutionBuilder stage(String key, int level, int color) {
+            int prev = stages.isEmpty() ? 1 : stages.get(stages.size() - 1).level();
+            if (level <= prev) throw new IllegalArgumentException("evolution " + glyph + ": level " + level + " <= " + prev);
+            stages.add(new Stage(glyph, stages.size() + 1, key, level, color & 0xFFFFFF));
+            return this;
+        }
+
+        public List<Stage> done() {
+            List<Stage> l = List.copyOf(stages);
+            EVOLUTIONS.put(glyph, l);
+            return l;
+        }
+    }
+
+    private static final Map<ResourceLocation, List<Stage>> EVOLUTIONS = new HashMap<>();
+
+    /** Declara (ou substitui) as evoluções próprias de um glifo. Chamar no init do módulo. */
+    public static EvolutionBuilder evolve(ResourceLocation glyph) {
+        return new EvolutionBuilder(glyph);
+    }
+
+    /** Estágios do glifo em ordem (vazio = glifo sem evolução própria). */
+    public static List<Stage> stages(@Nullable ResourceLocation glyph) {
+        return glyph == null ? List.of() : EVOLUTIONS.getOrDefault(glyph, List.of());
+    }
+
+    /** Quantos glifos têm evolução própria (para a curva). */
+    public static int evolvingGlyphs() {
+        return EVOLUTIONS.size();
+    }
+
+    /** Estágio no nível dado: 0 = base, 1..n. */
+    public static int stage(@Nullable ResourceLocation glyph, int level) {
+        int n = 0;
+        for (Stage s : stages(glyph)) if (level >= s.level()) n = s.index();
+        return n;
+    }
+
+    /** Estágio atual (null = ainda a forma base). */
+    @Nullable
+    public static Stage currentStage(@Nullable ResourceLocation glyph, int level) {
+        Stage cur = null;
+        for (Stage s : stages(glyph)) if (level >= s.level()) cur = s;
+        return cur;
+    }
+
+    /** Próximo estágio (null = já está no último, ou glifo sem evolução). */
+    @Nullable
+    public static Stage nextStage(@Nullable ResourceLocation glyph, int level) {
+        for (Stage s : stages(glyph)) if (s.level() > level) return s;
+        return null;
+    }
+
+    /**
+     * Estágio do glifo para QUEM CONJURA (servidor): jogadores pelo nível de maestria deles; mobs, pedestais e lendas
+     * ficam na forma base (0).
+     */
+    public static int stageOf(@Nullable LivingEntity caster, ResourceLocation glyph) {
+        if (!(caster instanceof Player p) || caster instanceof FakePlayer || !EVOLUTIONS.containsKey(glyph)) return 0;
+        return stage(glyph, GlyphMastery.level(MagicApi.get(p), glyph));
+    }
+
+    // v1.1 — MUTAÇÕES MAIS CEDO: a primeira chega no IV (~300 acertos de verdade), depois a cada poucos níveis.
     // ---------- Magia inteira (média) ----------
-    public static final int HALO = 11, COSMIC = 20, ELDRITCH = 35, ECLIPSE = 50, QUAKE = 75, SINGULAR = 100;
+    public static final int HALO = 6, COSMIC = 12, ELDRITCH = 20, ECLIPSE = 35, QUAKE = 50, SINGULAR = 75;
     // ---------- Forma: projétil ----------
-    public static final int FRAGMENT = 12, ECHO = 18, FRAGMENT_2 = 25, ECHO_2 = 40, SWARM = 60, ECHO_3 = 100;
+    public static final int FRAGMENT = 4, ECHO = 7, FRAGMENT_2 = 10, ECHO_2 = 16, SWARM = 25, ECHO_3 = 40;
     // ---------- Forma: área ----------
-    public static final int AFTERSHOCK = 12, VORTEX = 18, AFTERSHOCK_2 = 25, AREA_ECHO = 40, SINGULARITY = 60, AFTERSHOCK_3 = 100;
+    public static final int AFTERSHOCK = 4, VORTEX = 7, AFTERSHOCK_2 = 10, AREA_ECHO = 16, SINGULARITY = 25, AFTERSHOCK_3 = 40;
     // ---------- Forma: perto/si mesmo ----------
-    public static final int PULSE = 12, REVEAL = 18, PULSE_2 = 25, ABYSS_PULSE = 60;
+    public static final int PULSE = 4, REVEAL = 7, PULSE_2 = 10, ABYSS_PULSE = 25;
     // ---------- Efeito: dano ----------
-    public static final int HEAVY = 11, ARC = 15, RESIDUE = 22, ARC_2 = 30, RUPTURE = 50, ARC_3 = 75, RESIDUE_2 = 100;
+    public static final int HEAVY = 4, ARC = 6, RESIDUE = 9, ARC_2 = 13, RUPTURE = 18, ARC_3 = 30, RESIDUE_2 = 40;
     // ---------- Efeito: ajuda ----------
-    public static final int BLESSING = 15, AEGIS = 30, BLESSING_2 = 50, GRACE = 100;
+    public static final int BLESSING = 4, AEGIS = 8, BLESSING_2 = 16, GRACE = 30;
+    /** Nível da primeira mutação de qualquer família (para a curva e os textos). */
+    public static final int FIRST_MUTATION = 4;
+    /**
+     * ABERRAÇÕES (sem fim): de {@link #ABERRATION_START} em diante, uma a cada {@link #ABERRATION_EVERY} níveis, em
+     * rodízio de {@link #ABERRATIONS} tipos; cada repetição do mesmo tipo é um grau a mais (II, III...).
+     */
+    public static final int ABERRATION_START = 45, ABERRATION_EVERY = 5;
+    public static final String[] ABERRATIONS = {"gravity", "stutter", "mirror", "bloom", "starfall"};
 
     // ---------- Limites ----------
     public static final int ECHO_BUDGET = 6;
@@ -121,12 +232,18 @@ public final class MasteryMutations {
         own.put(Family.HELP, List.of(new Mut("blessing", BLESSING, false), new Mut("aegis", AEGIS, false),
                 new Mut("blessing_2", BLESSING_2, false), new Mut("grace", GRACE, false)));
         own.put(Family.WORK, List.of());
+        // Aberrações: uma a cada 5 níveis do ★45 até o teto do número salvo (rodízio de tipos, grau sobe a cada volta)
+        List<Mut> aberr = new ArrayList<>();
+        for (int i = 0, lv = ABERRATION_START; lv <= GlyphMastery.LEVEL_CAP; i++, lv += ABERRATION_EVERY) {
+            aberr.add(new Mut("aberration_" + ABERRATIONS[i % ABERRATIONS.length], lv, false, i / ABERRATIONS.length + 1));
+        }
         for (Family f : Family.values()) {
             if (f == Family.SUPPORT) {
                 ALL.put(f, List.of());
                 continue;
             }
             List<Mut> l = new ArrayList<>(own.getOrDefault(f, List.of()));
+            if (f != Family.WORK) l.addAll(aberr);
             l.addAll(SHARED);
             l.sort(Comparator.comparingInt(Mut::level).thenComparing(m -> m.shared() ? 1 : 0));
             ALL.put(f, List.copyOf(l));
@@ -185,6 +302,7 @@ public final class MasteryMutations {
         long nextVisual, nextEclipse, nextQuake, nextSingular;
         long nextAftershock, nextVortex, nextArc, nextResidue, nextHeavy, nextRupture;
         long nextPulse, nextReveal, nextBless, nextAegis;
+        final long[] nextAberration = new long[ABERRATIONS.length];
         long echoWindow = Long.MIN_VALUE / 2;
         int echoes;
         int residues;
@@ -440,6 +558,9 @@ public final class MasteryMutations {
         ParsedSpell.EffectEntry entry = entryOf(ctx, e.stats());
         Family ef = entry != null ? family(entry.effect()) : Family.HARM;
         int effLv = entry != null ? entry.stats().masteryLevel : (e.stats() != null ? e.stats().masteryLevel : 1);
+        // Aberrações (★45+): contam pelo maior nível entre a forma e o efeito que acertou
+        int aberrLv = Math.max(formLv, ef == Family.WORK || ef == Family.SUPPORT ? 0 : effLv);
+        if (aberrLv >= ABERRATION_START) aberrations(ctx, sp, st, target, at, amount, aberrLv, now);
         if (ef != Family.HARM || effLv < HEAVY) return;
         if (now >= st.nextHeavy) {
             st.nextHeavy = now + 10;
@@ -459,6 +580,64 @@ public final class MasteryMutations {
             st.nextRupture = now + 10;
             ElementFx.shockwave(level, at.add(0, 0.1, 0), shifted(ctx.color(), RUPTURE), 4F, 12, null);
             for (LivingEntity v : hostilesAround(ctx, sp, at, 4, target)) hurt(ctx, v, amount * 0.5F);
+        }
+    }
+
+    /** Grau de uma aberração (0 = ainda não despertou) no nível dado. */
+    public static int aberrationRank(int kind, int level) {
+        if (level < ABERRATION_START) return 0;
+        int n = Math.min((level - ABERRATION_START) / ABERRATION_EVERY + 1,
+                (GlyphMastery.LEVEL_CAP - ABERRATION_START) / ABERRATION_EVERY + 1);
+        return n / ABERRATIONS.length + (kind < n % ABERRATIONS.length ? 1 : 0);
+    }
+
+    /**
+     * As ABERRAÇÕES (cada vez mais bizarras, sem fim): gravidade torta (o alvo flutua), tempo gaguejando (fica preso
+     * por um instante), espelho (o golpe acontece de novo, fantasma), flor do vazio (puxa tudo para o ponto) e chuva de
+     * estrelas (estrelinhas caem em volta). Cada tipo tem intervalo próprio (20 ticks) e tetos baixos.
+     */
+    private static void aberrations(SpellContext ctx, ServerPlayer sp, PState st, LivingEntity target, Vec3 at, float amount,
+                                    int level, long now) {
+        ServerLevel lvl = ctx.level();
+        boolean boss = BossKit.isBossLike(target);
+        for (int k = 0; k < ABERRATIONS.length; k++) {
+            int rank = aberrationRank(k, level);
+            if (rank <= 0 || now < st.nextAberration[k]) continue;
+            st.nextAberration[k] = now + 20;
+            switch (k) {
+                case 0 -> { // gravidade torta
+                    if (!boss && target.isAlive() && !(target instanceof Player)) {
+                        target.addEffect(new MobEffectInstance(MobEffects.LEVITATION, Math.min(40, 8 + 4 * rank), 0), sp);
+                    }
+                    ElementFx.ring(lvl, at.add(0, 0.1, 0), ctx.element(), 1.2, 10);
+                }
+                case 1 -> { // tempo gaguejando
+                    if (target.isAlive()) {
+                        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, boss ? 10 : 20, Math.min(5, 1 + rank)), sp);
+                    }
+                    ElementFx.flash(lvl, at.add(0, target.getBbHeight() * 0.5, 0), 0xE8E0FF, 0.8F);
+                }
+                case 2 -> { // espelho: o golpe se repete (fantasma)
+                    float dmg = amount * Math.min(0.5F, 0.12F * rank);
+                    SpellScheduler.schedule(10, () -> {
+                        if (!sp.isAlive() || sp.level() != lvl || !target.isAlive()) return;
+                        ElementFx.flash(lvl, target.position().add(0, target.getBbHeight() * 0.5, 0), shifted(ctx.color(), SINGULAR), 1F);
+                        if (!ctx.isAlly(target)) hurt(ctx, target, dmg);
+                    });
+                }
+                case 3 -> { // flor do vazio: puxa os inimigos para o ponto
+                    vortex(ctx, sp, at, Math.min(7, 3 + rank), Math.min(0.6, 0.2 + 0.05 * rank));
+                    ElementFx.shockwave(lvl, at.add(0, 0.1, 0), 0x12001E, 2.5F, 10, null);
+                }
+                default -> { // chuva de estrelas
+                    float dmg = amount * Math.min(0.4F, 0.1F * rank);
+                    ElementFx.skyStrike(lvl, at, ctx.element(), 0xFFF2B0, 1.5F, 2, 8);
+                    SpellScheduler.schedule(8, () -> {
+                        if (!sp.isAlive() || sp.level() != lvl) return;
+                        for (LivingEntity v : hostilesAround(ctx, sp, at, 2, null)) hurt(ctx, v, dmg);
+                    });
+                }
+            }
         }
     }
 

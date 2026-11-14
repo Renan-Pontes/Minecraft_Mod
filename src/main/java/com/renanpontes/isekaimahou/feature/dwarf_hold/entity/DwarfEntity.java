@@ -245,7 +245,7 @@ public class DwarfEntity extends AbstractVillager implements GeoEntity {
         if (!level().isClientSide && source.getEntity() instanceof Player p && complainCooldown <= 0 && isInvulnerableTo(source)) {
             complainCooldown = 40;
             p.displayClientMessage(Component.translatable(MSG + "hit").withStyle(ChatFormatting.RED), true);
-            playSound(SoundEvents.VILLAGER_NO, 1.0F, 0.7F);
+            playSound(SoundEvents.ANVIL_LAND, 0.35F, 1.4F);
         }
         return super.hurt(source, amount);
     }
@@ -265,31 +265,42 @@ public class DwarfEntity extends AbstractVillager implements GeoEntity {
     }
 
     // =====================================================================================
-    //  Sons (voz de anão: grave)
+    //  Sons — sem o "hmm" de villager (o dono achava irritante, 13/11): anão de forja soa como forja.
+    //  Ambiente raro e baixinho (martelinho no metal), trocas com tilintar de ferro, dor/morte de gente.
     // =====================================================================================
     @Override
     protected SoundEvent getAmbientSound() {
-        return isTrading() ? SoundEvents.VILLAGER_TRADE : SoundEvents.VILLAGER_AMBIENT;
+        return isTrading() ? SoundEvents.ARMOR_EQUIP_IRON.value() : SoundEvents.ANVIL_STEP;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 320;
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.45F;
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.VILLAGER_HURT;
+        return SoundEvents.PLAYER_HURT;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.VILLAGER_DEATH;
+        return SoundEvents.PLAYER_DEATH;
     }
 
     @Override
     protected SoundEvent getTradeUpdatedSound(boolean yes) {
-        return yes ? SoundEvents.VILLAGER_YES : SoundEvents.VILLAGER_NO;
+        return yes ? SoundEvents.CHAIN_PLACE : SoundEvents.CHAIN_STEP;
     }
 
     @Override
     public SoundEvent getNotifyTradeSound() {
-        return SoundEvents.VILLAGER_YES;
+        return SoundEvents.SMITHING_TABLE_USE;
     }
 
     @Override

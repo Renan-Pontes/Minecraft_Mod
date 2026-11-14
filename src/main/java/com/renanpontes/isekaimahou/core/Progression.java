@@ -122,7 +122,16 @@ public final class Progression {
     public static int levelCap(MagicData data) {
         if (data == null) return levelCap(1);
         if (data.circle() < MAX_CIRCLE) return levelCap(data.circle());
+        if (darkSelfGate(data)) return CIRCLE_TEN_LEVEL; // v1.1: a Sombra trava no 100 (módulo dark_self)
         return maxLevel(data);
+    }
+
+    /** v1.1 — flag do MagicData: o jogador venceu a própria Sombra (módulo {@code dark_self}) e pode passar do nível 100. */
+    public static final String DARK_SELF_FLAG = "darkself.passed";
+
+    /** v1.1 — o nível está preso no 100 até vencer a Sombra? Saves antigos já acima do 100 não travam. */
+    public static boolean darkSelfGate(MagicData data) {
+        return data != null && data.level() <= CIRCLE_TEN_LEVEL && !data.hasFlag(DARK_SELF_FLAG);
     }
 
     /** Nível máximo absoluto do jogador (150, ou 200 depois do Dragão Primordial). */

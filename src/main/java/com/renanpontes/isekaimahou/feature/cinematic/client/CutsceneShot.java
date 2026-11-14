@@ -46,6 +46,11 @@ record CutsceneShot(float startOffset, float sweep, float radiusStart, float rad
         };
     }
 
+    /** v1.1 — Plano "mudo" das cenas coreografadas (o clarão, o tremor e os sons vêm das batidas de {@link Choreo}). */
+    static CutsceneShot quiet(boolean boss) {
+        return new CutsceneShot(0, 0, 1F, 1F, 0.3F, 0.3F, 0.7F, 0, 0, 1F, 1F, 0F, 0F, 0, boss);
+    }
+
     /** Sons do início da cena (todos do vanilla, tocados só para quem assiste). */
     static void playStartSounds(String kind, SoundManager sounds) {
         switch (kind) {
